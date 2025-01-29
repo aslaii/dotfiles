@@ -48,10 +48,10 @@ tmux split-window -h -t "$SESSION_NAME":Servers.1
 tmux select-pane -t "$SESSION_NAME":Servers.2
 
 # Split the bottom half into four vertical panes
-tmux send-keys -t "$SESSION_NAME":Servers.2 "cd ~/work/tulu-api && npm run start:dev" C-m
+tmux send-keys -t "$SESSION_NAME":Servers.2 "cd ~/work/tulu/tulu-api && npm run start:dev" C-m
 tmux split-window -v -t "$SESSION_NAME":Servers.2
 
-tmux send-keys -t "$SESSION_NAME":Servers.3 "cd ~/work/tulu-web && npm run dev -- --port 5173" C-m
+tmux send-keys -t "$SESSION_NAME":Servers.3 "cd ~/work/tulu/tulu-web && npm run dev -- --port 5173" C-m
 tmux split-window -v -t "$SESSION_NAME":Servers.3
 
 # tmux send-keys -t "$SESSION_NAME":Servers.4 "cd ~/work/wsg-pdf && PORT=3001 BROWSER=none bun start" C-m
@@ -76,15 +76,15 @@ tmux select-pane -T "Web Server" -t "$SESSION_NAME":Servers.3
 
 # Create the API window
 tmux new-window -t "$SESSION_NAME" -n API
-tmux send-keys -t "$SESSION_NAME":API "cd ~/work/tulu-api && clear" C-m
+tmux send-keys -t "$SESSION_NAME":API "cd ~/work/tulu/tulu-api && clear" C-m
 
 # Create the Portal window
 tmux new-window -t "$SESSION_NAME" -n Web
-tmux send-keys -t "$SESSION_NAME":Web "cd ~/work/tulu-web && clear" C-m
+tmux send-keys -t "$SESSION_NAME":Web "cd ~/work/tulu/tulu-web && clear" C-m
 
 # # Create the PDF window
-# tmux new-window -t "$SESSION_NAME" -n PDF
 # tmux send-keys -t "$SESSION_NAME":PDF "cd ~/work/wsg-pdf && clear" C-m
+# tmux new-window -t "$SESSION_NAME" -n PDF
 
 # Focus on the API window
 tmux select-window -t "$SESSION_NAME":Servers
