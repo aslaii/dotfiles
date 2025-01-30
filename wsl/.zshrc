@@ -7,7 +7,7 @@ eval "$(oh-my-posh init zsh --config ~/.cache/oh-my-posh/themes/catppuccin.omp.j
 
 
 function displayFZFFiles {
-    echo $(fzf --preview 'bat --theme=gruvbox-dark --color=always --style=header,grid --line-range :400 {}')
+    echo $(fzf --preview 'batcat --theme=gruvbox-dark --color=always --style=header,grid --line-range :400 {}')
 }
 
 function nvimGoToFiles {
@@ -54,13 +54,17 @@ alias vim="nvim"
 alias tmx="tmux"
 alias nf='nvimGoToFiles'
 alias ngl='nvimGoToLine'
+alias pm='pnpm'
+alias mailhog='~/go/bin/MailHog'
+alias bat="batcat"
 
 # Work Aliases
-alias run-work-1="./wsg_setup.sh"
-alias run-work-2="./reforal_setup.sh"
-alias run-work-3="./dotfiles/setups/tulu_setup.sh"
-alias run-work-4="./job_setup.sh"
-alias run-omni="./omni_setup.sh"
+alias run-work-1="~/wsg_setup.sh"
+alias run-work-2="~/reforal_setup.sh"
+alias run-work-3="~/dotfiles/setups/tulu_setup.sh"
+alias run-work-4="~/job_setup.sh"
+alias run-work-5="~/dotfiles/setups/vublox_setup.sh"
+alias run-omni="~/omni_setup.sh"
 
 # Git Aliases
 alias lg="lazygit"
@@ -101,3 +105,11 @@ export BAT_THEME='gruvbox-dark'
 # bun
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
+
+# pnpm
+export PNPM_HOME="/home/user/.local/share/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+# pnpm end
