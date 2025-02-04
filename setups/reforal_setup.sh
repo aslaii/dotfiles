@@ -54,8 +54,8 @@ tmux split-window -v -t "$SESSION_NAME":Servers.2
 tmux send-keys -t "$SESSION_NAME":Servers.3 "cd ~/work/reforal-web/ && npm run start" C-m
 tmux split-window -v -t "$SESSION_NAME":Servers.3
 
-# tmux send-keys -t "$SESSION_NAME":Servers.4 "cd ~/work/wsg-pdf && PORT=3001 BROWSER=none bun start" C-m
-# tmux split-window -v -t "$SESSION_NAME":Servers.4
+tmux send-keys -t "$SESSION_NAME":Servers.4 "cd ~/work/reforal-admin/ && PORT=3001 BROWSER=none npm start" C-m
+tmux split-window -v -t "$SESSION_NAME":Servers.4
 #
 tmux send-keys -t "$SESSION_NAME":Servers.5 "mailhog" C-m
 tmux split-window -v -t "$SESSION_NAME":Servers.5
@@ -82,9 +82,9 @@ tmux send-keys -t "$SESSION_NAME":API "cd ~/work/reforal-api/ && clear" C-m
 tmux new-window -t "$SESSION_NAME" -n Web
 tmux send-keys -t "$SESSION_NAME":Web "cd ~/work/reforal-web/ && clear" C-m
 
-# # Create the PDF window
-# tmux send-keys -t "$SESSION_NAME":PDF "cd ~/work/wsg-pdf && clear" C-m
-# tmux new-window -t "$SESSION_NAME" -n PDF
+# Create the PDF window
+tmux send-keys -t "$SESSION_NAME":Admin "cd ~/work/reforal-admin/ && clear" C-m
+tmux new-window -t "$SESSION_NAME" -n Admin
 
 # Focus on the API window
 tmux select-window -t "$SESSION_NAME":Servers
