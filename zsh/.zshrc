@@ -1,4 +1,5 @@
 export PATH="/opt/homebrew/bin:$PATH"
+export PATH="/Users/jerichobermas/.bun/bin:$PATH"
 
 source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 source $(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
@@ -18,19 +19,23 @@ alias vim="nvim"
 alias tmx="tmux"
 alias venv="source venv/bin/activate"
 
+alias adb="~/platform-tools/adb"
+
 alias nf='nvimGoToFiles'
 alias ngl='nvimGoToLine'
 alias pm='pnpm'
-alias mailhog='~/go/bin/MailHog'
 alias bat="batcat"
 
 # Work Aliases
 alias run-wsg="~/wsg_setup.sh"
 alias run-reforal="~/reforal_setup.sh"
+alias run-vublox="~/vublox_setup.sh"
 alias run-tulu="~/tulu_setup.sh"
 alias run-explore="~/job_setup.sh"
 alias run-omni="~/omni_setup.sh"
+alias run-rcb="~/rcb_setup.sh"
 
+ 
 # Git Aliases
 alias lg="lazygit"
 alias gpod="git pull origin develop"
@@ -103,3 +108,15 @@ function nvimGoToLine {
         nvim $(printf "+%s %s" $line $filename) +"normal zz^";
     fi
 }
+
+# pnpm
+export PNPM_HOME="/Users/jerichobermas/Library/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+# pnpm end
+
+
+# Load Angular CLI autocompletion.
+source <(ng completion script)

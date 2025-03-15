@@ -1,10 +1,6 @@
 #!/bin/bash
 
-SESSION_NAME="Vublox Setup"
-
-echo "Changing Github Credentials to JLabs..."
-git config --global user.name "Jericho Bermas"
-git config --global user.email "jbermas@jlabs.team"
+SESSION_NAME="Tulu Setup"
 
 # Kill all running node and php artisan processes
 echo "Stopping all Node.js and PHP Artisan processes..."
@@ -28,7 +24,6 @@ kill_port() {
 # Free up ports 3000, 3001, and 8000
 kill_port 3000
 kill_port 3001
-kill_port 3002
 kill_port 8000
 kill_port 5173
 
@@ -53,14 +48,14 @@ tmux split-window -h -t "$SESSION_NAME":Servers.1
 tmux select-pane -t "$SESSION_NAME":Servers.2
 
 # Split the bottom half into four vertical panes
-tmux send-keys -t "$SESSION_NAME":Servers.2 "cd ~/work/vublox-api/ && pnpm run start:dev" C-m
+tmux send-keys -t "$SESSION_NAME":Servers.2 "cd ~/work/tulu-api && npm run start:dev" C-m
 tmux split-window -v -t "$SESSION_NAME":Servers.2
 
-tmux send-keys -t "$SESSION_NAME":Servers.3 "cd ~/work/vublox-web/ && PORT=3001 BROWSER=none pnpm start " C-m
+tmux send-keys -t "$SESSION_NAME":Servers.3 "cd ~/work/tulu-web && npm run dev -- --port 5173" C-m
 tmux split-window -v -t "$SESSION_NAME":Servers.3
 
-tmux send-keys -t "$SESSION_NAME":Servers.4 "cd ~/work/vublox-admin/ && PORT=3002 BROWSER=none pnpm start" C-m
-tmux split-window -v -t "$SESSION_NAME":Servers.4
+# tmux send-keys -t "$SESSION_NAME":Servers.4 "cd ~/work/wsg-pdf && PORT=3001 BROWSER=none bun start" C-m
+# tmux split-window -v -t "$SESSION_NAME":Servers.4
 #
 # tmux send-keys -t "$SESSION_NAME":Servers.5 "mailhog" C-m
 # tmux split-window -v -t "$SESSION_NAME":Servers.5
@@ -74,22 +69,22 @@ tmux split-window -v -t "$SESSION_NAME":Servers.4
 tmux select-pane -T "Monitoring" -t "$SESSION_NAME":Servers.1
 tmux select-pane -T "API Server" -t "$SESSION_NAME":Servers.2
 tmux select-pane -T "Web Server" -t "$SESSION_NAME":Servers.3
-tmux select-pane -T "Admin Server" -t "$SESSION_NAME":Servers.4
+# tmux select-pane -T "Admin Server" -t "$SESSION_NAME":Servers.4
 # tmux select-pane -T "Mailhog" -t "$SESSION_NAME":Servers.5
 # tmux select-pane -T "Queue Work" -t "$SESSION_NAME":Servers.6
 # tmux select-pane -T "Extra Pane 2" -t "$SESSION_NAME":Servers.7
 
 # Create the API window
 tmux new-window -t "$SESSION_NAME" -n API
-tmux send-keys -t "$SESSION_NAME":API "cd ~/work/vublox-api/ && clear" C-m
+tmux send-keys -t "$SESSION_NAME":API "cd ~/work/tulu-api && clear" C-m
 
 # Create the Portal window
 tmux new-window -t "$SESSION_NAME" -n Web
-tmux send-keys -t "$SESSION_NAME":Web "cd ~/work/vublox-web/ && clear" C-m
+tmux send-keys -t "$SESSION_NAME":Web "cd ~/work/tulu-web && clear" C-m
 
-# # Create the Admin window
-tmux new-window -t "$SESSION_NAME" -n Admin
-tmux send-keys -t "$SESSION_NAME":Admin "cd ~/work/vublox-admin/ && clear" C-m
+# # Create the PDF window
+# tmux new-window -t "$SESSION_NAME" -n PDF
+# tmux send-keys -t "$SESSION_NAME":PDF "cd ~/work/wsg-pdf && clear" C-m
 
 # Focus on the API window
 tmux select-window -t "$SESSION_NAME":Servers

@@ -1,10 +1,6 @@
 #!/bin/bash
 
-SESSION_NAME="Vublox Setup"
-
-echo "Changing Github Credentials to JLabs..."
-git config --global user.name "Jericho Bermas"
-git config --global user.email "jbermas@jlabs.team"
+SESSION_NAME="Reforal Setup"
 
 # Kill all running node and php artisan processes
 echo "Stopping all Node.js and PHP Artisan processes..."
@@ -28,9 +24,7 @@ kill_port() {
 # Free up ports 3000, 3001, and 8000
 kill_port 3000
 kill_port 3001
-kill_port 3002
 kill_port 8000
-kill_port 5173
 
 # Give some time to ensure processes are fully terminated
 sleep 2
@@ -44,7 +38,6 @@ fi
 # Create a new tmux session
 echo "Starting new tmux session: $SESSION_NAME"
 
-sleep 2
 tmux new-session -d -s "$SESSION_NAME" -n Servers
 
 # Create panes and run the commands in the Servers window
@@ -53,43 +46,43 @@ tmux split-window -h -t "$SESSION_NAME":Servers.1
 tmux select-pane -t "$SESSION_NAME":Servers.2
 
 # Split the bottom half into four vertical panes
-tmux send-keys -t "$SESSION_NAME":Servers.2 "cd ~/work/vublox-api/ && pnpm run start:dev" C-m
+tmux send-keys -t "$SESSION_NAME":Servers.2 "cd ~/work/reforal-api && php artisan serve" C-m
 tmux split-window -v -t "$SESSION_NAME":Servers.2
 
-tmux send-keys -t "$SESSION_NAME":Servers.3 "cd ~/work/vublox-web/ && PORT=3001 BROWSER=none pnpm start " C-m
+tmux send-keys -t "$SESSION_NAME":Servers.3 "cd ~/work/reforal-web && PORT=3000 BROWSER=none HOST=reforal.local bun start" C-m
 tmux split-window -v -t "$SESSION_NAME":Servers.3
 
-tmux send-keys -t "$SESSION_NAME":Servers.4 "cd ~/work/vublox-admin/ && PORT=3002 BROWSER=none pnpm start" C-m
+tmux send-keys -t "$SESSION_NAME":Servers.4 "cd ~/work/reforal-admin && PORT=3001 BROWSER=none bun start" C-m
 tmux split-window -v -t "$SESSION_NAME":Servers.4
-#
-# tmux send-keys -t "$SESSION_NAME":Servers.5 "mailhog" C-m
-# tmux split-window -v -t "$SESSION_NAME":Servers.5
-#
-# tmux select-pane -t "$SESSION_NAME":Servers.2
-# tmux split-window -h -t "$SESSION_NAME":Servers.2
-#
-# tmux select-pane -t "$SESSION_NAME":Servers.6
-# tmux split-window -h -t "$SESSION_NAME":Servers.6
+
+tmux send-keys -t "$SESSION_NAME":Servers.5 "mailhog" C-m
+tmux split-window -v -t "$SESSION_NAME":Servers.5
+
+tmux select-pane -t "$SESSION_NAME":Servers.2
+tmux split-window -h -t "$SESSION_NAME":Servers.2
+
+tmux select-pane -t "$SESSION_NAME":Servers.6
+tmux split-window -h -t "$SESSION_NAME":Servers.6
 
 tmux select-pane -T "Monitoring" -t "$SESSION_NAME":Servers.1
 tmux select-pane -T "API Server" -t "$SESSION_NAME":Servers.2
 tmux select-pane -T "Web Server" -t "$SESSION_NAME":Servers.3
 tmux select-pane -T "Admin Server" -t "$SESSION_NAME":Servers.4
-# tmux select-pane -T "Mailhog" -t "$SESSION_NAME":Servers.5
-# tmux select-pane -T "Queue Work" -t "$SESSION_NAME":Servers.6
-# tmux select-pane -T "Extra Pane 2" -t "$SESSION_NAME":Servers.7
+tmux select-pane -T "Mailhog" -t "$SESSION_NAME":Servers.5
+tmux select-pane -T "Queue Work" -t "$SESSION_NAME":Servers.6
+tmux select-pane -T "Extra Pane 2" -t "$SESSION_NAME":Servers.7
 
 # Create the API window
 tmux new-window -t "$SESSION_NAME" -n API
-tmux send-keys -t "$SESSION_NAME":API "cd ~/work/vublox-api/ && clear" C-m
+tmux send-keys -t "$SESSION_NAME":API "cd ~/work/reforal-api && clear" C-m
 
 # Create the Portal window
 tmux new-window -t "$SESSION_NAME" -n Web
-tmux send-keys -t "$SESSION_NAME":Web "cd ~/work/vublox-web/ && clear" C-m
+tmux send-keys -t "$SESSION_NAME":Web "cd ~/work/reforal-web/ && clear" C-m
 
-# # Create the Admin window
+# Create the Admin window
 tmux new-window -t "$SESSION_NAME" -n Admin
-tmux send-keys -t "$SESSION_NAME":Admin "cd ~/work/vublox-admin/ && clear" C-m
+tmux send-keys -t "$SESSION_NAME":Admin "cd ~/work/reforal-admin/ && clear" C-m
 
 # Focus on the API window
 tmux select-window -t "$SESSION_NAME":Servers
