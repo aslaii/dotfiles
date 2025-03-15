@@ -60,7 +60,7 @@ alias bat="batcat"
 
 # Work Aliases
 alias run-work-1="~/wsg_setup.sh"
-alias run-work-2="~/reforal_setup.sh"
+alias run-work-2="~/dotfiles/setups/reforal_setup.sh"
 alias run-work-3="~/dotfiles/setups/tulu_setup.sh"
 alias run-work-4="~/job_setup.sh"
 alias run-work-5="~/dotfiles/setups/vublox_setup.sh"

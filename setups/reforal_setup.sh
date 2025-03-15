@@ -25,6 +25,7 @@ kill_port() {
 kill_port 3000
 kill_port 3001
 kill_port 8000
+kill_port 5173
 
 # Give some time to ensure processes are fully terminated
 sleep 2
@@ -38,6 +39,7 @@ fi
 # Create a new tmux session
 echo "Starting new tmux session: $SESSION_NAME"
 
+sleep 2
 tmux new-session -d -s "$SESSION_NAME" -n Servers
 
 # Create panes and run the commands in the Servers window
@@ -63,6 +65,23 @@ tmux split-window -h -t "$SESSION_NAME":Servers.2
 
 tmux select-pane -t "$SESSION_NAME":Servers.6
 tmux split-window -h -t "$SESSION_NAME":Servers.6
+tmux send-keys -t "$SESSION_NAME":Servers.2 "cd ~/work/reforal-api/ && php artisan serve" C-m
+tmux split-window -v -t "$SESSION_NAME":Servers.2
+
+tmux send-keys -t "$SESSION_NAME":Servers.3 "cd ~/work/reforal-web/ && npm run start" C-m
+tmux split-window -v -t "$SESSION_NAME":Servers.3
+
+tmux send-keys -t "$SESSION_NAME":Servers.4 "cd ~/work/reforal-admin/ && PORT=3001 BROWSER=none npm start" C-m
+tmux split-window -v -t "$SESSION_NAME":Servers.4
+#
+tmux send-keys -t "$SESSION_NAME":Servers.5 "mailhog" C-m
+tmux split-window -v -t "$SESSION_NAME":Servers.5
+#
+# tmux select-pane -t "$SESSION_NAME":Servers.2
+# tmux split-window -h -t "$SESSION_NAME":Servers.2
+#
+# tmux select-pane -t "$SESSION_NAME":Servers.6
+# tmux split-window -h -t "$SESSION_NAME":Servers.6
 
 tmux select-pane -T "Monitoring" -t "$SESSION_NAME":Servers.1
 tmux select-pane -T "API Server" -t "$SESSION_NAME":Servers.2
@@ -75,6 +94,14 @@ tmux select-pane -T "Extra Pane 2" -t "$SESSION_NAME":Servers.7
 # Create the API window
 tmux new-window -t "$SESSION_NAME" -n API
 tmux send-keys -t "$SESSION_NAME":API "cd ~/work/reforal-api && clear" C-m
+# tmux select-pane -T "Admin Server" -t "$SESSION_NAME":Servers.4
+tmux select-pane -T "Mailhog" -t "$SESSION_NAME":Servers.5
+# tmux select-pane -T "Queue Work" -t "$SESSION_NAME":Servers.6
+# tmux select-pane -T "Extra Pane 2" -t "$SESSION_NAME":Servers.7
+
+# Create the API window
+tmux new-window -t "$SESSION_NAME" -n API
+tmux send-keys -t "$SESSION_NAME":API "cd ~/work/reforal-api/ && clear" C-m
 
 # Create the Portal window
 tmux new-window -t "$SESSION_NAME" -n Web
@@ -83,6 +110,9 @@ tmux send-keys -t "$SESSION_NAME":Web "cd ~/work/reforal-web/ && clear" C-m
 # Create the Admin window
 tmux new-window -t "$SESSION_NAME" -n Admin
 tmux send-keys -t "$SESSION_NAME":Admin "cd ~/work/reforal-admin/ && clear" C-m
+# Create the PDF window
+tmux send-keys -t "$SESSION_NAME":Admin "cd ~/work/reforal-admin/ && clear" C-m
+tmux new-window -t "$SESSION_NAME" -n Admin
 
 # Focus on the API window
 tmux select-window -t "$SESSION_NAME":Servers
