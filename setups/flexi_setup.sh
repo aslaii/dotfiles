@@ -38,7 +38,7 @@ tmux send-keys -t "$SESSION_NAME":Servers.1 "btop" C-m
 tmux split-window -h -t "$SESSION_NAME":Servers.1
 tmux select-pane -t "$SESSION_NAME":Servers.2
 
-tmux send-keys -t "$SESSION_NAME":Servers.2 "cd ~/work/Flexiwork/query-omega/ && pnpm start" C-m
+tmux send-keys -t "$SESSION_NAME":Servers.2 "cd ~/work/Flexiwork/query-omega/ && export $(cat .env.dev-test | xargs) && pnpm start" C-m
 tmux split-window -v -t "$SESSION_NAME":Servers.2
 
 # Create the Flutter window

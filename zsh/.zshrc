@@ -29,6 +29,7 @@ alias bat="batcat"
 # Work Aliases
 alias run-vublox="~/dotfiles/setups/vublox_setup.sh"
 alias run-flexi="~/dotfiles/setups/flexi_setup.sh"
+alias run-auto="~/dotfiles/setups/auto_setup.sh"
  
 # Git Aliases
 alias lg="lazygit"
