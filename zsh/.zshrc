@@ -27,22 +27,16 @@ alias pm='pnpm'
 alias bat="batcat"
 
 # Work Aliases
-alias run-wsg="~/wsg_setup.sh"
-alias run-reforal="~/reforal_setup.sh"
-alias run-vublox="~/vublox_setup.sh"
-alias run-tulu="~/tulu_setup.sh"
-alias run-explore="~/job_setup.sh"
-alias run-omni="~/omni_setup.sh"
-alias run-rcb="~/rcb_setup.sh"
-
+alias run-vublox="~/dotfiles/setups/vublox_setup.sh"
+alias run-flexi="~/dotfiles/setups/flexi_setup.sh"
  
 # Git Aliases
 alias lg="lazygit"
 alias gpod="git pull origin develop"
+alias gsw="gh auth switch"
 
 # Tmux Aliases
 alias tks="tmux kill-server"
-
 
 # PHP Aliases
 alias phpop="php artisan optimize"

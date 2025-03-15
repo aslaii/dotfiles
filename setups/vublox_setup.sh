@@ -28,7 +28,6 @@ kill_port() {
 # Free up ports 3000, 3001, and 8000
 kill_port 3000
 kill_port 3001
-kill_port 3002
 kill_port 8000
 kill_port 5173
 
