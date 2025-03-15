@@ -2,6 +2,10 @@
 
 SESSION_NAME="Flexiwork-Query Omega Setup"
 
+echo "Changing Github Credentials to Personal..."
+git config --global user.name "Jericho Bermas"
+git config --global user.email "jecho.deleon@gmail.com"
+
 # Kill all running node and php artisan processes
 echo "Stopping all React and Node processes..."
 pkill -f "node"

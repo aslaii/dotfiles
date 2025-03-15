@@ -1,3 +1,4 @@
+# auto/controllers/tab_controller.py
 import random
 import subprocess
 import time
@@ -10,7 +11,7 @@ def switch_to_random_tab():
     """
     Switches to a random tab (2, 3, 4, or 5) using Command + <number> on macOS.
     """
-    chosen_tab = random.choice([6, 7, 8, 9, 10, 11, 12])
+    chosen_tab = random.choice([3 , 4 ,5, 6, 7, 8, 9 ])
     log_message(f"Switching to tab {chosen_tab} using Command + {chosen_tab}")
 
     # AppleScript to switch tabs using Command + <number>

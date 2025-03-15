@@ -35,10 +35,24 @@ while running:
     # Switch Arc Browser tabs only if Arc is focused
     if random.random() < 0.3:
         switch_desktop(1)
+        random_mouse_movement()
+        random_keystroke()
         time.sleep(15)
         switch_to_random_tab()
-        time.sleep(15)
+        random_mouse_movement()
+        random_keystroke()
+        time.sleep(3)
+        switch_to_random_tab()
+        random_mouse_movement()
+        random_keystroke()
+        time.sleep(2)
+        switch_to_random_tab()
+        random_mouse_movement()
+        random_keystroke()
+        time.sleep(1)
         switch_desktop(2)
+        random_mouse_movement()
+        random_keystroke()
 
     time.sleep(5)  # Sleep to avoid excessive CPU usage
 
