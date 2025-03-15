@@ -52,13 +52,13 @@ tmux split-window -h -t "$SESSION_NAME":Servers.1
 tmux select-pane -t "$SESSION_NAME":Servers.2
 
 # Split the bottom half into four vertical panes
-tmux send-keys -t "$SESSION_NAME":Servers.2 "cd ~/work/vublox-api/ && pnpm run start:dev" C-m
+tmux send-keys -t "$SESSION_NAME":Servers.2 "cd ~/work/JLabs/vublox/vublox-api/ && pnpm run start:dev" C-m
 tmux split-window -v -t "$SESSION_NAME":Servers.2
 
-tmux send-keys -t "$SESSION_NAME":Servers.3 "cd ~/work/vublox-web/ && PORT=3001 BROWSER=none pnpm start " C-m
+tmux send-keys -t "$SESSION_NAME":Servers.3 "cd ~/work/JLabs/vublox/vublox-web/ && PORT=3001 BROWSER=none pnpm start " C-m
 tmux split-window -v -t "$SESSION_NAME":Servers.3
 
-tmux send-keys -t "$SESSION_NAME":Servers.4 "cd ~/work/vublox-admin/ && PORT=3002 BROWSER=none pnpm start" C-m
+tmux send-keys -t "$SESSION_NAME":Servers.4 "cd ~/work/JLabs/vublox/vublox-admin/ && PORT=3002 BROWSER=none pnpm start" C-m
 tmux split-window -v -t "$SESSION_NAME":Servers.4
 #
 # tmux send-keys -t "$SESSION_NAME":Servers.5 "mailhog" C-m
@@ -80,15 +80,15 @@ tmux select-pane -T "Admin Server" -t "$SESSION_NAME":Servers.4
 
 # Create the API window
 tmux new-window -t "$SESSION_NAME" -n API
-tmux send-keys -t "$SESSION_NAME":API "cd ~/work/vublox-api/ && clear" C-m
+tmux send-keys -t "$SESSION_NAME":API "cd ~/work/JLabs/vublox/vublox-api/ && clear" C-m
 
 # Create the Portal window
 tmux new-window -t "$SESSION_NAME" -n Web
-tmux send-keys -t "$SESSION_NAME":Web "cd ~/work/vublox-web/ && clear" C-m
+tmux send-keys -t "$SESSION_NAME":Web "cd ~/work/JLabs/vublox/vublox-web/ && clear" C-m
 
 # # Create the Admin window
 tmux new-window -t "$SESSION_NAME" -n Admin
-tmux send-keys -t "$SESSION_NAME":Admin "cd ~/work/vublox-admin/ && clear" C-m
+tmux send-keys -t "$SESSION_NAME":Admin "cd ~/work/JLabs/vublox/vublox-admin/ && clear" C-m
 
 # Focus on the API window
 tmux select-window -t "$SESSION_NAME":Servers
