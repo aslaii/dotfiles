@@ -6,6 +6,7 @@ from utils.logger import log_message
 
 keyboard_controller = Controller()
 
+
 def ensure_modifier_keys_released():
     """Ensures all modifier keys are released using AppleScript."""
     applescript_code = '''
@@ -23,24 +24,25 @@ def ensure_modifier_keys_released():
 def random_keystroke(safe_for_neovim=False):
     """
     Simulates a random keystroke.
-    
+
     Args:
         safe_for_neovim (bool): If True, only uses keys that won't trigger 
                                insert mode in Neovim.
     """
     if safe_for_neovim:
         # Keys that don't trigger insert mode in Neovim
-        keys = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', 
+        keys = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=',
                 '[', ']', '\\', ';', "'", ',', '.', '/', '`']
     else:
         # General keys for typing in other applications
-        keys = ['a', 's', 'd', 'w', 'q', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', 
+        keys = ['a', 's', 'd', 'w', 'q', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p',
                 '1', '2', '3', '4', '5', '6', '7', '8', '9', '0']
-    
+
     key = random.choice(keys)
     keyboard_controller.press(key)
     keyboard_controller.release(key)
     log_message(f"Typed: {key}")
+
 
 def random_programming_word():
     """Simulates typing a random programming word."""
@@ -51,17 +53,18 @@ def random_programming_word():
         'module', 'library', 'framework', 'debug', 'compile'
     ]
     word = random.choice(programming_words)
-    
+
     # Type the word character by character
     for char in word:
         keyboard_controller.press(char)
         keyboard_controller.release(char)
-    
+
     log_message(f"Typed programming word: {word}")
 
+
 def random_neovim_command():
-    """Simulates a random non-destructive Neovim command."""
-    # List of safe Neovim navigation commands
+    """Simulates a random non-destructive Neovim command using LazyVim keys."""
+    # List of safe Neovim navigation commands including LazyVim keys
     neovim_commands = [
         # Simple navigation commands (single key)
         {'keys': ['j'], 'description': 'Move down'},
@@ -75,29 +78,46 @@ def random_neovim_command():
         {'keys': ['$'], 'description': 'Go to end of line'},
         {'keys': ['^'], 'description': 'Go to first non-blank character'},
         {'keys': ['%'], 'description': 'Jump to matching bracket'},
-        
+
         # Multi-key commands
-        {'keys': ['g', 'g'], 'description': 'Go to top of file'},
+        {'keys': ['g', 'g'], 'description': 'Go to top of file (gg)'},
+        {'keys': ['G'], 'description': 'Go to bottom of file (Shift+G)'},
+
+        # LazyVim buffer commands using shift keys
+        # LazyVim
+        {'keys': ['H'], 'description': 'Move buffer left (Shift+H)'},
+        # LazyVim
+        {'keys': ['L'], 'description': 'Move buffer right (Shift+L)'},
+
+        # Other multi-key commands from before
         {'keys': ['z', 'z'], 'description': 'Center screen on cursor'},
         {'keys': ['z', 't'], 'description': 'Scroll to put cursor at top'},
         {'keys': ['z', 'b'], 'description': 'Scroll to put cursor at bottom'},
-        
-        # Shift key commands (using AppleScript)
-        {'applescript': 'key code 5 using {shift down}', 'description': 'Go to bottom of file (G)'},
-        {'applescript': 'key code 4 using {shift down}', 'description': 'Move to top of screen (H)'},
-        {'applescript': 'key code 46 using {shift down}', 'description': 'Move to middle of screen (M)'},
-        {'applescript': 'key code 37 using {shift down}', 'description': 'Move to bottom of screen (L)'},
-        
-        # Ctrl key commands (using AppleScript)
-        {'applescript': 'key code 3 using {control down}', 'description': 'Page down (Ctrl+f)'},
-        {'applescript': 'key code 11 using {control down}', 'description': 'Page up (Ctrl+b)'},
-        {'applescript': 'key code 2 using {control down}', 'description': 'Half page down (Ctrl+d)'},
-        {'applescript': 'key code 32 using {control down}', 'description': 'Half page up (Ctrl+u)'},
+
+        # Shift key commands using AppleScript (optional; if needed)
+        {'applescript': 'key code 5 using {shift down}',
+            'description': 'Go to bottom of file (G)'},
+        {'applescript': 'key code 4 using {shift down}',
+            'description': 'Move to top of screen (H)'},
+        {'applescript': 'key code 46 using {shift down}',
+            'description': 'Move to middle of screen (M)'},
+        {'applescript': 'key code 37 using {shift down}',
+            'description': 'Move to bottom of screen (L)'},
+
+        # Ctrl key commands using AppleScript
+        {'applescript': 'key code 3 using {control down}',
+            'description': 'Page down (Ctrl+f)'},
+        {'applescript': 'key code 11 using {control down}',
+            'description': 'Page up (Ctrl+b)'},
+        {'applescript': 'key code 2 using {control down}',
+            'description': 'Half page down (Ctrl+d)'},
+        {'applescript': 'key code 32 using {control down}',
+            'description': 'Half page up (Ctrl+u)'},
     ]
-    
+
     # Choose a random command
     command = random.choice(neovim_commands)
-    
+
     # Execute the command
     if 'applescript' in command:
         # Use AppleScript for commands with modifier keys
@@ -109,21 +129,24 @@ def random_neovim_command():
         subprocess.run(['osascript', '-e', applescript_code])
         log_message(f"Executed Neovim command: {command['description']}")
     else:
-        # Use pynput for simple key presses
+        # Using pynput for simple key presses.
+        # For multi-key commands, press each key
         for key in command['keys']:
             keyboard_controller.press(key)
             keyboard_controller.release(key)
-        log_message(f"Executed Neovim command: {command['description']} ({' '.join(command['keys'])})")
+        log_message(
+            f"Executed Neovim command: {command['description']} "
+            f"({' '.join(command['keys'])})"
+        )
 
 
-        
 def reset_browser_state():
     """
     Resets browser zoom level with CMD+0 and cancels any ongoing input with ESC.
     """
     # First ensure all modifier keys are released
     ensure_modifier_keys_released()
-    
+
     # Reset zoom with CMD+0
     applescript_code = '''
     tell application "System Events"
@@ -139,6 +162,6 @@ def reset_browser_state():
         delay 0.2
     end tell
     '''
-    
+
     subprocess.run(['osascript', '-e', applescript_code])
     log_message("Reset browser zoom (CMD+0) and pressed ESC to cancel input")
