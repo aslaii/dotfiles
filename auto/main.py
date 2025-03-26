@@ -1,109 +1,75 @@
+# /Users/jerichobermas/auto/main.py
+
 import time
 import random
 import subprocess
 from config import running
-from controllers.mouse_controller import random_mouse_movement
-from controllers.keyboard_controller import random_keystroke, random_programming_word, random_neovim_command, ensure_modifier_keys_released, reset_browser_state
-from controllers.desktop_controller import switch_desktop
-from controllers.tab_controller import switch_to_random_tab
+from activity_manager import ActivityManager
+from action_performer import ActionPerformer
 from utils.logger import log_message
 
-def perform_browser_actions(repetitions, sleep_times):
-    """Perform a sequence of browser-related actions."""
-    for i in range(repetitions):
-        # Reset browser state before typing
-        reset_browser_state()
-        ensure_modifier_keys_released()
+def initialize_system(action_performer):
+    """Initialize the system and set up the environment."""
+    log_message("Starting money making script with configurable activity patterns")
+    
+    # Switch to desktop 1 to start
+    action_performer.switch_desktop(1)
+    
+    # Initial setup via AppleScript
+    applescript_code = '''
+    tell application "System Events"
+        key code 18 using command down
+        delay 0.2
+        -- Explicitly release the command key
+        key up command
+    end tell
+    '''
+    subprocess.run(["osascript", "-e", applescript_code])
 
-        random_mouse_movement()
-        time.sleep(0.3)
+def main_loop():
+    """Main execution loop for the automation script."""
+    # Initialize managers
+    activity_manager = ActivityManager()
+    action_performer = ActionPerformer()
+    
+    start_time = time.time()
+    last_complex_action_time = 0
+    last_switch_time = 0
+    
+    initialize_system(action_performer)
+    
+    while running:
+        current_time = time.time()
+        elapsed_time = current_time - start_time
         
-        ensure_modifier_keys_released()
+        # Get current activity level and choose an action
+        activity_level = activity_manager.get_current_activity_level()
         
-        random_keystroke(safe_for_neovim=False)
+        # Increase mouse movement frequency
+        for _ in range(random.randint(2, 4)):  # Do 2-4 mouse movements each cycle
+            action_performer._perform_mouse_movements(activity_level)
         
-        time.sleep(0.3)
+        # Keep keyboard activity based on current desktop
+        if action_performer.current_desktop == 1:
+            action_performer._perform_browser_typing()
+        else:
+            action_performer._perform_neovim_command()
         
-        ensure_modifier_keys_released()
-
-        random_programming_word()
+        # Periodically switch to desktop 1 and perform browser actions
+        if int(elapsed_time) // 30 > last_switch_time:
+            action_performer.switch_desktop(1)
+            action_performer.perform_browser_actions(activity_level)
+            last_switch_time = int(elapsed_time) // 30
         
-        if i < repetitions - 1: 
-            time.sleep(sleep_times[i] if i < len(sleep_times) else 2)
-            switch_to_random_tab()
-            time.sleep(0.7)
-
-def perform_neovim_actions(repetitions, sleep_times):
-    """Perform a sequence of Neovim commands."""
-    for i in range(repetitions):
-        reset_browser_state()
-        random_neovim_command()
-        if i < len(sleep_times) and i < repetitions - 1:
-            time.sleep(sleep_times[i])
-
-def complex_action_sequence():
-    """Perform a complex sequence of actions across desktops with more mouse activity."""
-    # Browser actions on desktop 1
-    switch_desktop(1)
-    ensure_modifier_keys_released()
+        # Occasionally perform complex action sequence
+        if random.random() < 0.6 and current_time - last_complex_action_time > 15:
+            action_performer.perform_complex_sequence(activity_level)
+            last_complex_action_time = current_time
+        
+        # Pause between action cycles based on activity level
+        time.sleep(2)  # Base pause of 2 seconds as in original code
     
-    # Add extra mouse movements before browser actions
-    for _ in range(random.randint(3, 6)):
-        random_mouse_movement()
-        time.sleep(random.uniform(0.3, 0.7))
-    
-    perform_browser_actions(4, [3, 3, 2, 1])
-    
-    switch_desktop(2)
-    ensure_modifier_keys_released()
-    
-    # Add extra mouse movements before Neovim actions
-    for _ in range(random.randint(2, 4)):
-        random_mouse_movement()
-        time.sleep(random.uniform(0.3, 0.7))
-    
-    perform_neovim_actions(4, [2, 3])
+    log_message("Script has exited.")
 
-log_message("Starting money making script")
-
-start_time = time.time()
-last_switch_time = 0
-
-switch_desktop(1)
-
-applescript_code = f'''
-tell application "System Events"
-    key code {18 + 0} using command down
-    delay 0.2
-    -- Explicitly release the command key
-    key up command
-end tell
-'''
-subprocess.run(["osascript", "-e", applescript_code])
-
-
-while running:
-    elapsed_time = time.time() - start_time
-
-    # Increase mouse movement frequency
-    for _ in range(random.randint(2, 4)):  # Do 2-4 mouse movements each cycle
-        ensure_modifier_keys_released()
-        random_mouse_movement()
-        time.sleep(random.uniform(0.5, 1.5))  # Varied pauses between movements
-    
-    # Keep keyboard activity at the same level
-    random_keystroke()
-
-    if int(elapsed_time) // 30 > last_switch_time:
-        ensure_modifier_keys_released()
-        switch_desktop(1)
-        ensure_modifier_keys_released()
-        perform_browser_actions(4, [3, 3, 2, 1])
-        last_switch_time = int(elapsed_time) // 30
-
-    if random.random() < 0.6:
-        complex_action_sequence()
-
-    time.sleep(2)
-
-log_message("Script has exited.")
+if __name__ == "__main__":
+    main_loop()
