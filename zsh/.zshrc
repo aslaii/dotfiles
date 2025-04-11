@@ -12,6 +12,7 @@ alias home="cd ~"
 alias ..="cd .."
 
 alias zshconfig="nvim ~/.zshrc"
+alias hostsconfig="sudo nvim /etc/hosts"
 alias tmxconfig="nvim ~/.tmux.conf"
 alias nvimconfig="nvim ~/.config/nvim/lua/config/lazy.lua"
 alias rtm="tmux source-file ~/.tmux.conf"
@@ -30,6 +31,8 @@ alias bat="batcat"
 alias run-vublox="~/dotfiles/setups/vublox_setup.sh"
 alias run-flexi="~/dotfiles/setups/flexi_setup.sh"
 alias run-auto="~/dotfiles/setups/auto_setup.sh"
+
+alias vublox-https='npx cross-env HTTPS=true SSL_CRT_FILE=/Users/jerichobermas/certificates/_wildcard.vublox.local+1.pem SSL_KEY_FILE=/Users/jerichobermas/certificates/_wildcard.vublox.local+1-key.pem craco start'
  
 # Git Aliases
 alias lg="lazygit"
