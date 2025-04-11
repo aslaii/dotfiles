@@ -3,14 +3,15 @@ import random
 import time
 from controllers.mouse_controller import random_mouse_movement
 from controllers.keyboard_controller import (
-    random_keystroke,
-    random_programming_word,
+    # random_keystroke,
+    # random_programming_word,
     random_neovim_command,
     ensure_modifier_keys_released,
-    reset_browser_state
+    reset_browser_state,
+    simulate_ctrl_tab
 )
 from controllers.desktop_controller import switch_desktop
-from controllers.tab_controller import switch_to_random_tab
+from utils.logger import log_message
 from activity_manager import ActivityManager
 
 
@@ -64,13 +65,11 @@ class ActionPerformer:
             time.sleep(self.activity_manager.get_pause_time("short"))
 
     def _perform_browser_typing(self):
-        """Perform keyboard typing actions for browser."""
+        """Perform keyboard typing (single key) or CTRL+TAB for browser."""
+        # reset_browser_state() # Reset state before action
         ensure_modifier_keys_released()
-        reset_browser_state()
-        if random.random() < 0.5:
-            random_keystroke(safe_for_neovim=False)
-        else:
-            random_programming_word()
+        simulate_ctrl_tab()
+        time.sleep(self.activity_manager.get_pause_time("short"))
 
     def _perform_neovim_command(self):
         """Perform a Neovim command."""
@@ -78,9 +77,8 @@ class ActionPerformer:
         random_neovim_command()
 
     def _perform_tab_switching(self):
-        """Switch to a random tab."""
-        ensure_modifier_keys_released()
-        switch_to_random_tab()
+        """Switch tabs using CTRL+TAB."""
+        simulate_ctrl_tab()
 
     def perform_browser_actions(self, activity_level=None):
         """Perform a sequence of browser-related actions."""
@@ -100,18 +98,16 @@ class ActionPerformer:
 
             ensure_modifier_keys_released()
 
-            random_keystroke(safe_for_neovim=False)
-
             time.sleep(self.activity_manager.get_pause_time("short"))
 
             ensure_modifier_keys_released()
 
-            random_programming_word()
+            simulate_ctrl_tab()
 
             if i < repetitions - 1:
                 time.sleep(self.activity_manager.get_pause_time("medium"))
                 if random.random() < 0.7:  # 70% chance to switch tabs between actions
-                    switch_to_random_tab()
+                    simulate_ctrl_tab()
                     time.sleep(self.activity_manager.get_pause_time("short"))
 
     def perform_neovim_actions(self, activity_level=None):
@@ -119,11 +115,14 @@ class ActionPerformer:
         if activity_level is None:
             activity_level = self.activity_manager.get_current_activity_level()
 
-        # Ensure at least 10 commands regardless of activity level
+        # Increase the minimum number of commands to 20-30
+        min_commands = random.randint(20, 30)
         repetitions = max(
-            self.activity_manager.calculate_repetitions(4, activity_level), 10)
+            self.activity_manager.calculate_repetitions(4, activity_level),
+            min_commands
+        )
+        log_message(f"Performing {repetitions} Neovim commands...")
 
-        # Optionally do a few mouse movements quickly before commands begin
         mouse_movements = self.activity_manager.calculate_repetitions(
             2, activity_level)
         for _ in range(mouse_movements):
@@ -132,10 +131,11 @@ class ActionPerformer:
 
         # Execute Neovim commands with minimal delay between them
         for i in range(repetitions):
-            ensure_modifier_keys_released()
             random_neovim_command()
+            pause = min(self.activity_manager.get_pause_time("short"), 0.1)
             if i < repetitions - 1:
-                time.sleep(0.05)  # A fast 50ms pause between commands
+                time.sleep(pause)  # Fast pause between commands
+        log_message("Finished Neovim actions sequence.")
 
     def perform_complex_sequence(self, activity_level=None):
         """Perform a complex sequence of actions across desktops."""

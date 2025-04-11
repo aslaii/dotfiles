@@ -1,6 +1,7 @@
 # /Users/jerichobermas/auto/controllers/keyboard_controller.py
 import random
 import subprocess
+import time
 from pynput.keyboard import Controller
 from utils.logger import log_message
 
@@ -19,6 +20,30 @@ def ensure_modifier_keys_released():
     '''
     subprocess.run(['osascript', '-e', applescript_code])
     log_message("Released all modifier keys")
+
+
+def simulate_ctrl_tab():
+    """Simulates pressing CTRL+TAB to switch tabs."""
+    ensure_modifier_keys_released()
+    applescript_code = '''
+    tell application "System Events"
+        key down control
+        delay 0.05
+        key code 48 -- 48 is the key code for TAB
+        delay 0.05
+        key up control
+    end tell
+    '''
+    try:
+        subprocess.run(
+            ["osascript", "-e", applescript_code], check=True, capture_output=True
+        )
+        log_message("Simulated CTRL+TAB")
+    except subprocess.CalledProcessError as e:
+        log_message(f"Error simulating CTRL+TAB: {e.stderr.decode()}")
+    # Add a small pause after switching tabs
+    time.sleep(0.2)
+    ensure_modifier_keys_released()  # Ensure control is released
 
 
 def random_keystroke(safe_for_neovim=False):
@@ -84,7 +109,6 @@ def random_neovim_command():
         {'keys': ['G'], 'description': 'Go to bottom of file (Shift+G)'},
 
         # LazyVim buffer commands using shift keys
-        # LazyVim
         {'keys': ['H'], 'description': 'Move buffer left (Shift+H)'},
         # LazyVim
         {'keys': ['L'], 'description': 'Move buffer right (Shift+L)'},
@@ -103,16 +127,6 @@ def random_neovim_command():
             'description': 'Move to middle of screen (M)'},
         {'applescript': 'key code 37 using {shift down}',
             'description': 'Move to bottom of screen (L)'},
-
-        # Ctrl key commands using AppleScript
-        {'applescript': 'key code 3 using {control down}',
-            'description': 'Page down (Ctrl+f)'},
-        {'applescript': 'key code 11 using {control down}',
-            'description': 'Page up (Ctrl+b)'},
-        {'applescript': 'key code 2 using {control down}',
-            'description': 'Half page down (Ctrl+d)'},
-        {'applescript': 'key code 32 using {control down}',
-            'description': 'Half page up (Ctrl+u)'},
     ]
 
     # Choose a random command
