@@ -91,6 +91,7 @@ class ActionPerformer:
             reset_browser_state()
             ensure_modifier_keys_released()
             random_mouse_movement()
+            random_scroll()
             time.sleep(self.activity_manager.get_pause_time("short"))
 
             ensure_modifier_keys_released()
