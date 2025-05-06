@@ -14,7 +14,7 @@ SCREEN_HEIGHT = 1112
 # Activity pattern settings
 ACTIVITY_SETTINGS = {
     # Controls the overall activity level (higher = more actions per minute)
-    "activity_level": 0.7,  # 0.1 (minimal) to 1.0 (maximum)
+    "activity_level": 0.1,  # 0.1 (minimal) to 1.0 (maximum)
 
     # Controls how much the activity varies over time
     "randomness_factor": 0.4,  # 0.0 (consistent) to 1.0 (highly variable)
@@ -37,7 +37,7 @@ ACTIVITY_SETTINGS = {
     # Controls the pattern of activity throughout the day
     "activity_pattern": {
         "bursts_enabled": True,   # Enable periods of higher activity
-        "burst_frequency": 0.2,   # How often bursts occur (0.0-1.0)
+        "burst_frequency": 0.5,   # How often bursts occur (0.0-1.0)
         "burst_intensity": 1.5,   # Multiplier for activity during bursts
         "burst_duration": (30, 120),  # Duration range of bursts in seconds
 

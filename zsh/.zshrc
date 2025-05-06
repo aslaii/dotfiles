@@ -32,6 +32,8 @@ alias run-vublox="~/dotfiles/setups/vublox_setup.sh"
 alias run-yg="~/dotfiles/setups/yg_setup.sh"
 alias run-flexi="~/dotfiles/setups/flexi_setup.sh"
 alias run-auto="~/dotfiles/setups/auto_setup.sh"
+alias run-wsg="~/dotfiles/setups/wsg_setup.sh"
+alias run-coden="~/dotfiles/setups/coden_setup.sh"
 
 alias vublox-https='npx cross-env HTTPS=true SSL_CRT_FILE=/Users/jerichobermas/certificates/_wildcard.vublox.local+1.pem SSL_KEY_FILE=/Users/jerichobermas/certificates/_wildcard.vublox.local+1-key.pem craco start'
  

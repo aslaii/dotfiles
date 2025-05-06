@@ -1,7 +1,10 @@
 #!/bin/bash
+
+# /coden_setup.sh
+
 source "$(dirname "$0")/functions.sh"
 
-SESSION_NAME="WSG Setup"
+SESSION_NAME="Coden Setup"
 
 switch_github_account "jco-jlabs" "Jericho Bermas" "jbermas@jlabs.team"
 
@@ -39,23 +42,26 @@ tmux split-window -h -t "$SESSION_NAME":Servers.1
 tmux select-pane -t "$SESSION_NAME":Servers.2
 
 # Split the bottom half into four vertical panes
-tmux send-keys -t "$SESSION_NAME":Servers.2 "cd ~/work/JLabs/wsg/wsg-api && php artisan serve" C-m
+tmux send-keys -t "$SESSION_NAME":Servers.2 "cd ~/work/JLabs/codenportal/coden-api/ && php artisan serve" C-m
 tmux split-window -v -t "$SESSION_NAME":Servers.2
 
-tmux send-keys -t "$SESSION_NAME":Servers.3 "cd ~/work/JLabs/wsg/wsg-portal && PORT=3000 BROWSER=none HOST=wsg.local bun start:dev" C-m
+tmux send-keys -t "$SESSION_NAME":Servers.3 "cd ~/work/JLabs/codenportal/coden-portal/ && pnpm dev" C-m
 tmux split-window -v -t "$SESSION_NAME":Servers.3
 
-tmux send-keys -t "$SESSION_NAME":Servers.4 "cd ~/work/JLabs/wsg/wsg-pdf && PORT=3001 BROWSER=none bun start" C-m
-tmux split-window -v -t "$SESSION_NAME":Servers.4
+# tmux send-keys -t "$SESSION_NAME":Servers.4 "cd ~/work/JLabs/yg/yg-admin/ && PORT=3001 BROWSER=none pnpm start" C-m
+# tmux split-window -v -t "$SESSION_NAME":Servers.4
 
-tmux send-keys -t "$SESSION_NAME":Servers.5 "mailhog" C-m
-tmux split-window -v -t "$SESSION_NAME":Servers.5
-
-tmux select-pane -t "$SESSION_NAME":Servers.2
-tmux split-window -h -t "$SESSION_NAME":Servers.2
-
-tmux select-pane -t "$SESSION_NAME":Servers.6
-tmux split-window -h -t "$SESSION_NAME":Servers.6
+# tmux send-keys -t "$SESSION_NAME":Servers.5 "cd ~/work/JLabs/yg/yg-api/ && php artisan queue:work" C-m
+# tmux split-window -v -t "$SESSION_NAME":Servers.4
+#
+# tmux send-keys -t "$SESSION_NAME":Servers.5 "mailhog" C-m
+# tmux split-window -v -t "$SESSION_NAME":Servers.5
+#
+# tmux select-pane -t "$SESSION_NAME":Servers.2
+# tmux split-window -h -t "$SESSION_NAME":Servers.2
+#
+# tmux select-pane -t "$SESSION_NAME":Servers.6
+# tmux split-window -h -t "$SESSION_NAME":Servers.6
 
 tmux select-pane -T "Monitoring" -t "$SESSION_NAME":Servers.1
 tmux select-pane -T "API Server" -t "$SESSION_NAME":Servers.2
@@ -67,16 +73,19 @@ tmux select-pane -T "Extra Pane 2" -t "$SESSION_NAME":Servers.7
 
 # Create the API window
 tmux new-window -t "$SESSION_NAME" -n API
-tmux send-keys -t "$SESSION_NAME":API "cd ~/work/JLabs/wsg/wsg-api && clear" C-m
+tmux send-keys -t "$SESSION_NAME":API "cd ~/work/JLabs/codenportal/coden-api/ && clear" C-m
 
 # Create the Portal window
 tmux new-window -t "$SESSION_NAME" -n Portal
-tmux send-keys -t "$SESSION_NAME":Portal "cd ~/work/JLabs/wsg/wsg-portal && clear" C-m
+tmux send-keys -t "$SESSION_NAME":Portal "cd ~/work/JLabs/codenportal/coden-portal/ && clear" C-m
+
+# tmux new-window -t "$SESSION_NAME" -n Admin
+# tmux send-keys -t "$SESSION_NAME":Admin "cd ~/work/JLabs/yg/yg-admin && clear" C-m
 
 # Create the PDF window
-tmux new-window -t "$SESSION_NAME" -n PDF
-tmux send-keys -t "$SESSION_NAME":PDF "cd ~/work/JLabs/wsg/wsg-pdf && clear" C-m
-
+# tmux new-window -t "$SESSION_NAME" -n PDF
+# tmux send-keys -t "$SESSION_NAME":PDF "cd ~/work/wsg-pdf && clear" C-m
+#
 # Focus on the API window
 tmux select-window -t "$SESSION_NAME":Servers
 

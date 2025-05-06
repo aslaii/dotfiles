@@ -1,10 +1,10 @@
 #!/bin/bash
 
+source "$(dirname "$0")/functions.sh"
+
 SESSION_NAME="Flexiwork-Query Omega Setup"
 
-echo "Changing Github Credentials to Personal..."
-git config --global user.name "Jericho Bermas"
-git config --global user.email "jecho.deleon@gmail.com"
+switch_github_account "aslaii" "Jericho Bermas" "jecho.deleon@gmail.com"
 
 # Kill all running node and php artisan processes
 echo "Stopping all React and Node processes..."
@@ -12,17 +12,6 @@ pkill -f "node"
 
 # Kill processes on specific ports (3000, 3001, 8000)
 echo "Ensuring ports 3000 are free..."
-kill_port() {
-  PORT=$1
-  echo "Freeing up port $PORT..."
-  PID=$(lsof -ti tcp:$PORT)
-  if [ -n "$PID" ]; then
-    kill -9 $PID
-    echo "Killed process $PID on port $PORT"
-  else
-    echo "Port $PORT is already free"
-  fi
-}
 
 kill_port 3000
 

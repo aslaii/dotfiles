@@ -1,6 +1,10 @@
 #!/bin/bash
 
+source "$(dirname "$0")/functions.sh"
+
 SESSION_NAME="YG Setup"
+
+switch_github_account "jco-jlabs" "Jericho Bermas" "jbermas@jlabs.team"
 
 # Kill all running node and php artisan processes
 echo "Stopping all Node.js and PHP Artisan processes..."
@@ -9,17 +13,6 @@ pkill -f "php artisan"
 
 # Kill processes on specific ports (3000, 3001, 8000)
 echo "Ensuring ports 3000, 3001, and 8000 are free..."
-kill_port() {
-  PORT=$1
-  echo "Freeing up port $PORT..."
-  PID=$(lsof -ti tcp:$PORT)
-  if [ -n "$PID" ]; then
-    kill -9 $PID
-    echo "Killed process $PID on port $PORT"
-  else
-    echo "Port $PORT is already free"
-  fi
-}
 
 # Free up ports 3000, 3001, and 8000
 kill_port 3000
@@ -54,6 +47,9 @@ tmux send-keys -t "$SESSION_NAME":Servers.3 "cd ~/work/JLabs/yg/yg-web/ && PORT=
 tmux split-window -v -t "$SESSION_NAME":Servers.3
 
 tmux send-keys -t "$SESSION_NAME":Servers.4 "cd ~/work/JLabs/yg/yg-admin/ && PORT=3001 BROWSER=none pnpm start" C-m
+tmux split-window -v -t "$SESSION_NAME":Servers.4
+
+tmux send-keys -t "$SESSION_NAME":Servers.5 "cd ~/work/JLabs/yg/yg-api/ && php artisan queue:work" C-m
 tmux split-window -v -t "$SESSION_NAME":Servers.4
 #
 # tmux send-keys -t "$SESSION_NAME":Servers.5 "mailhog" C-m
