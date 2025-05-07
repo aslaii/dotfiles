@@ -36,48 +36,40 @@ echo "Starting new tmux session: $SESSION_NAME"
 sleep 2
 tmux new-session -d -s "$SESSION_NAME" -n Servers
 
-# Create panes and run the commands in the Servers window
+# Start Servers window with btop
+tmux new-session -d -s "$SESSION_NAME" -n Servers
 tmux send-keys -t "$SESSION_NAME":Servers.1 "btop" C-m
-tmux split-window -h -t "$SESSION_NAME":Servers.1
-tmux select-pane -t "$SESSION_NAME":Servers.2
 
-# Split the bottom half into four vertical panes
-tmux send-keys -t "$SESSION_NAME":Servers.2 "cd ~/work/JLabs/codenportal/coden-api/ && php artisan serve" C-m
-tmux split-window -v -t "$SESSION_NAME":Servers.2
+# Split horizontally: create API Server pane (right of btop)
+PANE_API=$(tmux split-window -h -t "$SESSION_NAME":Servers.1 -P -F "#{pane_id}")
+tmux send-keys -t "$PANE_API" "cd ~/work/JLabs/coden/coden-api/ && php artisan serve" C-m
 
-tmux send-keys -t "$SESSION_NAME":Servers.3 "cd ~/work/JLabs/codenportal/coden-portal/ && pnpm dev" C-m
-tmux split-window -v -t "$SESSION_NAME":Servers.3
+# Split horizontally: create Queue Work pane (right of API Server)
+PANE_QUEUE=$(tmux split-window -v -t "$PANE_API" -P -F "#{pane_id}")
+tmux send-keys -t "$PANE_QUEUE" "cd ~/work/JLabs/coden/coden-api/ && php artisan queue:work" C-m
 
-# tmux send-keys -t "$SESSION_NAME":Servers.4 "cd ~/work/JLabs/yg/yg-admin/ && PORT=3001 BROWSER=none pnpm start" C-m
-# tmux split-window -v -t "$SESSION_NAME":Servers.4
+# Split vertically: create Web Server pane (below API Server)
+PANE_WEB=$(tmux split-window -v -t "$PANE_API" -P -F "#{pane_id}")
+tmux send-keys -t "$PANE_WEB" "cd ~/work/JLabs/coden/coden-portal/ && pnpm dev" C-m
 
-# tmux send-keys -t "$SESSION_NAME":Servers.5 "cd ~/work/JLabs/yg/yg-api/ && php artisan queue:work" C-m
-# tmux split-window -v -t "$SESSION_NAME":Servers.4
-#
-# tmux send-keys -t "$SESSION_NAME":Servers.5 "mailhog" C-m
-# tmux split-window -v -t "$SESSION_NAME":Servers.5
-#
-# tmux select-pane -t "$SESSION_NAME":Servers.2
-# tmux split-window -h -t "$SESSION_NAME":Servers.2
-#
-# tmux select-pane -t "$SESSION_NAME":Servers.6
-# tmux split-window -h -t "$SESSION_NAME":Servers.6
+# Split vertically: create Mailhog pane (below Queue Work)
+PANE_MAILHOG=$(tmux split-window -v -t "$PANE_QUEUE" -P -F "#{pane_id}")
+tmux send-keys -t "$PANE_MAILHOG" "mailhog" C-m
 
-tmux select-pane -T "Monitoring" -t "$SESSION_NAME":Servers.1
-tmux select-pane -T "API Server" -t "$SESSION_NAME":Servers.2
-tmux select-pane -T "Web Server" -t "$SESSION_NAME":Servers.3
-tmux select-pane -T "Admin Server" -t "$SESSION_NAME":Servers.4
-tmux select-pane -T "Mailhog" -t "$SESSION_NAME":Servers.5
-tmux select-pane -T "Queue Work" -t "$SESSION_NAME":Servers.6
-tmux select-pane -T "Extra Pane 2" -t "$SESSION_NAME":Servers.7
+# (Optional) Set pane titles for clarity
+tmux select-pane -t "$SESSION_NAME":Servers.1 -T "Monitoring"
+tmux select-pane -t "$PANE_API" -T "API Server"
+tmux select-pane -t "$PANE_QUEUE" -T "Queue Work"
+tmux select-pane -t "$PANE_WEB" -T "Web Server"
+tmux select-pane -t "$PANE_MAILHOG" -T "Mailhog"
 
 # Create the API window
 tmux new-window -t "$SESSION_NAME" -n API
-tmux send-keys -t "$SESSION_NAME":API "cd ~/work/JLabs/codenportal/coden-api/ && clear" C-m
+tmux send-keys -t "$SESSION_NAME":API "cd ~/work/JLabs/coden/coden-api/ && clear" C-m
 
 # Create the Portal window
 tmux new-window -t "$SESSION_NAME" -n Portal
-tmux send-keys -t "$SESSION_NAME":Portal "cd ~/work/JLabs/codenportal/coden-portal/ && clear" C-m
+tmux send-keys -t "$SESSION_NAME":Portal "cd ~/work/JLabs/coden/coden-portal/ && clear" C-m
 
 # tmux new-window -t "$SESSION_NAME" -n Admin
 # tmux send-keys -t "$SESSION_NAME":Admin "cd ~/work/JLabs/yg/yg-admin && clear" C-m
