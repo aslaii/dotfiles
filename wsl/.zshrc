@@ -1,7 +1,7 @@
 export PATH=$PATH:/home/user/.local/bin
 
 source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
-source ~/.zsh/zsh-fast-syntax-highlighting/F-Sy-H.plugin.zsh
+source ~/.zsh/zsh-fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh
 
 eval "$(oh-my-posh init zsh --config ~/.cache/oh-my-posh/themes/catppuccin.omp.json)"
 
