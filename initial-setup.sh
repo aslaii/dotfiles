@@ -17,7 +17,51 @@ sudo apt install -y \
   unzip \
   build-essential \
   python3-pip \
-  gh
+  gh \
+  php \
+  php-cli \
+  php-mbstring \
+  php-xml \
+  php-curl \
+  php-zip \
+  php-gd \
+  php-pgsql \
+  php-sqlite3 \
+  php-bcmath \
+  php-intl \
+  php-json \
+  php-readline \
+  postgresql \
+  postgresql-contrib \
+  libpq-dev \
+  redis-server \
+  golang-go
+
+# Install Composer globally
+EXPECTED_SIGNATURE="$(wget -q -O - https://composer.github.io/installer.sig)"
+php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+ACTUAL_SIGNATURE="$(php -r "echo hash_file('sha384', 'composer-setup.php');")"
+
+if [ "$EXPECTED_SIGNATURE" = "$ACTUAL_SIGNATURE" ]; then
+  php composer-setup.php --quiet --install-dir=/usr/local/bin --filename=composer
+  echo "Composer installed successfully"
+else
+  echo 'ERROR: Invalid Composer installer signature'
+  rm composer-setup.php
+  exit 1
+fi
+rm composer-setup.php
+
+# Install MailHog (latest release)
+if [ ! -f "$HOME/go/bin/MailHog" ]; then
+  mkdir -p "$HOME/go/bin"
+  MAILHOG_URL=$(curl -s https://api.github.com/repos/mailhog/MailHog/releases/latest |
+    grep browser_download_url |
+    grep linux_amd64 |
+    cut -d '"' -f 4)
+  wget "$MAILHOG_URL" -O "$HOME/go/bin/MailHog"
+  chmod +x "$HOME/go/bin/MailHog"
+fi
 
 # 2. Install latest Neovim from official PPA
 sudo apt install -y software-properties-common
