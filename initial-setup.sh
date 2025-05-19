@@ -22,6 +22,7 @@ install_if_missing \
   git zsh fzf bat ripgrep tmux stow curl wget unzip build-essential \
   python3-pip gh php php-cli php-mbstring php-xml php-curl php-zip \
   php-gd php-pgsql php-sqlite3 php-bcmath php-intl php-json php-readline \
+  mysql-server jq \
   postgresql postgresql-contrib libpq-dev redis-server golang-go software-properties-common
 
 # 3. Install Composer globally to ~/.local/bin
