@@ -51,7 +51,7 @@ tmux select-pane -t "$PANE_API" -T "API Server"
 
 # Split vertically: create Web Server pane (below API Server)
 PANE_WEB=$(tmux split-window -v -t "$PANE_API" -P -F "#{pane_id}")
-tmux send-keys -t "$PANE_WEB" "cd \"$PROJECT_ROOT/resqyou-web/\" && pnpm dev" C-m
+tmux send-keys -t "$PANE_WEB" "cd \"$PROJECT_ROOT/resqyou-web/\" && nvm use && pnpm start" C-m
 tmux select-pane -t "$PANE_WEB" -T "Web Server"
 
 # Split horizontally: create Queue Work pane (right of API Server) if enabled
