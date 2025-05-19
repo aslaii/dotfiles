@@ -1,9 +1,30 @@
 export PATH=$PATH:/home/user/.local/bin
 
-source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
-source ~/.zsh/zsh-fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh
 
 eval "$(oh-my-posh init zsh --config ~/.cache/oh-my-posh/themes/catppuccin.omp.json)"
+
+source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
+source ~/.zsh/zsh-fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh
+source ~/.zsh/zsh-history-substring-search/zsh-history-substring-search.zsh
+
+# Bind up/down to substring search
+bindkey '^[[A' history-substring-search-up
+bindkey '^[[B' history-substring-search-down
+
+if command -v fzf >/dev/null 2>&1; then
+  export FZF_DEFAULT_OPTS="--height 40% --layout=reverse --border"
+  # Use fzf for Ctrl+R
+  bindkey '^R' fzf-history-widget
+  fzf-history-widget() {
+    local selected
+    selected=$(fc -l 1 | awk '{$1=""; print substr($0,2)}' | fzf --tac +s --query="$LBUFFER")
+    if [[ -n $selected ]]; then
+      LBUFFER=$selected
+      zle redisplay
+    fi
+  }
+  zle     -N   fzf-history-widget
+fi
 
 
 function displayFZFFiles {
