@@ -34,7 +34,7 @@ nvm_use_project_node() {
   local dir="$1"
   local NODE_VERSION=""
   if [ -f "$dir/.nvmrc" ]; then
-    NODE_VERSION=$(cat "$dir/.nvmrc")
+    NODE_VERSION=$(cat "$dir/.nvmrc" | tr -d ' \n')
   elif [ -f "$dir/package.json" ]; then
     NODE_VERSION=$(jq -r '.engines.node // empty' "$dir/package.json" | sed 's/[^\d\.]//g')
   fi
@@ -46,7 +46,6 @@ nvm_use_project_node() {
     [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
     nvm install "$NODE_VERSION"
     nvm use "$NODE_VERSION"
-    export NODE_VERSION
   else
     echo "No Node version specified in $dir"
   fi

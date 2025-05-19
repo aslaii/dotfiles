@@ -28,9 +28,6 @@ kill_port 3000
 kill_port 3001
 kill_port 8000
 
-# Switch Node version if needed
-nvm_use_project_node "$PROJECT_ROOT"
-
 sleep 2
 
 if tmux has-session -t "$SESSION_NAME" 2>/dev/null; then
@@ -60,7 +57,7 @@ tmux select-pane -t "$PANE_WEB" -T "Web Server"
 # Split horizontally: create Queue Work pane (right of API Server) if enabled
 if [ "$ENABLE_QUEUE_WORK" = true ]; then
   PANE_QUEUE=$(tmux split-window -v -t "$PANE_API" -P -F "#{pane_id}")
-  tmux send-keys -t "$PANE_QUEUE" "cd \"$PROJECT_ROOT/coden-api/\" && php artisan queue:work" C-m
+  tmux send-keys -t "$PANE_QUEUE" "cd \"$PROJECT_ROOT/resqyou-api/\" && php artisan queue:work" C-m
   tmux select-pane -t "$PANE_QUEUE" -T "Queue Work"
 fi
 
