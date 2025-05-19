@@ -87,6 +87,7 @@ alias run-work-4="~/job_setup.sh"
 alias run-work-5="~/dotfiles/setups/vublox_setup.sh"
 alias run-omni="~/omni_setup.sh"
 alias run-coden="~/dotfiles/setups/coden_setup.sh"
+alias run-resq="~/dotfiles/setups/resq_setup.sh"
 
 # Git Aliases
 alias lg="lazygit"
