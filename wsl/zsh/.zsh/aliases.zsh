@@ -32,6 +32,7 @@ alias run-resq="~/dotfiles/setups/resq_setup.sh"
 # Git
 alias lg="lazygit"
 alias gpod="git pull origin develop"
+alias gsw="gh auth switch"
 
 # PHP
 alias phpop="php artisan optimize"
@@ -41,4 +42,7 @@ alias phpas="php artisan serve"
 # Bun
 alias bsd="bun start:dev"
 alias blf="bun lint -- --fix"
+
+alias x86="arch -x86_64 zsh --login"
+alias arm="arch -arm64 zsh --login"
 
