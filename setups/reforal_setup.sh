@@ -1,120 +1,95 @@
 #!/bin/bash
 
-SESSION_NAME="Reforal Setup"
+# /resq_setup.sh
 
-# Kill all running node and php artisan processes
+source "$(dirname "$0")/functions.sh"
+
+# ---- CONFIGURATION ----
+SESSION_NAME="Reforal Setup"
+PROJECT_ROOT="${1:-$HOME/work/JLabs/reforal}"
+
+ENABLE_BTOP=true
+ENABLE_QUEUE_WORK=true
+ENABLE_MAILHOG=true
+
+# If you want to exclude certain folders from auto-window creation, list them here (space-separated)
+EXCLUDE_FOLDERS="node_modules .git"
+
+# ---- END CONFIGURATION ----
+
+switch_github_account "jco-jlabs" "Jericho Bermas" "jbermas@jlabs.team"
+
 echo "Stopping all Node.js and PHP Artisan processes..."
 pkill -f "node"
 pkill -f "php artisan"
 
-# Kill processes on specific ports (3000, 3001, 8000)
 echo "Ensuring ports 3000, 3001, and 8000 are free..."
-kill_port() {
-  PORT=$1
-  echo "Freeing up port $PORT..."
-  PID=$(lsof -ti tcp:$PORT)
-  if [ -n "$PID" ]; then
-    kill -9 $PID
-    echo "Killed process $PID on port $PORT"
-  else
-    echo "Port $PORT is already free"
-  fi
-}
-
-# Free up ports 3000, 3001, and 8000
 kill_port 3000
 kill_port 3001
 kill_port 8000
-kill_port 5173
 
-# Give some time to ensure processes are fully terminated
 sleep 2
 
-# Check if the tmux session already exists and kill it
 if tmux has-session -t "$SESSION_NAME" 2>/dev/null; then
   echo "Deleting existing tmux session: $SESSION_NAME"
   tmux kill-session -t "$SESSION_NAME"
 fi
 
-# Create a new tmux session
 echo "Starting new tmux session: $SESSION_NAME"
-
 sleep 2
 tmux new-session -d -s "$SESSION_NAME" -n Servers
 
-# Create panes and run the commands in the Servers window
-tmux send-keys -t "$SESSION_NAME":Servers.1 "btop" C-m
-tmux split-window -h -t "$SESSION_NAME":Servers.1
-tmux select-pane -t "$SESSION_NAME":Servers.2
+# Start Servers window with btop if enabled
+if [ "$ENABLE_BTOP" = true ]; then
+  tmux send-keys -t "$SESSION_NAME":Servers.1 "btop" C-m
+fi
 
-# Split the bottom half into four vertical panes
-tmux send-keys -t "$SESSION_NAME":Servers.2 "cd ~/work/reforal-api && php artisan serve" C-m
-tmux split-window -v -t "$SESSION_NAME":Servers.2
+# Split horizontally: create API Server pane (right of btop)
+PANE_API=$(tmux split-window -h -t "$SESSION_NAME":Servers.1 -P -F "#{pane_id}")
+tmux send-keys -t "$PANE_API" "cd \"$PROJECT_ROOT/reforal-api/\" && php artisan serve" C-m
+tmux select-pane -t "$PANE_API" -T "API Server"
 
-tmux send-keys -t "$SESSION_NAME":Servers.3 "cd ~/work/reforal-web && PORT=3000 BROWSER=none HOST=reforal.local bun start" C-m
-tmux split-window -v -t "$SESSION_NAME":Servers.3
+# Split vertically: create Web Server pane (below API Server)
+PANE_WEB=$(tmux split-window -v -t "$PANE_API" -P -F "#{pane_id}")
+tmux send-keys -t "$PANE_WEB" "cd \"$PROJECT_ROOT/reforal-web/\" && nvm use && pnpm start" C-m
+tmux select-pane -t "$PANE_WEB" -T "Web Server"
 
-tmux send-keys -t "$SESSION_NAME":Servers.4 "cd ~/work/reforal-admin && PORT=3001 BROWSER=none bun start" C-m
-tmux split-window -v -t "$SESSION_NAME":Servers.4
+PANE_WEB=$(tmux split-window -v -t "$PANE_WEB" -P -F "#{pane_id}")
+tmux send-keys -t "$PANE_WEB" "cd \"$PROJECT_ROOT/reforal-admin/\" && nvm use && pnpm start" C-m
+tmux select-pane -t "$PANE_WEB" -T "Web Server"
 
-tmux send-keys -t "$SESSION_NAME":Servers.5 "mailhog" C-m
-tmux split-window -v -t "$SESSION_NAME":Servers.5
+# Split horizontally: create Queue Work pane (right of API Server) if enabled
+if [ "$ENABLE_QUEUE_WORK" = true ]; then
+  PANE_QUEUE=$(tmux split-window -v -t "$PANE_API" -P -F "#{pane_id}")
+  tmux send-keys -t "$PANE_QUEUE" "cd \"$PROJECT_ROOT/reforal-api/\" && php artisan queue:work" C-m
+  tmux select-pane -t "$PANE_QUEUE" -T "Queue Work"
+fi
 
-tmux select-pane -t "$SESSION_NAME":Servers.2
-tmux split-window -h -t "$SESSION_NAME":Servers.2
+# Split vertically: create Mailhog pane (below Queue Work) if enabled
+if [ "$ENABLE_MAILHOG" = true ] && [ -n "$PANE_QUEUE" ]; then
+  PANE_MAILHOG=$(tmux split-window -v -t "$PANE_QUEUE" -P -F "#{pane_id}")
+  tmux send-keys -t "$PANE_MAILHOG" "mailhog" C-m
+  tmux select-pane -t "$PANE_MAILHOG" -T "Mailhog"
+fi
 
-tmux select-pane -t "$SESSION_NAME":Servers.6
-tmux split-window -h -t "$SESSION_NAME":Servers.6
-tmux send-keys -t "$SESSION_NAME":Servers.2 "cd ~/work/reforal-api/ && php artisan serve" C-m
-tmux split-window -v -t "$SESSION_NAME":Servers.2
+# Set Monitoring pane title
+tmux select-pane -t "$SESSION_NAME":Servers.1 -T "Monitoring"
 
-tmux send-keys -t "$SESSION_NAME":Servers.3 "cd ~/work/reforal-web/ && npm run start" C-m
-tmux split-window -v -t "$SESSION_NAME":Servers.3
+# ---- AUTO-CREATE WINDOWS FOR EACH FOLDER ----
+for dir in "$PROJECT_ROOT"/*/; do
+  folder=$(basename "$dir")
+  # Skip excluded folders
+  if [[ " $EXCLUDE_FOLDERS " =~ " $folder " ]]; then
+    continue
+  fi
+  # Skip if not a directory
+  [ -d "$dir" ] || continue
+  # Create a tmux window named after the folder
+  tmux new-window -t "$SESSION_NAME" -n "$folder"
+  tmux send-keys -t "$SESSION_NAME":"$folder" "cd \"$dir\" && clear" C-m
+done
 
-tmux send-keys -t "$SESSION_NAME":Servers.4 "cd ~/work/reforal-admin/ && PORT=3001 BROWSER=none npm start" C-m
-tmux split-window -v -t "$SESSION_NAME":Servers.4
-#
-tmux send-keys -t "$SESSION_NAME":Servers.5 "mailhog" C-m
-tmux split-window -v -t "$SESSION_NAME":Servers.5
-#
-# tmux select-pane -t "$SESSION_NAME":Servers.2
-# tmux split-window -h -t "$SESSION_NAME":Servers.2
-#
-# tmux select-pane -t "$SESSION_NAME":Servers.6
-# tmux split-window -h -t "$SESSION_NAME":Servers.6
-
-tmux select-pane -T "Monitoring" -t "$SESSION_NAME":Servers.1
-tmux select-pane -T "API Server" -t "$SESSION_NAME":Servers.2
-tmux select-pane -T "Web Server" -t "$SESSION_NAME":Servers.3
-tmux select-pane -T "Admin Server" -t "$SESSION_NAME":Servers.4
-tmux select-pane -T "Mailhog" -t "$SESSION_NAME":Servers.5
-tmux select-pane -T "Queue Work" -t "$SESSION_NAME":Servers.6
-tmux select-pane -T "Extra Pane 2" -t "$SESSION_NAME":Servers.7
-
-# Create the API window
-tmux new-window -t "$SESSION_NAME" -n API
-tmux send-keys -t "$SESSION_NAME":API "cd ~/work/reforal-api && clear" C-m
-# tmux select-pane -T "Admin Server" -t "$SESSION_NAME":Servers.4
-tmux select-pane -T "Mailhog" -t "$SESSION_NAME":Servers.5
-# tmux select-pane -T "Queue Work" -t "$SESSION_NAME":Servers.6
-# tmux select-pane -T "Extra Pane 2" -t "$SESSION_NAME":Servers.7
-
-# Create the API window
-tmux new-window -t "$SESSION_NAME" -n API
-tmux send-keys -t "$SESSION_NAME":API "cd ~/work/reforal-api/ && clear" C-m
-
-# Create the Portal window
-tmux new-window -t "$SESSION_NAME" -n Web
-tmux send-keys -t "$SESSION_NAME":Web "cd ~/work/reforal-web/ && clear" C-m
-
-# Create the Admin window
-tmux new-window -t "$SESSION_NAME" -n Admin
-tmux send-keys -t "$SESSION_NAME":Admin "cd ~/work/reforal-admin/ && clear" C-m
-# Create the PDF window
-tmux send-keys -t "$SESSION_NAME":Admin "cd ~/work/reforal-admin/ && clear" C-m
-tmux new-window -t "$SESSION_NAME" -n Admin
-
-# Focus on the API window
+# Focus on the Servers window
 tmux select-window -t "$SESSION_NAME":Servers
 
 # Attach to the session

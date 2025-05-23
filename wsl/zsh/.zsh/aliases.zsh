@@ -28,6 +28,7 @@ alias run-work-5="~/dotfiles/setups/vublox_setup.sh"
 alias run-omni="~/omni_setup.sh"
 alias run-coden="~/dotfiles/setups/coden_setup.sh"
 alias run-resq="~/dotfiles/setups/resq_setup.sh"
+alias run-rfl="~/dotfiles/setups/reforal_setup.sh"
 
 # Git
 alias lg="lazygit"
