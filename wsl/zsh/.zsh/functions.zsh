@@ -1,3 +1,4 @@
+# wsl/zsh/.zsh/functions.zsh
 function displayFZFFiles {
   fzf --preview 'batcat --theme=gruvbox-dark --color=always --style=header,grid --line-range :400 {}'
 }
@@ -30,3 +31,28 @@ function nvimGoToLine {
   fi
 }
 
+
+function ensure_lts_node() {
+  # Only run once per session
+  if [[ -n "$ENSURE_LTS_NODE_RAN" ]]; then
+    return
+  fi
+  export ENSURE_LTS_NODE_RAN=1
+
+  if command -v nvm >/dev/null 2>&1; then
+    local lts_version current_version
+    lts_version=$(nvm ls-remote --lts | tail -1 | awk '{print $1}')
+    current_version=$(node --version 2>/dev/null)
+
+    # Only install if not present
+    if ! nvm ls "$lts_version" | grep -q "$lts_version"; then
+      echo "Installing Node.js LTS ($lts_version)..."
+      nvm install --lts
+    fi
+
+    # Only switch if not already using LTS
+    if [[ "$current_version" != "v${lts_version}" ]]; then
+      nvm use --lts >/dev/null
+    fi
+  fi
+}

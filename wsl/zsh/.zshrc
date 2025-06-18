@@ -1,3 +1,4 @@
+# /wsl/zsh/.zshrc
 # --- OS Detection ---
 IS_MAC=false
 IS_LINUX=false
@@ -56,6 +57,15 @@ zinit light zdharma-continuum/fast-syntax-highlighting
 zinit light zsh-users/zsh-history-substring-search
 zinit light lukechilds/zsh-nvm
 
+# --- Source Aliases and Functions ---
+[ -f "$HOME/.zsh/aliases.zsh" ] && source "$HOME/.zsh/aliases.zsh"
+[ -f "$HOME/.zsh/functions.zsh" ] && source "$HOME/.zsh/functions.zsh"
+
+if [[ $- == *i* ]]; then
+  ensure_lts_node
+fi
+
+
 # --- Bun & pnpm ---
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
@@ -104,7 +114,4 @@ if command -v ng >/dev/null 2>&1; then
   source <(ng completion script)
 fi
 
-# --- Source Aliases and Functions ---
-[ -f "$HOME/.zsh/aliases.zsh" ] && source "$HOME/.zsh/aliases.zsh"
-[ -f "$HOME/.zsh/functions.zsh" ] && source "$HOME/.zsh/functions.zsh"
 
