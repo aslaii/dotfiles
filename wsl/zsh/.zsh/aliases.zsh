@@ -56,4 +56,5 @@ alias arm="arch -arm64 zsh --login"
 
 # Python
 alias venv="source venv/bin/activate"
+alias python="python3"
 
