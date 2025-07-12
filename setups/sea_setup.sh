@@ -5,19 +5,19 @@
 source "$(dirname "$0")/functions.sh"
 
 # ---- CONFIGURATION ----
-SESSION_NAME="Gooselaw Setup"
-PROJECT_ROOT="${1:-$HOME/work/goose/}"
+SESSION_NAME="Sea Setup"
+PROJECT_ROOT="${1:-$HOME/work/seafair/}"
 
 ENABLE_BTOP=true
-ENABLE_QUEUE_WORK=true
-ENABLE_MAILHOG=true
+ENABLE_QUEUE_WORK=false
+ENABLE_MAILHOG=false
 
 # If you want to exclude certain folders from auto-window creation, list them here (space-separated)
 EXCLUDE_FOLDERS="node_modules .git"
 
 # ---- END CONFIGURATION ----
 
-switch_github_account "gooselaw-immigration" "Jericho Bermas" "jericho.bermas@gooselaw.com"
+switch_github_account "aslaii" "Jericho Bermas" "jecho.deleon@gmail.com"
 
 echo "Stopping all Node.js and PHP Artisan processes..."
 pkill -f "node"
@@ -46,8 +46,27 @@ fi
 
 # Split horizontally: create API Server pane (right of btop)
 PANE_API=$(tmux split-window -h -t "$SESSION_NAME":Servers.1 -P -F "#{pane_id}")
-tmux send-keys -t "$PANE_API" "cd \"$PROJECT_ROOT/client-portal/\" && pnpm dev" C-m
-tmux select-pane -t "$PANE_API" -T "Dev Server"
+tmux send-keys -t "$PANE_API" "cd \"$PROJECT_ROOT/SineCore/\" && pnpm run dev" C-m
+tmux select-pane -t "$PANE_API" -T "API Server"
+
+# Split vertically: create Web Server pane (below API Server)
+# PANE_WEB=$(tmux split-window -v -t "$PANE_API" -P -F "#{pane_id}")
+# tmux send-keys -t "$PANE_WEB" "cd \"$PROJECT_ROOT/SineCore/\" && nvm use && pnpm start" C-m
+# tmux select-pane -t "$PANE_WEB" -T "Web Server"
+
+# Split horizontally: create Queue Work pane (right of API Server) if enabled
+if [ "$ENABLE_QUEUE_WORK" = true ]; then
+  PANE_QUEUE=$(tmux split-window -v -t "$PANE_API" -P -F "#{pane_id}")
+  tmux send-keys -t "$PANE_QUEUE" "cd \"$PROJECT_ROOT/resqyou-api/\" && php artisan queue:work" C-m
+  tmux select-pane -t "$PANE_QUEUE" -T "Queue Work"
+fi
+
+# Split vertically: create Mailhog pane (below Queue Work) if enabled
+if [ "$ENABLE_MAILHOG" = true ] && [ -n "$PANE_QUEUE" ]; then
+  PANE_MAILHOG=$(tmux split-window -v -t "$PANE_QUEUE" -P -F "#{pane_id}")
+  tmux send-keys -t "$PANE_MAILHOG" "mailhog" C-m
+  tmux select-pane -t "$PANE_MAILHOG" -T "Mailhog"
+fi
 
 # Set Monitoring pane title
 tmux select-pane -t "$SESSION_NAME":Servers.1 -T "Monitoring"

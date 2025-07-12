@@ -12,9 +12,14 @@ case "$(uname)" in
     ;;
 esac
 
-# --- Path Setup ---
+# --- Path Setup ---eval
 export PATH="$HOME/.local/bin:$PATH"
 export PATH="$HOME/.bun/bin:$PATH"
+export ANDROID_HOME=/Users/jerichobermas/Library/Android/sdk
+export PATH=$PATH:$ANDROID_HOME/emulator
+export PATH=$PATH:$ANDROID_HOME/tools
+export PATH=$PATH:$ANDROID_HOME/tools/bin
+export PATH=$PATH:$ANDROID_HOME/platform-tools
 
 if $IS_MAC; then
   export PATH="/opt/homebrew/bin:$PATH"
@@ -115,3 +120,10 @@ if command -v ng >/dev/null 2>&1; then
 fi
 
 
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/Users/jerichobermas/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/jerichobermas/google-cloud-sdk/path.zsh.inc'; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f '/Users/jerichobermas/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/jerichobermas/google-cloud-sdk/completion.zsh.inc'; fi
+
+export PATH="/opt/homebrew/opt/openjdk@17/bin:$PATH"

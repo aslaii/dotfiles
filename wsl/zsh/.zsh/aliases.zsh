@@ -33,6 +33,8 @@ alias run-rfl="~/dotfiles/setups/reforal_setup.sh"
 alias run-yg="~/dotfiles/setups/yg_setup.sh"
 alias run-goose="~/dotfiles/setups/goose_setup.sh"
 alias run-auto="~/dotfiles/setups/auto_setup.sh"
+alias run-secl="~/dotfiles/setups/secl_setup.sh"
+alias run-sea="~/dotfiles/setups/sea_setup.sh"
 
 
 # Git
