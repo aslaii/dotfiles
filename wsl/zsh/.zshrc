@@ -43,11 +43,6 @@ else
 fi
 
 # --- Oh My Posh Prompt ---
-if $IS_MAC && command -v brew >/dev/null 2>&1; then
-  eval "$(oh-my-posh init zsh --config $(brew --prefix oh-my-posh)/themes/catppuccin.omp.json)"
-else
-  eval "$(oh-my-posh init zsh --config ~/.cache/oh-my-posh/themes/catppuccin.omp.json)"
-fi
 
 # --- Zinit Plugin Manager ---
 if [ ! -f "$HOME/.zinit/bin/zinit.zsh" ]; then
@@ -65,6 +60,8 @@ zinit light lukechilds/zsh-nvm
 # --- Source Aliases and Functions ---
 [ -f "$HOME/.zsh/aliases.zsh" ] && source "$HOME/.zsh/aliases.zsh"
 [ -f "$HOME/.zsh/functions.zsh" ] && source "$HOME/.zsh/functions.zsh"
+
+set_shell_theme
 
 if [[ $- == *i* ]]; then
   ensure_lts_node
@@ -88,7 +85,6 @@ esac
 if command -v fzf >/dev/null 2>&1; then
   export FZF_DEFAULT_OPTS='--prompt="🔭 " --height 80% --layout=reverse --border'
   export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow --glob "!.git/" --glob "!node_modules/" --glob "!vendor/" --glob "!undo/" --glob "!plugged/"'
-  export BAT_THEME='gruvbox-dark'
   # Use fzf for Ctrl+R
   bindkey '^R' fzf-history-widget
   fzf-history-widget() {

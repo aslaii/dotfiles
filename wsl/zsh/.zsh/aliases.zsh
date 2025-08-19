@@ -58,3 +58,5 @@ alias arm="arch -arm64 zsh --login"
 alias venv="source venv/bin/activate"
 alias python="python3"
 
+# btop
+alias btop='btop_themed'

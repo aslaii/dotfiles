@@ -49,6 +49,15 @@ PANE_API=$(tmux split-window -h -t "$SESSION_NAME":Servers.1 -P -F "#{pane_id}")
 tmux send-keys -t "$PANE_API" "cd \"$PROJECT_ROOT/client-portal/\" && pnpm dev" C-m
 tmux select-pane -t "$PANE_API" -T "Dev Server"
 
+# Split vertically: create Web Server pane (below API Server)
+PANE_WEB=$(tmux split-window -v -t "$PANE_API" -P -F "#{pane_id}")
+tmux send-keys -t "$PANE_WEB" "cd \"$PROJECT_ROOT/create-hc-legal-submissions-letter/\" && nvm use && pnpm dev" C-m
+tmux select-pane -t "$PANE_WEB" -T "Web Server"
+
+PANE_WEB=$(tmux split-window -v -t "$PANE_WEB" -P -F "#{pane_id}")
+tmux send-keys -t "$PANE_WEB" "cd \"$PROJECT_ROOT/parse-hc-submission/\" && nvm use && pnpm dev" C-m
+tmux select-pane -t "$PANE_WEB" -T "Web Server"
+
 # Set Monitoring pane title
 tmux select-pane -t "$SESSION_NAME":Servers.1 -T "Monitoring"
 
