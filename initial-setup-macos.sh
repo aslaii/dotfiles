@@ -265,34 +265,17 @@ link_configs() {
 
 ensure_neovim_config() {
   local config_root="${XDG_CONFIG_HOME:-$HOME/.config}"
+  local source="${DOTFILES_DIR}/nvim"
   local target="${config_root}/nvim"
-  local repo_url="https://github.com/aslaii/lazyvim.git"
-  local origin=""
 
   mkdir -p "$config_root"
 
-  if [[ -d "$target/.git" ]]; then
-    origin="$(git -C "$target" remote get-url origin 2>/dev/null || true)"
-    if [[ "$origin" == "$repo_url" ]]; then
-      log "Updating existing Neovim config at ${target}."
-      if ! git -C "$target" pull --ff-only; then
-        warn "Failed to update Neovim config at ${target}; resolve conflicts manually."
-      fi
-      return
-    fi
+  if [[ ! -d "$source" ]]; then
+    warn "Neovim config missing at ${source}; skipping link."
+    return
   fi
 
-  if [[ -e "$target" || -L "$target" ]]; then
-    local backup
-    backup="${target}.bak.$(date +%s)"
-    log "Backing up existing Neovim config from ${target} to ${backup}."
-    mv "$target" "$backup"
-  fi
-
-  log "Cloning Neovim config into ${target}."
-  if ! git clone "$repo_url" "$target"; then
-    warn "Failed to clone Neovim config; check connectivity and rerun manually."
-  fi
+  link_file "$source" "$target"
 }
 
 ensure_tpm() {
