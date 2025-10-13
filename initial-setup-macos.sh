@@ -8,7 +8,6 @@ BREW_BIN=""
 BREW_PREFIX=""
 
 BREW_TAPS=(
-  "homebrew/cask-fonts"
   "koekeishiya/formulae"
   "FelixKratz/formulae"
 )
@@ -35,6 +34,7 @@ BREW_FORMULAE=(
   "jq"
   "wget"
   "firebase-cli"
+  "shellcheck"
   "btop"
 )
 
@@ -57,6 +57,18 @@ warn() {
 die() {
   printf '\n[error] %s\n' "$1" >&2
   exit 1
+}
+
+ensure_expected_user() {
+  local expected_user="aslaii"
+  local current_user
+  current_user="$(id -un)"
+
+  if [[ "$current_user" != "$expected_user" ]]; then
+    die "This script must be run as ${expected_user}. Current user: ${current_user}"
+  fi
+
+  log "Running as expected user ${expected_user}."
 }
 
 require_macos() {
@@ -117,7 +129,7 @@ install_homebrew() {
   fi
 
   log "Installing Homebrew..."
-  NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
   detect_brew
   if [[ -z "$BREW_BIN" ]]; then
@@ -137,12 +149,13 @@ ensure_brew_shellenv() {
   if [[ ! -f "$HOME/.zprofile" ]] || ! grep -q "brew shellenv" "$HOME/.zprofile"; then
     log "Adding Homebrew shellenv to ~/.zprofile."
     {
-      echo ''
-      echo 'if [ -x /opt/homebrew/bin/brew ]; then'
-      echo '  eval "$(/opt/homebrew/bin/brew shellenv)"'
-      echo 'elif [ -x /usr/local/bin/brew ]; then'
-      echo '  eval "$(/usr/local/bin/brew shellenv)"'
-      echo 'fi'
+      printf '\n'
+      printf '%s\n' \
+        'if [ -x /opt/homebrew/bin/brew ]; then' \
+        '  eval "$(/opt/homebrew/bin/brew shellenv)"' \
+        'elif [ -x /usr/local/bin/brew ]; then' \
+        '  eval "$(/usr/local/bin/brew shellenv)"' \
+        'fi'
     } >>"$HOME/.zprofile"
   fi
 }
@@ -204,7 +217,8 @@ link_file() {
   fi
 
   if [[ -e "$target" && ! -L "$target" ]]; then
-    local backup="${target}.bak.$(date +%s)"
+    local backup
+    backup="${target}.bak.$(date +%s)"
     log "Backing up existing ${target} to ${backup}."
     mv "$target" "$backup"
   fi
@@ -232,13 +246,53 @@ resolve_config_path() {
 }
 
 link_configs() {
-  local zshrc_source zsh_dir
+  local zshrc_source zsh_root zsh_functions_dir config_root ghostty_target
   zshrc_source="$(resolve_config_path)"
-  zsh_dir="$(dirname "$zshrc_source")"
+  zsh_root="$(dirname "$zshrc_source")"
+  zsh_functions_dir="${zsh_root}/zsh"
+  config_root="${XDG_CONFIG_HOME:-$HOME/.config}"
+  ghostty_target="${config_root}/ghostty/config"
 
   link_file "$zshrc_source" "$HOME/.zshrc"
-  link_file "$zsh_dir" "$HOME/.zsh"
+  if [[ -d "$zsh_functions_dir" ]]; then
+    link_file "$zsh_functions_dir" "$HOME/.zsh"
+  else
+    warn "Expected zsh functions directory ${zsh_functions_dir} missing; skipping ~/.zsh link."
+  fi
   link_file "$DOTFILES_DIR/tmux/tmux.conf" "$HOME/.tmux.conf"
+  link_file "$DOTFILES_DIR/ghostty/config" "$ghostty_target"
+}
+
+ensure_neovim_config() {
+  local config_root="${XDG_CONFIG_HOME:-$HOME/.config}"
+  local target="${config_root}/nvim"
+  local repo_url="https://github.com/aslaii/lazyvim.git"
+  local origin=""
+
+  mkdir -p "$config_root"
+
+  if [[ -d "$target/.git" ]]; then
+    origin="$(git -C "$target" remote get-url origin 2>/dev/null || true)"
+    if [[ "$origin" == "$repo_url" ]]; then
+      log "Updating existing Neovim config at ${target}."
+      if ! git -C "$target" pull --ff-only; then
+        warn "Failed to update Neovim config at ${target}; resolve conflicts manually."
+      fi
+      return
+    fi
+  fi
+
+  if [[ -e "$target" || -L "$target" ]]; then
+    local backup
+    backup="${target}.bak.$(date +%s)"
+    log "Backing up existing Neovim config from ${target} to ${backup}."
+    mv "$target" "$backup"
+  fi
+
+  log "Cloning Neovim config into ${target}."
+  if ! git clone "$repo_url" "$target"; then
+    warn "Failed to clone Neovim config; check connectivity and rerun manually."
+  fi
 }
 
 ensure_tpm() {
@@ -272,7 +326,8 @@ install_oh_my_posh_themes() {
     return
   fi
 
-  local theme_dir="$("$BREW_BIN" --prefix oh-my-posh)/themes"
+  local theme_dir
+  theme_dir="$("$BREW_BIN" --prefix oh-my-posh)/themes"
   mkdir -p "$theme_dir"
 
   local flavor url
@@ -357,13 +412,14 @@ print_next_steps() {
 [next steps]
 - Run `gcloud init` to finish Google Cloud CLI configuration.
 - Open a new terminal session so the Homebrew environment and linked dotfiles load correctly.
-- Launch tmux and press prefix + I to pull plugins via TPM if they were not restored.
+- Launch tmux, then press prefix (Ctrl-b) followed by I to install plugins through TPM.
 - Complete any client-specific bootstrap scripts under `~/dotfiles/setups/` as needed.
 MSG
 }
 
 main() {
   require_macos
+  ensure_expected_user
   ensure_dotfiles_dir
   ensure_command_line_tools
   install_homebrew
@@ -375,6 +431,7 @@ main() {
   install_oh_my_posh_themes
   ensure_gcloud_symlink
   link_configs
+  ensure_neovim_config
   ensure_tpm
   ensure_github_auth
   ensure_default_shell

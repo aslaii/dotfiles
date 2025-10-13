@@ -1,4 +1,4 @@
-# wsl/zsh/zsh/functions.zsh
+# macos/zsh/zsh/functions.zsh
 function displayFZFFiles {
   fzf --preview 'batcat --theme=gruvbox-dark --color=always --style=header,grid --line-range :400 {}'
 }
@@ -31,9 +31,7 @@ function nvimGoToLine {
   fi
 }
 
-
 function ensure_lts_node() {
-  # Only run once per session
   if [[ -n "$ENSURE_LTS_NODE_RAN" ]]; then
     return
   fi
@@ -44,13 +42,11 @@ function ensure_lts_node() {
     lts_version=$(nvm ls-remote --lts | tail -1 | awk '{print $1}')
     current_version=$(node --version 2>/dev/null)
 
-    # Only install if not present
     if ! nvm ls "$lts_version" | grep -q "$lts_version"; then
       echo "Installing Node.js LTS ($lts_version)..."
       nvm install --lts
     fi
 
-    # Only switch if not already using LTS
     if [[ "$current_version" != "v${lts_version}" ]]; then
       nvm use --lts >/dev/null
     fi
@@ -70,15 +66,18 @@ function set_shell_theme() {
     export BAT_THEME="Catppuccin-Latte"
   fi
 
+  if ! command -v oh-my-posh >/dev/null 2>&1; then
+    return
+  fi
+
   local omp_config_path
-  if $IS_MAC; then
+  if $IS_MAC && command -v brew >/dev/null 2>&1; then
     omp_config_path="$(brew --prefix oh-my-posh)/themes/${omp_theme_filename}"
   else
     omp_config_path="$HOME/.cache/oh-my-posh/themes/${omp_theme_filename}"
   fi
 
   if [ -f "$omp_config_path" ]; then
-
     local omp_script
     omp_script=$(oh-my-posh init zsh --config "$omp_config_path")
     local omp_exit_code=$?
@@ -93,24 +92,18 @@ function btop_themed() {
   local BTOP_CONFIG="$HOME/.config/btop/btop.conf"
   local theme_name
 
-  # First, check if the btop config file exists
   if [ ! -f "$BTOP_CONFIG" ]; then
-    # If no config, just run btop normally
     command btop "$@"
     return
   fi
 
-  # Check for macOS Dark Mode to choose the theme
   if [[ "$(defaults read -g AppleInterfaceStyle 2>/dev/null)" == "Dark" ]]; then
     theme_name="catppuccin_mocha"
   else
     theme_name="catppuccin_latte"
   fi
 
-  # Use sed to replace the color_theme line in the config file
-  # The '-i ''' syntax is correct for the version of sed on macOS
   sed -i '' "s/color_theme = \".*\"/color_theme = \"${theme_name}\"/" "$BTOP_CONFIG"
 
-  # Finally, launch the real btop command, passing along any arguments
   command btop "$@"
 }
