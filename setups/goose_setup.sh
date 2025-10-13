@@ -1,82 +1,235 @@
 #!/bin/bash
 
-# /resq_setup.sh
+# goose_setup.sh
 
+# ---- External Functions & Configuration ----
+# Ensure functions.sh is in the same directory or provide the correct path.
 source "$(dirname "$0")/functions.sh"
 
-# ---- CONFIGURATION ----
 SESSION_NAME="Gooselaw Setup"
-PROJECT_ROOT="${1:-$HOME/work/goose/}"
+PROJECT_ROOT="${1:-$HOME/work/goose/}" # Main project root
 
+# --- Toggles for server startup ---
 ENABLE_BTOP=true
-ENABLE_QUEUE_WORK=true
-ENABLE_MAILHOG=true
+ENABLE_CLIENT_PORTAL=true
+ENABLE_CREATE_HC_LETTER=true
+ENABLE_PARSE_HC=true
 
-# If you want to exclude certain folders from auto-window creation, list them here (space-separated)
+# --- Auto-window configuration ---
+# Folders to exclude from auto-window creation in "all" mode.
 EXCLUDE_FOLDERS="node_modules .git"
 
-# ---- END CONFIGURATION ----
+# ==============================================================================
+# ---- HELPER FUNCTIONS ----
+# ==============================================================================
 
-switch_github_account "gooselaw-immigration" "Jericho Bermas" "jericho.bermas@gooselaw.com"
+# Cleans up previous processes and tmux sessions
+cleanup() {
+  echo "🛑 Stopping all Node.js and PHP Artisan processes..."
+  pkill -f "node" >/dev/null 2>&1
+  pkill -f "php artisan" >/dev/null 2>&1
 
-echo "Stopping all Node.js and PHP Artisan processes..."
-pkill -f "node"
-pkill -f "php artisan"
+  echo "🔓 Ensuring key ports are free..."
+  kill_port 3000
+  kill_port 3001
+  kill_port 8000
 
-echo "Ensuring ports 3000, 3001, and 8000 are free..."
-kill_port 3000
-kill_port 3001
-kill_port 8000
-
-sleep 2
-
-if tmux has-session -t "$SESSION_NAME" 2>/dev/null; then
-  echo "Deleting existing tmux session: $SESSION_NAME"
-  tmux kill-session -t "$SESSION_NAME"
-fi
-
-echo "Starting new tmux session: $SESSION_NAME"
-sleep 2
-tmux new-session -d -s "$SESSION_NAME" -n Servers
-
-# Start Servers window with btop if enabled
-if [ "$ENABLE_BTOP" = true ]; then
-  tmux send-keys -t "$SESSION_NAME":Servers.1 "btop" C-m
-fi
-
-# Split horizontally: create API Server pane (right of btop)
-PANE_API=$(tmux split-window -h -t "$SESSION_NAME":Servers.1 -P -F "#{pane_id}")
-tmux send-keys -t "$PANE_API" "cd \"$PROJECT_ROOT/client-portal/\" && pnpm dev" C-m
-tmux select-pane -t "$PANE_API" -T "Dev Server"
-
-# Split vertically: create Web Server pane (below API Server)
-PANE_WEB=$(tmux split-window -v -t "$PANE_API" -P -F "#{pane_id}")
-tmux send-keys -t "$PANE_WEB" "cd \"$PROJECT_ROOT/create-hc-legal-submissions-letter/\" && nvm use && pnpm dev" C-m
-tmux select-pane -t "$PANE_WEB" -T "Web Server"
-
-PANE_WEB=$(tmux split-window -v -t "$PANE_WEB" -P -F "#{pane_id}")
-tmux send-keys -t "$PANE_WEB" "cd \"$PROJECT_ROOT/parse-hc-submission/\" && nvm use && pnpm dev" C-m
-tmux select-pane -t "$PANE_WEB" -T "Web Server"
-
-# Set Monitoring pane title
-tmux select-pane -t "$SESSION_NAME":Servers.1 -T "Monitoring"
-
-# ---- AUTO-CREATE WINDOWS FOR EACH FOLDER ----
-for dir in "$PROJECT_ROOT"/*/; do
-  folder=$(basename "$dir")
-  # Skip excluded folders
-  if [[ " $EXCLUDE_FOLDERS " =~ " $folder " ]]; then
-    continue
+  if tmux has-session -t "$SESSION_NAME" 2>/dev/null; then
+    echo "💥 Deleting existing tmux session: $SESSION_NAME"
+    tmux kill-session -t "$SESSION_NAME"
   fi
+  sleep 1
+}
+
+# Creates the base tmux session
+start_base_session() {
+  echo "🚀 Starting new tmux session: $SESSION_NAME"
+  tmux new-session -d -s "$SESSION_NAME" -n "SERVERS"
+  sleep 1
+}
+
+# Creates the main "SERVERS" window with btop and dev servers
+create_servers_window() {
+  local window_target="$SESSION_NAME:SERVERS"
+  local current_pane_id
+  current_pane_id=$(tmux list-panes -t "$window_target" -F "#{pane_id}")
+
+  # Start btop if enabled
+  if [ "$ENABLE_BTOP" = true ]; then
+    tmux send-keys -t "$current_pane_id" "btop" C-m
+    tmux select-pane -t "$current_pane_id" -T "Monitoring"
+    # Split for the next pane
+    current_pane_id=$(tmux split-window -h -t "$current_pane_id" -P -F "#{pane_id}")
+  fi
+
+  # Conditionally start each server
+  if [ "$ENABLE_CLIENT_PORTAL" = true ]; then
+    tmux send-keys -t "$current_pane_id" "cd \"$PROJECT_ROOT/client-portal/\" && pnpm dev" C-m
+    tmux select-pane -t "$current_pane_id" -T "Client Portal"
+    current_pane_id=$(tmux split-window -v -t "$current_pane_id" -P -F "#{pane_id}")
+  fi
+
+  if [ "$ENABLE_CREATE_HC_LETTER" = true ]; then
+    tmux send-keys -t "$current_pane_id" "cd \"$PROJECT_ROOT/create-hc-legal-submissions-letter/\" && nvm use && pnpm dev" C-m
+    tmux select-pane -t "$current_pane_id" -T "HC Letter"
+    current_pane_id=$(tmux split-window -v -t "$current_pane_id" -P -F "#{pane_id}")
+  fi
+
+  if [ "$ENABLE_PARSE_HC" = true ]; then
+    tmux send-keys -t "$current_pane_id" "cd \"$PROJECT_ROOT/parse-hc-submission/\" && nvm use && pnpm dev" C-m
+    tmux select-pane -t "$current_pane_id" -T "HC Parse"
+  fi
+
+  # If no servers were enabled, just cd into the project root
+  if [ "$ENABLE_CLIENT_PORTAL" != true ] && [ "$ENABLE_CREATE_HC_LETTER" != true ] && [ "$ENABLE_PARSE_HC" != true ]; then
+    tmux send-keys -t "$current_pane_id" "cd \"$PROJECT_ROOT\" && clear" C-m
+  fi
+}
+
+# Creates a special focused layout for a single project
+create_focused_window() {
+  local project_name=$1
+  local project_path="$PROJECT_ROOT/$project_name"
+  local window_target="$SESSION_NAME:SERVERS" # We'll reuse the first window
+
+  # Start btop
+  tmux send-keys -t "$window_target.1" "btop" C-m
+  tmux select-pane -t "$window_target.1" -T "Monitoring"
+
+  # Split horizontally for the project
+  local project_pane=$(tmux split-window -h -t "$window_target.1" -P -F "#{pane_id}")
+  tmux send-keys -t "$project_pane" "cd \"$project_path\" && nvim" C-m
+  tmux select-pane -t "$project_pane" -T "$project_name"
+}
+
+# Creates a new tmux window for a given project folder
+create_project_window() {
+  local project_name=$1
+  local project_path="$PROJECT_ROOT/$project_name"
+
   # Skip if not a directory
-  [ -d "$dir" ] || continue
-  # Create a tmux window named after the folder
-  tmux new-window -t "$SESSION_NAME" -n "$folder"
-  tmux send-keys -t "$SESSION_NAME":"$folder" "cd \"$dir\" && clear" C-m
-done
+  [ -d "$project_path" ] || return
 
-# Focus on the Servers window
-tmux select-window -t "$SESSION_NAME":Servers
+  tmux new-window -t "$SESSION_NAME" -n "$project_name"
+  tmux send-keys -t "$SESSION_NAME:$project_name" "cd \"$project_path\" && clear" C-m
 
-# Attach to the session
-tmux attach -t "$SESSION_NAME"
+  # Split horizontally
+  local right_pane=$(tmux split-window -h -t "$SESSION_NAME:$project_name" -P -F "#{pane_id}")
+  tmux send-keys -t "$right_pane" "cd \"$project_path\" && codex" C-m
+  tmux select-pane -t "$right_pane" -T "Codex" # Title for the right pane
+
+  tmux select-pane -t "$SESSION_NAME:$project_name.1" -T "Shell" # Title for the left pane
+}
+
+# ==============================================================================
+# ---- SCRIPT LOGIC ----
+# ==============================================================================
+
+# Change to the project directory first to simplify paths
+cd "$PROJECT_ROOT" || {
+  echo "❌ Project root not found: $PROJECT_ROOT"
+  exit 1
+}
+
+# --- Determine Mode & Target Folders ---
+TARGET_FOLDERS=()
+MODE="all" # Default mode
+
+if [ "$#" -gt 0 ]; then
+  # Direct Mode: User provided folder names as arguments
+  MODE="multiple"
+  for arg in "$@"; do
+    if [ -d "$PROJECT_ROOT/$arg" ]; then
+      TARGET_FOLDERS+=("$arg")
+    else
+      echo "⚠️  Warning: Folder '$arg' not found. Skipping."
+    fi
+  done
+  if [ ${#TARGET_FOLDERS[@]} -eq 1 ]; then
+    MODE="focused"
+  fi
+else
+  # Interactive Mode: No arguments provided
+  echo "🗂️  Select project(s) to open:"
+
+  # Get a sorted list of directories
+  DIRS=()
+  while IFS= read -r line; do
+    DIRS+=("$line")
+  done < <(find . -mindepth 1 -maxdepth 1 -type d \
+    -not \( -name "node_modules" -o -name ".git" \) |
+    sed 's|^\./||' | sort)
+
+  echo "  [all] Open all projects (default behavior)"
+  for i in "${!DIRS[@]}"; do
+    printf "  [%2d] %s\n" "$((i + 1))" "${DIRS[$i]}"
+  done
+
+  read -p "➡️  Enter choice(s) (e.g., 2, 5, 8 or 'all'): " user_choice
+
+  if [[ -z "$user_choice" || "$user_choice" == "all" ]]; then
+    MODE="all"
+  else
+    # Split input by comma
+    IFS=',' read -ra CHOICES <<<"$user_choice"
+    for choice in "${CHOICES[@]}"; do
+      # Trim whitespace
+      choice=$(echo "$choice" | xargs)
+      if [[ "$choice" =~ ^[0-9]+$ ]] && [ "$choice" -ge 1 ] && [ "$choice" -le "${#DIRS[@]}" ]; then
+        TARGET_FOLDERS+=("${DIRS[$((choice - 1))]}")
+      else
+        echo "⚠️  Invalid selection: '$choice'. Skipping."
+      fi
+    done
+
+    if [ ${#TARGET_FOLDERS[@]} -eq 0 ]; then
+      echo "❌ No valid projects selected. Exiting."
+      exit 1
+    elif [ ${#TARGET_FOLDERS[@]} -eq 1 ]; then
+      MODE="focused"
+    else
+      MODE="multiple"
+    fi
+  fi
+fi
+
+# --- Execute Main Actions ---
+switch_github_account "aslaii" "Jericho Bermas" "jecho.deleon@gmail.com"
+cleanup
+start_base_session
+
+case "$MODE" in
+"all")
+  echo "🚀 Mode: ALL. Setting up full server environment and all project windows."
+  create_servers_window
+  # Loop through all valid directories
+  for dir in */; do
+    folder=$(basename "$dir")
+    if [[ ! " $EXCLUDE_FOLDERS " =~ " $folder " ]]; then
+      create_project_window "$folder"
+    fi
+  done
+  ;;
+
+"focused")
+  project="${TARGET_FOLDERS[0]}"
+  echo "🔎 Mode: FOCUSED. Setting up a minimal view for '$project'."
+  # Disable servers for a clean focused layout
+  ENABLE_CLIENT_PORTAL=false ENABLE_CREATE_HC_LETTER=false ENABLE_PARSE_HC=false
+  create_focused_window "$project"
+  create_project_window "$project" # Also create its own dedicated window
+  ;;
+
+"multiple")
+  echo "🎯 Mode: MULTIPLE. Opening servers and selected projects: ${TARGET_FOLDERS[*]}"
+  create_servers_window
+  for project in "${TARGET_FOLDERS[@]}"; do
+    create_project_window "$project"
+  done
+  ;;
+esac
+
+# --- Finalize and Attach ---
+echo "✅ Setup complete. Attaching to session..."
+tmux select-window -t "$SESSION_NAME:SERVERS"
+tmux attach-session -t "$SESSION_NAME"

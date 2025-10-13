@@ -116,10 +116,10 @@ if command -v ng >/dev/null 2>&1; then
 fi
 
 
+export PATH="/opt/homebrew/opt/openjdk@17/bin:$PATH"
+
 # The next line updates PATH for the Google Cloud SDK.
-if [ -f '/Users/jerichobermas/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/jerichobermas/google-cloud-sdk/path.zsh.inc'; fi
+if [ -f '/Users/jerichobermas/Google/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/jerichobermas/Google/google-cloud-sdk/path.zsh.inc'; fi
 
 # The next line enables shell command completion for gcloud.
-if [ -f '/Users/jerichobermas/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/jerichobermas/google-cloud-sdk/completion.zsh.inc'; fi
-
-export PATH="/opt/homebrew/opt/openjdk@17/bin:$PATH"
+if [ -f '/Users/jerichobermas/Google/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/jerichobermas/Google/google-cloud-sdk/completion.zsh.inc'; fi

@@ -60,3 +60,6 @@ alias python="python3"
 
 # btop
 alias btop='btop_themed'
+
+# goose
+alias goose='cd ~/work/goose/'
