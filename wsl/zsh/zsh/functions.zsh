@@ -1,4 +1,4 @@
-# wsl/zsh/.zsh/functions.zsh
+# wsl/zsh/zsh/functions.zsh
 function displayFZFFiles {
   fzf --preview 'batcat --theme=gruvbox-dark --color=always --style=header,grid --line-range :400 {}'
 }

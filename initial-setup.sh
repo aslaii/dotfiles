@@ -14,6 +14,25 @@ install_if_missing() {
   done
 }
 
+link_file() {
+  local source="$1"
+  local target="$2"
+
+  if [ -L "$target" ] && [ ! -e "$target" ]; then
+    echo "Removing broken symlink $target"
+    rm "$target"
+  fi
+
+  if [ -e "$target" ] && [ ! -L "$target" ]; then
+    echo "Backing up $target to ${target}.bak"
+    mv "$target" "${target}.bak"
+  fi
+
+  mkdir -p "$(dirname "$target")"
+  ln -sfn "$source" "$target"
+  echo "Linked $target -> $source"
+}
+
 # 1. Update and upgrade
 sudo apt update && sudo apt upgrade -y
 
@@ -83,26 +102,15 @@ if [ ! -d "$HOME/dotfiles" ]; then
   gh repo clone aslaii/dotfiles "$HOME/dotfiles"
 fi
 
-# 9. Stow .zshrc and .tmux.conf from dotfiles/wsl
+# 9. Link shell and tmux configs from dotfiles/wsl
 cd "$HOME/dotfiles" || {
   echo "dotfiles dir not found!"
   exit 1
 }
 
-for file in .zshrc .tmux.conf; do
-  # Remove broken symlinks
-  if [ -L "$HOME/$file" ] && [ ! -e "$HOME/$file" ]; then
-    echo "Removing broken symlink $HOME/$file"
-    rm "$HOME/$file"
-  fi
-  # Backup regular files
-  if [ -e "$HOME/$file" ] && [ ! -L "$HOME/$file" ]; then
-    echo "Backing up $HOME/$file to $HOME/${file}.bak"
-    mv "$HOME/$file" "$HOME/${file}.bak"
-  fi
-done
-
-stow -t "$HOME" wsl
+link_file "$HOME/dotfiles/wsl/zsh/zshrc" "$HOME/.zshrc"
+link_file "$HOME/dotfiles/wsl/zsh/zsh" "$HOME/.zsh"
+link_file "$HOME/dotfiles/wsl/tmux.conf" "$HOME/.tmux.conf"
 
 # 10. Install oh-my-posh
 if ! command -v oh-my-posh &>/dev/null; then

@@ -1,4 +1,4 @@
-# /wsl/zsh/.zshrc
+# wsl/zsh/zshrc
 # --- OS Detection ---
 IS_MAC=false
 IS_LINUX=false

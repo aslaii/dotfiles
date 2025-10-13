@@ -1,4 +1,4 @@
-# wsl/zsh/.zsh/aliases.zsh
+# wsl/zsh/zsh/aliases.zsh
 # Navigation
 alias home="cd ~"
 alias zshconfig="nvim ~/.zshrc"
