@@ -312,6 +312,35 @@ ensure_batcat_symlink() {
   fi
 }
 
+install_clasp() {
+  if command -v clasp >/dev/null 2>&1; then
+    log "clasp already installed."
+    return
+  fi
+
+  if command -v pnpm >/dev/null 2>&1; then
+    log "Installing clasp via pnpm."
+    if pnpm add --global @google/clasp; then
+      log "Installed clasp via pnpm."
+    else
+      warn "Failed to install clasp via pnpm."
+    fi
+    return
+  fi
+
+  if command -v npm >/dev/null 2>&1; then
+    log "Installing clasp via npm."
+    if npm install -g @google/clasp; then
+      log "Installed clasp via npm."
+    else
+      warn "Failed to install clasp via npm."
+    fi
+    return
+  fi
+
+  warn "pnpm/npm not found; install Node tooling (e.g. via nvm) and rerun to install clasp."
+}
+
 install_oh_my_posh_themes() {
   if ! command -v oh-my-posh >/dev/null 2>&1; then
     warn "oh-my-posh not found; skipping theme download."
@@ -527,6 +556,7 @@ main() {
   install_formulae
   install_casks
   ensure_batcat_symlink
+  install_clasp
   install_oh_my_posh_themes
   install_btop_catppuccin_themes
   install_sketchybar_support
