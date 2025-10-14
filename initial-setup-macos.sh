@@ -10,6 +10,7 @@ BREW_PREFIX=""
 BREW_TAPS=(
   "koekeishiya/formulae"
   "FelixKratz/formulae"
+  "homebrew/cask-fonts"
 )
 
 BREW_FORMULAE=(
@@ -35,6 +36,10 @@ BREW_FORMULAE=(
   "wget"
   "firebase-cli"
   "shellcheck"
+  "lua"
+  "switchaudio-osx"
+  "nowplaying-cli"
+  "sketchybar"
   "btop"
 )
 
@@ -44,6 +49,9 @@ BREW_CASKS=(
   "font-hack-nerd-font"
   "font-meslo-lg-nerd-font"
   "google-cloud-sdk"
+  "sf-symbols"
+  "font-sf-mono"
+  "font-sf-pro"
 )
 
 log() {
@@ -261,6 +269,7 @@ link_configs() {
   fi
   link_file "$DOTFILES_DIR/tmux/tmux.conf" "$HOME/.tmux.conf"
   link_file "$DOTFILES_DIR/ghostty/config" "$ghostty_target"
+  link_file "$DOTFILES_DIR/sketchybar" "${config_root}/sketchybar"
 }
 
 ensure_neovim_config() {
@@ -325,6 +334,113 @@ install_oh_my_posh_themes() {
       log "oh-my-posh theme ${flavor} already present."
     fi
   done
+}
+
+install_btop_catppuccin_themes() {
+  local config_root="${XDG_CONFIG_HOME:-$HOME/.config}"
+  local theme_dir="${config_root}/btop/themes"
+  local url="https://github.com/catppuccin/btop/releases/download/1.0.0/themes.tar.gz"
+  local flavors=(
+    "catppuccin_latte.theme"
+    "catppuccin_frappe.theme"
+    "catppuccin_macchiato.theme"
+    "catppuccin_mocha.theme"
+  )
+
+  mkdir -p "$theme_dir"
+
+  local missing=0 theme
+  for theme in "${flavors[@]}"; do
+    if [[ ! -f "${theme_dir}/${theme}" ]]; then
+      missing=1
+      break
+    fi
+  done
+
+  if (( missing == 0 )); then
+    log "Catppuccin themes for btop already installed."
+    return
+  fi
+
+  local tmp_dir archive
+  tmp_dir="$(mktemp -d)"
+  archive="${tmp_dir}/themes.tar.gz"
+
+  log "Downloading Catppuccin themes for btop."
+  if ! curl -fsSL "$url" -o "$archive"; then
+    warn "Failed to download Catppuccin btop themes."
+    rm -rf "$tmp_dir"
+    return
+  fi
+
+  if ! tar -xzf "$archive" -C "$tmp_dir"; then
+    warn "Failed to extract Catppuccin btop themes."
+    rm -rf "$tmp_dir"
+    return
+  fi
+
+  if ! cp -f "${tmp_dir}/catppuccin_"*.theme "$theme_dir/"; then
+    warn "Failed to copy Catppuccin btop themes."
+    rm -rf "$tmp_dir"
+    return
+  fi
+
+  rm -rf "$tmp_dir"
+  log "Installed Catppuccin themes for btop into ${theme_dir}."
+}
+
+install_sketchybar_support() {
+  local font_dest="$HOME/Library/Fonts/sketchybar-app-font.ttf"
+  local font_url="https://github.com/kvndrsslr/sketchybar-app-font/releases/download/v2.0.28/sketchybar-app-font.ttf"
+  local marker_dir="$HOME/.local/share/sketchybar"
+  local marker_file="${marker_dir}/sbarlua-installed"
+
+  mkdir -p "$marker_dir"
+
+  if [[ -f "$font_dest" ]]; then
+    log "SketchyBar app font already present."
+  else
+    log "Installing SketchyBar app font."
+    if ! curl -fsSL "$font_url" -o "$font_dest"; then
+      warn "Failed to download SketchyBar app font."
+    fi
+  fi
+
+  if [[ -f "$marker_file" ]]; then
+    log "SbarLua already installed; skipping."
+  else
+    local tmp_dir
+    tmp_dir="$(mktemp -d)"
+
+    if git clone https://github.com/FelixKratz/SbarLua.git "$tmp_dir/SbarLua"; then
+      if (cd "$tmp_dir/SbarLua" && make install); then
+        log "Installed SbarLua for SketchyBar."
+        touch "$marker_file"
+      else
+        warn "Failed to run 'make install' for SbarLua."
+      fi
+    else
+      warn "Failed to clone SbarLua repository."
+    fi
+
+    rm -rf "$tmp_dir"
+  fi
+
+  if command -v sketchybar >/dev/null 2>&1; then
+    if "$BREW_BIN" services list 2>/dev/null | grep -q "^sketchybar\s"; then
+      log "Restarting SketchyBar service via Homebrew."
+      if ! "$BREW_BIN" services restart sketchybar; then
+        warn "Failed to restart SketchyBar service."
+      fi
+    else
+      log "Starting SketchyBar service via Homebrew."
+      if ! "$BREW_BIN" services start sketchybar; then
+        warn "Failed to start SketchyBar service."
+      fi
+    fi
+  else
+    warn "SketchyBar binary not found; skipping service management."
+  fi
 }
 
 ensure_gcloud_symlink() {
@@ -412,6 +528,8 @@ main() {
   install_casks
   ensure_batcat_symlink
   install_oh_my_posh_themes
+  install_btop_catppuccin_themes
+  install_sketchybar_support
   ensure_gcloud_symlink
   link_configs
   ensure_neovim_config
