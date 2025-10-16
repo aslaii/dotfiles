@@ -8,7 +8,7 @@ alias nvimconfig="nvim ~/.config/nvim/lua/config/lazy.lua"
 # Tmux
 alias rtm="tmux source-file ~/.tmux.conf"
 alias tmx="tmux"
-alias tks="tmux kill-server"
+alias tks="tmux detach"
 
 # Editor
 alias vim="nvim"
