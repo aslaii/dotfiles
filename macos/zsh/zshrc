@@ -47,6 +47,8 @@ zinit light lukechilds/zsh-nvm
 [ -f "$HOME/.zsh/aliases.zsh" ] && source "$HOME/.zsh/aliases.zsh"
 [ -f "$HOME/.zsh/functions.zsh" ] && source "$HOME/.zsh/functions.zsh"
 
+ensure_gemini_api_key
+
 set_shell_theme
 
 if [[ $- == *i* ]]; then

@@ -107,3 +107,27 @@ function btop_themed() {
 
   command btop "$@"
 }
+
+function ensure_gemini_api_key() {
+  local gemini_env_file="$HOME/.gemini/.env"
+  local gemini_dir="$HOME/.gemini"
+
+  if [ -f "$gemini_env_file" ]; then
+    return
+  fi
+
+  if [ ! -d "$gemini_dir" ]; then
+    mkdir -p "$gemini_dir"
+  fi
+
+  local api_key
+  echo "Please enter your Gemini API key:"
+  read -s api_key
+
+  if [ -n "$api_key" ]; then
+    echo "GEMINI_API_KEY=$api_key" > "$gemini_env_file"
+    echo "Gemini API key saved to $gemini_env_file"
+  else
+    echo "No API key entered. Skipping."
+  fi
+}
