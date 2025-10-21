@@ -1,0 +1,6 @@
+# Preferences for Codex CLI automation.
+automation_mode = "prompt"
+require_user_permission = true
+allow_background_execution = false
+suppress_sandbox_status = true
+default_model = "gpt-5-codex-high"

@@ -8,7 +8,10 @@ source "$(dirname "$0")/functions.sh"
 
 SESSION_BASE_NAME="Gooselaw Setup"
 SESSION_NAME="$SESSION_BASE_NAME"
-PROJECT_ROOT="${1:-$HOME/work/goose/}" # Main project root
+DEFAULT_PROJECT_ROOT="${GOOSE_PROJECT_ROOT:-$HOME/work/goose/}" # Allow override via env var
+PROJECT_ROOT="$DEFAULT_PROJECT_ROOT"
+FILTER_TERM=""
+CLI_FOLDERS=()
 
 # --- Toggles for server startup ---
 ENABLE_BTOP=true
@@ -138,6 +141,47 @@ create_project_window() {
 # ---- SCRIPT LOGIC ----
 # ==============================================================================
 
+# --- Parse CLI Arguments ---
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --root)
+      shift
+      if [ -z "${1:-}" ]; then
+        echo "❌ Missing value for --root option."
+        exit 1
+      fi
+      PROJECT_ROOT="$1"
+      ;;
+    --filter)
+      shift
+      if [ -z "${1:-}" ]; then
+        echo "❌ Missing value for --filter option."
+        exit 1
+      fi
+      FILTER_TERM="$1"
+      ;;
+    --help|-h)
+      echo "Usage: $(basename "$0") [--root PATH] [--filter TERM] [project ...]"
+      exit 0
+      ;;
+    --)
+      shift
+      while [[ $# -gt 0 ]]; do
+        CLI_FOLDERS+=("$1")
+        shift
+      done
+      break
+      ;;
+    *)
+      CLI_FOLDERS+=("$1")
+      ;;
+  esac
+  shift || break
+done
+
+# Ensure project root always has a trailing slash for consistent path joins
+PROJECT_ROOT="${PROJECT_ROOT%/}/"
+
 # Change to the project directory first to simplify paths
 cd "$PROJECT_ROOT" || {
   echo "❌ Project root not found: $PROJECT_ROOT"
@@ -146,34 +190,92 @@ cd "$PROJECT_ROOT" || {
 
 # --- Determine Mode & Target Folders ---
 TARGET_FOLDERS=()
-MODE="all" # Default mode
+MODE="all"
+NEEDS_INTERACTIVE=true
 
-if [ "$#" -gt 0 ]; then
-  # Direct Mode: User provided folder names as arguments
-  MODE="multiple"
-  for arg in "$@"; do
-    if [ -d "$PROJECT_ROOT/$arg" ]; then
-      TARGET_FOLDERS+=("$arg")
+# Build the list of available projects up front
+AVAILABLE_PROJECTS=()
+while IFS= read -r line; do
+  folder="$line"
+  if [[ " $EXCLUDE_FOLDERS " =~ " $folder " ]]; then
+    continue
+  fi
+  AVAILABLE_PROJECTS+=("$folder")
+done < <(find . -mindepth 1 -maxdepth 1 -type d \
+  -not \( -name "node_modules" -o -name ".git" \) |
+  sed 's|^\./||' | sort)
+
+if [ ${#CLI_FOLDERS[@]} -gt 0 ]; then
+  VALID_FOLDERS=()
+  INVALID_FOLDERS=()
+  for entry in "${CLI_FOLDERS[@]}"; do
+    if [ -d "$entry" ]; then
+      VALID_FOLDERS+=("$entry")
     else
-      echo "⚠️  Warning: Folder '$arg' not found. Skipping."
+      INVALID_FOLDERS+=("$entry")
     fi
   done
-  if [ ${#TARGET_FOLDERS[@]} -eq 1 ]; then
-    MODE="focused"
+
+  if [ ${#VALID_FOLDERS[@]} -gt 0 ]; then
+    TARGET_FOLDERS=("${VALID_FOLDERS[@]}")
+    if [ ${#TARGET_FOLDERS[@]} -eq 1 ]; then
+      MODE="focused"
+    else
+      MODE="multiple"
+    fi
+    if [ -z "$FILTER_TERM" ]; then
+      NEEDS_INTERACTIVE=false
+    fi
+    for missing in "${INVALID_FOLDERS[@]}"; do
+      echo "⚠️  Warning: Folder '$missing' not found. Skipping."
+    done
+  else
+    if [ -z "$FILTER_TERM" ] && [ ${#CLI_FOLDERS[@]} -eq 1 ]; then
+      FILTER_TERM="${CLI_FOLDERS[0]}"
+    else
+      echo "⚠️  No valid project names provided. Switching to interactive mode."
+    fi
   fi
+fi
+
+if [ -n "$FILTER_TERM" ]; then
+  NEEDS_INTERACTIVE=true
+fi
+
+# Prepare filtered project list for interactive mode
+FILTERED_PROJECTS=()
+if [ -n "$FILTER_TERM" ]; then
+  filter_normalized=$(printf '%s' "$FILTER_TERM" | tr '[:upper:]' '[:lower:]')
+  for folder in "${AVAILABLE_PROJECTS[@]}"; do
+    folder_normalized=$(printf '%s' "$folder" | tr '[:upper:]' '[:lower:]')
+    if [[ "$folder_normalized" == *"$filter_normalized"* ]]; then
+      FILTERED_PROJECTS+=("$folder")
+    fi
+  done
 else
-  # Interactive Mode: No arguments provided
+  FILTERED_PROJECTS=("${AVAILABLE_PROJECTS[@]}")
+fi
+
+if [ "$NEEDS_INTERACTIVE" = true ]; then
+  DIRS=("${FILTERED_PROJECTS[@]}")
+  if [ ${#DIRS[@]} -eq 0 ]; then
+    if [ -n "$FILTER_TERM" ]; then
+      echo "❌ No projects matched filter '$FILTER_TERM'. Exiting."
+    else
+      echo "❌ No projects available. Exiting."
+    fi
+    exit 1
+  fi
+
   echo "🗂️  Select project(s) to open:"
-
-  # Get a sorted list of directories
-  DIRS=()
-  while IFS= read -r line; do
-    DIRS+=("$line")
-  done < <(find . -mindepth 1 -maxdepth 1 -type d \
-    -not \( -name "node_modules" -o -name ".git" \) |
-    sed 's|^\./||' | sort)
-
-  echo "  [all] Open all projects (default behavior)"
+  if [ -n "$FILTER_TERM" ]; then
+    echo "  Filter applied: '$FILTER_TERM'"
+  fi
+  if [ -n "$FILTER_TERM" ]; then
+    echo "  [all] Open all matching projects (default behavior)"
+  else
+    echo "  [all] Open all projects (default behavior)"
+  fi
   for i in "${!DIRS[@]}"; do
     printf "  [%2d] %s\n" "$((i + 1))" "${DIRS[$i]}"
   done
@@ -182,11 +284,10 @@ else
 
   if [[ -z "$user_choice" || "$user_choice" == "all" ]]; then
     MODE="all"
+    TARGET_FOLDERS=("${DIRS[@]}")
   else
-    # Split input by comma
     IFS=',' read -ra CHOICES <<<"$user_choice"
     for choice in "${CHOICES[@]}"; do
-      # Trim whitespace
       choice=$(echo "$choice" | xargs)
       if [[ "$choice" =~ ^[0-9]+$ ]] && [ "$choice" -ge 1 ] && [ "$choice" -le "${#DIRS[@]}" ]; then
         TARGET_FOLDERS+=("${DIRS[$((choice - 1))]}")
@@ -214,14 +315,14 @@ start_base_session
 
 case "$MODE" in
 "all")
-  echo "🚀 Mode: ALL. Setting up full server environment and all project windows."
+  if [ -n "$FILTER_TERM" ]; then
+    echo "🚀 Mode: ALL. Setting up servers and matching projects: ${TARGET_FOLDERS[*]}"
+  else
+    echo "🚀 Mode: ALL. Setting up full server environment and all project windows."
+  fi
   create_servers_window
-  # Loop through all valid directories
-  for dir in */; do
-    folder=$(basename "$dir")
-    if [[ ! " $EXCLUDE_FOLDERS " =~ " $folder " ]]; then
-      create_project_window "$folder"
-    fi
+  for project in "${TARGET_FOLDERS[@]}"; do
+    create_project_window "$project"
   done
   ;;
 

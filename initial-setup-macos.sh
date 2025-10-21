@@ -6,6 +6,7 @@ DOTFILES_DIR="${DOTFILES_DIR:-$HOME/dotfiles}"
 CONFIG_VARIANT="${CONFIG_VARIANT:-macos}"
 BREW_BIN=""
 BREW_PREFIX=""
+SKETCHYBAR="${SKETCHYBAR:-true}"
 
 BREW_TAPS=(
   "koekeishiya/formulae"
@@ -39,7 +40,6 @@ BREW_FORMULAE=(
   "lua"
   "switchaudio-osx"
   "nowplaying-cli"
-  "sketchybar"
   "btop"
 )
 
@@ -65,6 +65,19 @@ warn() {
 die() {
   printf '\n[error] %s\n' "$1" >&2
   exit 1
+}
+
+is_truthy() {
+  local value
+  value="$(printf '%s' "${1:-}" | tr '[:upper:]' '[:lower:]')"
+
+  case "$value" in
+    1|true|y|yes|on)
+      return 0
+      ;;
+  esac
+
+  return 1
 }
 
 ensure_expected_user() {
@@ -184,7 +197,15 @@ ensure_brew_taps() {
 
 install_formulae() {
   local formula
-  for formula in "${BREW_FORMULAE[@]}"; do
+  local formulae=("${BREW_FORMULAE[@]}")
+
+  if is_truthy "$SKETCHYBAR"; then
+    formulae+=("sketchybar")
+  else
+    log "Skipping SketchyBar formula install (SKETCHYBAR=${SKETCHYBAR})."
+  fi
+
+  for formula in "${formulae[@]}"; do
     if "$BREW_BIN" list --formula "$formula" >/dev/null 2>&1; then
       log "Formula ${formula} already installed."
     else
@@ -259,7 +280,11 @@ link_configs() {
   zsh_root="$(dirname "$zshrc_source")"
   zsh_functions_dir="${zsh_root}/zsh"
   config_root="${XDG_CONFIG_HOME:-$HOME/.config}"
-  ghostty_target="${config_root}/ghostty/config"
+  if [[ "$(uname -s)" == "Darwin" ]]; then
+    ghostty_target="$HOME/Library/Application Support/com.mitchellh.ghostty/config"
+  else
+    ghostty_target="${config_root}/ghostty/config"
+  fi
 
   link_file "$zshrc_source" "$HOME/.zshrc"
   if [[ -d "$zsh_functions_dir" ]]; then
@@ -269,7 +294,12 @@ link_configs() {
   fi
   link_file "$DOTFILES_DIR/tmux/tmux.conf" "$HOME/.tmux.conf"
   link_file "$DOTFILES_DIR/ghostty/config" "$ghostty_target"
-  link_file "$DOTFILES_DIR/sketchybar" "${config_root}/sketchybar"
+  link_file "$DOTFILES_DIR/codex" "${config_root}/codex"
+  if is_truthy "$SKETCHYBAR"; then
+    link_file "$DOTFILES_DIR/sketchybar" "${config_root}/sketchybar"
+  else
+    log "Skipping SketchyBar config link (SKETCHYBAR=${SKETCHYBAR})."
+  fi
 }
 
 ensure_neovim_config() {
@@ -559,7 +589,11 @@ main() {
   install_clasp
   install_oh_my_posh_themes
   install_btop_catppuccin_themes
-  install_sketchybar_support
+  if is_truthy "$SKETCHYBAR"; then
+    install_sketchybar_support
+  else
+    log "Skipping SketchyBar support setup (SKETCHYBAR=${SKETCHYBAR})."
+  fi
   ensure_gcloud_symlink
   link_configs
   ensure_neovim_config
