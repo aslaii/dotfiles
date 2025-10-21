@@ -6,7 +6,8 @@
 # Ensure functions.sh is in the same directory or provide the correct path.
 source "$(dirname "$0")/functions.sh"
 
-SESSION_NAME="Gooselaw Setup"
+SESSION_BASE_NAME="Gooselaw Setup"
+SESSION_NAME="$SESSION_BASE_NAME"
 PROJECT_ROOT="${1:-$HOME/work/goose/}" # Main project root
 
 # --- Toggles for server startup ---
@@ -23,7 +24,7 @@ EXCLUDE_FOLDERS="node_modules .git"
 # ---- HELPER FUNCTIONS ----
 # ==============================================================================
 
-# Cleans up previous processes and tmux sessions
+# Cleans up previous processes without touching tmux sessions
 cleanup() {
   echo "🛑 Stopping all Node.js and PHP Artisan processes..."
   pkill -f "node" >/dev/null 2>&1
@@ -33,12 +34,24 @@ cleanup() {
   kill_port 3000
   kill_port 3001
   kill_port 8000
-
-  if tmux has-session -t "$SESSION_NAME" 2>/dev/null; then
-    echo "💥 Deleting existing tmux session: $SESSION_NAME"
-    tmux kill-session -t "$SESSION_NAME"
-  fi
   sleep 1
+}
+
+# Finds an available tmux session name so we can keep prior runs intact
+choose_session_name() {
+  local candidate="$SESSION_BASE_NAME"
+  local index=2
+
+  while tmux has-session -t "$candidate" 2>/dev/null; do
+    candidate="$SESSION_BASE_NAME $index"
+    ((index++))
+  done
+
+  if [ "$candidate" != "$SESSION_BASE_NAME" ]; then
+    echo "🧷 Existing tmux session detected. Using new session name: $candidate"
+  fi
+
+  SESSION_NAME="$candidate"
 }
 
 # Creates the base tmux session
@@ -196,6 +209,7 @@ fi
 # --- Execute Main Actions ---
 switch_github_account "aslaii" "Jericho Bermas" "jecho.deleon@gmail.com"
 cleanup
+choose_session_name
 start_base_session
 
 case "$MODE" in
