@@ -41,6 +41,8 @@ BREW_FORMULAE=(
   "switchaudio-osx"
   "nowplaying-cli"
   "btop"
+  "yabai"
+  "skhd"
 )
 
 BREW_CASKS=(
@@ -295,6 +297,8 @@ link_configs() {
   link_file "$DOTFILES_DIR/tmux/tmux.conf" "$HOME/.tmux.conf"
   link_file "$DOTFILES_DIR/ghostty/config" "$ghostty_target"
   link_file "$DOTFILES_DIR/codex" "${config_root}/codex"
+  link_file "$DOTFILES_DIR/yabai" "${config_root}/yabai"
+  link_file "$DOTFILES_DIR/skhd" "${config_root}/skhd"
   if is_truthy "$SKETCHYBAR"; then
     link_file "$DOTFILES_DIR/sketchybar" "${config_root}/sketchybar"
   else
@@ -568,6 +572,7 @@ print_next_steps() {
   cat <<'MSG'
 
 [next steps]
+- Open System Settings → Privacy & Security → Accessibility and grant access to both yabai and skhd, then run `brew services start yabai` and `brew services start skhd`.
 - Run `gcloud init` to finish Google Cloud CLI configuration.
 - Open a new terminal session so the Homebrew environment and linked dotfiles load correctly.
 - Launch tmux, then press prefix (Ctrl-b) followed by I to install plugins through TPM.

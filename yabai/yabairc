@@ -1,41 +1,39 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
-sudo yabai --load-sa
-yabai -m signal --add event=dock_did_restart action="sudo yabai --load-sa"
+set -euo pipefail
 
-yabai -m config external_bar               all:40:0       \
-                mouse_follows_focus        off            \
-                focus_follows_mouse        off            \
-                window_zoom_persist        off            \
-                window_placement           second_child   \
-                window_shadow              float          \
-                window_opacity             on             \
-                window_opacity_duration    0.2            \
-                active_window_opacity      1.0            \
-                normal_window_opacity      0.8            \
-                window_animation_duration  0.5            \
-                window_animation_easing    ease_out_quint \
-                insert_feedback_color      0xff9dd274     \
-                split_ratio                0.50           \
-                auto_balance               off            \
-                mouse_modifier             fn             \
-                mouse_action1              move           \
-                mouse_action2              resize         \
-                mouse_drop_action          swap           \
-                                                          \
-                top_padding                8              \
-                bottom_padding             8              \
-                left_padding               8              \
-                right_padding              8              \
-                window_gap                 10
+# -----------------------------------------------------------------------------
+# Minimal yabai configuration tuned for beginners. Nothing here requires the
+# scripting addition, so you can get started without disabling SIP. Pair this
+# with the simplified skhd key bindings in ../skhd/skhdrc.
+# -----------------------------------------------------------------------------
 
-# Exclude problematic apps from being managed:
-yabai -m rule --add app="^(LuLu|Calculator|Software Update|Dictionary|VLC|System Preferences|System Settings|zoom.us|Photo Booth|Archive Utility|Python|LibreOffice|App Store|Steam|Alfred|Activity Monitor)$" manage=off
-yabai -m rule --add label="Finder" app="^Finder$" title="(Co(py|nnect)|Move|Info|Pref)" manage=off
-yabai -m rule --add label="Safari" app="^Safari$" title="^(General|(Tab|Password|Website|Extension)s|AutoFill|Se(arch|curity)|Privacy|Advance)$" manage=off
-yabai -m rule --add label="About This Mac" app="System Information" title="About This Mac" manage=off
-yabai -m rule --add label="Select file to save to" app="^Inkscape$" title="Select file to save to" manage=off
+# Core layout behaviour
+yabai -m config layout                 bsp
+yabai -m config split_ratio            0.50
+yabai -m config auto_balance           on
+yabai -m config window_placement       second_child
+yabai -m config mouse_follows_focus    off
+yabai -m config focus_follows_mouse    off
+yabai -m config top_padding            8
+yabai -m config bottom_padding         8
+yabai -m config left_padding           8
+yabai -m config right_padding          8
+yabai -m config window_gap             10
 
-yabai -m config layout bsp
+# Enable simple mouse interactions (hold fn to move/resize a window by mouse)
+yabai -m config mouse_modifier         fn
+yabai -m config mouse_action1          move
+yabai -m config mouse_action2          resize
+yabai -m config mouse_drop_action      swap
 
-echo "yabai configuration loaded.."
+# Leave adaptive animations on for clearer visual feedback when starting out
+yabai -m config window_animation_duration 0.2
+yabai -m config window_animation_easing   ease_in_out_cubic
+
+# Float common dialogs and utility applications automatically
+yabai -m rule --add app="^(App Store|Calculator|Dictionary|Finder|Music|Photo Booth|Preview|QuickTime Player|System Information|System Preferences|System Settings|zoom.us)$" manage=off
+yabai -m rule --add app="^Finder$" title="(Co(py|nnect)|Move|Pref|Info)" manage=off
+yabai -m rule --add label="Screenshot" app="^Screenshot$" manage=off
+
+echo "yabai configuration loaded (minimal profile)."

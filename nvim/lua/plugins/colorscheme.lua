@@ -1,3 +1,50 @@
+local function get_system_flavour()
+  local override = vim.env.NVIM_THEME or vim.env.NVIM_FLAVOUR or vim.env.CATPPUCCIN_FLAVOUR
+  if override then
+    local normalized = override:lower()
+    if normalized:find("latte", 1, true) or normalized:find("light", 1, true) then
+      return "latte"
+    end
+    if normalized:find("mocha", 1, true) or normalized:find("dark", 1, true) then
+      return "mocha"
+    end
+  end
+
+  if vim.fn.has("macunix") == 1 then
+    local output = vim.fn.system({ "defaults", "read", "-g", "AppleInterfaceStyle" })
+    if vim.v.shell_error == 0 and output:match("Dark") then
+      return "mocha"
+    end
+    return "latte"
+  end
+
+  if vim.fn.executable("gsettings") == 1 then
+    local output = vim.fn.system({ "gsettings", "get", "org.gnome.desktop.interface", "color-scheme" })
+    if vim.v.shell_error == 0 then
+      local value = output:lower()
+      if value:match("dark") then
+        return "mocha"
+      end
+      if value:match("light") or value:match("default") then
+        return "latte"
+      end
+    end
+  end
+
+  if vim.o.background == "light" then
+    return "latte"
+  end
+
+  return "mocha"
+end
+
+local function apply_catppuccin(opts, flavour)
+  opts.flavour = flavour
+  require("catppuccin").setup(opts)
+  vim.o.background = flavour == "latte" and "light" or "dark"
+  vim.cmd.colorscheme("catppuccin")
+end
+
 return {
   "catppuccin/nvim",
   lazy = false,
@@ -5,12 +52,10 @@ return {
   priority = 1000,
 
   opts = function()
-    vim.env.TZ = "Asia/Manila"
-    local hour = tonumber(os.date("%H"))
-    local current_flavour = (hour >= 6 and hour < 18) and "latte" or "mocha"
+    local flavour = get_system_flavour()
 
     return {
-      flavour = current_flavour,
+      flavour = flavour,
       float = {
         transparent = false,
         solid = true,
@@ -48,22 +93,15 @@ return {
   end,
 
   config = function(_, opts)
-    require("catppuccin").setup(opts)
-    vim.cmd.colorscheme("catppuccin")
+    apply_catppuccin(opts, opts.flavour)
 
     vim.api.nvim_create_autocmd("FocusGained", {
       pattern = "*",
       callback = function()
-        vim.env.TZ = "Asia/Manila"
-        local hour = tonumber(os.date("%H"))
-        local new_flavor = (hour >= 6 and hour < 18) and "latte" or "mocha"
+        local new_flavour = get_system_flavour()
 
-        if vim.g.catppuccin_flavour ~= new_flavor then
-          require("catppuccin").setup({
-            flavour = new_flavor,
-            float = { transparent = false, solid = true },
-          })
-          vim.cmd.colorscheme("catppuccin")
+        if new_flavour ~= opts.flavour then
+          apply_catppuccin(opts, new_flavour)
         end
       end,
     })
