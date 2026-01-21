@@ -200,4 +200,9 @@ else
   echo "Neovim config already linked."
 fi
 
+# 20. Link Opencode config
+if [ ! -L "$HOME/.config/opencode" ]; then
+  link_file "$HOME/dotfiles/opencode" "$HOME/.config/opencode"
+fi
+
 echo "Setup complete! You may want to restart your terminal."

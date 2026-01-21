@@ -299,6 +299,7 @@ link_configs() {
   link_file "$DOTFILES_DIR/codex" "${config_root}/codex"
   link_file "$DOTFILES_DIR/yabai" "${config_root}/yabai"
   link_file "$DOTFILES_DIR/skhd" "${config_root}/skhd"
+  link_file "$DOTFILES_DIR/opencode" "${config_root}/opencode"
   if is_truthy "$SKETCHYBAR"; then
     link_file "$DOTFILES_DIR/sketchybar" "${config_root}/sketchybar"
   else
