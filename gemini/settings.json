@@ -3,5 +3,21 @@
     "auth": {
       "selectedType": "gemini-api-key"
     }
+  },
+  "general": {
+    "previewFeatures": true,
+    "vimMode": false,
+    "disableAutoUpdate": true,
+    "sessionRetention": {
+      "enabled": true
+    }
+  },
+  "ui": {
+    "theme": "Dracula"
+  },
+  "tools": {
+    "shell": {
+      "showColor": false
+    }
   }
 }
