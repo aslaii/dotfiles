@@ -56,8 +56,13 @@ return {
 
     return {
       flavour = flavour,
+      transparent_background = true,
+      styles = {
+        sidebars = "transparent",
+        floats = "transparent",
+      },
       float = {
-        transparent = false,
+        transparent = true,
         solid = true,
       },
       integrations = {

@@ -22,20 +22,7 @@ alias mailhog='~/go/bin/MailHog'
 alias bat="batcat"
 
 # Work scripts
-alias run-work-1="~/wsg_setup.sh"
-alias run-work-2="~/dotfiles/setups/reforal_setup.sh"
-alias run-work-3="~/dotfiles/setups/tulu_setup.sh"
-alias run-work-4="~/job_setup.sh"
-alias run-work-5="~/dotfiles/setups/vublox_setup.sh"
-alias run-omni="~/dotfiles/setups/omni_setup.sh"
-alias run-coden="~/dotfiles/setups/coden_setup.sh"
-alias run-resq="~/dotfiles/setups/resq_setup.sh"
-alias run-rfl="~/dotfiles/setups/reforal_setup.sh"
-alias run-yg="~/dotfiles/setups/yg_setup.sh"
-alias run-goose="~/dotfiles/setups/goose_setup.sh"
-alias run-auto="~/dotfiles/setups/auto_setup.sh"
-alias run-secl="~/dotfiles/setups/secl_setup.sh"
-alias run-sea="~/dotfiles/setups/sea_setup.sh"
+alias rave="~/dotfiles/setups/rave_setup.sh"
 alias dotconfig="~/dotfiles/setups/dotconfig_setup.sh"
 
 # Git

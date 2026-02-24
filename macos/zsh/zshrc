@@ -116,3 +116,6 @@ esac
 # pnpm end
 
 export PATH=$PATH:/Users/aslaii/.spicetify
+
+# Added by Antigravity
+export PATH="/Users/aslaii/.antigravity/antigravity/bin:$PATH"

@@ -1,0 +1,18 @@
+{
+  "name": "Catppuccin Latte",
+  "type": "custom",
+  "Background": "#eff1f5",
+  "Foreground": "#4c4f69",
+  "LightBlue": "#04a5e5",
+  "AccentBlue": "#1e66f5",
+  "AccentPurple": "#8839ef",
+  "AccentCyan": "#179299",
+  "AccentGreen": "#40a02b",
+  "AccentYellow": "#df8e1d",
+  "AccentRed": "#d20f39",
+  "Comment": "#7c7f93",
+  "Gray": "#8c8fa1",
+  "DiffAdded": "#a9d1a4",
+  "DiffRemoved": "#e397aa",
+  "GradientColors": ["#1e66f5", "#8839ef", "#d20f39"]
+}

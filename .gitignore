@@ -1,7 +1,21 @@
+# macOS
+.DS_Store
+**/.DS_Store
+
 # Ignore Gemini CLI temporary files and credentials
 gemini/tmp/
 gemini/.env
 gemini/google_accounts.json
 gemini/installation_id
-gemini/oauth_creds.jsongemini/mcp-oauth-tokens-v2.json
+gemini/oauth_creds.json
+gemini/mcp-oauth-tokens-v2.json
 gemini/state.json
+gemini/projects.json
+gemini/trustedFolders.json
+gemini/history/
+gemini/antigravity/
+gemini/antigravity-browser-profile/
+
+# Node
+node_modules/
+**/node_modules/
