@@ -19,13 +19,10 @@
     "enablePromptCompletion": true
   },
   "ui": {
-    "theme": {
-      "light": "Catppuccin Latte",
-      "dark": "Catppuccin Mocha"
-    },
+    "theme": "Catppuccin Mocha",
     "autoThemeSwitching": true,
-    "customThemes": [
-      {
+    "customThemes": {
+      "Catppuccin Frappé": {
         "name": "Catppuccin Frappé",
         "type": "custom",
         "Background": "#303446",
@@ -47,7 +44,7 @@
           "#e78284"
         ]
       },
-      {
+      "Catppuccin Latte": {
         "name": "Catppuccin Latte",
         "type": "custom",
         "Background": "#eff1f5",
@@ -69,7 +66,7 @@
           "#d20f39"
         ]
       },
-      {
+      "Catppuccin Macchiato": {
         "name": "Catppuccin Macchiato",
         "type": "custom",
         "Background": "#24273a",
@@ -91,7 +88,7 @@
           "#ed8796"
         ]
       },
-      {
+      "Catppuccin Mocha": {
         "name": "Catppuccin Mocha",
         "type": "custom",
         "Background": "#1e1e2e",
@@ -113,7 +110,7 @@
           "#f38ba8"
         ]
       }
-    ],
+    },
     "inlineThinkingMode": "full",
     "showStatusInTitle": true,
     "footer": {
