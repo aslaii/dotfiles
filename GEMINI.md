@@ -50,3 +50,32 @@ As outlined in `AGENTS.md`, development in this repository should follow these c
 -   **Idempotency:** Scripts should be safe to re-run.
 -   **Commits:** Use imperative, concise commit subjects.
 -   **Security:** Never commit secrets. Store them in system keychains or external `.env` files.
+
+## Engineering Standards
+
+To maintain a high-quality codebase for React, React Native, and NestJS, all agents must adhere to:
+
+- **SOLID Principles**: 
+    - *Single Responsibility*: Group logic into small, focused services/components.
+    - *Open/Closed*: Prefer composition and strategy patterns over complex conditionals.
+    - *Interface Segregation*: Define narrow interfaces/DTOs for specific use cases.
+- **DRY (Don't Repeat Yourself)**: Extract common logic into custom hooks (Frontend) or shared providers/utilities (Backend).
+- **Type Safety**: Absolute preference for TypeScript. Avoid `any`. Use strict DTOs for NestJS and Zod/Type interfaces for React.
+- **Testing**: Every new feature or bug fix MUST include a corresponding test (Jest for NestJS/React).
+
+## Tooling & Interoperability
+
+### MCP (Model Context Protocol)
+- Use the **Filesystem MCP** for deep directory indexing when searching for patterns.
+- Configure specialized MCPs in `gemini/settings.json` for external integrations (e.g., Slack, GitHub).
+
+### LSP & CLI Tools
+For autonomous codebase management, ensure the following are available in the shell:
+- `typescript-language-server`: For TS/JS intelligence.
+- `eslint` / `prettier`: For standardizing code style.
+- `nest-cli`: For scaffolding and module management.
+- `bun` / `pnpm`: Primary package managers.
+
+### AI Agent Workflow (Plan Mode)
+- **Strict Read-Only**: While in Plan Mode, you must EXCLUSIVELY use read-only tools. Any attempt to modify files or use write-capable tools (including MCP-based file edits) is prohibited.
+- **Goal**: Focus solely on research, strategy, and design.

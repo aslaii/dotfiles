@@ -25,6 +25,7 @@
 - Follow imperative, concise commit subjects (e.g., `Refine wsl zsh aliases`). Prefix with a Conventional Commit type when it clarifies scope (`feat:`, `fix:`).
 - Each PR should describe affected machines or workflows, list manual verification steps, and link any issue or request ticket.
 - Include before/after snippets for config changes, and mention any scripts that must be rerun.
+- Full PR standards (size limits, branch naming, description template, review rules, merge strategy): see `PR_STANDARDS.md`.
 
 ## Security & Configuration Tips
 - Never commit API keys, SSH material, or personal tokens. Keep secrets in system keychains or `.env` files outside this repo.
