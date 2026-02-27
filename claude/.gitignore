@@ -1,0 +1,29 @@
+# Claude Code runtime artifacts — do not version-control
+backups/
+cache/
+debug/
+file-history/
+history.jsonl
+image-cache/
+paste-cache/
+plans/
+plugins/blocklist.json
+projects/
+session-env/
+shell-snapshots/
+statsig/
+tasks/
+telemetry/
+tmp/
+todos/
+
+# Auth / credentials
+.env
+.credentials.json
+installation_id
+mcp-oauth-tokens*.json
+state.json
+trusted_folders.json
+
+# Versioned (explicitly tracked):
+# CLAUDE.md, settings.json, skills/
