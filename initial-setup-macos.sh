@@ -537,6 +537,36 @@ ensure_gcloud_symlink() {
   warn "Google Cloud SDK installation not found; run 'brew install --cask google-cloud-sdk' if missing."
 }
 
+setup_claude_mcp_servers() {
+  if ! command -v claude >/dev/null 2>&1; then
+    warn "claude CLI not found; skipping MCP server setup. Install Claude Code and rerun."
+    return
+  fi
+
+  local -A mcp_servers=(
+    [filesystem]="npx -y @modelcontextprotocol/server-filesystem /Users/aslaii"
+    [fetch]="npx -y @modelcontextprotocol/server-fetch"
+    [memory]="npx -y @modelcontextprotocol/server-memory"
+    [sequential-thinking]="npx -y @modelcontextprotocol/server-sequential-thinking"
+    [github]="npx -y @modelcontextprotocol/server-github"
+    [brave-search]="npx -y @modelcontextprotocol/server-brave-search"
+  )
+
+  local name args_str
+  for name in "${!mcp_servers[@]}"; do
+    if claude mcp get "$name" >/dev/null 2>&1; then
+      log "Claude MCP server '${name}' already configured; skipping."
+    else
+      args_str="${mcp_servers[$name]}"
+      log "Registering Claude MCP server '${name}'..."
+      # shellcheck disable=SC2086
+      if ! claude mcp add --scope user "$name" -- $args_str; then
+        warn "Failed to register Claude MCP server '${name}'."
+      fi
+    fi
+  done
+}
+
 ensure_github_auth() {
   if ! command -v gh >/dev/null 2>&1; then
     warn "GitHub CLI not found; skipping authentication."
@@ -605,6 +635,7 @@ main() {
   link_configs
   ensure_neovim_config
   ensure_tpm
+  setup_claude_mcp_servers
   ensure_github_auth
   ensure_default_shell
   print_next_steps
