@@ -2,7 +2,7 @@
 name: pr-standards
 description: >
   Enforce and apply pull request standards. Use when opening a PR, writing a PR description,
-  reviewing a PR, naming a branch, or checking if a PR is ready to merge.
+  creating a PR via gh CLI, reviewing a PR, naming a branch, or checking if a PR is ready to merge.
 ---
 
 # PR Standards Skill
@@ -12,6 +12,27 @@ description: >
 Pull Requests ensure that all code entering the codebase is reviewed, tested, understandable,
 maintainable, and safe to deploy. PRs are a **knowledge-sharing and quality control mechanism**,
 not just an approval gate.
+
+## Workflow: Creating a Pull Request (/create-pr)
+
+When asked to create a PR or use `/create-pr`:
+
+### 1. Branch Validation
+- **Check current branch**: `git branch --show-current`
+- **Constraint**: If on `staging` or if no feature branch exists, **STOP**. Advise the user to create a new branch first (e.g., `git checkout -b feature/my-feature`).
+
+### 2. Context Gathering
+- **Read staged changes**: `git diff --staged`
+- **Gather additional context**: If the user provided specific details, incorporate them.
+
+### 3. Generate PR Content
+Follow the standards below to generate a Title and Description.
+
+### 4. Execute PR Creation
+Use the GitHub CLI:
+```bash
+gh pr create --title "[type] Short description" --body "## Summary..."
+```
 
 ---
 

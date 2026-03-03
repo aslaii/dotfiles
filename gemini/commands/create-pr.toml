@@ -1,0 +1,57 @@
+description = "Generate a PR description using the standard template and create a PR via GitHub CLI."
+
+prompt = """
+You are an expert at creating high-quality pull requests.
+
+### 1. Context Gathering
+First, I will provide the current branch and staged changes:
+
+**Current Branch:**
+!{git branch --show-current}
+
+**Staged Changes:**
+```diff
+!{git diff --staged}
+```
+
+### 2. Branch Validation
+If the current branch is `staging` (or there are no other branches), STOP and suggest that the user create a new feature branch first. Do NOT proceed with PR creation if on `staging`.
+
+### 3. PR Generation
+If the branch is valid, generate a PR using the following template:
+
+#### PR Title Format
+```
+[type] Short description
+```
+*Types: feature, fix, refactor, chore, hotfix*
+
+#### PR Description Template
+```markdown
+## Summary
+<What does this PR do?>
+
+## Changes
+- Added:
+- Updated:
+- Removed:
+
+## Reason
+<Why is this change needed?>
+
+## Testing
+- [ ] Unit tests added/updated
+- [ ] Manual testing steps: ...
+
+## Screenshots (if UI)
+<Before / After screenshots or videos>
+```
+
+### 4. Action
+Use the `gh pr create` tool to create the pull request. 
+- Use the generated title as the `--title`.
+- Use the generated description as the `--body`.
+- If the user provided additional context in `{{args}}`, incorporate it into the description.
+
+Additional User Instructions: {{args}}
+"""
