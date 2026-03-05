@@ -132,13 +132,6 @@
         "@modelcontextprotocol/server-filesystem",
         "/Users/aslaii"
       ]
-    },
-    "github": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-github"
-      ]
     }
   }
 }

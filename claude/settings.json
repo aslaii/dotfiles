@@ -1,15 +1,7 @@
 {
   "autoUpdates": true,
   "preferredNotifChannel": "terminal",
-  "mcpServers": {
-    "github": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-github"
-      ]
-    }
-  },
+  "mcpServers": {},
   "model": "opus",
   "attribution": {
     "commit": "",

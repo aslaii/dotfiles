@@ -295,6 +295,7 @@ link_configs() {
     warn "Expected zsh functions directory ${zsh_functions_dir} missing; skipping ~/.zsh link."
   fi
   link_file "$DOTFILES_DIR/tmux/tmux.conf" "$HOME/.tmux.conf"
+  link_file "$DOTFILES_DIR/codex/AGENTS.md" "$HOME/AGENTS.md"
   link_file "$DOTFILES_DIR/ghostty/config" "$ghostty_target"
   link_file "$DOTFILES_DIR/codex" "${config_root}/codex"
   link_file "$DOTFILES_DIR/yabai" "${config_root}/yabai"
@@ -548,7 +549,6 @@ setup_claude_mcp_servers() {
     [fetch]="npx -y @modelcontextprotocol/server-fetch"
     [memory]="npx -y @modelcontextprotocol/server-memory"
     [sequential-thinking]="npx -y @modelcontextprotocol/server-sequential-thinking"
-    [github]="npx -y @modelcontextprotocol/server-github"
     [brave-search]="npx -y @modelcontextprotocol/server-brave-search"
   )
 
