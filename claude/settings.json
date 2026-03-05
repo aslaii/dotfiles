@@ -9,5 +9,10 @@
         "@modelcontextprotocol/server-github"
       ]
     }
+  },
+  "model": "opus",
+  "attribution": {
+    "commit": "",
+    "pr": ""
   }
 }

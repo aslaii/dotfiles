@@ -28,6 +28,8 @@ When asked to create a PR or use `/create-pr`:
 ### 3. Generate PR Content
 Follow the standards below to generate a Title and Description.
 
+**CRITICAL**: Do NOT include any AI attribution, trademarks, or "Co-Authored-By" tags in the PR title or body. Specifically, never append "Generated with Claude Code" or "Co-Authored-By: Claude <noreply@anthropic.com>".
+
 ### 4. Execute PR Creation
 Use the GitHub CLI:
 ```bash

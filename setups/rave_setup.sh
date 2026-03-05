@@ -105,7 +105,7 @@ create_project_window() {
 
   # Split horizontally
   local right_pane=$(tmux split-window -h -t "$SESSION_NAME:$project_name" -P -F "#{pane_id}")
-  tmux send-keys -t "$right_pane" "cd \"$project_path\" && codex" C-m
+  tmux send-keys -t "$right_pane" "cd \"$project_path\" && gemini" C-m
   tmux select-pane -t "$right_pane" -T "Codex" # Title for the right pane
 
   tmux select-pane -t "$SESSION_NAME:$project_name.1" -T "Shell" # Title for the left pane

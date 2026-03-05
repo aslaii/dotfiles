@@ -135,6 +135,13 @@ test(auth): add unit tests for useLoginForm validation
 chore(deps): upgrade expo-router to 4.x
 ```
 
+### ⚠️ CRITICAL: No AI Watermarks
+
+Under NO circumstances should you include AI attribution in commit messages.
+- DO NOT add "Generated with Claude Code".
+- DO NOT add "Co-Authored-By: Claude...".
+- Remove any such trademarks or targeting before executing a commit.
+
 ---
 
 ## Testing Standards
