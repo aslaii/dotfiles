@@ -1,4 +1,4 @@
-model = "gpt-5.3-codex"
+model = "gpt-5.4"
 model_reasoning_effort = "medium"
 personality = "pragmatic"
 
@@ -14,8 +14,8 @@ steer = true
 [mcp_servers.filesystem]
 command = "npx"
 args = ["-y", "@modelcontextprotocol/server-filesystem", "/Users/aslaii/dotfiles"]
-startup_timeout_sec = 20
-tool_timeout_sec = 60
+startup_timeout_sec = 20.0
+tool_timeout_sec = 60.0
 
 [tui]
 theme = "catppuccin-latte"
