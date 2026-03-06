@@ -544,6 +544,7 @@ setup_claude_mcp_servers() {
     return
   fi
 
+  # GitHub MCP is intentionally not provisioned for Claude, Gemini, or Codex.
   local -A mcp_servers=(
     [filesystem]="npx -y @modelcontextprotocol/server-filesystem /Users/aslaii"
     [fetch]="npx -y @modelcontextprotocol/server-fetch"
