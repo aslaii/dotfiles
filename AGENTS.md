@@ -26,6 +26,7 @@
 - Each PR should describe affected machines or workflows, list manual verification steps, and link any issue or request ticket.
 - Include before/after snippets for config changes, and mention any scripts that must be rerun.
 - Full PR standards (size limits, branch naming, description template, review rules, merge strategy): see `PR_STANDARDS.md`.
+- For Codex code-change outputs, align summaries to the PR template sections: `Summary`, `Changes` (`Added/Updated/Removed`), `Reason`, `Testing`, and `Screenshots (if UI)` when relevant.
 
 ## Security & Configuration Tips
 - Never commit API keys, SSH material, or personal tokens. Keep secrets in system keychains or `.env` files outside this repo.

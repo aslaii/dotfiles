@@ -35,6 +35,7 @@ alias run-goose="~/dotfiles/setups/goose_setup.sh"
 alias run-auto="~/dotfiles/setups/auto_setup.sh"
 alias run-secl="~/dotfiles/setups/secl_setup.sh"
 alias run-sea="~/dotfiles/setups/sea_setup.sh"
+alias cpr="~/dotfiles/scripts/create-pr.sh"
 
 
 # Git

@@ -14,6 +14,28 @@ PRs are not just for approval — they are a **knowledge-sharing and quality con
 
 ---
 
+## Codex PR Command
+
+Use the local helper command to generate and open a PR with this template:
+
+```bash
+cpr
+```
+
+Preview only (no PR creation):
+
+```bash
+cpr --dry-run
+```
+
+You can also pass extra context:
+
+```bash
+cpr "Include migration note for ops team"
+```
+
+---
+
 ## Core Principles
 
 Every PR must be:

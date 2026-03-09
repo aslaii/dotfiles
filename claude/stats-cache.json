@@ -1,0 +1,102 @@
+{
+  "version": 2,
+  "lastComputedDate": "2026-03-02",
+  "dailyActivity": [
+    {
+      "date": "2026-02-25",
+      "messageCount": 2158,
+      "sessionCount": 17,
+      "toolCallCount": 462
+    },
+    {
+      "date": "2026-02-26",
+      "messageCount": 1665,
+      "sessionCount": 13,
+      "toolCallCount": 340
+    },
+    {
+      "date": "2026-02-27",
+      "messageCount": 2330,
+      "sessionCount": 21,
+      "toolCallCount": 430
+    },
+    {
+      "date": "2026-03-02",
+      "messageCount": 1035,
+      "sessionCount": 12,
+      "toolCallCount": 179
+    }
+  ],
+  "dailyModelTokens": [
+    {
+      "date": "2026-02-25",
+      "tokensByModel": {
+        "claude-sonnet-4-6": 122625
+      }
+    },
+    {
+      "date": "2026-02-26",
+      "tokensByModel": {
+        "claude-sonnet-4-6": 143666,
+        "claude-opus-4-6": 20989
+      }
+    },
+    {
+      "date": "2026-02-27",
+      "tokensByModel": {
+        "claude-sonnet-4-6": 319941
+      }
+    },
+    {
+      "date": "2026-03-02",
+      "tokensByModel": {
+        "claude-opus-4-6": 64995,
+        "claude-sonnet-4-6": 1762
+      }
+    }
+  ],
+  "modelUsage": {
+    "claude-sonnet-4-6": {
+      "inputTokens": 19999,
+      "outputTokens": 567995,
+      "cacheReadInputTokens": 95633183,
+      "cacheCreationInputTokens": 4352195,
+      "webSearchRequests": 0,
+      "costUSD": 0,
+      "contextWindow": 0,
+      "maxOutputTokens": 0
+    },
+    "claude-opus-4-6": {
+      "inputTokens": 24034,
+      "outputTokens": 61950,
+      "cacheReadInputTokens": 19915634,
+      "cacheCreationInputTokens": 1129517,
+      "webSearchRequests": 0,
+      "costUSD": 0,
+      "contextWindow": 0,
+      "maxOutputTokens": 0
+    }
+  },
+  "totalSessions": 63,
+  "totalMessages": 7188,
+  "longestSession": {
+    "sessionId": "faeca308-911a-4c90-9abb-860c03f6d3b4",
+    "duration": 79918913,
+    "messageCount": 8,
+    "timestamp": "2026-02-26T03:04:13.014Z"
+  },
+  "firstSessionDate": "2026-02-25T02:01:00.370Z",
+  "hourCounts": {
+    "8": 1,
+    "9": 11,
+    "10": 15,
+    "11": 4,
+    "12": 2,
+    "13": 2,
+    "14": 12,
+    "15": 11,
+    "16": 4,
+    "17": 1
+  },
+  "totalSpeculationTimeSavedMs": 0
+}

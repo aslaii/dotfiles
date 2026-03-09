@@ -6,10 +6,9 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
     vim.api.nvim_echo({
       { "Failed to clone lazy.nvim:\n", "ErrorMsg" },
       { out, "WarningMsg" },
-      { "\nPress any key to exit..." },
+      { "\nLazyVim bootstrap skipped. Run :messages to review the error.", "WarningMsg" },
     }, true, {})
-    vim.fn.getchar()
-    os.exit(1)
+    return
   end
 end
 vim.opt.rtp:prepend(lazypath)

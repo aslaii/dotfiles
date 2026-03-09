@@ -11,6 +11,7 @@ return {
       "shfmt",
       "some-sass-language-server",
       "stylua",
+      "tree-sitter-cli",
       "dcm",
     },
   },
