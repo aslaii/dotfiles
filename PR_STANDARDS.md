@@ -76,19 +76,60 @@ If large changes are required:
 ## Branch Naming Convention
 
 ```
-feature/<short-description>
+feat/<short-description>
 fix/<short-description>
 refactor/<short-description>
 chore/<short-description>
 hotfix/<short-description>
+docs/<short-description>
+test/<short-description>
+ci/<short-description>
+perf/<short-description>
 ```
+
+Rules:
+
+- Use lowercase kebab-case for the description.
+- Keep names short and specific to one logical change.
+- Do not open PRs from `main` or `staging`.
 
 ### Examples
 
 ```
-feature/user-onboarding-flow
+feat/user-onboarding-flow
 fix/auth-token-expiration
 refactor/payment-service
+```
+
+---
+
+## Commit Message Convention (Required)
+
+Use Conventional Commits for every commit:
+
+```text
+<type>[optional scope]: <description>
+```
+
+Examples:
+
+```text
+feat(setups): add goose bootstrap profile
+fix(wsl): prevent duplicate alias export
+docs(pr): clarify branch naming rules
+```
+
+Breaking changes:
+
+- Use `!` before `:` in the header when applicable.
+- Add a footer with `BREAKING CHANGE: <details>` when context is needed.
+
+Example:
+
+```text
+feat(setups)!: replace legacy install flow
+
+BREAKING CHANGE: initial-setup.sh now requires Ubuntu 24.04+
 ```
 
 ---

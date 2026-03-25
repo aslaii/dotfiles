@@ -22,7 +22,10 @@
 - After edits to symlinks or configs, verify they load by sourcing `.zshrc`, restarting `tmux`, or reloading `yabai --restart`.
 
 ## Commit & Pull Request Guidelines
-- Follow imperative, concise commit subjects (e.g., `Refine wsl zsh aliases`). Prefix with a Conventional Commit type when it clarifies scope (`feat:`, `fix:`).
+- Use Conventional Commit messages for all commits: `<type>[optional scope]: <description>` (e.g., `feat(wsl): add bootstrap alias`).
+- Use lowercase commit types such as `feat`, `fix`, `chore`, `docs`, `refactor`, `test`, `ci`, and `perf`.
+- Mark breaking changes with `!` in the header and/or a `BREAKING CHANGE:` footer.
+- Create branches with lowercase kebab-case names: `<type>/<short-description>` (e.g., `fix/auth-token-expiration`).
 - Each PR should describe affected machines or workflows, list manual verification steps, and link any issue or request ticket.
 - Include before/after snippets for config changes, and mention any scripts that must be rerun.
 - Full PR standards (size limits, branch naming, description template, review rules, merge strategy): see `PR_STANDARDS.md`.

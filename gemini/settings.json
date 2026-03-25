@@ -1,27 +1,28 @@
 {
   "experimental": {
-    "plan": true
+    "plan": true,
+    "enableAgents": true
   },
   "security": {
     "auth": {
       "selectedType": "oauth-personal"
-    }
+    },
+    "disableYoloMode": true
   },
   "general": {
     "previewFeatures": true,
     "vimMode": false,
-    "disableAutoUpdate": true,
     "sessionRetention": {
       "enabled": true,
       "maxAge": "30d",
       "warningAcknowledged": true
     },
     "enableAutoUpdate": true,
-    "defaultApprovalMode": "plan",
+    "defaultApprovalMode": "default",
     "enablePromptCompletion": true
   },
   "ui": {
-    "theme": "Catppuccin Latte",
+    "theme": "Catppuccin Mocha",
     "autoThemeSwitching": true,
     "customThemes": {
       "Catppuccin Frappé": {
@@ -117,7 +118,8 @@
     "showStatusInTitle": true,
     "footer": {
       "hideSandboxStatus": true
-    }
+    },
+    "terminalBackgroundPollingInterval": 60
   },
   "tools": {
     "shell": {
@@ -133,5 +135,45 @@
         "/Users/aslaii"
       ]
     }
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"/Users/aslaii/.gemini/hooks/gsd-check-update.js\""
+          }
+        ]
+      }
+    ],
+    "AfterTool": [
+      {
+        "matcher": "Bash|Edit|Write|MultiEdit|Agent|Task",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"/Users/aslaii/.gemini/hooks/gsd-context-monitor.js\"",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "BeforeTool": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"/Users/aslaii/.gemini/hooks/gsd-prompt-guard.js\"",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "node \"/Users/aslaii/.gemini/hooks/gsd-statusline.js\""
   }
 }

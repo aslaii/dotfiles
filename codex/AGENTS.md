@@ -8,10 +8,59 @@ Repository-level `AGENTS.md` files may extend these rules.
 Use `PR_STANDARDS.md` in the current repository as the source of truth when it exists.
 If it does not exist, follow the standards below.
 
+### Branch Naming (Required)
+
+When creating a branch for work that will become a PR, use:
+
+```text
+<type>/<short-kebab-description>
+```
+
+Recommended `type` values:
+
+- `feat`
+- `fix`
+- `refactor`
+- `chore`
+- `hotfix`
+- `docs`
+- `test`
+- `ci`
+- `perf`
+
+Examples:
+
+- `feat/user-onboarding-flow`
+- `fix/auth-token-expiration`
+- `chore/update-shellcheck-rules`
+
+Never commit directly to `main` or `staging`.
+
 ### Branch Validation
 
 - Before drafting or creating a PR, check current branch.
 - If branch is `staging`, stop and ask for a feature/fix branch.
+
+### Commit Message Format (Required)
+
+Use Conventional Commits:
+
+```text
+<type>[optional scope]: <description>
+```
+
+Rules:
+
+- Use lowercase type tokens (`feat`, `fix`, `chore`, etc.).
+- Keep description imperative and concise.
+- Use `!` for breaking changes (`feat(api)!: remove v1 endpoint`).
+- Add footer when needed, including `BREAKING CHANGE: ...`.
+
+Examples:
+
+- `feat(wsl): add setup profile selector`
+- `fix(tmux): preserve pane title on restart`
+- `chore: align PR template headings`
 
 ### PR Title Format
 

@@ -131,3 +131,26 @@ function ensure_gemini_api_key() {
     echo "No API key entered. Skipping."
   fi
 }
+
+function sync_ai_cli_theme() {
+  local sync_script="$HOME/dotfiles/scripts/sync-ai-cli-theme.sh"
+
+  if [ -x "$sync_script" ]; then
+    "$sync_script" >/dev/null 2>&1
+  fi
+}
+
+function codex() {
+  sync_ai_cli_theme
+  command codex "$@"
+}
+
+function gemini() {
+  sync_ai_cli_theme
+  command gemini "$@"
+}
+
+function claude() {
+  sync_ai_cli_theme
+  command claude "$@"
+}

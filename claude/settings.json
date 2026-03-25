@@ -1,10 +1,51 @@
 {
-  "autoUpdates": true,
-  "preferredNotifChannel": "terminal",
-  "mcpServers": {},
-  "model": "opus",
   "attribution": {
     "commit": "",
     "pr": ""
-  }
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"/Users/aslaii/.claude/hooks/gsd-check-update.js\""
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Bash|Edit|Write|MultiEdit|Agent|Task",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"/Users/aslaii/.claude/hooks/gsd-context-monitor.js\"",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"/Users/aslaii/.claude/hooks/gsd-prompt-guard.js\"",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "node \"/Users/aslaii/.claude/hooks/gsd-statusline.js\""
+  },
+  "skipDangerousModePermissionPrompt": true,
+  "autoUpdates": true,
+  "preferredNotifChannel": "terminal",
+  "mcpServers": {},
+  "theme": "light"
 }

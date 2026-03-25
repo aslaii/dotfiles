@@ -1,3 +1,9 @@
 theme = dark:Catppuccin Mocha,light:Catppuccin Latte
+title = " "
+macos-titlebar-style = hidden
+macos-titlebar-proxy-icon = hidden
+shell-integration-features = no-title
 background-opacity = 0.8
 background-blur = true
+window-padding-x = 12
+window-padding-y = 12

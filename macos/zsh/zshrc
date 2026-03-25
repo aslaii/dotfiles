@@ -50,6 +50,7 @@ zinit light lukechilds/zsh-nvm
 ensure_gemini_api_key
 
 set_shell_theme
+sync_ai_cli_theme
 
 if [[ $- == *i* ]]; then
   ensure_lts_node

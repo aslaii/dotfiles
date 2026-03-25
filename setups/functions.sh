@@ -19,11 +19,12 @@ switch_github_account() {
 }
 
 kill_port() {
-  PORT=$1
+  local PORT=$1
+  local PID
   echo "Freeing up port $PORT..."
-  PID=$(lsof -ti tcp:$PORT)
+  PID=$(lsof -ti "tcp:$PORT" 2>/dev/null || true)
   if [ -n "$PID" ]; then
-    kill -9 $PID
+    kill -9 "$PID"
     echo "Killed process $PID on port $PORT"
   else
     echo "Port $PORT is already free"

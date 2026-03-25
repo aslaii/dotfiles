@@ -23,6 +23,8 @@ alias bat="batcat"
 
 # Work scripts
 alias rave="~/dotfiles/setups/rave_setup.sh"
+alias gondoor="~/dotfiles/setups/gondoor_setup.sh"
+alias gondoor-stop="~/dotfiles/setups/gondoor_setup.sh --stop"
 alias dotconfig="~/dotfiles/setups/dotconfig_setup.sh"
 alias cpr="~/dotfiles/scripts/create-pr.sh"
 
