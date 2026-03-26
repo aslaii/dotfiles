@@ -7,11 +7,9 @@ source "$(dirname "$0")/functions.sh"
 
 SESSION_NAME="Gondoor"
 PROJECT_ROOT="${GONDOOR_PROJECT_ROOT:-$HOME/work/mobii/gondoor-mono}"
-FRONTEND_DIR="$PROJECT_ROOT/gondoor"
-ADMIN_DIR="$PROJECT_ROOT/gondoor-admin"
-BACKEND_DIR="$PROJECT_ROOT/gondoor-be"
-BACKEND_SERVER_DIR="$BACKEND_DIR/server"
-CLI_PROXY_DIR="$BACKEND_DIR/cli-proxy-api"
+FRONTEND_DIR="$PROJECT_ROOT/apps/web"
+ADMIN_DIR="$PROJECT_ROOT/apps/admin"
+BACKEND_DIR="$PROJECT_ROOT/apps/backend"
 AI_TOOL="codex"
 AI_TOOL_LABEL="Codex"
 
@@ -24,15 +22,15 @@ Usage: $(basename "$0") [--reset] [--stop] [--root PATH] [--ai TOOL]
 
 Starts the Gondoor tmux workspace:
 - SERVERS window runs shared infrastructure, frontend, backend, and admin
-- FE window opens gondoor
-- BE window opens Gondoor-BE/server
-- ADMIN window opens gondoor-admin
+- FE window opens apps/web
+- BE window opens apps/backend
+- ADMIN window opens apps/admin
 - AI window opens FE, BE, and ADMIN side by side in the selected AI CLI
-- MOBII-AI window opens the root mobii directory in the selected AI CLI
+- MOBII-AI window opens the root monorepo directory in the selected AI CLI
 
 Options:
 - --reset  Rebuild the tmux session and restart app ports
-- --stop   Stop the tmux session, shared Supabase stack, and CLI proxy Docker service
+- --stop   Stop the tmux session and shared Supabase stack
 - --ai     Choose the AI CLI to launch in the AI window: codex, claude, or gemini
 - --codex  Shortcut for --ai codex
 - --claude Shortcut for --ai claude
@@ -65,7 +63,7 @@ set_ai_tool() {
 validate_directories() {
   local missing=0
 
-  for dir in "$FRONTEND_DIR" "$ADMIN_DIR" "$BACKEND_DIR" "$BACKEND_SERVER_DIR" "$CLI_PROXY_DIR"; do
+  for dir in "$FRONTEND_DIR" "$ADMIN_DIR" "$BACKEND_DIR"; do
     if [ ! -d "$dir" ]; then
       echo "Missing required directory: $dir"
       missing=1
@@ -111,15 +109,9 @@ stop_workspace() {
     echo "No tmux session named $SESSION_NAME is running."
   fi
 
-  echo "Stopping CLI proxy Docker service..."
-  (
-    cd "$CLI_PROXY_DIR" &&
-      docker compose down --remove-orphans
-  ) || echo "CLI proxy Docker service was not running or could not be stopped."
-
   echo "Stopping shared Supabase stack..."
   (
-    cd "$FRONTEND_DIR" &&
+    cd "$PROJECT_ROOT" &&
       pnpm exec supabase stop
   ) || echo "Shared Supabase stack was not running or could not be stopped."
 }
@@ -127,36 +119,29 @@ stop_workspace() {
 create_servers_window() {
   local window_target="$SESSION_NAME:SERVERS"
 
-  tmux send-keys -t "$window_target.1" "cd \"$FRONTEND_DIR\" && pnpm exec supabase start && while true; do clear; echo \"Shared Supabase\"; echo; pnpm exec supabase status; sleep 10; done" C-m
+  tmux send-keys -t "$window_target.1" "cd \"$PROJECT_ROOT\" && pnpm exec supabase start && while true; do clear; echo \"Shared Supabase\"; echo; pnpm exec supabase status; sleep 10; done" C-m
   tmux select-pane -t "$window_target.1" -T "Supabase"
   sleep 0.1
 
   local frontend_pane
   frontend_pane=$(tmux split-window -h -t "$window_target.1" -P -F "#{pane_id}")
   sleep 0.1
-  tmux send-keys -t "$frontend_pane" "cd \"$FRONTEND_DIR\" && pnpm exec next dev --port 3000" C-m
+  tmux send-keys -t "$frontend_pane" "cd \"$FRONTEND_DIR\" && pnpm dev" C-m
   tmux select-pane -t "$frontend_pane" -T "Frontend"
   sleep 0.1
 
   local backend_pane
   backend_pane=$(tmux split-window -v -t "$frontend_pane" -P -F "#{pane_id}")
   sleep 0.1
-  tmux send-keys -t "$backend_pane" "cd \"$BACKEND_SERVER_DIR\" && until nc -z 127.0.0.1 54321; do echo \"Waiting for shared Supabase...\"; sleep 2; done && \"$BACKEND_DIR\"/scripts/setup-local-supabase.sh && pnpm start:dev" C-m
+  tmux send-keys -t "$backend_pane" "cd \"$BACKEND_DIR\" && until nc -z 127.0.0.1 54321; do echo \"Waiting for shared Supabase...\"; sleep 2; done && pnpm start:dev" C-m
   tmux select-pane -t "$backend_pane" -T "Backend"
   sleep 0.1
 
   local admin_pane
   admin_pane=$(tmux split-window -v -t "$window_target.1" -P -F "#{pane_id}")
   sleep 0.1
-  tmux send-keys -t "$admin_pane" "cd \"$ADMIN_DIR\" && pnpm exec next dev --port 3002" C-m
+  tmux send-keys -t "$admin_pane" "cd \"$ADMIN_DIR\" && pnpm dev" C-m
   tmux select-pane -t "$admin_pane" -T "Admin"
-  sleep 0.1
-
-  local proxy_pane
-  proxy_pane=$(tmux split-window -v -t "$admin_pane" -P -F "#{pane_id}")
-  sleep 0.1
-  tmux send-keys -t "$proxy_pane" "cd \"$CLI_PROXY_DIR\" && docker compose up -d --remove-orphans --no-build && docker compose logs -f --tail=50 cli-proxy-api" C-m
-  tmux select-pane -t "$proxy_pane" -T "CLI Proxy"
   sleep 0.1
 
   tmux select-layout -t "$window_target" tiled >/dev/null
@@ -184,7 +169,7 @@ create_ai_window() {
   local backend_ai_pane
   backend_ai_pane=$(tmux split-window -h -t "$window_target.1" -P -F "#{pane_id}")
   sleep 0.1
-  tmux send-keys -t "$backend_ai_pane" "cd \"$BACKEND_SERVER_DIR\" && $AI_TOOL" C-m
+  tmux send-keys -t "$backend_ai_pane" "cd \"$BACKEND_DIR\" && $AI_TOOL" C-m
   tmux select-pane -t "$backend_ai_pane" -T "BE $AI_TOOL_LABEL"
   sleep 0.1
 
@@ -237,11 +222,9 @@ while [[ $# -gt 0 ]]; do
       exit 1
     fi
     PROJECT_ROOT="$1"
-    FRONTEND_DIR="$PROJECT_ROOT/gondoor"
-    ADMIN_DIR="$PROJECT_ROOT/gondoor-admin"
-    BACKEND_DIR="$PROJECT_ROOT/Gondoor-BE"
-    BACKEND_SERVER_DIR="$BACKEND_DIR/server"
-    CLI_PROXY_DIR="$BACKEND_DIR/cli-proxy-api"
+    FRONTEND_DIR="$PROJECT_ROOT/apps/web"
+    ADMIN_DIR="$PROJECT_ROOT/apps/admin"
+    BACKEND_DIR="$PROJECT_ROOT/apps/backend"
     ;;
   --help | -h)
     print_help
@@ -281,7 +264,7 @@ tmux new-session -d -s "$SESSION_NAME" -n "SERVERS"
 
 create_servers_window
 create_project_window "FE" "$FRONTEND_DIR"
-create_project_window "BE" "$BACKEND_SERVER_DIR"
+create_project_window "BE" "$BACKEND_DIR"
 create_project_window "ADMIN" "$ADMIN_DIR"
 create_ai_window
 create_mobii_ai_window
