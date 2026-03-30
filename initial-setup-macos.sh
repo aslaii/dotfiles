@@ -82,18 +82,6 @@ is_truthy() {
   return 1
 }
 
-ensure_expected_user() {
-  local expected_user="aslaii"
-  local current_user
-  current_user="$(id -un)"
-
-  if [[ "$current_user" != "$expected_user" ]]; then
-    die "This script must be run as ${expected_user}. Current user: ${current_user}"
-  fi
-
-  log "Running as expected user ${expected_user}."
-}
-
 require_macos() {
   if [[ "$(uname -s)" != "Darwin" ]]; then
     die "This script is intended for macOS only."
@@ -546,7 +534,7 @@ setup_claude_mcp_servers() {
 
   # GitHub MCP is intentionally not provisioned for Claude, Gemini, or Codex.
   local -A mcp_servers=(
-    [filesystem]="npx -y @modelcontextprotocol/server-filesystem /Users/aslaii"
+    [filesystem]="npx -y @modelcontextprotocol/server-filesystem $HOME"
     [fetch]="npx -y @modelcontextprotocol/server-fetch"
     [memory]="npx -y @modelcontextprotocol/server-memory"
     [sequential-thinking]="npx -y @modelcontextprotocol/server-sequential-thinking"
@@ -615,7 +603,6 @@ MSG
 
 main() {
   require_macos
-  ensure_expected_user
   ensure_dotfiles_dir
   ensure_command_line_tools
   install_homebrew
