@@ -12,6 +12,12 @@ One-command machine setup that reliably reproduces an opinionated, productive ma
 
 ### Validated
 
+- No hardcoded user paths in tracked files — Phase 1
+- AI tool gitignores prevent secret leakage — Phase 1
+- Setup script portable (no hardcoded username guard) — Phase 1
+- ShellCheck + shfmt pre-commit hooks configured — Phase 1
+- GitHub Actions ShellCheck CI workflow — Phase 1
+- Linux setup script hardened with `set -euo pipefail` — Phase 1
 - Setup script symlinks all tool configs to correct locations — existing
 - Neovim (LazyVim) configuration managed and versioned — existing
 - tmux configuration managed and versioned — existing
@@ -87,4 +93,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-30 after initialization*
+*Last updated: 2026-03-30 after Phase 1 completion*
