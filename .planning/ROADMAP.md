@@ -33,7 +33,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 Plans:
 - [x] 01-01-PLAN.md — Fix hardcoded paths in shell files and setup scripts; remove user guard; harden Linux bootstrap
-- [ ] 01-02-PLAN.md — Create config templates (claude, gemini, codex); create gitignores; wire template processing in bootstrap
+- [x] 01-02-PLAN.md — Create config templates (claude, gemini, codex); create gitignores; wire template processing in bootstrap
 - [ ] 01-03-PLAN.md — Bulk-replace /Users/aslaii in opencode and gemini framework agent/workflow files
 - [ ] 01-04-PLAN.md — Create .pre-commit-config.yaml (ShellCheck + shfmt + gitleaks) and GitHub Actions CI workflow
 

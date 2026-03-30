@@ -22,7 +22,7 @@
     "enablePromptCompletion": true
   },
   "ui": {
-    "theme": "Catppuccin Mocha",
+    "theme": "Catppuccin Latte",
     "autoThemeSwitching": true,
     "customThemes": {
       "Catppuccin Frappé": {

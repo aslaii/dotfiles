@@ -10,8 +10,8 @@ Requirements for this milestone. Each maps to roadmap phases.
 ### Security
 
 - [x] **SEC-01**: All tracked files contain no hardcoded absolute user paths (`/Users/aslaii`)
-- [ ] **SEC-02**: `gemini/` directory has a dedicated `.gitignore` excluding OAuth tokens and session state
-- [ ] **SEC-03**: `opencode/` and `codex/` directories audited for gitignore completeness
+- [x] **SEC-02**: `gemini/` directory has a dedicated `.gitignore` excluding OAuth tokens and session state
+- [x] **SEC-03**: `opencode/` and `codex/` directories audited for gitignore completeness
 - [x] **SEC-04**: `ensure_expected_user` replaced with portable approach (prompt or env var)
 - [ ] **SEC-05**: Pre-commit secret detection hook (gitleaks or trufflehog) configured
 
@@ -95,8 +95,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | Requirement | Phase | Status |
 |-------------|-------|--------|
 | SEC-01 | Phase 1 | Complete |
-| SEC-02 | Phase 1 | Pending |
-| SEC-03 | Phase 1 | Pending |
+| SEC-02 | Phase 1 | Complete |
+| SEC-03 | Phase 1 | Complete |
 | SEC-04 | Phase 1 | Complete |
 | SEC-05 | Phase 1 | Pending |
 | QUAL-01 | Phase 1 | Pending |
