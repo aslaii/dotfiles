@@ -99,27 +99,27 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SEC-03 | Phase 1 | Pending |
 | SEC-04 | Phase 1 | Pending |
 | SEC-05 | Phase 1 | Pending |
-| QUAL-01 | Phase 2 | Pending |
-| QUAL-02 | Phase 2 | Pending |
-| QUAL-03 | Phase 2 | Pending |
-| QUAL-04 | Phase 2 | Pending |
-| PKG-01 | Phase 3 | Pending |
-| PKG-02 | Phase 3 | Pending |
-| PKG-03 | Phase 3 | Pending |
-| PKG-04 | Phase 3 | Pending |
-| DRIFT-01 | Phase 4 | Pending |
-| DRIFT-02 | Phase 4 | Pending |
-| DRIFT-03 | Phase 4 | Pending |
-| NVIM-01 | Phase 5 | Pending |
-| NVIM-02 | Phase 5 | Pending |
-| SHELL-01 | Phase 6 | Pending |
-| SHELL-02 | Phase 6 | Pending |
-| SHELL-03 | Phase 6 | Pending |
-| SHELL-04 | Phase 6 | Pending |
-| DOC-01 | Phase 7 | Pending |
-| DOC-02 | Phase 7 | Pending |
-| DOC-03 | Phase 7 | Pending |
-| DOC-04 | Phase 7 | Pending |
+| QUAL-01 | Phase 1 | Pending |
+| QUAL-02 | Phase 1 | Pending |
+| QUAL-03 | Phase 1 | Pending |
+| QUAL-04 | Phase 1 | Pending |
+| PKG-01 | Phase 2 | Pending |
+| PKG-02 | Phase 2 | Pending |
+| PKG-03 | Phase 2 | Pending |
+| PKG-04 | Phase 2 | Pending |
+| NVIM-01 | Phase 2 | Pending |
+| NVIM-02 | Phase 2 | Pending |
+| DRIFT-01 | Phase 3 | Pending |
+| DRIFT-02 | Phase 3 | Pending |
+| DRIFT-03 | Phase 3 | Pending |
+| SHELL-01 | Phase 3 | Pending |
+| SHELL-02 | Phase 3 | Pending |
+| SHELL-03 | Phase 3 | Pending |
+| SHELL-04 | Phase 3 | Pending |
+| DOC-01 | Phase 4 | Pending |
+| DOC-02 | Phase 4 | Pending |
+| DOC-03 | Phase 4 | Pending |
+| DOC-04 | Phase 4 | Pending |
 
 **Coverage:**
 - v1 requirements: 26 total
@@ -128,4 +128,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-03-30*
-*Last updated: 2026-03-30 after initial definition*
+*Last updated: 2026-03-30 after roadmap creation (coarse granularity: 7 categories compressed to 4 phases)*
