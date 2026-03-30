@@ -1,0 +1,17 @@
+# Gemini CLI runtime artifacts — do not version-control
+antigravity/
+antigravity-browser-profile/
+extensions/extension-enablement.json
+google_accounts.json
+gsd-file-manifest.json
+history/
+installation_id
+oauth_creds.json
+projects.json
+state.json
+themes/
+tmp/
+trustedFolders.json
+
+# Generated from settings.template.json — do not commit the machine-specific version
+settings.json
