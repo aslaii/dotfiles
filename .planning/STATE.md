@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: Ready to plan
-stopped_at: Phase 2 context gathered
-last_updated: "2026-03-30T15:13:40.726Z"
+status: Executing
+stopped_at: Completed 02-01-PLAN.md
+last_updated: "2026-03-30T15:27:26Z"
 progress:
   total_phases: 4
   completed_phases: 1
-  total_plans: 4
-  completed_plans: 4
+  total_plans: 6
+  completed_plans: 5
 ---
 
 # Project State
@@ -19,16 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-30)
 
 **Core value:** One-command machine setup that reliably reproduces an opinionated, productive macOS development environment across any new machine
-**Current focus:** Phase 01 — security-and-quality-hardening
+**Current focus:** Phase 02 — declarative-package-and-plugin-management
 
 ## Current Position
 
 Phase: 2
-<<<<<<< Updated upstream
-Plan: Not started
-=======
-Plan: 4 of 4
->>>>>>> Stashed changes
+Plan: 2 of 2
 
 ## Performance Metrics
 
@@ -54,6 +50,7 @@ Plan: 4 of 4
 | Phase 01 P03 | 1min | 2 tasks | 100 files |
 | Phase 01 P02 | 2min | 2 tasks | 8 files |
 | Phase 01 P04 | 1min | 2 tasks | 2 files |
+| Phase 02 P01 | 1min | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -70,6 +67,8 @@ Recent decisions affecting current work:
 - [Phase 01]: Gemini tracked files already used portable $HOME paths; no modifications needed for plan 01-03 Task 2
 - [Phase 01]: Scoped envsubst for template processing to prevent unintended variable expansion
 - [Phase 01]: ShellCheck at warning severity, excluding macos/zsh, with GitHub Actions CI matching local pre-commit config
+- [Phase 02]: codex placed as cask based on brew info verification
+- [Phase 02]: HOMEBREW_BUNDLE_BREW_SKIP pattern for optional sketchybar
 
 ### Pending Todos
 
@@ -82,6 +81,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-30T15:13:40.724Z
-Stopped at: Phase 2 context gathered
-Resume file: .planning/phases/02-declarative-package-and-plugin-management/02-CONTEXT.md
+Last session: 2026-03-30T15:27:26Z
+Stopped at: Completed 02-01-PLAN.md
+Resume file: .planning/phases/02-declarative-package-and-plugin-management/02-01-SUMMARY.md
