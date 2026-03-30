@@ -13,13 +13,13 @@ Requirements for this milestone. Each maps to roadmap phases.
 - [x] **SEC-02**: `gemini/` directory has a dedicated `.gitignore` excluding OAuth tokens and session state
 - [x] **SEC-03**: `opencode/` and `codex/` directories audited for gitignore completeness
 - [x] **SEC-04**: `ensure_expected_user` replaced with portable approach (prompt or env var)
-- [ ] **SEC-05**: Pre-commit secret detection hook (gitleaks or trufflehog) configured
+- [x] **SEC-05**: Pre-commit secret detection hook (gitleaks or trufflehog) configured
 
 ### Quality Tooling
 
-- [ ] **QUAL-01**: ShellCheck CI runs on all `.sh` files via GitHub Actions
-- [ ] **QUAL-02**: `shfmt` added to BREW_FORMULAE and wired as pre-commit hook
-- [ ] **QUAL-03**: `.pre-commit-config.yaml` created with ShellCheck + shfmt hooks
+- [x] **QUAL-01**: ShellCheck CI runs on all `.sh` files via GitHub Actions
+- [x] **QUAL-02**: `shfmt` added to BREW_FORMULAE and wired as pre-commit hook
+- [x] **QUAL-03**: `.pre-commit-config.yaml` created with ShellCheck + shfmt hooks
 - [x] **QUAL-04**: `initial-setup.sh` (Linux) hardened with `set -euo pipefail` and modern patterns
 
 ### Package Management
@@ -98,10 +98,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SEC-02 | Phase 1 | Complete |
 | SEC-03 | Phase 1 | Complete |
 | SEC-04 | Phase 1 | Complete |
-| SEC-05 | Phase 1 | Pending |
-| QUAL-01 | Phase 1 | Pending |
-| QUAL-02 | Phase 1 | Pending |
-| QUAL-03 | Phase 1 | Pending |
+| SEC-05 | Phase 1 | Complete |
+| QUAL-01 | Phase 1 | Complete |
+| QUAL-02 | Phase 1 | Complete |
+| QUAL-03 | Phase 1 | Complete |
 | QUAL-04 | Phase 1 | Complete |
 | PKG-01 | Phase 2 | Pending |
 | PKG-02 | Phase 2 | Pending |
