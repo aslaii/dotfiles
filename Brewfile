@@ -9,6 +9,7 @@
 # ── Taps ──────────────────────────────────────────
 tap "koekeishiya/formulae"       # yabai, skhd (window management)
 tap "FelixKratz/formulae"        # sketchybar (status bar)
+tap "oven-sh/bun"                # bun JavaScript runtime
 
 # ── Development ───────────────────────────────────
 brew "git"
@@ -59,7 +60,7 @@ brew "sketchybar"
 cask "codex"
 cask "ghostty"
 cask "visual-studio-code"
-cask "google-cloud-sdk"
+cask "gcloud-cli"
 cask "sf-symbols"
 
 # ── Fonts (in Homebrew core, no tap needed) ──────
