@@ -32,17 +32,11 @@ elif $IS_WSL; then
   export PATH="$PATH:/mnt/c/Program Files/Git/mingw64/bin"
 fi
 
-# --- NVM Setup ---
+# --- NVM Setup (lazy) ---
 export NVM_DIR="$HOME/.nvm"
-if $IS_MAC; then
-  [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && source "/opt/homebrew/opt/nvm/nvm.sh"
-  [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && source "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"
-else
-  export NVM_AUTO_USE=true
-  export NVM_AUTO_INSTALL=true
-fi
-
-# --- Oh My Posh Prompt ---
+export NVM_LAZY_LOAD=true
+export NVM_COMPLETION=true
+export NVM_AUTO_USE=true
 
 # --- Zinit Plugin Manager ---
 if [ ! -f "$HOME/.zinit/bin/zinit.zsh" ]; then
@@ -52,20 +46,22 @@ fi
 source "$HOME/.zinit/bin/zinit.zsh"
 
 # --- Plugins ---
+zinit ice wait lucid
 zinit light zsh-users/zsh-autosuggestions
-zinit light zdharma-continuum/fast-syntax-highlighting
+
+zinit ice wait lucid atload"bindkey '^[[A' history-substring-search-up; bindkey '^[[B' history-substring-search-down"
 zinit light zsh-users/zsh-history-substring-search
+
 zinit light lukechilds/zsh-nvm
+
+# Syntax highlighting MUST load last (synchronous, not Turbo)
+zinit light zdharma-continuum/fast-syntax-highlighting
 
 # --- Source Aliases and Functions ---
 [ -f "$HOME/.zsh/aliases.zsh" ] && source "$HOME/.zsh/aliases.zsh"
 [ -f "$HOME/.zsh/functions.zsh" ] && source "$HOME/.zsh/functions.zsh"
 
 set_shell_theme
-
-if [[ $- == *i* ]]; then
-  ensure_lts_node
-fi
 
 
 # --- Bun & pnpm ---
@@ -99,8 +95,7 @@ if command -v fzf >/dev/null 2>&1; then
 fi
 
 # --- Key Bindings ---
-bindkey '^[[A' history-substring-search-up
-bindkey '^[[B' history-substring-search-down
+# history-substring-search bindings are in the Turbo atload ice above
 
 # --- Starship & Zoxide ---
 if command -v starship >/dev/null 2>&1; then
