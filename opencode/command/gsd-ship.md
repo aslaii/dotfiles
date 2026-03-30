@@ -16,7 +16,7 @@ Closes the plan → execute → verify → ship loop.
 </objective>
 
 <execution_context>
-@/Users/aslaii/.config/opencode/get-shit-done/workflows/ship.md
+@$HOME/.config/opencode/get-shit-done/workflows/ship.md
 </execution_context>
 
-Execute the ship workflow from @/Users/aslaii/.config/opencode/get-shit-done/workflows/ship.md end-to-end.
+Execute the ship workflow from @$HOME/.config/opencode/get-shit-done/workflows/ship.md end-to-end.

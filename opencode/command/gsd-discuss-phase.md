@@ -28,8 +28,8 @@ Extract implementation decisions that downstream agents need — researcher and 
 </objective>
 
 <execution_context>
-@/Users/aslaii/.config/opencode/get-shit-done/workflows/discuss-phase.md
-@/Users/aslaii/.config/opencode/get-shit-done/templates/context.md
+@$HOME/.config/opencode/get-shit-done/workflows/discuss-phase.md
+@$HOME/.config/opencode/get-shit-done/templates/context.md
 </execution_context>
 
 <context>
