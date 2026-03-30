@@ -62,7 +62,11 @@ Plans:
   3. No Powerlevel10k references exist in any tracked file; starship is the only prompt configured
   4. `time zsh -i -c exit` measures below 200ms on the development machine
   5. `nvm` (and Node/npm) is not initialized until the first invocation of `node`, `npm`, or `nvm` in a session
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 03-01-PLAN.md — Add --check mode to bootstrap script with symlink validation; add dotcheck alias
+- [ ] 03-02-PLAN.md — Remove oh-my-posh, lazy-load nvm, apply Zinit Turbo mode, optimize shell startup to under 200ms
 
 ### Phase 4: Documentation
 **Goal**: A developer (including future self on a new machine) can understand the full setup, run it, and extend the AI skills system without reading any source code first
@@ -84,5 +88,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 |-------|----------------|--------|-----------|
 | 1. Security and Quality Hardening | 0/4 | Not started | - |
 | 2. Declarative Package and Plugin Management | 0/2 | Not started | - |
-| 3. Drift Detection and Shell Performance | 0/TBD | Not started | - |
+| 3. Drift Detection and Shell Performance | 0/2 | Not started | - |
 | 4. Documentation | 0/TBD | Not started | - |
