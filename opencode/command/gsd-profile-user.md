@@ -18,8 +18,8 @@ Routes to the profile-user workflow which orchestrates the full flow: consent ga
 </objective>
 
 <execution_context>
-@/Users/aslaii/.config/opencode/get-shit-done/workflows/profile-user.md
-@/Users/aslaii/.config/opencode/get-shit-done/references/ui-brand.md
+@$HOME/.config/opencode/get-shit-done/workflows/profile-user.md
+@$HOME/.config/opencode/get-shit-done/references/ui-brand.md
 </execution_context>
 
 <context>
