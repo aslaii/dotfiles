@@ -46,7 +46,11 @@ Plans:
   2. `brew bundle install` on a fresh machine installs all taps, formulae, and casks without referencing deprecated `homebrew/cask-fonts`
   3. `Brewfile.lock.json` is committed and reflects the currently installed package versions
   4. `nvim/lazy-lock.json` is tracked in git and Neovim uses it to install pinned plugin versions on a fresh machine
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 02-01-PLAN.md — Create Brewfile from setup script arrays; fix .gitignore for lazy-lock.json; add .gitattributes
+- [ ] 02-02-PLAN.md — Migrate bootstrap script to brew bundle; generate Brewfile.lock.json; verify Neovim lockfile
 
 ### Phase 3: Drift Detection and Shell Performance
 **Goal**: The developer can verify in seconds that the live machine matches the repo, and the interactive shell starts in under 200ms with a clean plugin order
@@ -79,6 +83,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Security and Quality Hardening | 0/4 | Not started | - |
-| 2. Declarative Package and Plugin Management | 0/TBD | Not started | - |
+| 2. Declarative Package and Plugin Management | 0/2 | Not started | - |
 | 3. Drift Detection and Shell Performance | 0/TBD | Not started | - |
 | 4. Documentation | 0/TBD | Not started | - |
