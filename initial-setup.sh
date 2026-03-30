@@ -112,23 +112,7 @@ link_file "$HOME/dotfiles/wsl/zsh/zshrc" "$HOME/.zshrc"
 link_file "$HOME/dotfiles/wsl/zsh/zsh" "$HOME/.zsh"
 link_file "$HOME/dotfiles/wsl/tmux.conf" "$HOME/.tmux.conf"
 
-# 10. Install oh-my-posh
-if ! command -v oh-my-posh &>/dev/null; then
-  curl -s https://ohmyposh.dev/install.sh | bash -s
-else
-  echo "oh-my-posh is already installed."
-fi
-
-# 11. Download oh-my-posh theme if not present
-mkdir -p "$HOME/.cache/oh-my-posh/themes"
-if [ ! -f "$HOME/.cache/oh-my-posh/themes/catppuccin.omp.json" ]; then
-  wget -O "$HOME/.cache/oh-my-posh/themes/catppuccin.omp.json" \
-    https://raw.githubusercontent.com/catppuccin/oh-my-posh/main/themes/catppuccin.omp.json
-else
-  echo "Oh My Posh theme already present."
-fi
-
-# 12. Install bun
+# 10. Install bun
 if [ ! -d "$HOME/.bun" ]; then
   curl -fsSL https://bun.sh/install | bash
 else
