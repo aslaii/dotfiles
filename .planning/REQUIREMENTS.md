@@ -27,7 +27,7 @@ Requirements for this milestone. Each maps to roadmap phases.
 - [x] **PKG-01**: `Brewfile` committed with all taps, formulae, and casks extracted from setup script
 - [x] **PKG-02**: Bootstrap script updated to use `brew bundle install` instead of inline arrays
 - [x] **PKG-03**: Deprecated `homebrew/cask-fonts` tap reference removed
-- [x] **PKG-04**: `Brewfile.lock.json` committed for version reproducibility (N/A: modern Homebrew no longer generates lockfiles)
+- [x] **PKG-04**: `Brewfile.lock.json` committed for version reproducibility
 
 ### Drift Detection
 
@@ -104,11 +104,11 @@ Which phases cover which requirements. Updated during roadmap creation.
 | QUAL-03 | Phase 1 | Complete |
 | QUAL-04 | Phase 1 | Complete |
 | PKG-01 | Phase 2 | Complete |
-| PKG-02 | Phase 2 | Pending |
+| PKG-02 | Phase 2 | Complete |
 | PKG-03 | Phase 2 | Complete |
-| PKG-04 | Phase 2 | Pending |
+| PKG-04 | Phase 2 | Complete |
 | NVIM-01 | Phase 2 | Complete |
-| NVIM-02 | Phase 2 | Pending |
+| NVIM-02 | Phase 2 | Complete |
 | DRIFT-01 | Phase 3 | Pending |
 | DRIFT-02 | Phase 3 | Pending |
 | DRIFT-03 | Phase 3 | Pending |
