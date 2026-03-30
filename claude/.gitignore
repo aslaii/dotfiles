@@ -26,4 +26,7 @@ state.json
 trusted_folders.json
 
 # Versioned (explicitly tracked):
-# CLAUDE.md, settings.json, skills/
+# CLAUDE.md, settings.template.json, skills/
+
+# Generated from settings.template.json — do not commit the machine-specific version
+settings.json

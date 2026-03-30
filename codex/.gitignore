@@ -1,0 +1,4 @@
+# Codex CLI runtime artifacts — do not version-control
+# config.toml is generated from config.template.toml by the bootstrap script
+# Project trust entries ([projects."..."]) are machine-specific and added by Codex at runtime
+config.toml

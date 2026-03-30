@@ -37,6 +37,9 @@ BREW_FORMULAE=(
   "wget"
   "firebase-cli"
   "shellcheck"
+  "shfmt"
+  "pre-commit"
+  "gitleaks"
   "lua"
   "switchaudio-osx"
   "nowplaying-cli"
@@ -294,6 +297,44 @@ link_configs() {
     link_file "$DOTFILES_DIR/sketchybar" "${config_root}/sketchybar"
   else
     log "Skipping SketchyBar config link (SKETCHYBAR=${SKETCHYBAR})."
+  fi
+}
+
+process_json_templates() {
+  if ! command -v envsubst >/dev/null 2>&1; then
+    warn "envsubst not found; skipping template processing. Install gettext and rerun."
+    return
+  fi
+
+  local templates=(
+    "${DOTFILES_DIR}/claude/settings.template.json:${DOTFILES_DIR}/claude/settings.json"
+    "${DOTFILES_DIR}/gemini/settings.template.json:${DOTFILES_DIR}/gemini/settings.json"
+    "${DOTFILES_DIR}/codex/config.template.toml:${DOTFILES_DIR}/codex/config.toml"
+  )
+
+  local spec src dst
+  for spec in "${templates[@]}"; do
+    src="${spec%%:*}"
+    dst="${spec##*:}"
+    if [[ -f "$src" ]]; then
+      envsubst '$HOME' < "$src" > "$dst"
+      log "Processed template: $(basename "$src") -> $(basename "$dst")"
+    else
+      warn "Template not found: $src"
+    fi
+  done
+}
+
+install_pre_commit_hooks() {
+  if command -v pre-commit >/dev/null 2>&1; then
+    if [[ -f "${DOTFILES_DIR}/.pre-commit-config.yaml" ]]; then
+      log "Installing pre-commit hooks..."
+      (cd "${DOTFILES_DIR}" && pre-commit install)
+    else
+      warn "No .pre-commit-config.yaml found; skipping pre-commit install."
+    fi
+  else
+    warn "pre-commit not found; skipping hook installation."
   fi
 }
 
@@ -609,6 +650,7 @@ main() {
   ensure_brew_shellenv
   ensure_brew_taps
   install_formulae
+  install_pre_commit_hooks
   install_casks
   ensure_batcat_symlink
   install_clasp
@@ -621,6 +663,7 @@ main() {
   fi
   ensure_gcloud_symlink
   link_configs
+  process_json_templates
   ensure_neovim_config
   ensure_tpm
   setup_claude_mcp_servers
