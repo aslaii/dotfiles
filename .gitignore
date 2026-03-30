@@ -23,4 +23,3 @@ node_modules/
 # Local editor/runtime artifacts
 .nvimlog
 nvim/nvim
-nvim/lazy-lock.json

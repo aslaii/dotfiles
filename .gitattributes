@@ -1,0 +1,2 @@
+# Collapse noisy lockfile diffs in PRs
+Brewfile.lock.json linguist-generated=true
