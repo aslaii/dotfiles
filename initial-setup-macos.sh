@@ -391,30 +391,6 @@ install_clasp() {
   warn "pnpm/npm not found; install Node tooling (e.g. via nvm) and rerun to install clasp."
 }
 
-install_oh_my_posh_themes() {
-  if ! command -v oh-my-posh >/dev/null 2>&1; then
-    warn "oh-my-posh not found; skipping theme download."
-    return
-  fi
-
-  local theme_dir
-  theme_dir="$("$BREW_BIN" --prefix oh-my-posh)/themes"
-  mkdir -p "$theme_dir"
-
-  local flavor url
-  for flavor in latte mocha; do
-    url="https://raw.githubusercontent.com/catppuccin/oh-my-posh/main/themes/catppuccin_${flavor}.omp.json"
-    if [[ ! -f "${theme_dir}/catppuccin_${flavor}.omp.json" ]]; then
-      log "Downloading catppuccin ${flavor} theme for oh-my-posh."
-      if ! curl -fsSL "$url" -o "${theme_dir}/catppuccin_${flavor}.omp.json"; then
-        warn "Failed to fetch oh-my-posh theme ${flavor}."
-      fi
-    else
-      log "oh-my-posh theme ${flavor} already present."
-    fi
-  done
-}
-
 install_btop_catppuccin_themes() {
   local config_root="${XDG_CONFIG_HOME:-$HOME/.config}"
   local theme_dir="${config_root}/btop/themes"
@@ -643,7 +619,6 @@ main() {
   install_pre_commit_hooks
   ensure_batcat_symlink
   install_clasp
-  install_oh_my_posh_themes
   install_btop_catppuccin_themes
   if is_truthy "$SKETCHYBAR"; then
     install_sketchybar_support
