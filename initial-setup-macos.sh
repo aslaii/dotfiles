@@ -8,57 +8,6 @@ BREW_BIN=""
 BREW_PREFIX=""
 SKETCHYBAR="${SKETCHYBAR:-true}"
 
-BREW_TAPS=(
-  "koekeishiya/formulae"
-  "FelixKratz/formulae"
-  "homebrew/cask-fonts"
-)
-
-BREW_FORMULAE=(
-  "git"
-  "gh"
-  "lazygit"
-  "neovim"
-  "tmux"
-  "fzf"
-  "ripgrep"
-  "bat"
-  "zoxide"
-  "starship"
-  "oh-my-posh"
-  "bun"
-  "pnpm"
-  "nvm"
-  "codex"
-  "mailhog"
-  "redis"
-  "postgresql@16"
-  "jq"
-  "wget"
-  "firebase-cli"
-  "shellcheck"
-  "shfmt"
-  "pre-commit"
-  "gitleaks"
-  "lua"
-  "switchaudio-osx"
-  "nowplaying-cli"
-  "btop"
-  "yabai"
-  "skhd"
-)
-
-BREW_CASKS=(
-  "ghostty"
-  "visual-studio-code"
-  "font-hack-nerd-font"
-  "font-meslo-lg-nerd-font"
-  "google-cloud-sdk"
-  "sf-symbols"
-  "font-sf-mono"
-  "font-sf-pro"
-)
-
 log() {
   printf '\n[setup] %s\n' "$1"
 }
@@ -174,54 +123,33 @@ ensure_brew_shellenv() {
   fi
 }
 
-ensure_brew_taps() {
-  local tap
-  for tap in "${BREW_TAPS[@]}"; do
-    if "$BREW_BIN" tap | grep -q "^${tap}\$"; then
-      log "Tap ${tap} already present."
-    else
-      log "Adding tap ${tap}..."
-      if ! "$BREW_BIN" tap "$tap"; then
-        warn "Failed to add tap ${tap}. Check Homebrew output."
-      fi
-    fi
-  done
-}
+ensure_homebrew_packages() {
+  local brewfile="$DOTFILES_DIR/Brewfile"
 
-install_formulae() {
-  local formula
-  local formulae=("${BREW_FORMULAE[@]}")
-
-  if is_truthy "$SKETCHYBAR"; then
-    formulae+=("sketchybar")
-  else
-    log "Skipping SketchyBar formula install (SKETCHYBAR=${SKETCHYBAR})."
+  if [[ ! -f "$brewfile" ]]; then
+    die "Brewfile not found at $brewfile"
   fi
 
-  for formula in "${formulae[@]}"; do
-    if "$BREW_BIN" list --formula "$formula" >/dev/null 2>&1; then
-      log "Formula ${formula} already installed."
-    else
-      log "Installing formula ${formula}..."
-      if ! "$BREW_BIN" install "$formula"; then
-        warn "Installation failed for ${formula}."
-      fi
-    fi
-  done
-}
+  # Conditionally skip sketchybar packages
+  if ! is_truthy "$SKETCHYBAR"; then
+    log "Skipping SketchyBar packages (SKETCHYBAR=${SKETCHYBAR})."
+    export HOMEBREW_BUNDLE_BREW_SKIP="sketchybar"
+    export HOMEBREW_BUNDLE_TAP_SKIP="FelixKratz/formulae"
+  fi
 
-install_casks() {
-  local cask
-  for cask in "${BREW_CASKS[@]}"; do
-    if "$BREW_BIN" list --cask "$cask" >/dev/null 2>&1; then
-      log "Cask ${cask} already installed."
-    else
-      log "Installing cask ${cask}..."
-      if ! "$BREW_BIN" install --cask "$cask"; then
-        warn "Installation failed for ${cask}."
-      fi
-    fi
-  done
+  # Clean up deprecated tap if still present
+  brew untap homebrew/cask-fonts 2>/dev/null || true
+
+  # Check if all packages already installed
+  if brew bundle check --file="$brewfile" 2>/dev/null; then
+    log "All Homebrew packages already installed."
+    return
+  fi
+
+  log "Installing Homebrew packages from Brewfile..."
+  if ! brew bundle install --file="$brewfile" --no-upgrade; then
+    warn "Some Brewfile packages may have failed. Check output above."
+  fi
 }
 
 link_file() {
@@ -648,10 +576,8 @@ main() {
   ensure_command_line_tools
   install_homebrew
   ensure_brew_shellenv
-  ensure_brew_taps
-  install_formulae
+  ensure_homebrew_packages
   install_pre_commit_hooks
-  install_casks
   ensure_batcat_symlink
   install_clasp
   install_oh_my_posh_themes
