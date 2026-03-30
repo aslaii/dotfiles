@@ -24,9 +24,9 @@ Requirements for this milestone. Each maps to roadmap phases.
 
 ### Package Management
 
-- [ ] **PKG-01**: `Brewfile` committed with all taps, formulae, and casks extracted from setup script
+- [x] **PKG-01**: `Brewfile` committed with all taps, formulae, and casks extracted from setup script
 - [ ] **PKG-02**: Bootstrap script updated to use `brew bundle install` instead of inline arrays
-- [ ] **PKG-03**: Deprecated `homebrew/cask-fonts` tap reference removed
+- [x] **PKG-03**: Deprecated `homebrew/cask-fonts` tap reference removed
 - [ ] **PKG-04**: `Brewfile.lock.json` committed for version reproducibility
 
 ### Drift Detection
@@ -37,7 +37,7 @@ Requirements for this milestone. Each maps to roadmap phases.
 
 ### Neovim
 
-- [ ] **NVIM-01**: `lazy-lock.json` tracked in git for reproducible plugin installs
+- [x] **NVIM-01**: `lazy-lock.json` tracked in git for reproducible plugin installs
 - [ ] **NVIM-02**: Plugin upgrade workflow documented (`:Lazy update` + commit lockfile)
 
 ### Shell Performance
@@ -103,11 +103,11 @@ Which phases cover which requirements. Updated during roadmap creation.
 | QUAL-02 | Phase 1 | Complete |
 | QUAL-03 | Phase 1 | Complete |
 | QUAL-04 | Phase 1 | Complete |
-| PKG-01 | Phase 2 | Pending |
+| PKG-01 | Phase 2 | Complete |
 | PKG-02 | Phase 2 | Pending |
-| PKG-03 | Phase 2 | Pending |
+| PKG-03 | Phase 2 | Complete |
 | PKG-04 | Phase 2 | Pending |
-| NVIM-01 | Phase 2 | Pending |
+| NVIM-01 | Phase 2 | Complete |
 | NVIM-02 | Phase 2 | Pending |
 | DRIFT-01 | Phase 3 | Pending |
 | DRIFT-02 | Phase 3 | Pending |
