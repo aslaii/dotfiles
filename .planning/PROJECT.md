@@ -18,6 +18,11 @@ One-command machine setup that reliably reproduces an opinionated, productive ma
 - ShellCheck + shfmt pre-commit hooks configured — Phase 1
 - GitHub Actions ShellCheck CI workflow — Phase 1
 - Linux setup script hardened with `set -euo pipefail` — Phase 1
+- Brewfile as single source of truth for packages — Phase 2
+- Neovim lazy-lock.json tracked for reproducible plugins — Phase 2
+- Symlink drift check mode (`--check` flag + `dotcheck` alias) — Phase 3
+- Powerlevel10k/oh-my-posh removed; starship sole prompt — Phase 3
+- nvm lazy-loaded; shell plugins optimized with Zinit Turbo — Phase 3
 - Setup script symlinks all tool configs to correct locations — existing
 - Neovim (LazyVim) configuration managed and versioned — existing
 - tmux configuration managed and versioned — existing
@@ -93,4 +98,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-30 after Phase 1 completion*
+*Last updated: 2026-03-31 after Phase 3 completion*
