@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -e
+set -euo pipefail
 
 # Helper function to install apt packages only if not already installed
 install_if_missing() {
