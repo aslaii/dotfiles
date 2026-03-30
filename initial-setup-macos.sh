@@ -276,7 +276,7 @@ resolve_config_path() {
   die "No zshrc found for variant '${CONFIG_VARIANT}'."
 }
 
-link_configs() {
+emit_symlink_map() {
   local zshrc_source zsh_root zsh_functions_dir config_root ghostty_target
   zshrc_source="$(resolve_config_path)"
   zsh_root="$(dirname "$zshrc_source")"
@@ -288,40 +288,96 @@ link_configs() {
     ghostty_target="${config_root}/ghostty/config"
   fi
 
-  link_file "$zshrc_source" "$HOME/.zshrc"
+  echo "${zshrc_source}|${HOME}/.zshrc"
   if [[ -d "$zsh_functions_dir" ]]; then
-    link_file "$zsh_functions_dir" "$HOME/.zsh"
+    echo "${zsh_functions_dir}|${HOME}/.zsh"
+  fi
+  echo "${DOTFILES_DIR}/tmux/tmux.conf|${HOME}/.tmux.conf"
+  echo "${DOTFILES_DIR}/codex/AGENTS.md|${HOME}/AGENTS.md"
+  echo "${DOTFILES_DIR}/ghostty/config|${ghostty_target}"
+  echo "${DOTFILES_DIR}/codex|${config_root}/codex"
+  echo "${DOTFILES_DIR}/yabai|${config_root}/yabai"
+  echo "${DOTFILES_DIR}/skhd|${config_root}/skhd"
+  echo "${DOTFILES_DIR}/opencode|${config_root}/opencode"
+  echo "${DOTFILES_DIR}/claude|${HOME}/.claude"
+  if is_truthy "$SKETCHYBAR"; then
+    echo "${DOTFILES_DIR}/sketchybar|${config_root}/sketchybar"
+  fi
+  echo "${DOTFILES_DIR}/nvim|${config_root}/nvim"
+}
+
+check_link() {
+  local source="$1" target="$2"
+
+  if [[ ! -e "$target" && ! -L "$target" ]]; then
+    printf 'MISSING: %s\n' "$target"
+    return 1
+  fi
+
+  if [[ -L "$target" && ! -e "$target" ]]; then
+    printf 'STALE: %s -> %s (dead target)\n' "$target" "$(readlink "$target")"
+    return 1
+  fi
+
+  if [[ -L "$target" ]]; then
+    local actual
+    actual="$(readlink "$target")"
+    if [[ "$actual" != "$source" ]]; then
+      printf 'WRONG: %s -> %s (expected %s)\n' "$target" "$actual" "$source"
+      return 1
+    fi
+    printf 'OK: %s -> %s\n' "$target" "$source"
+    return 0
+  fi
+
+  # Exists but is not a symlink
+  printf 'WRONG: %s is not a symlink (expected link to %s)\n' "$target" "$source"
+  return 1
+}
+
+run_check_mode() {
+  local errors=0
+  local total=0
+
+  while IFS='|' read -r source target; do
+    (( total++ ))
+    if ! check_link "$source" "$target"; then
+      (( errors++ ))
+    fi
+  done < <(emit_symlink_map)
+
+  echo ""
+  if (( errors == 0 )); then
+    log "All ${total} symlinks OK."
+    return 0
   else
+    warn "${errors} of ${total} symlinks out of sync."
+    return 1
+  fi
+}
+
+link_configs() {
+  local zshrc_source zsh_root zsh_functions_dir
+  zshrc_source="$(resolve_config_path)"
+  zsh_root="$(dirname "$zshrc_source")"
+  zsh_functions_dir="${zsh_root}/zsh"
+
+  if [[ ! -d "$zsh_functions_dir" ]]; then
     warn "Expected zsh functions directory ${zsh_functions_dir} missing; skipping ~/.zsh link."
   fi
-  link_file "$DOTFILES_DIR/tmux/tmux.conf" "$HOME/.tmux.conf"
-  link_file "$DOTFILES_DIR/codex/AGENTS.md" "$HOME/AGENTS.md"
-  link_file "$DOTFILES_DIR/ghostty/config" "$ghostty_target"
-  link_file "$DOTFILES_DIR/codex" "${config_root}/codex"
-  link_file "$DOTFILES_DIR/yabai" "${config_root}/yabai"
-  link_file "$DOTFILES_DIR/skhd" "${config_root}/skhd"
-  link_file "$DOTFILES_DIR/opencode" "${config_root}/opencode"
-  link_file "$DOTFILES_DIR/claude" "$HOME/.claude"
-  if is_truthy "$SKETCHYBAR"; then
-    link_file "$DOTFILES_DIR/sketchybar" "${config_root}/sketchybar"
-  else
-    log "Skipping SketchyBar config link (SKETCHYBAR=${SKETCHYBAR})."
-  fi
+
+  while IFS='|' read -r source target; do
+    link_file "$source" "$target"
+  done < <(emit_symlink_map)
 }
 
 ensure_neovim_config() {
   local config_root="${XDG_CONFIG_HOME:-$HOME/.config}"
-  local source="${DOTFILES_DIR}/nvim"
-  local target="${config_root}/nvim"
-
   mkdir -p "$config_root"
 
-  if [[ ! -d "$source" ]]; then
-    warn "Neovim config missing at ${source}; skipping link."
-    return
+  if [[ ! -d "${DOTFILES_DIR}/nvim" ]]; then
+    warn "Neovim config missing at ${DOTFILES_DIR}/nvim; skipping link."
   fi
-
-  link_file "$source" "$target"
 }
 
 ensure_tpm() {
@@ -614,6 +670,13 @@ MSG
 }
 
 main() {
+  if [[ "${1:-}" == "--check" ]]; then
+    require_macos
+    ensure_dotfiles_dir
+    run_check_mode
+    exit $?
+  fi
+
   require_macos
   ensure_expected_user
   ensure_dotfiles_dir
