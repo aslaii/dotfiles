@@ -3,7 +3,7 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: Executing
-stopped_at: Completed 02-01-PLAN.md
+stopped_at: Completed 02-02-PLAN.md
 last_updated: "2026-03-30T15:28:09.352Z"
 progress:
   total_phases: 4
@@ -51,6 +51,7 @@ Plan: 2 of 2
 | Phase 01 P02 | 2min | 2 tasks | 8 files |
 | Phase 01 P04 | 1min | 2 tasks | 2 files |
 | Phase 02 P01 | 1min | 2 tasks | 3 files |
+| Phase 02 P02 | 4min | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -69,6 +70,8 @@ Recent decisions affecting current work:
 - [Phase 01]: ShellCheck at warning severity, excluding macos/zsh, with GitHub Actions CI matching local pre-commit config
 - [Phase 02]: codex placed as cask based on brew info verification
 - [Phase 02]: HOMEBREW_BUNDLE_BREW_SKIP pattern for optional sketchybar
+- [Phase 02]: Brewfile.lock.json not committed -- modern Homebrew no longer generates it
+- [Phase 02]: Added oven-sh/bun tap for bun formula; renamed google-cloud-sdk to gcloud-cli
 
 ### Pending Todos
 
@@ -82,5 +85,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-30T15:28:09.352Z
-Stopped at: Completed 02-01-PLAN.md
-Resume file: .planning/phases/02-declarative-package-and-plugin-management/02-01-SUMMARY.md
+Stopped at: Completed 02-02-PLAN.md
+Resume file: .planning/phases/02-declarative-package-and-plugin-management/02-02-SUMMARY.md

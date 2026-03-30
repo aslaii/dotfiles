@@ -25,9 +25,9 @@ Requirements for this milestone. Each maps to roadmap phases.
 ### Package Management
 
 - [x] **PKG-01**: `Brewfile` committed with all taps, formulae, and casks extracted from setup script
-- [ ] **PKG-02**: Bootstrap script updated to use `brew bundle install` instead of inline arrays
+- [x] **PKG-02**: Bootstrap script updated to use `brew bundle install` instead of inline arrays
 - [x] **PKG-03**: Deprecated `homebrew/cask-fonts` tap reference removed
-- [ ] **PKG-04**: `Brewfile.lock.json` committed for version reproducibility
+- [x] **PKG-04**: `Brewfile.lock.json` committed for version reproducibility (N/A: modern Homebrew no longer generates lockfiles)
 
 ### Drift Detection
 
@@ -38,7 +38,7 @@ Requirements for this milestone. Each maps to roadmap phases.
 ### Neovim
 
 - [x] **NVIM-01**: `lazy-lock.json` tracked in git for reproducible plugin installs
-- [ ] **NVIM-02**: Plugin upgrade workflow documented (`:Lazy update` + commit lockfile)
+- [x] **NVIM-02**: Plugin upgrade workflow documented (`:Lazy update` + commit lockfile)
 
 ### Shell Performance
 
