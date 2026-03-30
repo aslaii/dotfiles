@@ -5,6 +5,9 @@ alias zshconfig="nvim ~/.zshrc"
 alias tmxconfig="nvim ~/.tmux.conf"
 alias nvimconfig="nvim ~/.config/nvim/lua/config/lazy.lua"
 
+# Dotfiles
+alias dotcheck='bash "$HOME/dotfiles/initial-setup-macos.sh" --check'
+
 # Tmux
 alias rtm='command tmux source-file ~/.tmux.conf'
 alias tmx='tmux'
