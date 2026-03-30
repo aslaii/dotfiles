@@ -1,6 +1,13 @@
-node_modules
-.gitignore
+# OpenCode runtime artifacts — do not version-control
+node_modules/
 antigravity-accounts.json
 antigravity-accounts.json.*.tmp
 antigravity-signature-cache.json
 antigravity-logs/
+cache/
+gsd-file-manifest.json
+oh-my-opencode.json
+
+# Auth / credentials
+.env
+.credentials.json
