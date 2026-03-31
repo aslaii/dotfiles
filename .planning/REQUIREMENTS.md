@@ -50,7 +50,7 @@ Requirements for this milestone. Each maps to roadmap phases.
 ### Documentation
 
 - [x] **DOC-01**: Root `README.md` with bootstrap instructions, symlink map, and env flag reference
-- [x] **DOC-02**: `yabai/README.md` with SIP disable procedure and scripting-addition sudoers entry
+- [x] **DOC-02**: ~~yabai/README.md~~ Removed -- yabai/skhd/sketchybar no longer in repo (commit 57f47e3). Requirement superseded.
 - [x] **DOC-03**: `setups/` scripts documented with shared `functions.sh` contract
 - [x] **DOC-04**: Skills system convention documented for AI assistant extensibility
 
