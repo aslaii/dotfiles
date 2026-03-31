@@ -77,7 +77,11 @@ Plans:
   2. `yabai/README.md` documents the SIP disable procedure and scripting-addition sudoers entry needed for yabai to function
   3. `setups/` scripts are documented with the shared `functions.sh` contract so adding a new role script requires no reverse-engineering
   4. The AI skills system convention is documented so a new skill can be added by following the written instructions alone
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 04-01-PLAN.md — Root README.md with bootstrap, symlink map, env flags, tools, skills system, Neovim workflow
+- [ ] 04-02-PLAN.md — yabai/README.md (SIP, sudoers, keybindings) and setups/README.md (role-script system)
 
 ## Progress
 
@@ -89,4 +93,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | 1. Security and Quality Hardening | 0/4 | Not started | - |
 | 2. Declarative Package and Plugin Management | 0/2 | Not started | - |
 | 3. Drift Detection and Shell Performance | 0/2 | Not started | - |
-| 4. Documentation | 0/TBD | Not started | - |
+| 4. Documentation | 0/2 | Not started | - |
