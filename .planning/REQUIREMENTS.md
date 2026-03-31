@@ -50,8 +50,8 @@ Requirements for this milestone. Each maps to roadmap phases.
 ### Documentation
 
 - [ ] **DOC-01**: Root `README.md` with bootstrap instructions, symlink map, and env flag reference
-- [ ] **DOC-02**: `yabai/README.md` with SIP disable procedure and scripting-addition sudoers entry
-- [ ] **DOC-03**: `setups/` scripts documented with shared `functions.sh` contract
+- [x] **DOC-02**: `yabai/README.md` with SIP disable procedure and scripting-addition sudoers entry
+- [x] **DOC-03**: `setups/` scripts documented with shared `functions.sh` contract
 - [ ] **DOC-04**: Skills system convention documented for AI assistant extensibility
 
 ## v2 Requirements
@@ -117,8 +117,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SHELL-03 | Phase 3 | Pending |
 | SHELL-04 | Phase 3 | Pending |
 | DOC-01 | Phase 4 | Pending |
-| DOC-02 | Phase 4 | Pending |
-| DOC-03 | Phase 4 | Pending |
+| DOC-02 | Phase 4 | Complete |
+| DOC-03 | Phase 4 | Complete |
 | DOC-04 | Phase 4 | Pending |
 
 **Coverage:**

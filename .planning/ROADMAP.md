@@ -81,7 +81,7 @@ Plans:
 
 Plans:
 - [ ] 04-01-PLAN.md — Root README.md with bootstrap, symlink map, env flags, tools, skills system, Neovim workflow
-- [ ] 04-02-PLAN.md — yabai/README.md (SIP, sudoers, keybindings) and setups/README.md (role-script system)
+- [x] 04-02-PLAN.md — yabai/README.md (SIP, sudoers, keybindings) and setups/README.md (role-script system)
 
 ## Progress
 
