@@ -2,7 +2,7 @@
 
 ## What This Is
 
-Personal macOS dotfiles repository managing versioned configurations for development tools (Neovim, tmux, Ghostty, yabai, skhd, SketchyBar) and AI coding assistants (Claude Code, Gemini CLI, OpenCode, Codex CLI). A single bootstrap script (`initial-setup-macos.sh`) symlinks everything into place, bringing a new machine to full productivity in one run.
+Personal macOS dotfiles repository managing versioned configurations for development tools (Neovim, tmux, Ghostty) and AI coding assistants (Claude Code, Gemini CLI, OpenCode, Codex CLI). A single bootstrap script (`initial-setup-macos.sh`) symlinks everything into place, bringing a new machine to full productivity in one run.
 
 ## Core Value
 
@@ -27,9 +27,10 @@ One-command machine setup that reliably reproduces an opinionated, productive ma
 - Neovim (LazyVim) configuration managed and versioned — existing
 - tmux configuration managed and versioned — existing
 - Ghostty terminal configuration managed and versioned — existing
-- yabai window manager configuration managed and versioned — existing
-- skhd hotkey daemon configuration managed and versioned — existing
-- SketchyBar status bar configuration managed and versioned — existing
+- Root README.md documents bootstrap, symlinks, env flags, skills system — Phase 4
+- setups/ documented with functions.sh contract and new-script template — Phase 4
+- Skills system convention documented for AI assistant extensibility — Phase 4
+- yabai/skhd/sketchybar removed from repo (no longer in use) — Phase 4
 - Zsh/Zinit shell configuration managed and versioned — existing
 - Claude Code settings, skills, and memory managed — existing
 - Gemini CLI settings managed — existing
@@ -44,8 +45,6 @@ One-command machine setup that reliably reproduces an opinionated, productive ma
 - [ ] Cross-platform support (macOS primary, WSL/Linux secondary)
 - [ ] Setup idempotency verified for all symlink targets
 - [ ] Shell environment (Zsh/Zinit) plugins and aliases are current
-- [ ] Window management (yabai + skhd) keybindings are optimized
-- [ ] SketchyBar status bar reflects current workflow needs
 - [ ] Neovim plugins and LSP configs are up to date
 
 ### Out of Scope
@@ -98,4 +97,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-31 after Phase 3 completion*
+*Last updated: 2026-03-31 after Phase 4 completion (final phase of v1.0)*
