@@ -74,14 +74,14 @@ Plans:
 **Requirements**: DOC-01, DOC-02, DOC-03, DOC-04
 **Success Criteria** (what must be TRUE):
   1. `README.md` at repo root documents one-command bootstrap, full symlink map, env flag reference, and skills system overview
-  2. `yabai/README.md` documents the SIP disable procedure and scripting-addition sudoers entry needed for yabai to function
-  3. `setups/` scripts are documented with the shared `functions.sh` contract so adding a new role script requires no reverse-engineering
-  4. The AI skills system convention is documented so a new skill can be added by following the written instructions alone
-**Plans**: 2 plans
+  2. `setups/` scripts are documented with the shared `functions.sh` contract so adding a new role script requires no reverse-engineering
+  3. The AI skills system convention is documented so a new skill can be added by following the written instructions alone
+**Plans**: 3 plans
 
 Plans:
 - [x] 04-01-PLAN.md — Root README.md with bootstrap, symlink map, env flags, tools, skills system, Neovim workflow
 - [x] 04-02-PLAN.md — yabai/README.md (SIP, sudoers, keybindings) and setups/README.md (role-script system)
+- [ ] 04-03-PLAN.md — Gap closure: remove stale yabai/ directory and update planning artifacts
 
 ## Progress
 
@@ -93,4 +93,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | 1. Security and Quality Hardening | 0/4 | Not started | - |
 | 2. Declarative Package and Plugin Management | 0/2 | Not started | - |
 | 3. Drift Detection and Shell Performance | 0/2 | Not started | - |
-| 4. Documentation | 0/2 | Not started | - |
+| 4. Documentation | 2/3 | In progress | - |
