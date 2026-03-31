@@ -8,8 +8,6 @@ The primary tools configured include:
 - **Shell:** Zsh, with plugins managed by Zinit, and customized with Starship and oh-my-posh.
 - **Terminal:** Ghostty and tmux for terminal multiplexing.
 - **Editor:** Neovim, configured with LazyVim.
-- **Window Management:** yabai for tiling window management and skhd for hotkey bindings.
-- **System Bar:** SketchyBar for a customized menu bar.
 - **Package Management:** Homebrew is used for installing most of the software.
 
 ## Installation and Setup
@@ -37,8 +35,6 @@ The `setups/` directory contains scripts for bootstrapping specific project or c
 -   `initial-setup-macos.sh`: The main entry point for setting up a new macOS system.
 -   `macos/zsh/zshrc`: The main configuration file for Zsh on macOS.
 -   `nvim/`: Contains the Neovim configuration based on LazyVim.
--   `sketchybar/`: Configuration for the SketchyBar menu bar.
--   `yabai/` & `skhd/`: Configuration for the `yabai` window manager and `skhd` keybinding daemon.
 -   `tmux/`: Configuration for `tmux`, including the Catppuccin theme.
 -   `AGENTS.md`: **Important guidelines for AI agents** interacting with this repository. It covers project structure, commit conventions, and security practices.
 -   `codex/config.toml`: Configuration for the Codex CLI, indicating a preference for AI-driven automation.

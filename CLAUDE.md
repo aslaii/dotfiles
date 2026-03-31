@@ -15,9 +15,6 @@ location by `initial-setup-macos.sh`. Bringing a new machine up is one script ru
 | `nvim/` | `~/.config/nvim` | Neovim / LazyVim |
 | `tmux/` | `~/.tmux.conf` (file) | tmux |
 | `ghostty/` | `~/Library/Application Support/com.mitchellh.ghostty/config` | Ghostty |
-| `yabai/` | `~/.config/yabai` | yabai |
-| `skhd/` | `~/.config/skhd` | skhd |
-| `sketchybar/` | `~/.config/sketchybar` | SketchyBar |
 | `macos/` | various zsh files | Zsh / Zinit |
 
 ## Setup
@@ -60,7 +57,7 @@ Available skills:
 
 **Dotfiles Configuration**
 
-Personal macOS dotfiles repository managing versioned configurations for development tools (Neovim, tmux, Ghostty, yabai, skhd, SketchyBar) and AI coding assistants (Claude Code, Gemini CLI, OpenCode, Codex CLI). A single bootstrap script (`initial-setup-macos.sh`) symlinks everything into place, bringing a new machine to full productivity in one run.
+Personal macOS dotfiles repository managing versioned configurations for development tools (Neovim, tmux, Ghostty) and AI coding assistants (Claude Code, Gemini CLI, OpenCode, Codex CLI). A single bootstrap script (`initial-setup-macos.sh`) symlinks everything into place, bringing a new machine to full productivity in one run.
 
 **Core Value:** One-command machine setup that reliably reproduces an opinionated, productive macOS development environment across any new machine.
 
@@ -111,7 +108,7 @@ Personal macOS dotfiles repository managing versioned configurations for develop
 | Recommended | Alternative | When to Use Alternative |
 |-------------|-------------|-------------------------|
 | Symlink-based (current) | **chezmoi** v2.70.0 | If cross-machine templating becomes a hard requirement (work vs. personal machine with different SSH keys, secrets). chezmoi adds templates, password manager integration, whole-file encryption. The tradeoff is every file gets a `dot_` prefix rename, requiring `chezmoi` to be installed before files are usable. For a single-user, single-OS repo like this one, chezmoi's overhead exceeds its benefit. |
-| Symlink-based (current) | **GNU Stow** | If you want package-level granularity (link only `nvim/` on one machine, skip `sketchybar/` on another). Stow is lighter than chezmoi but less powerful. The existing per-tool directory structure maps well to Stow packages — migration cost is low if selective installs become needed. |
+| Symlink-based (current) | **GNU Stow** | If you want package-level granularity (link only `nvim/` on one machine, skip others). Stow is lighter than chezmoi but less powerful. The existing per-tool directory structure maps well to Stow packages — migration cost is low if selective installs become needed. |
 | Symlink-based (current) | **yadm** | If the primary goal is reducing setup script complexity by replacing the bash symlink loop with a Git-aware wrapper. Yadm's templating had external dependency issues (envptl/j2cli both went unmaintained); less compelling now. |
 | Zinit (zdharma-continuum) | **zsh-unplugged** / manual sourcing | If Zinit's complexity becomes a maintenance burden. `zsh-unplugged` is a minimal plugin loader (~30 lines). Tradeoff: lose Turbo-mode lazy loading. |
 | Zinit (zdharma-continuum) | **sheldon** | A modern, TOML-configured Rust plugin manager. More maintainable config format than Zinit's DSL, but smaller community and no Turbo equivalent. |
@@ -124,7 +121,7 @@ Personal macOS dotfiles repository managing versioned configurations for develop
 | **Powerlevel10k** | Maintainer confirmed "life support" (Issues #2690, #2932). No new features; macOS system Zsh compatibility issues anticipated as macOS upgrades. | starship (already in stack) |
 | **zplug** | Last release 2017; unmaintained. No security patches. | Zinit (already in stack) |
 | **oh-my-zsh** as primary plugin manager | High startup overhead without Turbo mode. Tempting for its plugin ecosystem, but every plugin is eagerly loaded. | Zinit with `zinit light` for lightweight loading |
-| **Homebrew taps for built-in commands** | `koekeishiya/formulae` is still needed for yabai/skhd; `FelixKratz/formulae` for sketchybar. But `homebrew/cask-fonts` is deprecated — Cask fonts are now in core. Remove this tap reference to avoid warnings. | Remove `homebrew/cask-fonts` from BREW_TAPS array |
+| **Homebrew taps for built-in commands** | `homebrew/cask-fonts` is deprecated — Cask fonts are now in core. Remove this tap reference to avoid warnings. | Remove `homebrew/cask-fonts` from BREW_TAPS array |
 | **nvm via `lukechilds/zsh-nvm` plugin** | This Zinit plugin lazy-loads nvm but adds another indirection layer. nvm is already sourced directly in `.zshrc`. Having both is redundant and can cause double-initialization. | Remove `zinit light lukechilds/zsh-nvm` if nvm is already sourced above it |
 | **Secrets in `.zshrc` or any dotfile** | The repo is (or will be) public. `.env` files, API tokens, and credentials must never be committed. | macOS Keychain (`security` CLI) or 1Password CLI (`op`) for secrets in scripts |
 ## Stack Patterns by Variant

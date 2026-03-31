@@ -3,7 +3,7 @@
 ## Project Structure & Module Organization
 - `initial-setup.sh` provisions a baseline Linux workstation, linking dotfiles under `$HOME`. Treat it as the reference for new setup steps.
 - `setups/` holds client- or role-specific bootstrap scripts; common helpers live in `setups/functions.sh`.
-- `skhd/`, `yabai/`, `tmux/`, and `wsl/` mirror the configs that are symlinked into local machines. Keep platform-specific tweaks in their respective folders.
+- `tmux/` and `wsl/` mirror the configs that are symlinked into local machines. Keep platform-specific tweaks in their respective folders.
 - `extra/` and `unlock/` store auxiliary scripts and device notes. Update them when adding one-off workflows to avoid drift.
 
 ## Build, Test, and Development Commands
@@ -19,7 +19,7 @@
 ## Testing Guidelines
 - Dry-run new commands in an isolated shell before committing. For risky loops or installs, gate them behind explicit user prompts.
 - Run `bash -n <script>` and `shellcheck <script>` to catch syntax and safety issues.
-- After edits to symlinks or configs, verify they load by sourcing `.zshrc`, restarting `tmux`, or reloading `yabai --restart`.
+- After edits to symlinks or configs, verify they load by sourcing `.zshrc` or restarting `tmux`.
 
 ## Commit & Pull Request Guidelines
 - Use Conventional Commit messages for all commits: `<type>[optional scope]: <description>` (e.g., `feat(wsl): add bootstrap alias`).

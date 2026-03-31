@@ -6,8 +6,6 @@ DOTFILES_DIR="${DOTFILES_DIR:-$HOME/dotfiles}"
 CONFIG_VARIANT="${CONFIG_VARIANT:-macos}"
 BREW_BIN=""
 BREW_PREFIX=""
-SKETCHYBAR="${SKETCHYBAR:-true}"
-
 log() {
   printf '\n[setup] %s\n' "$1"
 }
@@ -19,19 +17,6 @@ warn() {
 die() {
   printf '\n[error] %s\n' "$1" >&2
   exit 1
-}
-
-is_truthy() {
-  local value
-  value="$(printf '%s' "${1:-}" | tr '[:upper:]' '[:lower:]')"
-
-  case "$value" in
-    1|true|y|yes|on)
-      return 0
-      ;;
-  esac
-
-  return 1
 }
 
 require_macos() {
@@ -130,13 +115,6 @@ ensure_homebrew_packages() {
     die "Brewfile not found at $brewfile"
   fi
 
-  # Conditionally skip sketchybar packages
-  if ! is_truthy "$SKETCHYBAR"; then
-    log "Skipping SketchyBar packages (SKETCHYBAR=${SKETCHYBAR})."
-    export HOMEBREW_BUNDLE_BREW_SKIP="sketchybar"
-    export HOMEBREW_BUNDLE_TAP_SKIP="FelixKratz/formulae"
-  fi
-
   # Clean up deprecated tap if still present
   brew untap homebrew/cask-fonts 2>/dev/null || true
 
@@ -215,13 +193,8 @@ emit_symlink_map() {
   echo "${DOTFILES_DIR}/codex/AGENTS.md|${HOME}/AGENTS.md"
   echo "${DOTFILES_DIR}/ghostty/config|${ghostty_target}"
   echo "${DOTFILES_DIR}/codex|${config_root}/codex"
-  echo "${DOTFILES_DIR}/yabai|${config_root}/yabai"
-  echo "${DOTFILES_DIR}/skhd|${config_root}/skhd"
   echo "${DOTFILES_DIR}/opencode|${config_root}/opencode"
   echo "${DOTFILES_DIR}/claude|${HOME}/.claude"
-  if is_truthy "$SKETCHYBAR"; then
-    echo "${DOTFILES_DIR}/sketchybar|${config_root}/sketchybar"
-  fi
   echo "${DOTFILES_DIR}/nvim|${config_root}/nvim"
 }
 
@@ -468,60 +441,6 @@ install_btop_catppuccin_themes() {
   log "Installed Catppuccin themes for btop into ${theme_dir}."
 }
 
-install_sketchybar_support() {
-  local font_dest="$HOME/Library/Fonts/sketchybar-app-font.ttf"
-  local font_url="https://github.com/kvndrsslr/sketchybar-app-font/releases/download/v2.0.28/sketchybar-app-font.ttf"
-  local marker_dir="$HOME/.local/share/sketchybar"
-  local marker_file="${marker_dir}/sbarlua-installed"
-
-  mkdir -p "$marker_dir"
-
-  if [[ -f "$font_dest" ]]; then
-    log "SketchyBar app font already present."
-  else
-    log "Installing SketchyBar app font."
-    if ! curl -fsSL "$font_url" -o "$font_dest"; then
-      warn "Failed to download SketchyBar app font."
-    fi
-  fi
-
-  if [[ -f "$marker_file" ]]; then
-    log "SbarLua already installed; skipping."
-  else
-    local tmp_dir
-    tmp_dir="$(mktemp -d)"
-
-    if git clone https://github.com/FelixKratz/SbarLua.git "$tmp_dir/SbarLua"; then
-      if (cd "$tmp_dir/SbarLua" && make install); then
-        log "Installed SbarLua for SketchyBar."
-        touch "$marker_file"
-      else
-        warn "Failed to run 'make install' for SbarLua."
-      fi
-    else
-      warn "Failed to clone SbarLua repository."
-    fi
-
-    rm -rf "$tmp_dir"
-  fi
-
-  if command -v sketchybar >/dev/null 2>&1; then
-    if "$BREW_BIN" services list 2>/dev/null | grep -q "^sketchybar\s"; then
-      log "Restarting SketchyBar service via Homebrew."
-      if ! "$BREW_BIN" services restart sketchybar; then
-        warn "Failed to restart SketchyBar service."
-      fi
-    else
-      log "Starting SketchyBar service via Homebrew."
-      if ! "$BREW_BIN" services start sketchybar; then
-        warn "Failed to start SketchyBar service."
-      fi
-    fi
-  else
-    warn "SketchyBar binary not found; skipping service management."
-  fi
-}
-
 ensure_gcloud_symlink() {
   local target_dir="$HOME/Google"
   local legacy_dir="${target_dir}/google-cloud-sdk"
@@ -618,7 +537,6 @@ print_next_steps() {
   cat <<'MSG'
 
 [next steps]
-- Open System Settings → Privacy & Security → Accessibility and grant access to both yabai and skhd, then run `brew services start yabai` and `brew services start skhd`.
 - Run `gcloud init` to finish Google Cloud CLI configuration.
 - Open a new terminal session so the Homebrew environment and linked dotfiles load correctly.
 - Launch tmux, then press prefix (Ctrl-b) followed by I to install plugins through TPM.
@@ -645,11 +563,6 @@ main() {
   install_clasp
   install_oh_my_posh_themes
   install_btop_catppuccin_themes
-  if is_truthy "$SKETCHYBAR"; then
-    install_sketchybar_support
-  else
-    log "Skipping SketchyBar support setup (SKETCHYBAR=${SKETCHYBAR})."
-  fi
   ensure_gcloud_symlink
   link_configs
   process_json_templates

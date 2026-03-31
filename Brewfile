@@ -1,14 +1,11 @@
 # Brewfile -- Dotfiles standard packages
 # Source of truth for all Homebrew-managed packages
 # Usage: brew bundle install --file=Brewfile
-# Skip sketchybar: HOMEBREW_BUNDLE_BREW_SKIP="sketchybar" HOMEBREW_BUNDLE_TAP_SKIP="FelixKratz/formulae"
 #
 # NOTE: Brewfile.lock.json is NOT a version-pinning lockfile.
 # It is a Homebrew debug artifact. The Brewfile itself is the reproducibility guarantee.
 
 # ── Taps ──────────────────────────────────────────
-tap "koekeishiya/formulae"       # yabai, skhd (window management)
-tap "FelixKratz/formulae"        # sketchybar (status bar)
 tap "oven-sh/bun"                # bun JavaScript runtime
 
 # ── Development ───────────────────────────────────
@@ -46,15 +43,6 @@ brew "shellcheck"
 brew "shfmt"
 brew "pre-commit"
 brew "gitleaks"
-
-# ── SketchyBar Dependencies ─────────────────────
-brew "switchaudio-osx"
-brew "nowplaying-cli"
-
-# ── Window Management ────────────────────────────
-brew "yabai"
-brew "skhd"
-brew "sketchybar"
 
 # ── Casks ─────────────────────────────────────────
 cask "codex"
