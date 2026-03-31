@@ -27,6 +27,7 @@ brew "ripgrep"
 brew "bat"
 brew "zoxide"
 brew "starship"
+brew "oh-my-posh"
 brew "btop"
 
 # ── Node.js ───────────────────────────────────────
