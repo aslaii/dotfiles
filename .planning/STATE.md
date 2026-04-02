@@ -96,8 +96,14 @@ None yet.
 - Phase 1: MCP server config generation approach unresolved — `envsubst` template vs `settings.template.json`; decide before Phase 1 planning begins (flagged in research SUMMARY.md)
 - Phase 1: `opencode/` and `codex/` gitignore state not fully verified at research time; audit required during execution
 
+### Quick Tasks Completed
+
+| # | Description | Date | Commit | Directory |
+|---|-------------|------|--------|-----------|
+| 260402-qnp | make opencode transparent same as other terminal like ghostty | 2026-04-02 | cd8dcd5 | [260402-qnp-make-opencode-transparent-same-as-other-](./quick/260402-qnp-make-opencode-transparent-same-as-other-/) |
+
 ## Session Continuity
 
-Last session: 2026-03-31T00:59:20.233Z
+Last activity: 2026-04-02 - Completed quick task 260402-qnp: make opencode transparent same as other terminal like ghostty
 Stopped at: Completed 04-03-PLAN.md
 Resume file: None
