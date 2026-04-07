@@ -101,9 +101,10 @@ None yet.
 | # | Description | Date | Commit | Directory |
 |---|-------------|------|--------|-----------|
 | 260402-qnp | make opencode transparent same as other terminal like ghostty | 2026-04-02 | cd8dcd5 | [260402-qnp-make-opencode-transparent-same-as-other-](./quick/260402-qnp-make-opencode-transparent-same-as-other-/) |
+| 260407-iml | switch opencode tui theme from system to catppuccin (ghostty parity, fixes grey-on-white) | 2026-04-07 | a69a686 | [260407-iml-switch-opencode-tui-theme-from-system-to](./quick/260407-iml-switch-opencode-tui-theme-from-system-to/) |
 
 ## Session Continuity
 
-Last activity: 2026-04-02 - Completed quick task 260402-qnp: make opencode transparent same as other terminal like ghostty
+Last activity: 2026-04-07 - Completed quick task 260407-iml: switch opencode tui theme from system to catppuccin (ghostty parity)
 Stopped at: Completed 04-03-PLAN.md
 Resume file: None
