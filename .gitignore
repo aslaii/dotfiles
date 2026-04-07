@@ -23,3 +23,19 @@ node_modules/
 # Local editor/runtime artifacts
 .nvimlog
 nvim/nvim
+
+# Personal files (never commit)
+Jericho Bermas - CV.pdf
+
+# Claude Code local state (.claude/ at repo root holds git worktree metadata)
+.claude/
+
+# Claude Code runtime artifacts
+claude/sessions/
+
+# GSD per-project runtime contexts (auto-generated)
+claude/get-shit-done/contexts/
+opencode/get-shit-done/contexts/
+
+# Backup files from migration tooling
+*.tui-migration.bak
