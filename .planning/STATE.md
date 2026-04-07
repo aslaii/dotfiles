@@ -103,9 +103,10 @@ None yet.
 | 260402-qnp | make opencode transparent same as other terminal like ghostty | 2026-04-02 | cd8dcd5 | [260402-qnp-make-opencode-transparent-same-as-other-](./quick/260402-qnp-make-opencode-transparent-same-as-other-/) |
 | 260407-iml | switch opencode tui theme from system to catppuccin (ghostty parity, fixes grey-on-white) | 2026-04-07 | a69a686 | [260407-iml-switch-opencode-tui-theme-from-system-to](./quick/260407-iml-switch-opencode-tui-theme-from-system-to/) |
 | 260407-j53 | sync opencode kv.json theme_mode with macOS appearance via shell wrapper (+codex symlink hotfix) | 2026-04-07 | 793236f, f38f576 | [260407-j53-fix-opencode-kv-json-theme-mode-bug-by-e](./quick/260407-j53-fix-opencode-kv-json-theme-mode-bug-by-e/) |
+| 260407-jmb | pop the stash, gitignore what needs to be ignored, commit and push | 2026-04-07 | c9384ce, 56acfd9, 85ce24f | [260407-jmb-pop-the-stash-gitignore-what-needs-to-be](./quick/260407-jmb-pop-the-stash-gitignore-what-needs-to-be/) |
 
 ## Session Continuity
 
-Last activity: 2026-04-07 - Completed quick task 260407-j53: opencode theme_mode sync wrapper + codex symlink hotfix
+Last activity: 2026-04-07 - Completed quick task 260407-jmb: gitignore runtime/personal files + GSD framework upgrade commit + push
 Stopped at: Completed 04-03-PLAN.md
 Resume file: None
