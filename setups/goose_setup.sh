@@ -113,7 +113,8 @@ create_focused_window() {
   tmux select-pane -t "$window_target.1" -T "Monitoring"
 
   # Split horizontally for the project
-  local project_pane=$(tmux split-window -h -t "$window_target.1" -P -F "#{pane_id}")
+  local project_pane
+  project_pane=$(tmux split-window -h -t "$window_target.1" -P -F "#{pane_id}")
   tmux send-keys -t "$project_pane" "cd \"$project_path\" && nvim" C-m
   tmux select-pane -t "$project_pane" -T "$project_name"
 }
@@ -130,7 +131,8 @@ create_project_window() {
   tmux send-keys -t "$SESSION_NAME:$project_name" "cd \"$project_path\" && clear" C-m
 
   # Split horizontally
-  local right_pane=$(tmux split-window -h -t "$SESSION_NAME:$project_name" -P -F "#{pane_id}")
+  local right_pane
+  right_pane=$(tmux split-window -h -t "$SESSION_NAME:$project_name" -P -F "#{pane_id}")
   tmux send-keys -t "$right_pane" "cd \"$project_path\" && codex" C-m
   tmux select-pane -t "$right_pane" -T "Codex" # Title for the right pane
 
@@ -197,7 +199,7 @@ NEEDS_INTERACTIVE=true
 AVAILABLE_PROJECTS=()
 while IFS= read -r line; do
   folder="$line"
-  if [[ " $EXCLUDE_FOLDERS " =~ " $folder " ]]; then
+  if [[ " $EXCLUDE_FOLDERS " == *" $folder "* ]]; then
     continue
   fi
   AVAILABLE_PROJECTS+=("$folder")

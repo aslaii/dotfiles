@@ -1,3 +1,4 @@
+# shellcheck shell=bash
 # setups/functions.sh
 switch_github_account() {
   local desired_account="$1"

@@ -54,9 +54,3 @@ if [[ $? -eq 0 ]]; then
 else
   echo "No running process named $APP_NAME found."
 fi
-
-if [[ $? -eq 0 ]]; then
-  echo "$APP_NAME terminated."
-else
-  echo "No running process named $APP_NAME found."
-fi
