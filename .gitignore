@@ -39,3 +39,9 @@ opencode/get-shit-done/contexts/
 
 # Backup files from migration tooling
 *.tui-migration.bak
+
+# GSD planning directory (workflow metadata, not tracked in this repo)
+.planning/
+
+# MCP runtime auth cache
+claude/mcp-needs-auth-cache.json
