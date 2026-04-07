@@ -11,3 +11,4 @@ oh-my-opencode.json
 # Auth / credentials
 .env
 .credentials.json
+.gitignore
