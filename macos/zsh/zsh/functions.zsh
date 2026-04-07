@@ -154,3 +154,8 @@ function claude() {
   sync_ai_cli_theme
   command claude "$@"
 }
+
+function opencode() {
+  sync_ai_cli_theme
+  command opencode "$@"
+}
