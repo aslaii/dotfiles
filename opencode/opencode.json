@@ -7,6 +7,13 @@
     "opencode-antigravity-auth@latest",
     "opencode-claude-auth"
   ],
+  "mcp": {
+    "n8n-mcp": {
+      "type": "remote",
+      "url": "https://api.n8n-mcp.com/mcp",
+      "enabled": true
+    }
+  },
   "provider": {
     "google": {
       "models": {
@@ -242,12 +249,5 @@
       }
     }
   },
-  "permission": {
-    "read": {
-      "~/.config/opencode/get-shit-done/*": "allow"
-    },
-    "external_directory": {
-      "~/.config/opencode/get-shit-done/*": "allow"
-    }
-  }
+  "permission": "allow"
 }

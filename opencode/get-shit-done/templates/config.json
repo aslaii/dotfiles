@@ -1,11 +1,11 @@
 {
-  "mode": "interactive",
+  "mode": "yolo",
   "granularity": "standard",
   "workflow": {
     "research": true,
     "plan_check": true,
     "verifier": true,
-    "auto_advance": false,
+    "auto_advance": true,
     "nyquist_validation": true,
     "security_enforcement": true,
     "security_asvs_level": 1,

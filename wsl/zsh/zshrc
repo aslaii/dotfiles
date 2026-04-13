@@ -15,6 +15,12 @@ esac
 # --- Path Setup ---eval
 export PATH="$HOME/.local/bin:$PATH"
 export PATH="$HOME/.bun/bin:$PATH"
+export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
+export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
+export XDG_STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}"
+mkdir -p "$XDG_CONFIG_HOME" "$XDG_DATA_HOME" "$XDG_STATE_HOME"
+mkdir -p "$XDG_DATA_HOME/opencode" "$XDG_STATE_HOME/opencode/locks"
+chmod 700 "$XDG_DATA_HOME/opencode" "$XDG_STATE_HOME/opencode" "$XDG_STATE_HOME/opencode/locks" 2>/dev/null || true
 export ANDROID_HOME=/Users/jerichobermas/Library/Android/sdk
 export PATH=$PATH:$ANDROID_HOME/emulator
 export PATH=$PATH:$ANDROID_HOME/tools

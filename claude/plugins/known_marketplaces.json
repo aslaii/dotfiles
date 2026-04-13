@@ -1,0 +1,10 @@
+{
+  "chrome-devtools-plugins": {
+    "source": {
+      "source": "github",
+      "repo": "ChromeDevTools/chrome-devtools-mcp"
+    },
+    "installLocation": "/Users/aslaii/.claude/plugins/marketplaces/chrome-devtools-plugins",
+    "lastUpdated": "2026-04-08T11:20:27.454Z"
+  }
+}

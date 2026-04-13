@@ -8,6 +8,12 @@ IS_WSL=false
 # --- Path Setup ---
 export PATH="$HOME/.local/bin:$PATH"
 export PATH="$HOME/.bun/bin:$PATH"
+export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
+export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
+export XDG_STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}"
+mkdir -p "$XDG_CONFIG_HOME" "$XDG_DATA_HOME" "$XDG_STATE_HOME"
+mkdir -p "$XDG_DATA_HOME/opencode" "$XDG_STATE_HOME/opencode/locks"
+chmod 700 "$XDG_DATA_HOME/opencode" "$XDG_STATE_HOME/opencode" "$XDG_STATE_HOME/opencode/locks" 2>/dev/null || true
 
 ANDROID_HOME="$HOME/Library/Android/sdk"
 if [[ -d "$ANDROID_HOME" ]]; then

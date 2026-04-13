@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "plugins": {
+    "chrome-devtools-mcp@chrome-devtools-plugins": [
+      {
+        "scope": "user",
+        "installPath": "/Users/aslaii/.claude/plugins/cache/chrome-devtools-plugins/chrome-devtools-mcp/0.21.0",
+        "version": "0.21.0",
+        "installedAt": "2026-04-08T11:20:41.154Z",
+        "lastUpdated": "2026-04-08T11:20:41.154Z",
+        "gitCommitSha": "fb6e857d4e6e37388efa74bb3d9fd60d70d4439e"
+      }
+    ]
+  }
+}
