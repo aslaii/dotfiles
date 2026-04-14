@@ -1,0 +1,14 @@
+{
+    "mcpServers": {
+        "n8n-mcp": {
+            "serverUrl": "https://api.n8n-mcp.com/mcp",
+            "headers": {
+                "Authorization": "Bearer ${N8N_MCP_TOKEN}"
+            }
+        },
+        "chrome-devtools": {
+            "command": "npx",
+            "args": ["-y", "chrome-devtools-mcp@latest"]
+        }
+    }
+}

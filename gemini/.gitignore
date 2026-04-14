@@ -1,5 +1,7 @@
 # Gemini CLI runtime artifacts — do not version-control
-antigravity/
+antigravity/*
+!antigravity/settings.template.json
+!antigravity/mcp_config.template.json
 antigravity-browser-profile/
 extensions/extension-enablement.json
 google_accounts.json

@@ -13,7 +13,9 @@ gemini/state.json
 gemini/projects.json
 gemini/trustedFolders.json
 gemini/history/
-gemini/antigravity/
+gemini/antigravity/*
+!gemini/antigravity/settings.template.json
+!gemini/antigravity/mcp_config.template.json
 gemini/antigravity-browser-profile/
 
 # Node

@@ -272,6 +272,8 @@ process_json_templates() {
   local templates=(
     "${DOTFILES_DIR}/claude/settings.template.json:${DOTFILES_DIR}/claude/settings.json"
     "${DOTFILES_DIR}/gemini/settings.template.json:${DOTFILES_DIR}/gemini/settings.json"
+    "${DOTFILES_DIR}/gemini/antigravity/settings.template.json:${DOTFILES_DIR}/gemini/antigravity/settings.json"
+    "${DOTFILES_DIR}/gemini/antigravity/mcp_config.template.json:${DOTFILES_DIR}/gemini/antigravity/mcp_config.json"
     "${DOTFILES_DIR}/codex/config.template.toml:${DOTFILES_DIR}/codex/config.toml"
   )
 
@@ -280,7 +282,7 @@ process_json_templates() {
     src="${spec%%:*}"
     dst="${spec##*:}"
     if [[ -f "$src" ]]; then
-      envsubst '$HOME' < "$src" > "$dst"
+      envsubst '$HOME $N8N_MCP_TOKEN' < "$src" > "$dst"
       log "Processed template: $(basename "$src") -> $(basename "$dst")"
     else
       warn "Template not found: $src"
@@ -512,6 +514,28 @@ ensure_github_auth() {
     log "Launching GitHub authentication..."
     gh auth login
   fi
+}
+
+ensure_caveman_skills() {
+  local agents_skills="$HOME/.agents/skills"
+  local antigravity_skills="${DOTFILES_DIR}/gemini/antigravity/skills"
+
+  if [[ ! -d "$agents_skills" ]]; then
+    warn "Caveman skills not found at ${agents_skills}; skipping."
+    return
+  fi
+
+  mkdir -p "$antigravity_skills"
+
+  local skill
+  for skill in caveman caveman-commit caveman-compress caveman-help caveman-review; do
+    if [[ -d "${agents_skills}/${skill}" ]]; then
+      ln -sfn "${agents_skills}/${skill}" "${antigravity_skills}/${skill}"
+      log "Linked caveman skill: ${skill}"
+    else
+      warn "Caveman skill ${skill} not found; skipping."
+    fi
+  done
 }
 
 ensure_default_shell() {
