@@ -593,6 +593,7 @@ main() {
   ensure_neovim_config
   ensure_tpm
   setup_claude_mcp_servers
+  ensure_caveman_skills
   ensure_github_auth
   ensure_default_shell
   print_next_steps
