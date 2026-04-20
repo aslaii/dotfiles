@@ -12,6 +12,14 @@
       "type": "remote",
       "url": "https://api.n8n-mcp.com/mcp",
       "enabled": true
+    },
+    "chrome-devtools": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "chrome-devtools-mcp@latest"
+      ]
     }
   },
   "provider": {

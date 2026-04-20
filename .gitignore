@@ -47,3 +47,9 @@ opencode/get-shit-done/contexts/
 
 # MCP runtime auth cache
 claude/mcp-needs-auth-cache.json
+
+# Project-local MCP config (machine-specific absolute paths / may contain tokens)
+.mcp.json
+
+# GSD agent runtime state
+.gsd/
