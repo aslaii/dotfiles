@@ -34,6 +34,11 @@ Jericho Bermas - CV.pdf
 
 # Claude Code runtime artifacts
 claude/sessions/
+claude/.statusline-usage-cache
+claude/gsd-user-files-backup/
+
+# Claude usage fetcher — contains hardcoded session key, never commit
+claude/fetch-claude-usage.swift
 
 # GSD per-project runtime contexts (auto-generated)
 claude/get-shit-done/contexts/

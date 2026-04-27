@@ -4,6 +4,17 @@ Loaded for every project. Project-level `CLAUDE.md` files extend or override the
 
 ---
 
+## Default Mode: Caveman (full)
+
+Caveman skill auto-active every session and after `/clear`. Skill location: `~/.claude/skills/caveman/`.
+
+- First message of any new session or post-`/clear`: announce `Caveman on. Full mode.` then proceed.
+- Default level: **full**. Switch via `/caveman lite|full|ultra|wenyan-lite|wenyan-full|wenyan-ultra`.
+- Disable: `stop caveman` or `normal mode`.
+- Rules persist all turns. No drift back to verbose. Code/commits/PRs/security warnings stay normal per skill's auto-clarity rules.
+
+---
+
 ## Plan Mode Protocol
 
 1. **Read-only exploration phase** — use only read tools (Glob, Grep, Read, WebFetch). No edits.

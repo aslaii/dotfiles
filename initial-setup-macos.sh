@@ -191,6 +191,7 @@ emit_symlink_map() {
   fi
   echo "${DOTFILES_DIR}/tmux/tmux.conf|${HOME}/.tmux.conf"
   echo "${DOTFILES_DIR}/codex/AGENTS.md|${HOME}/AGENTS.md"
+  echo "${DOTFILES_DIR}/codex/AGENTS.md|${HOME}/.codex/AGENTS.md"
   echo "${DOTFILES_DIR}/ghostty/config|${ghostty_target}"
   echo "${DOTFILES_DIR}/codex|${config_root}/codex"
   echo "${DOTFILES_DIR}/opencode|${config_root}/opencode"
