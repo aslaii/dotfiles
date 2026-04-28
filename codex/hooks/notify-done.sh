@@ -13,7 +13,7 @@ fi
 
 group=$(printf 'codex-%s' "$ctx" | tr -c 'A-Za-z0-9-' '_')
 
-afplay /System/Library/Sounds/Pop.aiff >/dev/null 2>&1 &
+afplay /System/Library/Sounds/Pop.aiff >/dev/null 2>&1 || true
 
 terminal-notifier \
   -title "Codex" \
@@ -21,6 +21,6 @@ terminal-notifier \
   -message "Task complete" \
   -group "$group" \
   -activate com.mitchellh.ghostty \
-  >/dev/null 2>&1 &
+  >/dev/null 2>&1 || true
 
 exit 0
