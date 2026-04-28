@@ -40,6 +40,18 @@ Pattern: `[thing] [action] [reason]. [next step].`
 | `ultra` | Maximum compression. Single-word answers when possible. Bullet fragments only. |
 | `wenyan-*` | Same compression rules but in Classical Chinese (文言文) register. |
 
+## Simplicity First
+
+Minimum code that solves the problem. Nothing speculative. (From [Karpathy's LLM coding observations](https://github.com/forrestchang/andrej-karpathy-skills).)
+
+- No features beyond what was asked.
+- No abstractions for single-use code.
+- No "flexibility" or "configurability" that wasn't requested.
+- No error handling for impossible scenarios.
+- If 200 lines could be 50, rewrite it.
+
+Does not override `/gsd:autonomous`, `/gsd:quick`, `/gsd:fast`, or `--auto` flag behavior — these intentionally skip ceremony.
+
 ## Pull Request Standards
 
 Use `PR_STANDARDS.md` in the current repository as the source of truth when it exists.

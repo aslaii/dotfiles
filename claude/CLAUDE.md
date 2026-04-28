@@ -31,6 +31,20 @@ Caveman skill auto-active every session and after `/clear`. Skill location: `~/.
 
 ---
 
+## Simplicity First
+
+Minimum code that solves the problem. Nothing speculative. (From [Karpathy's LLM coding observations](https://github.com/forrestchang/andrej-karpathy-skills).)
+
+- No features beyond what was asked.
+- No abstractions for single-use code.
+- No "flexibility" or "configurability" that wasn't requested.
+- No error handling for impossible scenarios.
+- If 200 lines could be 50, rewrite it.
+
+Does not override `/gsd:autonomous`, `/gsd:quick`, `/gsd:fast`, or `--auto` flag behavior — these intentionally skip ceremony.
+
+---
+
 ## SOLID Principles (TypeScript / React Native)
 
 ### Single Responsibility
