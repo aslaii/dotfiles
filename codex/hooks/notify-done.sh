@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
-# Fired when Codex finishes a turn (Stop hook).
-# Polite-soft: system notification + soft sound, no focus-steal.
+# Codex top-level notify program.
+# Codex spawns this with the JSON payload as the last argument.
+# Filter for agent-turn-complete only — other event types are ignored.
 set -euo pipefail
 
-cat >/dev/null
+payload="${1:-}"
+[[ "$payload" == *'"type":"agent-turn-complete"'* ]] || exit 0
 
 ctx=$(basename "$PWD")
 if [[ -n "${TMUX:-}" ]]; then
