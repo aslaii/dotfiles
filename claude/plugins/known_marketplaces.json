@@ -6,5 +6,14 @@
     },
     "installLocation": "/Users/aslaii/.claude/plugins/marketplaces/chrome-devtools-plugins",
     "lastUpdated": "2026-04-08T11:20:27.454Z"
+  },
+  "superpowers-marketplace": {
+    "source": {
+      "source": "github",
+      "repo": "obra/superpowers-marketplace"
+    },
+    "installLocation": "/Users/aslaii/.claude/plugins/marketplaces/superpowers-marketplace",
+    "lastUpdated": "2026-05-29T08:06:53.396Z",
+    "autoUpdate": true
   }
 }

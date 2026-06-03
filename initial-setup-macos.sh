@@ -193,8 +193,6 @@ emit_symlink_map() {
   echo "${DOTFILES_DIR}/codex/AGENTS.md|${HOME}/AGENTS.md"
   echo "${DOTFILES_DIR}/codex/AGENTS.md|${HOME}/.codex/AGENTS.md"
   echo "${DOTFILES_DIR}/codex/hooks.json|${HOME}/.codex/hooks.json"
-  echo "${DOTFILES_DIR}/codex/hooks/notify-attention.sh|${HOME}/.codex/hooks/notify-attention.sh"
-  echo "${DOTFILES_DIR}/codex/hooks/notify-done.sh|${HOME}/.codex/hooks/notify-done.sh"
   echo "${DOTFILES_DIR}/ghostty/config|${ghostty_target}"
   echo "${DOTFILES_DIR}/codex|${config_root}/codex"
   echo "${DOTFILES_DIR}/opencode|${config_root}/opencode"

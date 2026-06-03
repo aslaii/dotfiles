@@ -13,6 +13,7 @@ gemini/state.json
 gemini/projects.json
 gemini/trustedFolders.json
 gemini/history/
+gemini/cache/
 gemini/antigravity/*
 !gemini/antigravity/settings.template.json
 !gemini/antigravity/mcp_config.template.json
@@ -34,8 +35,36 @@ Jericho Bermas - CV.pdf
 
 # Claude Code runtime artifacts
 claude/sessions/
+claude/transcripts/
 claude/.statusline-usage-cache
+claude/.last-cleanup
 claude/gsd-user-files-backup/
+claude/plugins/plugin-catalog-cache.json
+claude/plugins/marketplaces/superpowers-marketplace/
+claude/sdk/shared/model-catalog.json
+
+# Claude generated skill/plugin payloads
+claude/skills/agents-sdk/
+claude/skills/cloudflare/
+claude/skills/cloudflare-email-service/
+claude/skills/diagnose
+claude/skills/durable-objects/
+claude/skills/grill-me
+claude/skills/grill-with-docs
+claude/skills/handoff
+claude/skills/improve-codebase-architecture
+claude/skills/prototype
+claude/skills/sandbox-sdk/
+claude/skills/setup-matt-pocock-skills
+claude/skills/tdd
+claude/skills/to-issues
+claude/skills/to-prd
+claude/skills/triage
+claude/skills/web-perf/
+claude/skills/workers-best-practices/
+claude/skills/write-a-skill
+claude/skills/wrangler/
+claude/skills/zoom-out
 
 # Claude usage fetcher — contains hardcoded session key, never commit
 claude/fetch-claude-usage.swift

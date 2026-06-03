@@ -124,3 +124,7 @@ export PATH=$PATH:"$HOME/.spicetify"
 
 # Added by Antigravity
 export PATH="$HOME/.antigravity/antigravity/bin:$PATH"
+
+# Added by blaxel installer - completions directory
+fpath=(/Users/aslaii/.zsh/completions $fpath)
+autoload -Uz compinit && compinit

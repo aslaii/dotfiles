@@ -7,6 +7,9 @@ antigravity-logs/
 cache/
 gsd-file-manifest.json
 oh-my-opencode.json
+oh-my-openagent.json
+*.backup-*
+*.bak.*
 
 # Auth / credentials
 .env
