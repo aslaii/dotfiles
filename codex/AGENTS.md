@@ -50,6 +50,12 @@ Minimum code that solves the problem. Nothing speculative. (From [Karpathy's LLM
 - No error handling for impossible scenarios.
 - If 200 lines could be 50, rewrite it.
 
+## Commit Discipline
+
+When code changes are complete and verified, stage only relevant files and create a Conventional Commit.
+Do not leave completed code work uncommitted unless blocked by branch rules, failing hooks, unrelated dirty worktree state, or user instruction.
+For docs/planning artifacts, commit only when user says `allow docs`.
+
 Does not override `/gsd:autonomous`, `/gsd:quick`, `/gsd:fast`, or `--auto` flag behavior — these intentionally skip ceremony.
 
 ## Pull Request Standards
