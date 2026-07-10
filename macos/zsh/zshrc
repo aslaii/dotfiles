@@ -7,34 +7,10 @@ IS_WSL=false
 
 # --- Path Setup ---
 export PATH="$HOME/.local/bin:$PATH"
-export PATH="$HOME/.bun/bin:$PATH"
 export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
 export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
 export XDG_STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}"
 mkdir -p "$XDG_CONFIG_HOME" "$XDG_DATA_HOME" "$XDG_STATE_HOME"
-mkdir -p "$XDG_DATA_HOME/opencode" "$XDG_STATE_HOME/opencode/locks"
-chmod 700 "$XDG_DATA_HOME/opencode" "$XDG_STATE_HOME/opencode" "$XDG_STATE_HOME/opencode/locks" 2>/dev/null || true
-
-ANDROID_HOME="$HOME/Library/Android/sdk"
-if [[ -d "$ANDROID_HOME" ]]; then
-  export ANDROID_HOME
-  export PATH="$PATH:$ANDROID_HOME/emulator"
-  export PATH="$PATH:$ANDROID_HOME/tools"
-  export PATH="$PATH:$ANDROID_HOME/tools/bin"
-  export PATH="$PATH:$ANDROID_HOME/platform-tools"
-fi
-
-export PATH="/opt/homebrew/bin:$PATH"
-export PATH="/opt/homebrew/opt/ruby/bin:$PATH"
-export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
-export PATH="$HOME/development/flutter/bin:$PATH"
-export PATH="$PATH:$HOME/.pub-cache/bin"
-export PATH="$HOME/.spicetify:$PATH"
-
-# --- NVM Setup ---
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
 # --- Zinit Plugin Manager ---
 if [ ! -f "$HOME/.zinit/bin/zinit.zsh" ]; then
@@ -57,18 +33,7 @@ zinit light zdharma-continuum/fast-syntax-highlighting
 [ -f "$HOME/.zsh/aliases.zsh" ] && source "$HOME/.zsh/aliases.zsh"
 [ -f "$HOME/.zsh/functions.zsh" ] && source "$HOME/.zsh/functions.zsh"
 
-ensure_gemini_api_key
-
 set_shell_theme
-
-# --- Bun & pnpm ---
-export BUN_INSTALL="$HOME/.bun"
-export PATH="$BUN_INSTALL/bin:$PATH"
-export PNPM_HOME="$HOME/Library/pnpm"
-case ":$PATH:" in
-  *":$PNPM_HOME:"*) ;;
-  *) export PATH="$PNPM_HOME:$PATH" ;;
-esac
 
 # --- FZF & Bat ---
 if command -v fzf >/dev/null 2>&1; then
@@ -89,42 +54,7 @@ fi
 # --- Key Bindings ---
 # history-substring-search bindings are in the Turbo atload ice above
 
-# --- Starship & Zoxide ---
-if command -v starship >/dev/null 2>&1; then
-  eval "$(starship init zsh)"
-fi
+# --- Zoxide ---
 if command -v zoxide >/dev/null 2>&1; then
   eval "$(zoxide init zsh)"
 fi
-
-# --- Angular CLI Autocompletion ---
-if command -v ng >/dev/null 2>&1; then
-  source <(ng completion script)
-fi
-
-export PATH="/opt/homebrew/opt/openjdk@17/bin:$PATH"
-
-# Google Cloud SDK
-if [ -f "$HOME/Google/google-cloud-sdk/path.zsh.inc" ]; then
-  . "$HOME/Google/google-cloud-sdk/path.zsh.inc"
-fi
-if [ -f "$HOME/Google/google-cloud-sdk/completion.zsh.inc" ]; then
-  . "$HOME/Google/google-cloud-sdk/completion.zsh.inc"
-fi
-
-# pnpm
-export PNPM_HOME="$HOME/Library/pnpm"
-case ":$PATH:" in
-  *":$PNPM_HOME:"*) ;;
-  *) export PATH="$PNPM_HOME:$PATH" ;;
-esac
-# pnpm end
-
-export PATH=$PATH:"$HOME/.spicetify"
-
-# Added by Antigravity
-export PATH="$HOME/.antigravity/antigravity/bin:$PATH"
-
-# Added by blaxel installer - completions directory
-fpath=(/Users/aslaii/.zsh/completions $fpath)
-autoload -Uz compinit && compinit

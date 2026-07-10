@@ -24,9 +24,11 @@ require_macos() {
     die "This script is intended for macOS only."
   fi
 
-  if [[ "$(uname -m)" != "arm64" ]]; then
-    warn "Apple Silicon (arm64) expected. Continuing, but make sure Homebrew is under /opt/homebrew."
-  fi
+  case "$(uname -m)" in
+    arm64) log "Apple Silicon detected; Homebrew uses /opt/homebrew." ;;
+    x86_64) log "Intel detected; Homebrew uses /usr/local." ;;
+    *) warn "Unsupported macOS architecture: $(uname -m)." ;;
+  esac
 }
 
 ensure_dotfiles_dir() {
@@ -98,12 +100,13 @@ ensure_brew_shellenv() {
     log "Adding Homebrew shellenv to ~/.zprofile."
     {
       printf '\n'
-      printf '%s\n' \
-        'if [ -x /opt/homebrew/bin/brew ]; then' \
-        '  eval "$(/opt/homebrew/bin/brew shellenv)"' \
-        'elif [ -x /usr/local/bin/brew ]; then' \
-        '  eval "$(/usr/local/bin/brew shellenv)"' \
-        'fi'
+      cat <<'EOF'
+if [ -x /opt/homebrew/bin/brew ]; then
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+elif [ -x /usr/local/bin/brew ]; then
+  eval "$(/usr/local/bin/brew shellenv)"
+fi
+EOF
     } >>"$HOME/.zprofile"
   fi
 }
@@ -139,20 +142,23 @@ link_file() {
     return
   fi
 
+  if [[ -L "$target" && "$(readlink "$target")" == "$source" ]]; then
+    log "Link already exists: ${target} -> ${source}"
+    return
+  fi
+
   if [[ -L "$target" && ! -e "$target" ]]; then
-    log "Removing broken symlink ${target}."
+    log "Replacing broken symlink ${target}."
     rm "$target"
   fi
 
-  if [[ -e "$target" && ! -L "$target" ]]; then
-    local backup
-    backup="${target}.bak.$(date +%s)"
-    log "Backing up existing ${target} to ${backup}."
-    mv "$target" "$backup"
+  if [[ -e "$target" || -L "$target" ]]; then
+    warn "Preserving existing ${target}; skipping link to ${source}."
+    return
   fi
 
   mkdir -p "$(dirname "$target")"
-  ln -sfn "$source" "$target"
+  ln -s "$source" "$target"
   log "Linked ${target} -> ${source}"
 }
 
@@ -195,8 +201,6 @@ emit_symlink_map() {
   echo "${DOTFILES_DIR}/codex/hooks.json|${HOME}/.codex/hooks.json"
   echo "${DOTFILES_DIR}/ghostty/config|${ghostty_target}"
   echo "${DOTFILES_DIR}/codex|${config_root}/codex"
-  echo "${DOTFILES_DIR}/opencode|${config_root}/opencode"
-  echo "${DOTFILES_DIR}/claude|${HOME}/.claude"
   echo "${DOTFILES_DIR}/nvim|${config_root}/nvim"
 }
 
@@ -265,43 +269,17 @@ link_configs() {
   done < <(emit_symlink_map)
 }
 
-process_json_templates() {
-  if ! command -v envsubst >/dev/null 2>&1; then
-    warn "envsubst not found; skipping template processing. Install gettext and rerun."
-    return
-  fi
+ensure_codex_config() {
+  local template="${DOTFILES_DIR}/codex/config.template.toml"
+  local config="${DOTFILES_DIR}/codex/config.toml"
 
-  local templates=(
-    "${DOTFILES_DIR}/claude/settings.template.json:${DOTFILES_DIR}/claude/settings.json"
-    "${DOTFILES_DIR}/gemini/settings.template.json:${DOTFILES_DIR}/gemini/settings.json"
-    "${DOTFILES_DIR}/gemini/antigravity/settings.template.json:${DOTFILES_DIR}/gemini/antigravity/settings.json"
-    "${DOTFILES_DIR}/gemini/antigravity/mcp_config.template.json:${DOTFILES_DIR}/gemini/antigravity/mcp_config.json"
-    "${DOTFILES_DIR}/codex/config.template.toml:${DOTFILES_DIR}/codex/config.toml"
-  )
-
-  local spec src dst
-  for spec in "${templates[@]}"; do
-    src="${spec%%:*}"
-    dst="${spec##*:}"
-    if [[ -f "$src" ]]; then
-      envsubst '$HOME $N8N_MCP_TOKEN' < "$src" > "$dst"
-      log "Processed template: $(basename "$src") -> $(basename "$dst")"
-    else
-      warn "Template not found: $src"
-    fi
-  done
-}
-
-install_pre_commit_hooks() {
-  if command -v pre-commit >/dev/null 2>&1; then
-    if [[ -f "${DOTFILES_DIR}/.pre-commit-config.yaml" ]]; then
-      log "Installing pre-commit hooks..."
-      (cd "${DOTFILES_DIR}" && pre-commit install)
-    else
-      warn "No .pre-commit-config.yaml found; skipping pre-commit install."
-    fi
+  if [[ -f "$config" ]]; then
+    log "Codex config already exists."
+  elif [[ -f "$template" ]]; then
+    cp "$template" "$config"
+    log "Created Codex config from template."
   else
-    warn "pre-commit not found; skipping hook installation."
+    warn "Codex config template missing at ${template}."
   fi
 }
 
@@ -324,50 +302,6 @@ ensure_tpm() {
   git clone https://github.com/tmux-plugins/tpm "$HOME/.tmux/plugins/tpm"
 }
 
-ensure_batcat_symlink() {
-  if command -v batcat >/dev/null 2>&1; then
-    return
-  fi
-
-  if command -v bat >/dev/null 2>&1; then
-    local bat_path
-    bat_path="$(command -v bat)"
-    log "Creating batcat shim for compatibility."
-    ln -sf "$bat_path" "$BREW_PREFIX/bin/batcat"
-  else
-    warn "bat is not installed; cannot create batcat shim."
-  fi
-}
-
-install_clasp() {
-  if command -v clasp >/dev/null 2>&1; then
-    log "clasp already installed."
-    return
-  fi
-
-  if command -v pnpm >/dev/null 2>&1; then
-    log "Installing clasp via pnpm."
-    if pnpm add --global @google/clasp; then
-      log "Installed clasp via pnpm."
-    else
-      warn "Failed to install clasp via pnpm."
-    fi
-    return
-  fi
-
-  if command -v npm >/dev/null 2>&1; then
-    log "Installing clasp via npm."
-    if npm install -g @google/clasp; then
-      log "Installed clasp via npm."
-    else
-      warn "Failed to install clasp via npm."
-    fi
-    return
-  fi
-
-  warn "pnpm/npm not found; install Node tooling (e.g. via nvm) and rerun to install clasp."
-}
-
 install_oh_my_posh_themes() {
   if ! command -v oh-my-posh >/dev/null 2>&1; then
     warn "oh-my-posh not found; skipping theme download."
@@ -380,7 +314,7 @@ install_oh_my_posh_themes() {
 
   local flavor url
   for flavor in latte mocha; do
-    url="https://raw.githubusercontent.com/catppuccin/oh-my-posh/main/themes/catppuccin_${flavor}.omp.json"
+    url="https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/catppuccin_${flavor}.omp.json"
     if [[ ! -f "${theme_dir}/catppuccin_${flavor}.omp.json" ]]; then
       log "Downloading catppuccin ${flavor} theme for oh-my-posh."
       if ! curl -fsSL "$url" -o "${theme_dir}/catppuccin_${flavor}.omp.json"; then
@@ -445,65 +379,6 @@ install_btop_catppuccin_themes() {
   log "Installed Catppuccin themes for btop into ${theme_dir}."
 }
 
-ensure_gcloud_symlink() {
-  local target_dir="$HOME/Google"
-  local legacy_dir="${target_dir}/google-cloud-sdk"
-  local candidate
-
-  mkdir -p "$target_dir"
-
-  if [[ -d "$legacy_dir" ]]; then
-    return
-  fi
-
-  local candidates=(
-    "$BREW_PREFIX/Caskroom/google-cloud-sdk/latest/google-cloud-sdk"
-    "/opt/homebrew/Caskroom/google-cloud-sdk/latest/google-cloud-sdk"
-    "/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk"
-    "$BREW_PREFIX/share/google-cloud-sdk"
-  )
-
-  for candidate in "${candidates[@]}"; do
-    if [[ -d "$candidate" ]]; then
-      log "Linking Google Cloud SDK into ${legacy_dir}."
-      ln -s "$candidate" "$legacy_dir"
-      return
-    fi
-  done
-
-  warn "Google Cloud SDK installation not found; run 'brew install --cask google-cloud-sdk' if missing."
-}
-
-setup_claude_mcp_servers() {
-  if ! command -v claude >/dev/null 2>&1; then
-    warn "claude CLI not found; skipping MCP server setup. Install Claude Code and rerun."
-    return
-  fi
-
-  # GitHub MCP is intentionally not provisioned for Claude, Gemini, or Codex.
-  local -A mcp_servers=(
-    [filesystem]="npx -y @modelcontextprotocol/server-filesystem $HOME"
-    [fetch]="npx -y @modelcontextprotocol/server-fetch"
-    [memory]="npx -y @modelcontextprotocol/server-memory"
-    [sequential-thinking]="npx -y @modelcontextprotocol/server-sequential-thinking"
-    [brave-search]="npx -y @modelcontextprotocol/server-brave-search"
-  )
-
-  local name args_str
-  for name in "${!mcp_servers[@]}"; do
-    if claude mcp get "$name" >/dev/null 2>&1; then
-      log "Claude MCP server '${name}' already configured; skipping."
-    else
-      args_str="${mcp_servers[$name]}"
-      log "Registering Claude MCP server '${name}'..."
-      # shellcheck disable=SC2086
-      if ! claude mcp add --scope user "$name" -- $args_str; then
-        warn "Failed to register Claude MCP server '${name}'."
-      fi
-    fi
-  done
-}
-
 ensure_github_auth() {
   if ! command -v gh >/dev/null 2>&1; then
     warn "GitHub CLI not found; skipping authentication."
@@ -516,28 +391,6 @@ ensure_github_auth() {
     log "Launching GitHub authentication..."
     gh auth login
   fi
-}
-
-ensure_caveman_skills() {
-  local agents_skills="$HOME/.agents/skills"
-  local antigravity_skills="${DOTFILES_DIR}/gemini/antigravity/skills"
-
-  if [[ ! -d "$agents_skills" ]]; then
-    warn "Caveman skills not found at ${agents_skills}; skipping."
-    return
-  fi
-
-  mkdir -p "$antigravity_skills"
-
-  local skill
-  for skill in caveman caveman-commit caveman-compress caveman-help caveman-review; do
-    if [[ -d "${agents_skills}/${skill}" ]]; then
-      ln -sfn "${agents_skills}/${skill}" "${antigravity_skills}/${skill}"
-      log "Linked caveman skill: ${skill}"
-    else
-      warn "Caveman skill ${skill} not found; skipping."
-    fi
-  done
 }
 
 ensure_default_shell() {
@@ -563,10 +416,8 @@ print_next_steps() {
   cat <<'MSG'
 
 [next steps]
-- Run `gcloud init` to finish Google Cloud CLI configuration.
 - Open a new terminal session so the Homebrew environment and linked dotfiles load correctly.
 - Launch tmux, then press prefix (Ctrl-b) followed by I to install plugins through TPM.
-- Complete any client-specific bootstrap scripts under `~/dotfiles/setups/` as needed.
 MSG
 }
 
@@ -584,18 +435,12 @@ main() {
   install_homebrew
   ensure_brew_shellenv
   ensure_homebrew_packages
-  install_pre_commit_hooks
-  ensure_batcat_symlink
-  install_clasp
   install_oh_my_posh_themes
   install_btop_catppuccin_themes
-  ensure_gcloud_symlink
+  ensure_codex_config
   link_configs
-  process_json_templates
   ensure_neovim_config
   ensure_tpm
-  setup_claude_mcp_servers
-  ensure_caveman_skills
   ensure_github_auth
   ensure_default_shell
   print_next_steps

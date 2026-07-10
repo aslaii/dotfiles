@@ -19,11 +19,6 @@ alias vim="nvim"
 alias nf='nvimGoToFiles'
 alias ngl='nvimGoToLine'
 
-# Package managers
-alias pm='pnpm'
-alias mailhog='~/go/bin/MailHog'
-alias bat="batcat"
-
 # Work scripts
 alias rave="~/dotfiles/setups/rave_setup.sh"
 alias gondoor="~/dotfiles/setups/gondoor_setup.sh"
@@ -40,10 +35,6 @@ alias gsw="gh auth switch"
 alias phpop="php artisan optimize"
 alias phprl="php artisan route:list"
 alias phpas="php artisan serve"
-
-# Bun
-alias bsd="bun start:dev"
-alias blf="bun lint -- --fix"
 
 alias x86="arch -x86_64 zsh --login"
 alias arm="arch -arm64 zsh --login"

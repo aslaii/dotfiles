@@ -2,9 +2,6 @@
 
 set -euo pipefail
 
-# This script installs global CLI tools (LSPs, Linters, CLIs)
-# that enable Gemini CLI to perform autonomous code fixes and scaffolding.
-
 log() {
   printf '
 [lsp-setup] %s
@@ -16,7 +13,7 @@ install_global_tools() {
 
   # Check if pnpm is installed
   if ! command -v pnpm >/dev/null 2>&1; then
-    log "pnpm not found. Please run initial-setup-macos.sh first."
+    log "pnpm not found. Install it with 'brew install pnpm', then rerun this script."
     exit 1
   fi
 
