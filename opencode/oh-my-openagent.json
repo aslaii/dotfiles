@@ -207,5 +207,11 @@
         "anthropic/claude-sonnet-4-6"
       ]
     }
+  },
+  "team_mode": {
+    "enabled": true,
+    "max_parallel_members": 4,
+    "max_members": 8,
+    "tmux_visualization": true
   }
 }
