@@ -2,7 +2,14 @@
   "$schema": "https://opencode.ai/config.json",
   "plugin": [
     "oh-my-openagent@latest",
-    "opencode-claude-auth@latest"
+    "opencode-claude-auth@latest",
+    "superpowers@git+https://github.com/obra/superpowers.git"
   ],
+  "skills": {
+    "paths": [
+      "/Users/aslaii/.config/opencode/skills",
+      "/Users/aslaii/.codex/superpowers/skills"
+    ]
+  },
   "permission": "allow"
 }

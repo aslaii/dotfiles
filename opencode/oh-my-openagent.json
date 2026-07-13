@@ -22,8 +22,8 @@
     "providerConcurrency": {
       "openai": 3,
       "anthropic": 3,
-      "opencode": 3,
-      "kimi-for-coding": 6
+      "opencode": 6,
+      "google": 2
     }
   },
   "experimental": {
@@ -38,6 +38,16 @@
     "main_pane_size": 60,
     "main_pane_min_width": 120,
     "agent_pane_min_width": 40
+  },
+  "team_mode": {
+    "enabled": true,
+    "max_parallel_members": 4,
+    "max_members": 8,
+    "tmux_visualization": true
+  },
+  "git_master": {
+    "commit_footer": false,
+    "include_co_authored_by": false
   },
   "agents": {
     "sisyphus": {
@@ -207,11 +217,5 @@
         "anthropic/claude-sonnet-4-6"
       ]
     }
-  },
-  "team_mode": {
-    "enabled": true,
-    "max_parallel_members": 4,
-    "max_members": 8,
-    "tmux_visualization": true
   }
 }
