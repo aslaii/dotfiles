@@ -3,7 +3,8 @@
   "plugin": [
     "oh-my-openagent@latest",
     "opencode-claude-auth@latest",
-    "superpowers@git+https://github.com/obra/superpowers.git"
+    "superpowers@git+https://github.com/obra/superpowers.git",
+    "/Users/aslaii/dotfiles/claude/plugins/marketplaces/ponytail/.opencode/plugins/ponytail.mjs"
   ],
   "skills": {
     "paths": [
