@@ -10,5 +10,6 @@
       "/Users/aslaii/.claude/skills/caveman"
     ]
   },
+  "lsp": true,
   "permission": "allow"
 }
