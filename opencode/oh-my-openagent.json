@@ -52,7 +52,7 @@
   "agents": {
     "sisyphus": {
       "model": "openai/gpt-5.6-sol",
-      "variant": "medium",
+      "variant": "high",
       "fallback_models": [
         "anthropic/claude-sonnet-4-6",
         {
@@ -67,7 +67,7 @@
     },
     "hephaestus": {
       "model": "openai/gpt-5.6-sol",
-      "variant": "high",
+      "variant": "xhigh",
       "fallback_models": [
         {
           "model": "openai/gpt-5.5",
@@ -76,7 +76,7 @@
       ]
     },
     "oracle": {
-      "model": "anthropic/claude-sonnet-4-6",
+      "model": "openai/gpt-5.6-sol",
       "variant": "high",
       "fallback_models": [
         {
@@ -86,30 +86,32 @@
       ]
     },
     "librarian": {
-      "model": "openai/gpt-5.4-mini-fast",
+      "model": "openai/gpt-5.6-luna",
+      "variant": "medium",
       "fallback_models": [
         "anthropic/claude-haiku-4-5",
         "openai/gpt-5.4-nano"
       ]
     },
     "explore": {
-      "model": "openai/gpt-5.4-mini-fast",
+      "model": "openai/gpt-5.6-luna",
+      "variant": "low",
       "fallback_models": [
         "anthropic/claude-haiku-4-5",
         "openai/gpt-5.4-nano"
       ]
     },
     "multimodal-looker": {
-      "model": "openai/gpt-5.5",
-      "variant": "medium",
+      "model": "openai/gpt-5.6-luna",
+      "variant": "low",
       "fallback_models": [
         "anthropic/claude-sonnet-4-6",
         "openai/gpt-5-nano"
       ]
     },
     "prometheus": {
-      "model": "anthropic/claude-sonnet-4-6",
-      "variant": "high",
+      "model": "openai/gpt-5.6-sol",
+      "variant": "xhigh",
       "fallback_models": [
         {
           "model": "openai/gpt-5.5",
@@ -118,8 +120,8 @@
       ]
     },
     "metis": {
-      "model": "anthropic/claude-sonnet-4-6",
-      "variant": "medium",
+      "model": "openai/gpt-5.6-luna",
+      "variant": "xhigh",
       "fallback_models": [
         {
           "model": "openai/gpt-5.5",
@@ -128,7 +130,7 @@
       ]
     },
     "momus": {
-      "model": "anthropic/claude-sonnet-4-6",
+      "model": "openai/gpt-5.6-luna",
       "variant": "high",
       "fallback_models": [
         {
@@ -138,8 +140,8 @@
       ]
     },
     "atlas": {
-      "model": "openai/gpt-5.5",
-      "variant": "medium",
+      "model": "openai/gpt-5.6-sol",
+      "variant": "high",
       "fallback_models": [
         "anthropic/claude-sonnet-4-6",
         "openai/gpt-5.4-mini"
@@ -170,18 +172,14 @@
       ]
     },
     "deep": {
-      "model": "openai/gpt-5.6-terra",
-      "variant": "xhigh",
+      "model": "openai/gpt-5.6-sol",
+      "variant": "high",
       "fallback_models": [
-        {
-          "model": "openai/gpt-5.6-sol",
-          "variant": "high"
-        },
         "anthropic/claude-sonnet-4-6"
       ]
     },
     "artistry": {
-      "model": "anthropic/claude-sonnet-4-6",
+      "model": "openai/gpt-5.6-luna",
       "variant": "high",
       "fallback_models": [
         {
@@ -191,27 +189,28 @@
       ]
     },
     "quick": {
-      "model": "openai/gpt-5.4-mini",
+      "model": "openai/gpt-5.6-luna",
+      "variant": "low",
       "fallback_models": [
         "anthropic/claude-haiku-4-5"
       ]
     },
     "unspecified-low": {
-      "model": "openai/gpt-5.4-mini",
+      "model": "openai/gpt-5.6-luna",
       "variant": "low",
       "fallback_models": [
         "anthropic/claude-haiku-4-5"
       ]
     },
     "unspecified-high": {
-      "model": "openai/gpt-5.5",
+      "model": "openai/gpt-5.6-luna",
       "variant": "high",
       "fallback_models": [
         "anthropic/claude-sonnet-4-6"
       ]
     },
     "writing": {
-      "model": "openai/gpt-5.5",
+      "model": "openai/gpt-5.6-luna",
       "variant": "medium",
       "fallback_models": [
         "anthropic/claude-sonnet-4-6"
