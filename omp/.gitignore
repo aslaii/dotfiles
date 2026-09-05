@@ -1,0 +1,17 @@
+# Only portable configuration, authored skills, and plugin manifests belong here.
+*
+!.gitignore
+!agent/
+!agent/config.yml
+!agent/skills/
+!agent/skills/**
+!plugins/
+!plugins/package.json
+!plugins/bun.lock
+!plugins/omp-plugins.lock.json
+
+# Never vendor dependencies or authentication/runtime state inside skills.
+**/node_modules/
+**/.env*
+**/auth.json
+**/*.db*

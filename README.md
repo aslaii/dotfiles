@@ -16,6 +16,51 @@ dotcheck
 # or: bash ~/dotfiles/initial-setup-macos.sh --check
 ```
 
+## Oh My Pi
+
+The `omp/` directory mirrors the portable parts of `~/.omp`:
+
+| Path | Contents |
+|------|----------|
+| `omp/agent/config.yml` | Model roles, thinking levels, prewalk, fallbacks, two-worker limit, and UI preferences |
+| `omp/agent/skills/omp-prompt/` | OMP-only prompt refinement skill |
+| `omp/plugins/package.json` | Installed plugin sources: Ponytail and pi-comment-checker |
+| `omp/plugins/bun.lock` | Exact plugin/dependency revisions for reproducible restoration |
+| `omp/plugins/omp-plugins.lock.json` | OMP plugin versions, enablement, and feature selections |
+
+On another macOS or Linux computer, install Bun, OMP, and RTK first. This snapshot
+was verified with Bun 1.4.0 and OMP 18.1.10. Then restore only OMP, without running
+the rest of the macOS bootstrap:
+
+```bash
+bash ~/dotfiles/initial-setup-macos.sh --omp
+omp plugin list
+omp
+```
+
+The OMP-only option uses the default `~/.omp` layout and the existing non-destructive
+symlink helper. Existing files and skills are preserved, not overwritten; move any
+conflicting files to your own backup before rerunning if you want the repository
+versions instead. Bun restores plugins with the active frozen lockfile. Keep the
+dotfiles checkout available because the configuration and custom skill are linked.
+The normal macOS bootstrap and its `--check` option remain unchanged.
+
+Authenticate separately with `/login` inside OMP on each computer. Model access
+depends on that computer's authenticated accounts; the config contains no credentials.
+The advisor uses the configured Claude role when enabled, while prewalk hands off
+to the configured `@smol` role.
+
+```text
+/skill:omp-prompt feature add CSV export without changing existing filters
+/skill:omp-prompt debug white screen after login; RCA only
+/skill:omp-prompt continue prepare the unfinished work for a new session
+```
+
+Ponytail's skills are supplied by its locked plugin, not duplicated in `agent/skills`.
+Credentials, sessions, caches, databases, onboarding/consent state, and machine-local
+MCP, LSP, Herdr/Moshi integrations are intentionally excluded. Install those integrations
+separately if needed; shared skills from other harnesses are not part of this OMP-only snapshot.
+
 ## Symlink Map
 
 > Source of truth: `emit_symlink_map()` in `initial-setup-macos.sh`

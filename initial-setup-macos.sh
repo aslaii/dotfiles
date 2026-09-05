@@ -238,14 +238,14 @@ run_check_mode() {
   local total=0
 
   while IFS='|' read -r source target; do
-    (( total++ ))
+    ((total++))
     if ! check_link "$source" "$target"; then
-      (( errors++ ))
+      ((errors++))
     fi
   done < <(emit_symlink_map)
 
   echo ""
-  if (( errors == 0 )); then
+  if ((errors == 0)); then
     log "All ${total} symlinks OK."
     return 0
   else
@@ -347,7 +347,7 @@ install_btop_catppuccin_themes() {
     fi
   done
 
-  if (( missing == 0 )); then
+  if ((missing == 0)); then
     log "Catppuccin themes for btop already installed."
     return
   fi
@@ -422,6 +422,24 @@ MSG
 }
 
 main() {
+  if [[ "${1:-}" == "--omp" ]]; then
+    ensure_dotfiles_dir
+    command -v bun >/dev/null 2>&1 || die "Install Bun before restoring OMP plugins."
+
+    local omp_root="${HOME}/.omp" skill manifest
+    link_file "${DOTFILES_DIR}/omp/agent/config.yml" "${omp_root}/agent/config.yml"
+    for skill in "${DOTFILES_DIR}"/omp/agent/skills/*; do
+      link_file "$skill" "${omp_root}/agent/skills/$(basename "$skill")"
+    done
+    for manifest in package.json bun.lock omp-plugins.lock.json; do
+      link_file "${DOTFILES_DIR}/omp/plugins/${manifest}" "${omp_root}/plugins/${manifest}"
+    done
+    bun install --cwd "${omp_root}/plugins" --frozen-lockfile --concurrent-scripts 2 --network-concurrency 2
+    log "OMP files linked where missing; existing files preserved. Plugins restored from the active lockfile."
+    log "Install OMP and RTK if needed, then run omp and /login on this machine."
+    return
+  fi
+
   if [[ "${1:-}" == "--check" ]]; then
     require_macos
     ensure_dotfiles_dir

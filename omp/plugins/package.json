@@ -1,0 +1,8 @@
+{
+  "name": "omp-plugins",
+  "private": true,
+  "dependencies": {
+    "@dietrichgebert/ponytail": "https://github.com/DietrichGebert/ponytail",
+    "pi-comment-checker": "npm:pi-comment-checker@^0.5.2"
+  }
+}

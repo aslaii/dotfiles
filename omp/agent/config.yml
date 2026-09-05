@@ -1,0 +1,63 @@
+providers:
+  webSearchOrder:
+    []
+disabledProviders:
+  - agent-plugins
+  - agents-md
+  - agents
+  - claude
+  - claude-plugins
+  - cline
+  - codex
+  - cursor
+  - gemini
+  - github
+  - mcp-json
+  - opencode
+  - ssh-json
+  - vscode
+  - windsurf
+modelRoles:
+  smol: openai-codex/gpt-5.6-sol:high
+  slow: openai-codex/gpt-6-astra:xhigh
+  vision: openai-codex/gpt-5.6-sol:high
+  plan: openai-codex/gpt-6-astra:xhigh
+  designer: openai-codex/gpt-5.6-sol:high
+  commit: openai-codex/gpt-5.6-luna:low
+  tiny: openai-codex/gpt-5.6-luna:low
+  task: openai-codex/gpt-5.6-sol:high
+  advisor: anthropic/claude-sonnet-5:medium
+  default: openai-codex/gpt-6-astra:xhigh
+  review: anthropic/claude-sonnet-5:high
+prewalk:
+  enabled: true
+task:
+  maxConcurrency: 2
+  agentModelOverrides:
+    scout: "@tiny:medium"
+    sonic: "@tiny:low"
+    reviewer: "@review"
+    security-reviewer: "@slow"
+retry:
+  usageAwareFallback: true
+  usageReservePct: 10
+  usageReservePolicy: auto
+  modelFallback: true
+  fallbackRevertPolicy: cooldown-expiry
+  fallbackChains:
+    openai-codex/gpt-6-astra:
+      - openai-codex/gpt-5.6-sol:high
+    openai-codex/gpt-5.6-sol:
+      - openai-codex/gpt-5.6-terra:high
+    anthropic/*:
+      - openai-codex/gpt-5.6-sol:high
+symbolPreset: nerd
+composer:
+  shape: box
+theme:
+  dark: dark-catppuccin
+  light: light-catppuccin
+disabledExtensions:
+  []
+browser:
+  headless: true
