@@ -1,6 +1,7 @@
 #!/bin/bash
 config_file="$HOME/.claude/statusline-config.txt"
 if [ -f "$config_file" ]; then
+  # shellcheck source-path=SCRIPTDIR source=statusline-config.txt
   source "$config_file"
   show_model=$SHOW_MODEL
   show_dir=$SHOW_DIRECTORY
