@@ -1,19 +1,18 @@
 {
-  "chrome-devtools-plugins": {
+  "omc": {
     "source": {
-      "source": "github",
-      "repo": "ChromeDevTools/chrome-devtools-mcp"
+      "source": "git",
+      "url": "https://github.com/Yeachan-Heo/oh-my-claudecode.git"
     },
-    "installLocation": "/Users/aslaii/.claude/plugins/marketplaces/chrome-devtools-plugins",
-    "lastUpdated": "2026-04-08T11:20:27.454Z"
+    "installLocation": "/Users/aslaii/.claude/plugins/marketplaces/omc",
+    "lastUpdated": "2026-07-27T07:17:33.233Z"
   },
-  "superpowers-marketplace": {
+  "ponytail": {
     "source": {
       "source": "github",
-      "repo": "obra/superpowers-marketplace"
+      "repo": "DietrichGebert/ponytail"
     },
-    "installLocation": "/Users/aslaii/.claude/plugins/marketplaces/superpowers-marketplace",
-    "lastUpdated": "2026-05-29T08:06:53.396Z",
-    "autoUpdate": true
+    "installLocation": "/Users/aslaii/.claude/plugins/marketplaces/ponytail",
+    "lastUpdated": "2026-07-19T17:23:48.061Z"
   }
 }

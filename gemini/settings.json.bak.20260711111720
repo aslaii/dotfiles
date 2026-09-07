@@ -1,0 +1,144 @@
+{
+  "experimental": {
+    "enableAgents": true
+  },
+  "security": {
+    "auth": {
+      "selectedType": "oauth-personal"
+    },
+    "disableYoloMode": true
+  },
+  "general": {
+    "previewFeatures": true,
+    "vimMode": false,
+    "sessionRetention": {
+      "enabled": true,
+      "maxAge": "30d",
+      "warningAcknowledged": true
+    },
+    "enableAutoUpdate": true,
+    "defaultApprovalMode": "default",
+    "enablePromptCompletion": true,
+    "plan": {
+      "enabled": true
+    }
+  },
+  "ui": {
+    "theme": "Catppuccin Latte",
+    "autoThemeSwitching": true,
+    "customThemes": {
+      "Catppuccin Frappé": {
+        "name": "Catppuccin Frappé",
+        "type": "custom",
+        "Background": "#303446",
+        "Foreground": "#c6d0f5",
+        "LightBlue": "#99d1db",
+        "AccentBlue": "#8caaee",
+        "AccentPurple": "#ca9ee6",
+        "AccentCyan": "#81c8be",
+        "AccentGreen": "#a6d189",
+        "AccentYellow": "#e5c890",
+        "AccentRed": "#e78284",
+        "Comment": "#949cbb",
+        "Gray": "#838ba7",
+        "DiffAdded": "#5f7361",
+        "DiffRemoved": "#79535f",
+        "GradientColors": [
+          "#8caaee",
+          "#ca9ee6",
+          "#e78284"
+        ]
+      },
+      "Catppuccin Latte": {
+        "name": "Catppuccin Latte",
+        "type": "custom",
+        "Background": "#eff1f5",
+        "Foreground": "#4c4f69",
+        "LightBlue": "#04a5e5",
+        "AccentBlue": "#1e66f5",
+        "AccentPurple": "#8839ef",
+        "AccentCyan": "#179299",
+        "AccentGreen": "#40a02b",
+        "AccentYellow": "#df8e1d",
+        "AccentRed": "#d20f39",
+        "Comment": "#7c7f93",
+        "Gray": "#8c8fa1",
+        "DiffAdded": "#a9d1a4",
+        "DiffRemoved": "#e397aa",
+        "GradientColors": [
+          "#1e66f5",
+          "#8839ef",
+          "#d20f39"
+        ]
+      },
+      "Catppuccin Macchiato": {
+        "name": "Catppuccin Macchiato",
+        "type": "custom",
+        "Background": "#24273a",
+        "Foreground": "#cad3f5",
+        "LightBlue": "#91d7e3",
+        "AccentBlue": "#8aadf4",
+        "AccentPurple": "#c6a0f6",
+        "AccentCyan": "#8bd5ca",
+        "AccentGreen": "#a6da95",
+        "AccentYellow": "#eed49f",
+        "AccentRed": "#ed8796",
+        "Comment": "#939ab7",
+        "Gray": "#8087a2",
+        "DiffAdded": "#586e5f",
+        "DiffRemoved": "#754d5f",
+        "GradientColors": [
+          "#8aadf4",
+          "#c6a0f6",
+          "#ed8796"
+        ]
+      },
+      "Catppuccin Mocha": {
+        "name": "Catppuccin Mocha",
+        "type": "custom",
+        "Background": "#1e1e2e",
+        "Foreground": "#cdd6f4",
+        "LightBlue": "#89dceb",
+        "AccentBlue": "#89b4fa",
+        "AccentPurple": "#cba6f7",
+        "AccentCyan": "#94e2d5",
+        "AccentGreen": "#a6e3a1",
+        "AccentYellow": "#f9e2af",
+        "AccentRed": "#f38ba8",
+        "Comment": "#9399b2",
+        "Gray": "#7f849c",
+        "DiffAdded": "#546d5c",
+        "DiffRemoved": "#734a5f",
+        "GradientColors": [
+          "#89b4fa",
+          "#cba6f7",
+          "#f38ba8"
+        ]
+      }
+    },
+    "inlineThinkingMode": "full",
+    "showStatusInTitle": true,
+    "footer": {
+      "hideSandboxStatus": true
+    },
+    "terminalBackgroundPollingInterval": 60
+  },
+  "tools": {
+    "shell": {
+      "showColor": false
+    }
+  },
+  "mcpServers": {
+    "filesystem": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "/Users/aslaii"
+      ]
+    }
+  },
+  "agents": {
+    "overrides": {}
+  }
+}

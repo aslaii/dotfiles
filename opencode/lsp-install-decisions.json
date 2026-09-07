@@ -1,0 +1,10 @@
+{
+  "typescript": {
+    "decision": "allowed",
+    "decidedAt": "2026-08-02T23:17:58.422Z"
+  },
+  "yaml-ls": {
+    "decision": "declined",
+    "decidedAt": "2026-07-20T07:12:00.672Z"
+  }
+}

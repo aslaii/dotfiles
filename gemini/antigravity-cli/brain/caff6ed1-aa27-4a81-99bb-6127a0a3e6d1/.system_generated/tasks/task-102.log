@@ -1,0 +1,31 @@
+[STARTED] Backing up original state...
+[COMPLETED] Backed up original state in git stash (00d33b918)
+[STARTED] Running tasks for staged files...
+[STARTED] .lintstagedrc.js — 10 files
+[STARTED] apps/backend/**/*.ts — 0 files
+[STARTED] apps/web/**/*.{ts,tsx} — 7 files
+[STARTED] apps/admin/**/*.{ts,tsx} — 0 files
+[STARTED] **/*.{json,md,yml,yaml,css} — 1 file
+[SKIPPED] apps/backend/**/*.ts — no files
+[SKIPPED] apps/admin/**/*.{ts,tsx} — no files
+[STARTED] pnpm --filter @gondoor/web exec eslint --fix --no-warn-ignored
+[STARTED] prettier --write
+[COMPLETED] prettier --write
+[COMPLETED] **/*.{json,md,yml,yaml,css} — 1 file
+[COMPLETED] pnpm --filter @gondoor/web exec eslint --fix --no-warn-ignored
+[STARTED] prettier --write
+[COMPLETED] prettier --write
+[COMPLETED] apps/web/**/*.{ts,tsx} — 7 files
+[COMPLETED] .lintstagedrc.js — 10 files
+[COMPLETED] Running tasks for staged files...
+[STARTED] Applying modifications from tasks...
+[COMPLETED] Applying modifications from tasks...
+[STARTED] Cleaning up temporary files...
+[COMPLETED] Cleaning up temporary files...
+[fix/onboarding-ui 95fa9e9a9] fix(onboarding): fix descender clipping in rotating headline & polish status icon animation
+ 11 files changed, 400 insertions(+), 101 deletions(-)
+ create mode 100644 apps/web/src/features/onboarding/components/animated-status-icon.tsx
+ create mode 100644 apps/web/src/features/onboarding/components/rotating-headline.tsx
+ delete mode 100644 apps/web/src/features/onboarding/components/typewriter-text.tsx
+ create mode 100644 artifacts/evidence/01-overview.png
+ create mode 100644 artifacts/evidence/02-typewriter-mid-animation.png

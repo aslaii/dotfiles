@@ -1,0 +1,50 @@
+{
+  "firstStartTime": "2026-07-30T19:56:31.506Z",
+  "machineID": "651e202d9c509dbf5eb62d96814955ac899903f1e8fb4ab0d49250afc02d0fd8",
+  "opusProMigrationComplete": true,
+  "sonnet1m45MigrationComplete": true,
+  "seenNotifications": {},
+  "hasResetAutoModeOptInForDefaultOffer": true,
+  "migrationVersion": 13,
+  "userID": "965cccb03dde061a375a4604a172c9835b62a4e46b4b5cb7f38c6686801f0ec9",
+  "pluginUsage": {
+    "chrome-devtools-mcp@chrome-devtools-plugins": {
+      "usageCount": 0,
+      "lastUsedAt": 1785441391724,
+      "lastUsedNumStartups": 0
+    },
+    "superpowers@superpowers-marketplace": {
+      "usageCount": 22,
+      "lastUsedAt": 1785442057833,
+      "lastUsedNumStartups": 0
+    },
+    "claude-session-driver@superpowers-marketplace": {
+      "usageCount": 66,
+      "lastUsedAt": 1785442058195,
+      "lastUsedNumStartups": 0
+    },
+    "superpowers-chrome@superpowers-marketplace": {
+      "usageCount": 0,
+      "lastUsedAt": 1785441391724,
+      "lastUsedNumStartups": 0
+    },
+    "typescript-lsp@claude-plugins-official": {
+      "usageCount": 0,
+      "lastUsedAt": 1785441391724,
+      "lastUsedNumStartups": 0
+    },
+    "oh-my-claudecode@omc": {
+      "usageCount": 8969,
+      "lastUsedAt": 1786279918967,
+      "lastUsedNumStartups": 0
+    },
+    "ponytail@ponytail": {
+      "usageCount": 5980,
+      "lastUsedAt": 1786279918883,
+      "lastUsedNumStartups": 0
+    }
+  },
+  "pluginUsageLspGraceAppliedIds": [
+    "typescript-lsp@claude-plugins-official"
+  ]
+}

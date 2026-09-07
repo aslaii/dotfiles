@@ -1,0 +1,9 @@
+{
+  "accessToken": "access-1",
+  "refreshToken": "refresh-1",
+  "expiresAt": 1710000000,
+  "clientInfo": {
+    "clientId": "client-1",
+    "clientSecret": "secret-1"
+  }
+}

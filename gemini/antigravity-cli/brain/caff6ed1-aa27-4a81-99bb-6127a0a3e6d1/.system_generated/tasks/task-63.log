@@ -1,0 +1,4 @@
+
+> @gondoor/web@0.1.0 typecheck /Users/aslaii/work/mobii/gondoor-mono/.worktrees/onboarding-changes/apps/web
+> tsc --noEmit
+

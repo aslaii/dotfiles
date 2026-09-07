@@ -1,44 +1,24 @@
 {
   "version": 2,
   "plugins": {
-    "chrome-devtools-mcp@chrome-devtools-plugins": [
+    "oh-my-claudecode@omc": [
       {
         "scope": "user",
-        "installPath": "/Users/aslaii/.claude/plugins/cache/chrome-devtools-plugins/chrome-devtools-mcp/0.21.0",
-        "version": "0.21.0",
-        "installedAt": "2026-04-08T11:20:41.154Z",
-        "lastUpdated": "2026-04-08T11:20:41.154Z",
-        "gitCommitSha": "fb6e857d4e6e37388efa74bb3d9fd60d70d4439e"
+        "installPath": "/Users/aslaii/.claude/plugins/cache/omc/oh-my-claudecode/4.15.7",
+        "version": "4.15.7",
+        "installedAt": "2026-07-16T00:27:19.904Z",
+        "lastUpdated": "2026-07-27T07:16:56.693Z",
+        "gitCommitSha": "41a4c0f77144c5beb5f5f000a89cff379c680606"
       }
     ],
-    "superpowers@superpowers-marketplace": [
+    "ponytail@ponytail": [
       {
         "scope": "user",
-        "installPath": "/Users/aslaii/.claude/plugins/cache/superpowers-marketplace/superpowers/5.1.0",
-        "version": "5.1.0",
-        "installedAt": "2026-04-29T04:56:26.714Z",
-        "lastUpdated": "2026-05-22T02:11:31.637Z",
-        "gitCommitSha": "6efe32c9e2dd002d0c394e861e0529675d1ab32e"
-      }
-    ],
-    "claude-session-driver@superpowers-marketplace": [
-      {
-        "scope": "user",
-        "installPath": "/Users/aslaii/.claude/plugins/cache/superpowers-marketplace/claude-session-driver/3.0.0",
-        "version": "3.0.0",
-        "installedAt": "2026-05-22T02:11:54.664Z",
-        "lastUpdated": "2026-05-22T02:11:54.664Z",
-        "gitCommitSha": "e35d2bea3573ccedd3ec0357494924524c50733c"
-      }
-    ],
-    "superpowers-chrome@superpowers-marketplace": [
-      {
-        "scope": "user",
-        "installPath": "/Users/aslaii/.claude/plugins/cache/superpowers-marketplace/superpowers-chrome/3.0.1",
-        "version": "3.0.1",
-        "installedAt": "2026-05-22T02:15:16.893Z",
-        "lastUpdated": "2026-05-25T05:21:13.708Z",
-        "gitCommitSha": "4c37351edfcede909c0252dcdd4c6c152cb9541f"
+        "installPath": "/Users/aslaii/.claude/plugins/cache/ponytail/ponytail/4.8.4",
+        "version": "4.8.4",
+        "installedAt": "2026-07-19T17:23:56.011Z",
+        "lastUpdated": "2026-07-19T17:23:56.011Z",
+        "gitCommitSha": "16f29800fd2681bdf24f3eb4ccffe38be3baec6b"
       }
     ]
   }

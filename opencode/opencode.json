@@ -2,8 +2,17 @@
   "$schema": "https://opencode.ai/config.json",
   "plugin": [
     "/Users/aslaii/dotfiles/claude/plugins/marketplaces/ponytail/.opencode/plugins/ponytail.mjs",
-    "oh-my-openagent@latest"
+    "oh-my-openagent@latest",
+    "opencode-claude-auth@latest"
   ],
+  "permission": {
+    "*": "allow",
+    "bash": {
+      "*": "allow",
+      "*git*push*": "deny",
+      "*git*send-pack*": "deny"
+    }
+  },
   "skills": {
     "paths": [
       "/Users/aslaii/.config/opencode/skills",
@@ -11,5 +20,17 @@
     ]
   },
   "lsp": true,
-  "permission": "allow"
+  "mcp": {
+    "argent": {
+      "type": "local",
+      "command": [
+        "argent",
+        "mcp"
+      ],
+      "enabled": true
+    }
+  },
+  "tools": {
+    "argent*": true
+  }
 }

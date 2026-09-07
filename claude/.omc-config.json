@@ -1,0 +1,15 @@
+{
+  "defaultExecutionMode": "",
+  "configuredAt": "2026-06-30T03:32:52Z",
+  "team": {
+    "ops": {
+      "maxAgents": 3,
+      "defaultAgentType": "codex",
+      "monitorIntervalMs": 30000,
+      "shutdownTimeoutMs": 15000
+    }
+  },
+  "setupCompleted": "2026-06-30T15:23:49+08:00",
+  "setupVersion": "4.15.0",
+  "nodeBinary": "/Users/aslaii/.nvm/versions/node/v24.14.1/bin/node"
+}

@@ -1,0 +1,369 @@
+{
+  "sessions": {
+    "6dc32953-9c45-4bbf-af70-13b99bbb3ea7": {
+      "tool_counts": {
+        "ToolSearch": 2,
+        "WebFetch": 6,
+        "Bash": 66,
+        "AskUserQuestion": 1,
+        "Read": 1,
+        "Edit": 2,
+        "Skill": 1,
+        "mcp__plugin_oh-my-claudecode_t__state_list_active": 2,
+        "mcp__plugin_oh-my-claudecode_t__state_read": 1,
+        "mcp__plugin_oh-my-claudecode_t__state_clear": 2
+      },
+      "last_tool": "Bash",
+      "total_calls": 84,
+      "started_at": 1785137169,
+      "updated_at": 1785139915
+    },
+    "dcf1b107-ee01-4c53-8718-35dcce372b8a": {
+      "tool_counts": {
+        "Bash": 13
+      },
+      "last_tool": "Bash",
+      "total_calls": 13,
+      "started_at": 1785160595,
+      "updated_at": 1785160826
+    },
+    "f7ab8b6f-ab80-4afb-b427-9952f27278bc": {
+      "tool_counts": {
+        "Skill": 1,
+        "ToolSearch": 1,
+        "Bash": 11
+      },
+      "last_tool": "Bash",
+      "total_calls": 13,
+      "started_at": 1785166495,
+      "updated_at": 1785166576
+    },
+    "14c252d3-923a-45b5-b9bf-d81100041d8c": {
+      "tool_counts": {
+        "Bash": 9,
+        "Read": 2
+      },
+      "last_tool": "Bash",
+      "total_calls": 11,
+      "started_at": 1785446819,
+      "updated_at": 1785447894
+    },
+    "ebb7c70f-1742-41df-b51e-fb4a8050c163": {
+      "tool_counts": {
+        "Bash": 10,
+        "Read": 2
+      },
+      "last_tool": "Bash",
+      "total_calls": 12,
+      "started_at": 1785452014,
+      "updated_at": 1785452087
+    },
+    "44dce1c4-f198-42e8-8097-4050ad138ca9": {
+      "tool_counts": {
+        "Skill": 3,
+        "Bash": 180,
+        "Agent": 4,
+        "Read": 82,
+        "ToolSearch": 12,
+        "SendMessage": 9,
+        "TaskList": 1,
+        "Write": 2,
+        "Edit": 20,
+        "TaskCreate": 3,
+        "TaskUpdate": 10,
+        "TaskGet": 1,
+        "mcp__plugin_oh-my-claudecode_t__state_list_active": 2,
+        "mcp__plugin_oh-my-claudecode_t__state_clear": 2,
+        "TaskStop": 4
+      },
+      "last_tool": "Bash",
+      "total_calls": 335,
+      "started_at": 1785465963,
+      "updated_at": 1785474374
+    },
+    "a04ec7e4-05f4-4c38-add9-4e84bfeaa5b1": {
+      "tool_counts": {
+        "Bash": 102,
+        "ToolSearch": 5,
+        "WebFetch": 34,
+        "Agent": 3,
+        "Write": 1,
+        "Read": 13,
+        "WebSearch": 14,
+        "mcp__github__search_issues": 1
+      },
+      "last_tool": "Bash",
+      "total_calls": 173,
+      "started_at": 1785666904,
+      "updated_at": 1785679907
+    },
+    "119e7e9b-853f-4bb5-83df-7c5168a36c5a": {
+      "tool_counts": {
+        "Bash": 119,
+        "Read": 15,
+        "Edit": 5,
+        "Write": 2,
+        "AskUserQuestion": 3
+      },
+      "last_tool": "Bash",
+      "total_calls": 144,
+      "started_at": 1785701647,
+      "updated_at": 1785707907
+    },
+    "ses_03b7dbceaffebelyzck0brfYhR": {
+      "tool_counts": {
+        "Skill": 1,
+        "Bash": 70,
+        "CodegraphCodegraphExplore": 2,
+        "Task": 7,
+        "Read": 22,
+        "BackgroundOutput": 5,
+        "Write": 2,
+        "TodoWrite": 9,
+        "BackgroundCancel": 2,
+        "Edit": 10,
+        "Question": 4,
+        "FilesystemListDirectory": 1
+      },
+      "last_tool": "TodoWrite",
+      "total_calls": 135,
+      "started_at": 1785708308,
+      "updated_at": 1785711312
+    },
+    "ses_03b7cc2e0ffewz2JW8hzgRr3Z2": {
+      "tool_counts": {
+        "Glob": 3,
+        "Grep": 6,
+        "CodegraphCodegraphExplore": 9,
+        "Read": 4
+      },
+      "last_tool": "CodegraphCodegraphExplore",
+      "total_calls": 22,
+      "started_at": 1785708378,
+      "updated_at": 1785708475
+    },
+    "ses_03b7ca2c9ffenxoGa0vwspmvLm": {
+      "tool_counts": {
+        "Grep": 12,
+        "Glob": 3,
+        "CodegraphCodegraphExplore": 3,
+        "Read": 20
+      },
+      "last_tool": "Read",
+      "total_calls": 38,
+      "started_at": 1785708379,
+      "updated_at": 1785708575
+    },
+    "ses_03b7806b9ffeb4CCr4EBIvfoG8": {
+      "tool_counts": {
+        "CodegraphCodegraphExplore": 10,
+        "Read": 26,
+        "Grep": 15,
+        "Bash": 6,
+        "Skill": 1
+      },
+      "last_tool": "Read",
+      "total_calls": 58,
+      "started_at": 1785708684,
+      "updated_at": 1785709045
+    },
+    "ses_03b77beddffeT8dRQ4B8RveaF1": {
+      "tool_counts": {
+        "TodoWrite": 2,
+        "Skill": 3,
+        "Read": 24,
+        "CodegraphCodegraphExplore": 3,
+        "Grep": 16,
+        "Glob": 2
+      },
+      "last_tool": "Read",
+      "total_calls": 50,
+      "started_at": 1785708707,
+      "updated_at": 1785708916
+    },
+    "ses_03b777616ffeKLzS6sYPJbrKQi": {
+      "tool_counts": {
+        "Read": 7,
+        "CodegraphCodegraphExplore": 2,
+        "Bash": 1,
+        "Grep": 1
+      },
+      "last_tool": "Read",
+      "total_calls": 11,
+      "started_at": 1785708716,
+      "updated_at": 1785708785
+    },
+    "ses_03b7323f0ffesQwu97o3UVzDpn": {
+      "tool_counts": {
+        "Bash": 121,
+        "Read": 3,
+        "TodoWrite": 8,
+        "Edit": 9,
+        "Write": 5,
+        "Question": 2
+      },
+      "last_tool": "Bash",
+      "total_calls": 148,
+      "started_at": 1785708999,
+      "updated_at": 1785711344
+    },
+    "ses_03b5f59b1ffeqwrrRhZyOAEVul": {
+      "tool_counts": {
+        "WebsearchWebSearchExa": 12,
+        "WebFetch": 4
+      },
+      "last_tool": "WebsearchWebSearchExa",
+      "total_calls": 16,
+      "started_at": 1785710300,
+      "updated_at": 1785710396
+    },
+    "ses_03b5a205affenE3OIQlcVdoxxF": {
+      "tool_counts": {
+        "WebFetch": 14,
+        "WebsearchWebSearchExa": 18
+      },
+      "last_tool": "WebFetch",
+      "total_calls": 32,
+      "started_at": 1785710644,
+      "updated_at": 1785710822
+    },
+    "ses_03b45d6beffemI4o7y2MCyc0lZ": {
+      "tool_counts": {
+        "Bash": 44,
+        "Read": 1,
+        "Write": 1,
+        "LspStatus": 2,
+        "TodoWrite": 3,
+        "LspDiagnostics": 1,
+        "LspInstallDecision": 1
+      },
+      "last_tool": "TodoWrite",
+      "total_calls": 53,
+      "started_at": 1785711971,
+      "updated_at": 1785712706
+    },
+    "4b7758bd-a2a0-499b-a9f2-d08a0115dda0": {
+      "tool_counts": {
+        "ToolSearch": 2,
+        "Bash": 110,
+        "WebFetch": 1,
+        "Skill": 2,
+        "Read": 1,
+        "Edit": 2,
+        "AskUserQuestion": 1,
+        "Write": 14,
+        "mcp__plugin_oh-my-claudecode_t__state_list_active": 2,
+        "mcp__plugin_oh-my-claudecode_t__state_read": 1,
+        "mcp__plugin_oh-my-claudecode_t__state_clear": 2
+      },
+      "last_tool": "Bash",
+      "total_calls": 138,
+      "started_at": 1785969580,
+      "updated_at": 1785971633
+    },
+    "2f27536d-1c2f-408d-923f-65c5c12dd52c": {
+      "tool_counts": {
+        "Read": 1,
+        "Write": 1,
+        "ToolSearch": 1
+      },
+      "last_tool": "ToolSearch",
+      "total_calls": 3,
+      "started_at": 1785977192,
+      "updated_at": 1785977227
+    },
+    "60d5792f-0a29-4832-a76f-fbedc89a6059": {
+      "tool_counts": {
+        "Read": 1
+      },
+      "last_tool": "Read",
+      "total_calls": 1,
+      "started_at": 1785977267,
+      "updated_at": 1785977267
+    },
+    "b877c7fd-0916-47cd-b5aa-1b5e86ca6c2a": {
+      "tool_counts": {
+        "Read": 1,
+        "Bash": 2
+      },
+      "last_tool": "Bash",
+      "total_calls": 3,
+      "started_at": 1785977711,
+      "updated_at": 1785977722
+    },
+    "010910f0-0686-46f7-8c00-286d9663e5fc": {
+      "tool_counts": {
+        "Bash": 12,
+        "Read": 1
+      },
+      "last_tool": "Bash",
+      "total_calls": 13,
+      "started_at": 1786047601,
+      "updated_at": 1786047973
+    },
+    "8708007d-8812-4f2b-ba84-dbff192be1a1": {
+      "tool_counts": {
+        "Bash": 17
+      },
+      "last_tool": "Bash",
+      "total_calls": 17,
+      "started_at": 1786055746,
+      "updated_at": 1786055868
+    },
+    "ebadb196-e279-4dc5-8d02-0df808764afa": {
+      "tool_counts": {
+        "Bash": 6,
+        "Write": 1
+      },
+      "last_tool": "Bash",
+      "total_calls": 7,
+      "started_at": 1786067264,
+      "updated_at": 1786067325
+    },
+    "8cc70a9a-e3ea-4249-bd42-e92a5550e846": {
+      "tool_counts": {
+        "Bash": 8
+      },
+      "last_tool": "Bash",
+      "total_calls": 8,
+      "started_at": 1786498125,
+      "updated_at": 1786498151
+    },
+    "40a9aea9-b43b-4083-a93b-87a9e201956d": {
+      "tool_counts": {
+        "Bash": 41,
+        "Read": 3,
+        "ToolSearch": 2,
+        "Write": 1,
+        "Edit": 1
+      },
+      "last_tool": "Bash",
+      "total_calls": 48,
+      "started_at": 1786998550,
+      "updated_at": 1786999546
+    },
+    "c54ec3e4-f63a-41fd-ace0-aef79cc8bdd8": {
+      "tool_counts": {
+        "Bash": 19,
+        "Skill": 1,
+        "ToolSearch": 1,
+        "mcp__plugin_oh-my-claudecode_t__state_list_active": 1,
+        "mcp__plugin_oh-my-claudecode_t__state_read": 1,
+        "mcp__plugin_oh-my-claudecode_t__state_clear": 2
+      },
+      "last_tool": "mcp__plugin_oh-my-claudecode_t__state_clear",
+      "total_calls": 25,
+      "started_at": 1787692458,
+      "updated_at": 1787692615
+    },
+    "3e762ec2-194e-4dde-a48a-898dcb26b89c": {
+      "tool_counts": {
+        "Bash": 4
+      },
+      "last_tool": "Bash",
+      "total_calls": 4,
+      "started_at": 1787874598,
+      "updated_at": 1787874613
+    }
+  }
+}

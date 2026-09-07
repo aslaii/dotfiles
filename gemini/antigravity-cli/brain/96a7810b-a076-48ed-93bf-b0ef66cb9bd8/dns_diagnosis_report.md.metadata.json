@@ -1,0 +1,5 @@
+{
+  "summary":  "Diagnostic report analyzing why omo.dev is inaccessible on the user's network. It shows DNS queries from the local ISP (Galaxy Cable Corp.) are poisoned/sinkholed, whereas public DNS servers resolve to the correct Cloudflare IPs. It provides step-by-step solutions to fix this on macOS.",
+  "updatedAt":  "2026-06-20T14:33:10.436043Z",
+  "userFacing":  true
+}

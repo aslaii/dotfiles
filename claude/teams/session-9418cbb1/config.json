@@ -1,0 +1,18 @@
+{
+  "name": "session-9418cbb1",
+  "createdAt": 1786498016837,
+  "leadAgentId": "team-lead@session-9418cbb1",
+  "leadSessionId": "9418cbb1-5794-4680-9efe-c3d32e25c07a",
+  "members": [
+    {
+      "agentId": "team-lead@session-9418cbb1",
+      "name": "team-lead",
+      "agentType": "team-lead",
+      "joinedAt": 1786498016837,
+      "tmuxPaneId": "leader",
+      "cwd": "/Users/aslaii/work/mobii/gondoor-mono/apps/backend",
+      "subscriptions": [],
+      "backendType": "in-process"
+    }
+  ]
+}
