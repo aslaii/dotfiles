@@ -87,3 +87,38 @@ claude/mcp-needs-auth-cache.json
 
 # GSD agent runtime state
 .gsd/
+
+# Agent runtime state, caches, and generated evidence (not portable config)
+.omo/
+.omc/
+.senpi/
+.bg-shell/
+.codegraph
+.cache/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.venv/
+artifacts/
+test-results/
+playwright-report/
+.playwright-cli/
+coverage/
+*.log
+*.tmp
+*.bak
+
+# Antigravity installation payloads and private runtime history
+gemini/antigravity-cli/bin/
+gemini/antigravity-cli/brain/
+gemini/antigravity-cli/builtin/
+gemini/antigravity-cli/cache/
+gemini/antigravity-cli/conversations/
+gemini/antigravity-cli/implicit/
+gemini/antigravity-cli/knowledge/
+gemini/antigravity-cli/log/
+gemini/antigravity-cli/updater/
+gemini/antigravity-cli/history.jsonl
+gemini/antigravity-cli/import_manifest.json
+gemini/antigravity-cli/last_check.timestamp
