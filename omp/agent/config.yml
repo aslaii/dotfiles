@@ -18,39 +18,71 @@ disabledProviders:
   - vscode
   - windsurf
 modelRoles:
-  smol: openai-codex/gpt-5.6-sol:high
-  slow: openai-codex/gpt-6-astra:xhigh
-  vision: openai-codex/gpt-5.6-sol:high
-  plan: openai-codex/gpt-6-astra:xhigh
-  designer: openai-codex/gpt-5.6-sol:high
+  default: openai-codex/gpt-6-astra:medium
+  plan: openai-codex/gpt-6-astra:medium
+  task: openai-codex/gpt-5.6-luna:max
+  slow: openai-codex/gpt-5.6-terra:max
+  smol: openai-codex/gpt-5.6-luna:medium
+  vision: openai-codex/gpt-5.6-terra:high
+  designer: openai-codex/gpt-5.6-terra:max
   commit: openai-codex/gpt-5.6-luna:low
   tiny: openai-codex/gpt-5.6-luna:low
-  task: openai-codex/gpt-5.6-sol:high
+  planner: anthropic/claude-opus-5:high
   advisor: anthropic/claude-sonnet-5:medium
-  default: openai-codex/gpt-6-astra:xhigh
   review: anthropic/claude-sonnet-5:high
+  verify: openai-codex/gpt-5.6-terra:high
+  research: opencode-zen/muse-spark-1.3-contributor-free:xhigh
+  free: opencode-zen/muse-spark-1.3-contributor-free:xhigh
+defaultThinkingLevel: medium
+advisor:
+  enabled: false
 prewalk:
-  enabled: true
+  enabled: false
 task:
   maxConcurrency: 2
+  maxRecursionDepth: 1
+  maxEffort: max
+  enableEffort: false
+  enableLsp: true
+  prewalk: false
   agentModelOverrides:
-    scout: "@tiny:medium"
-    sonic: "@tiny:low"
+    task: "@task"
+    scout: "@smol"
+    sonic: "@tiny"
     reviewer: "@review"
-    security-reviewer: "@slow"
+    security-reviewer: "@review"
+    terra: "@slow"
+    planner: "@planner"
+    verifier: "@verify"
+    researcher: "@research"
 retry:
   usageAwareFallback: true
   usageReservePct: 10
   usageReservePolicy: auto
   modelFallback: true
-  fallbackRevertPolicy: cooldown-expiry
+  fallbackRevertPolicy: never
   fallbackChains:
-    openai-codex/gpt-6-astra:
-      - openai-codex/gpt-5.6-sol:high
-    openai-codex/gpt-5.6-sol:
-      - openai-codex/gpt-5.6-terra:high
+    default:
+      - anthropic/claude-sonnet-5:medium
+      - opencode-zen/muse-spark-1.3-contributor-free:xhigh
+    openai-codex/*:
+      - anthropic/claude-sonnet-5:medium
+      - opencode-zen/muse-spark-1.3-contributor-free:xhigh
+    openai-codex/gpt-5.6-luna:
+      - openai-codex/gpt-5.6-terra:max
+      - anthropic/claude-sonnet-5:high
+      - opencode-zen/muse-spark-1.3-contributor-free:xhigh
+    openai-codex/gpt-5.6-terra:
+      - anthropic/claude-sonnet-5:high
+      - opencode-zen/muse-spark-1.3-contributor-free:xhigh
+    anthropic/claude-opus-5:
+      - anthropic/claude-sonnet-5:high
+      - openai-codex/gpt-5.6-terra:max
+      - opencode-zen/muse-spark-1.3-contributor-free:xhigh
     anthropic/*:
-      - openai-codex/gpt-5.6-sol:high
+      - openai-codex/gpt-5.6-luna:max
+      - opencode-zen/muse-spark-1.3-contributor-free:xhigh
+    opencode-zen/muse-spark-1.3-contributor-free: []
 symbolPreset: nerd
 composer:
   shape: box

@@ -23,19 +23,23 @@ The `omp/` directory mirrors the portable parts of `~/.omp`:
 | Path | Contents |
 |------|----------|
 | `omp/agent/config.yml` | Model roles, thinking levels, prewalk, fallbacks, two-worker limit, and UI preferences |
+| `omp/agent/APPEND_SYSTEM.md` | Main-only orchestration and dispatch/verification policy |
+| `omp/agent/agents/*.md` | Portable planner, Terra, verifier, and researcher prompts |
 | `omp/agent/skills/omp-prompt/` | OMP-only prompt refinement skill |
 | `omp/plugins/package.json` | Installed plugin sources: Ponytail and pi-comment-checker |
 | `omp/plugins/bun.lock` | Exact plugin/dependency revisions for reproducible restoration |
 | `omp/plugins/omp-plugins.lock.json` | OMP plugin versions, enablement, and feature selections |
 
-On another macOS or Linux computer, install Bun, OMP, and RTK first. This snapshot
-was verified with Bun 1.4.0 and OMP 18.1.10. Then restore only OMP, without running
-the rest of the macOS bootstrap:
+On another macOS or Linux computer, install Bun, OMP, and RTK first. The earlier
+plugin snapshot was verified with Bun 1.4.0 and OMP 18.1.10; plugins were not
+reinstalled during this task. Runtime routing was verified against the currently
+installed OMP 18.1.14. Then restore only OMP, without running the rest of the
+macOS bootstrap:
 
 ```bash
-bash ~/dotfiles/initial-setup-macos.sh --omp
-omp plugin list
-omp
+rtk bash ~/dotfiles/initial-setup-macos.sh --omp
+rtk omp plugin list
+rtk omp --model @default --no-prewalk
 ```
 
 The OMP-only option uses the default `~/.omp` layout and the existing non-destructive
@@ -47,8 +51,18 @@ The normal macOS bootstrap and its `--check` option remain unchanged.
 
 Authenticate separately with `/login` inside OMP on each computer. Model access
 depends on that computer's authenticated accounts; the config contains no credentials.
-The advisor uses the configured Claude role when enabled, while prewalk hands off
-to the configured `@smol` role.
+
+Deployed routing keeps Main on Astra-medium (`@default`) for orchestration,
+bounded workers on Luna-max (`@task`), difficult workers on Terra-max (`@slow`),
+planning on Opus-high (`@planner`), review on Sonnet-high (`@review`), and research
+or free fallback on Muse Contributor Free-xhigh (`@research`/`@free`). Advisor and
+prewalk are off by default; dispatch allows at most two workers and no nested workers.
+The free endpoint is promotional; Contributor inputs and history may be used for
+training. There is no automatic paid Zen fallback.
+
+Existing sessions keep their old state and rendered prompts. For reliable adoption of
+the new policy, run `/advisor off`, select `@default` in `/model`, and start a fresh
+continuation; fresh launches use `rtk omp --model @default --no-prewalk`.
 
 ```text
 /skill:omp-prompt feature add CSV export without changing existing filters

@@ -3,6 +3,9 @@
 !.gitignore
 !agent/
 !agent/config.yml
+!agent/APPEND_SYSTEM.md
+!agent/agents/
+!agent/agents/*.md
 !agent/skills/
 !agent/skills/**
 !plugins/

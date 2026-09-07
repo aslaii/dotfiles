@@ -426,8 +426,13 @@ main() {
     ensure_dotfiles_dir
     command -v bun >/dev/null 2>&1 || die "Install Bun before restoring OMP plugins."
 
-    local omp_root="${HOME}/.omp" skill manifest
+    local omp_root="${HOME}/.omp" agent skill manifest
     link_file "${DOTFILES_DIR}/omp/agent/config.yml" "${omp_root}/agent/config.yml"
+    link_file "${DOTFILES_DIR}/omp/agent/APPEND_SYSTEM.md" "${omp_root}/agent/APPEND_SYSTEM.md"
+    for agent in "${DOTFILES_DIR}"/omp/agent/agents/*.md; do
+      [[ -f "$agent" ]] || continue
+      link_file "$agent" "${omp_root}/agent/agents/$(basename "$agent")"
+    done
     for skill in "${DOTFILES_DIR}"/omp/agent/skills/*; do
       link_file "$skill" "${omp_root}/agent/skills/$(basename "$skill")"
     done

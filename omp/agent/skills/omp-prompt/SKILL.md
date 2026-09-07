@@ -1,6 +1,6 @@
 ---
 name: omp-prompt
-description: Refines rough coding requests into copy-ready prompts for a new Oh My Pi session, with task-specific magic keywords, model roles, advisor and prewalk recommendations. Use when explicitly asked to prepare or improve an OMP prompt; never to execute the underlying task.
+description: Refines rough coding requests into copy-ready prompts for a new Oh My Pi orchestration session, with model roles, bounded worker delegation, and advisor/prewalk off by default. Use when explicitly asked to prepare or improve an OMP prompt; never to execute the underlying task.
 disable-model-invocation: true
 argument-hint: "[auto|feature|debug|change|optimize|audit|verify|plan|continue] <rough request>"
 ---
@@ -39,24 +39,24 @@ The request overrides mode defaults: `debug ... fix it` permits a fix; `feature 
 
 | Mode | Contract | Usual choice |
 |---|---|---|
-| `auto` | Infer one primary mode and the smallest adequate workflow. | None for trivial work. |
-| `feature` | Deliver the named user journey; state non-goals and observable acceptance. | `orchestrate` only for substantial independent slices; prewalk on when bounded. |
-| `debug` | Trace the reported failure to owning state/caller. RCA only unless fixing is clear; a fix addresses root cause and the failing path. | `ultrathink`; prewalk off while uncertain. |
-| `change` | Define changed behavior and invariants; migrate affected callers without adjacent redesign. | `ultrathink` for tricky transitions; `orchestrate` for substantial slices. |
-| `optimize` | Measure one reproducible scenario before/after; change only proven bottlenecks when fixes are authorized. | `workflowz` broad, `ultrathink` localized; prewalk off for diagnosis. |
-| `audit` | Read-only, evidence-backed, severity-ranked findings and coverage gaps unless fixes are explicit. | `workflowz` broad, `ultrathink` narrow; prewalk off. |
-| `verify` | Exercise the real changed journey against actual criteria; setup checks alone are not proof. | `workflowz` only for independent slices; prewalk off. |
-| `plan` | Implementation-ready contracts, dependencies, risks, and verification gates; no implementation or approval. | `ultrathink` when difficult; `@plan`; prewalk off. |
+| `auto` | Infer one primary mode and the smallest adequate workflow. | Main `@default`; no keyword required. |
+| `feature` | Deliver the named user journey; state non-goals and observable acceptance. | Main delegates bounded implementation to `task`, difficult work to `terra`; prewalk off. |
+| `debug` | Trace the reported failure to owning state/caller. RCA only unless fixing is clear; a fix addresses root cause and the failing path. | Delegate diagnosis to `task` or `terra` according to uncertainty; prewalk off. |
+| `change` | Define changed behavior and invariants; migrate affected callers without adjacent redesign. | Delegate bounded changes to `task`, risky transitions to `terra`. |
+| `optimize` | Measure one reproducible scenario before/after; change only proven bottlenecks when fixes are authorized. | Delegate diagnosis/implementation; one serial verification owner after edits settle. |
+| `audit` | Read-only, evidence-backed, severity-ranked findings and coverage gaps unless fixes are explicit. | Bounded `reviewer` or `security-reviewer`; no continuous advisor. |
+| `verify` | Exercise the real changed journey against actual criteria; setup checks alone are not proof. | Assign actual runtime acceptance to `verifier`; prewalk off. |
+| `plan` | Implementation-ready contracts, dependencies, risks, and verification gates; no implementation or approval. | Main `@plan`; delegate difficult plan construction to `planner`; prewalk off. |
 | `continue` | Transfer only unfinished work, decisions, evidence, failed attempts, and exact next action. Never redo completed work or treat a plan as approved. | Inherit the remaining task's workflow. |
 
-Prefer no magic keyword for trivial work and one for substantial work. Combine only for distinct contracts; every included keyword activates on the submitted turn. Select `workflowz` only when both `eval` and `task` are available, but do not add those tool names to the prompt merely to activate it. Never inflate scope to justify delegation.
+No magic keyword is required for coding delegation. Main orchestrates even a single bounded coding task; it does not switch models to implement inline. Preserve an explicitly requested keyword only when it serves a distinct contract; every included keyword activates on the submitted turn. Select `workflowz` only when both `eval` and `task` are available. Never inflate scope or require parallel workers, a planning wave, or a review wave for trivial work.
 
 ## Setup
 
-- **Model:** `@smol` for straightforward bounded work, `@default` for normal delivery, `@slow` for uncertain/high-risk reasoning, `@plan` for planning. Respect explicit user choices.
-- **Prewalk:** on only for substantial, settled implementation that can hand off to `@smol`; off for prompt-writing, read-only work, unresolved diagnosis/optimization, direct `@smol`, or critical invariants still requiring strong reasoning.
-- **Advisor:** off by default. Turn on for explicit requests or concrete architectural, security, billing, migration, data-loss, or concurrency risk. It adds scrutiny, latency, and provider use—not verification or approval.
-- **Thinking:** keep the role default. Suggest `--thinking max` only for a concrete reason; `ultrathink` raises effort automatically only under AUTO thinking.
+- **Model:** Main uses `@default` (Astra-medium) for normal launches and `@plan` (Astra-medium) for planning. Delegate bounded implementation to `task`/Luna, difficult implementation to `terra`, and difficult plan construction to `planner`/Claude. Do not switch Main to `@smol` or `@slow` to code. Respect explicit user choices.
+- **Prewalk:** off for all recommended launches: `--no-prewalk`. Bounded features are delegated, not handed off by switching Main.
+- **Advisor:** off unless explicitly requested. Concrete architectural, security, billing, migration, data-loss, or concurrency risk calls for a bounded `reviewer` or `security-reviewer`, not continuous commentary. Review is not runtime verification or approval.
+- **Thinking:** retain each role's configured effort; do not raise Astra effort or add `--thinking max` unless explicitly requested.
 
 Do not inventory settings. Prefer role aliases. Inspect only a consequential unknown: `modelRoles`, or `magicKeywords.enabled` plus the selected keyword switch. Reuse results unless project/profile settings changed. Never inspect credentials or mutate configuration. If native syntax remains uncertain, read only the relevant OMP doc.
 
@@ -68,10 +68,10 @@ Initial delivery has exactly these sections, with no preliminary plan, progress 
 
 One compact recommendation: mode, keyword(s) or none, role, prewalk on/off, advisor on/off, and the concrete tradeoff. Then:
 
-- Fresh process in the same project/worktree: `rtk omp --model @<role> --prewalk` or `rtk omp --model @<role> --no-prewalk`.
-- Separate in-session command: `/advisor on` or `/advisor off`.
+- Fresh process in the same project/worktree: `rtk omp --model @default --no-prewalk`; planning uses `rtk omp --model @plan --no-prewalk`.
+- Separate in-session command: `/advisor off` unless the user explicitly requested an advisor.
 
-These are recommendations, not applied settings. Add a thinking flag only when justified. If keyword activation was not inspected, say so briefly; if known disabled, give the relevant native `omp config set` command. On revisions, say `Setup unchanged` rather than repeat commands.
+These are recommendations, not applied settings. Existing sessions may retain old effort, advisor state, and rendered prompts: use `/advisor off`, select `@default` in `/model`, and start a fresh continuation session for the new orchestration policy. If a requested keyword's activation was not inspected, say so briefly; if known disabled, give the relevant native `omp config set` command. On revisions, say `Setup unchanged` rather than repeat commands.
 
 ### Refined prompt
 
