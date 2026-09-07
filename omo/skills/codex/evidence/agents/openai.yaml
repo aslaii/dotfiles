@@ -1,0 +1,4 @@
+interface:
+  display_name: "Evidence"
+  short_description: "Serve visual proof for implementation QA"
+  default_prompt: "Use $evidence to serve screenshots and videos that verify this change."

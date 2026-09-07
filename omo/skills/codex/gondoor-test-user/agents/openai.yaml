@@ -1,0 +1,4 @@
+interface:
+  display_name: "Gondoor Test User"
+  short_description: "Run prod onboarding and build smokes"
+  default_prompt: "Use $gondoor-test-user to onboard a trusted prod smoke user and inspect backend logs."

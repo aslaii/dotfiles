@@ -1,0 +1,4 @@
+interface:
+  display_name: "Gondoor Local Fix Loop"
+  short_description: "ULW-backed Gondoor local PM2 fix loop"
+  default_prompt: "Use $gondoor-local-fix-loop with $omo:ulw-loop to fix the failure locally, commit, restart the PM2 server, test a fresh local user, and record evidence until it passes."

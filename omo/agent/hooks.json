@@ -1,0 +1,13 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "bash",
+        "hooks": [
+          { "type": "command", "command": "dcg", "timeout": 10 },
+          { "type": "command", "command": "rtk hook claude", "timeout": 10 }
+        ]
+      }
+    ]
+  }
+}

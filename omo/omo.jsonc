@@ -1,0 +1,898 @@
+{
+  "[senpi]": {
+    "categories": {
+      "quick": {
+        "models": [
+          {
+            "model": "anthropic/claude-haiku-4-5",
+            "reasoning": "low"
+          },
+          {
+            "model": "openai-codex/gpt-5.6-luna-fast",
+            "reasoning": "low"
+          }
+        ]
+      },
+      "unspecified-low": {
+        "models": [
+          {
+            "model": "anthropic/claude-sonnet-5",
+            "reasoning": "medium"
+          },
+          {
+            "model": "openai-codex/gpt-5.6-luna-fast",
+            "reasoning": "high"
+          }
+        ]
+      },
+      "unspecified-high": {
+        "models": [
+          {
+            "model": "anthropic/claude-sonnet-5",
+            "reasoning": "medium"
+          },
+          {
+            "model": "openai-codex/gpt-5.6-sol",
+            "reasoning": "high"
+          }
+        ]
+      },
+      "artistry": {
+        "models": [
+          {
+            "model": "anthropic/claude-sonnet-5",
+            "reasoning": "high"
+          },
+          {
+            "model": "openai-codex/gpt-5.6-sol",
+            "reasoning": "high"
+          }
+        ]
+      },
+      "writing": {
+        "models": [
+          {
+            "model": "anthropic/claude-sonnet-5",
+            "reasoning": "medium"
+          },
+          {
+            "model": "openai-codex/gpt-5.6-sol",
+            "reasoning": "high"
+          }
+        ]
+      },
+      "visual-engineering": {
+        "models": [
+          {
+            "model": "anthropic/claude-sonnet-5",
+            "reasoning": "high"
+          },
+          {
+            "model": "openai-codex/gpt-5.6-sol",
+            "reasoning": "high"
+          }
+        ]
+      },
+      "architect": {
+        "models": [
+          {
+            "model": "anthropic/claude-sonnet-5",
+            "reasoning": "high"
+          },
+          {
+            "model": "openai-codex/gpt-5.6-sol",
+            "reasoning": "high"
+          }
+        ]
+      },
+      "deep": {
+        "models": [
+          {
+            "model": "openai-codex/gpt-5.6-terra",
+            "reasoning": "xhigh"
+          },
+          {
+            "model": "openai-codex/gpt-5.6-sol",
+            "reasoning": "high"
+          }
+        ]
+      },
+      "ultrabrain": {
+        "models": [
+          {
+            "model": "openai-codex/gpt-6-astra",
+            "reasoning": "xhigh"
+          },
+          {
+            "model": "openai-codex/gpt-5.6-sol",
+            "reasoning": "high"
+          }
+        ]
+      },
+      "git": {
+        "models": [
+          {
+            "model": "anthropic/claude-haiku-4-5",
+            "reasoning": "low"
+          },
+          {
+            "model": "openai-codex/gpt-5.6-luna-fast",
+            "reasoning": "low"
+          }
+        ]
+      }
+    },
+    "agents": {
+      "explore": {
+        "models": [
+          {
+            "model": "anthropic/claude-haiku-4-5",
+            "reasoning": "low"
+          },
+          {
+            "model": "openai-codex/gpt-5.6-luna-fast",
+            "reasoning": "low"
+          }
+        ]
+      },
+      "librarian": {
+        "models": [
+          {
+            "model": "anthropic/claude-haiku-4-5",
+            "reasoning": "low"
+          },
+          {
+            "model": "openai-codex/gpt-5.6-luna-fast",
+            "reasoning": "low"
+          }
+        ]
+      },
+      "oracle": {
+        "models": [
+          {
+            "model": "openai-codex/gpt-6-astra",
+            "reasoning": "xhigh"
+          },
+          {
+            "model": "openai-codex/gpt-5.6-sol",
+            "reasoning": "high"
+          }
+        ]
+      },
+      "metis": {
+        "models": [
+          {
+            "model": "openai-codex/gpt-6-astra",
+            "reasoning": "xhigh"
+          },
+          {
+            "model": "openai-codex/gpt-5.6-sol",
+            "reasoning": "high"
+          }
+        ]
+      },
+      "momus": {
+        "models": [
+          {
+            "model": "openai-codex/gpt-5.6-sol",
+            "reasoning": "xhigh"
+          },
+          {
+            "model": "openai-codex/gpt-5.6-terra",
+            "reasoning": "high"
+          }
+        ]
+      },
+      "multimodal-looker": {
+        "models": [
+          {
+            "model": "openai-codex/gpt-5.6-terra",
+            "reasoning": "high"
+          },
+          {
+            "model": "openai-codex/gpt-5.6-sol",
+            "reasoning": "high"
+          }
+        ]
+      }
+    },
+    "models": {
+      "sisyphus": {
+        "model": "openai-codex/gpt-6-astra",
+        "reasoning": "xhigh"
+      },
+      "prometheus": {
+        "model": "openai-codex/gpt-6-astra",
+        "reasoning": "xhigh"
+      },
+      "atlas": {
+        "model": "openai-codex/gpt-6-astra",
+        "reasoning": "xhigh"
+      },
+      "hephaestus": {
+        "model": "openai-codex/gpt-5.6-terra",
+        "reasoning": "xhigh"
+      },
+      "planner": {
+        "model": "openai-codex/gpt-6-astra",
+        "reasoning": "xhigh"
+      }
+    },
+    "task": {
+      "default_concurrency": 5,
+      "team": {
+        "max_members": 8,
+        "max_parallel_members": 4,
+        "max_wall_clock_minutes": 120
+      }
+    }
+  },
+  "profiles": {
+    "gpt": {
+      "[senpi]": {
+        "categories": {
+          "quick": {
+            "models": [
+              {
+                "model": "openai-codex/gpt-5.6-luna-fast",
+                "reasoning": "low"
+              },
+              {
+                "model": "openai-codex/gpt-5.4-mini",
+                "reasoning": "low"
+              }
+            ]
+          },
+          "unspecified-low": {
+            "models": [
+              {
+                "model": "openai-codex/gpt-5.6-luna-fast",
+                "reasoning": "medium"
+              },
+              {
+                "model": "openai-codex/gpt-5.6-terra-fast",
+                "reasoning": "medium"
+              }
+            ]
+          },
+          "unspecified-high": {
+            "models": [
+              {
+                "model": "openai-codex/gpt-5.6-sol",
+                "reasoning": "xhigh"
+              },
+              {
+                "model": "openai-codex/gpt-5.6-terra",
+                "reasoning": "high"
+              }
+            ]
+          },
+          "artistry": {
+            "models": [
+              {
+                "model": "openai-codex/gpt-5.6-terra",
+                "reasoning": "high"
+              },
+              {
+                "model": "openai-codex/gpt-5.6-sol",
+                "reasoning": "xhigh"
+              }
+            ]
+          },
+          "writing": {
+            "models": [
+              {
+                "model": "openai-codex/gpt-5.6-terra",
+                "reasoning": "medium"
+              },
+              {
+                "model": "openai-codex/gpt-5.6-luna-fast",
+                "reasoning": "medium"
+              }
+            ]
+          },
+          "visual-engineering": {
+            "models": [
+              {
+                "model": "openai-codex/gpt-5.6-sol",
+                "reasoning": "xhigh"
+              },
+              {
+                "model": "openai-codex/gpt-5.6-terra",
+                "reasoning": "high"
+              }
+            ]
+          },
+          "architect": {
+            "models": [
+              {
+                "model": "openai-codex/gpt-5.6-sol",
+                "reasoning": "xhigh"
+              },
+              {
+                "model": "openai-codex/gpt-5.5",
+                "reasoning": "high"
+              }
+            ]
+          },
+          "deep": {
+            "models": [
+              {
+                "model": "openai-codex/gpt-5.6-terra",
+                "reasoning": "xhigh"
+              },
+              {
+                "model": "openai-codex/gpt-5.6-sol",
+                "reasoning": "xhigh"
+              }
+            ]
+          },
+          "ultrabrain": {
+            "models": [
+              {
+                "model": "openai-codex/gpt-5.6-sol",
+                "reasoning": "max"
+              },
+              {
+                "model": "openai-codex/gpt-5.6-terra",
+                "reasoning": "xhigh"
+              }
+            ]
+          },
+          "git": {
+            "models": [
+              {
+                "model": "openai-codex/gpt-5.6-luna-fast",
+                "reasoning": "low"
+              },
+              {
+                "model": "openai-codex/gpt-5.4-mini",
+                "reasoning": "low"
+              }
+            ]
+          }
+        },
+        "agents": {
+          "explore": {
+            "models": [
+              {
+                "model": "openai-codex/gpt-5.6-luna-fast",
+                "reasoning": "low"
+              },
+              {
+                "model": "openai-codex/gpt-5.4-mini",
+                "reasoning": "low"
+              }
+            ]
+          },
+          "librarian": {
+            "models": [
+              {
+                "model": "openai-codex/gpt-5.6-luna-fast",
+                "reasoning": "low"
+              },
+              {
+                "model": "openai-codex/gpt-5.4-mini",
+                "reasoning": "low"
+              }
+            ]
+          },
+          "oracle": {
+            "models": [
+              {
+                "model": "openai-codex/gpt-5.5",
+                "reasoning": "high"
+              },
+              {
+                "model": "openai-codex/gpt-5.6-sol",
+                "reasoning": "xhigh"
+              }
+            ]
+          },
+          "metis": {
+            "models": [
+              {
+                "model": "openai-codex/gpt-6-astra",
+                "reasoning": "xhigh"
+              },
+              {
+                "model": "openai-codex/gpt-5.6-sol",
+                "reasoning": "xhigh"
+              }
+            ]
+          },
+          "momus": {
+            "models": [
+              {
+                "model": "openai-codex/gpt-5.6-sol",
+                "reasoning": "xhigh"
+              },
+              {
+                "model": "openai-codex/gpt-5.6-terra",
+                "reasoning": "high"
+              }
+            ]
+          },
+          "multimodal-looker": {
+            "models": [
+              {
+                "model": "openai-codex/gpt-5.5",
+                "reasoning": "medium"
+              },
+              {
+                "model": "openai-codex/gpt-5.6-luna-fast",
+                "reasoning": "medium"
+              }
+            ]
+          }
+        },
+        "models": {
+          "sisyphus": {
+            "model": "openai-codex/gpt-6-astra",
+            "reasoning": "xhigh"
+          },
+          "prometheus": {
+            "model": "openai-codex/gpt-6-astra",
+            "reasoning": "xhigh"
+          },
+          "atlas": {
+            "model": "openai-codex/gpt-6-astra",
+            "reasoning": "xhigh"
+          },
+          "hephaestus": {
+            "model": "openai-codex/gpt-5.6-sol",
+            "reasoning": "medium"
+          },
+          "planner": {
+            "model": "openai-codex/gpt-6-astra",
+            "reasoning": "xhigh"
+          }
+        }
+      }
+    },
+    "claude": {
+      "[senpi]": {
+        "categories": {
+          "quick": {
+            "models": [
+              {
+                "model": "anthropic/claude-haiku-4-5",
+                "reasoning": "low"
+              },
+              {
+                "model": "openai-codex/gpt-5.6-luna-fast",
+                "reasoning": "low"
+              }
+            ]
+          },
+          "unspecified-low": {
+            "models": [
+              {
+                "model": "anthropic/claude-sonnet-5",
+                "reasoning": "medium"
+              },
+              {
+                "model": "openai-codex/gpt-5.6-luna-fast",
+                "reasoning": "medium"
+              }
+            ]
+          },
+          "unspecified-high": {
+            "models": [
+              {
+                "model": "anthropic/claude-sonnet-5",
+                "reasoning": "medium"
+              },
+              {
+                "model": "openai-codex/gpt-5.6-sol",
+                "reasoning": "xhigh"
+              }
+            ]
+          },
+          "artistry": {
+            "models": [
+              {
+                "model": "anthropic/claude-sonnet-5",
+                "reasoning": "high"
+              },
+              {
+                "model": "openai-codex/gpt-5.6-terra",
+                "reasoning": "high"
+              }
+            ]
+          },
+          "writing": {
+            "models": [
+              {
+                "model": "anthropic/claude-sonnet-5",
+                "reasoning": "medium"
+              },
+              {
+                "model": "openai-codex/gpt-5.6-terra",
+                "reasoning": "medium"
+              }
+            ]
+          },
+          "visual-engineering": {
+            "models": [
+              {
+                "model": "anthropic/claude-sonnet-5",
+                "reasoning": "high"
+              },
+              {
+                "model": "openai-codex/gpt-5.6-sol",
+                "reasoning": "xhigh"
+              }
+            ]
+          },
+          "architect": {
+            "models": [
+              {
+                "model": "anthropic/claude-sonnet-5",
+                "reasoning": "xhigh"
+              },
+              {
+                "model": "openai-codex/gpt-5.6-sol",
+                "reasoning": "xhigh"
+              }
+            ]
+          },
+          "deep": {
+            "models": [
+              {
+                "model": "anthropic/claude-sonnet-5",
+                "reasoning": "medium"
+              },
+              {
+                "model": "openai-codex/gpt-5.6-terra",
+                "reasoning": "xhigh"
+              }
+            ]
+          },
+          "ultrabrain": {
+            "models": [
+              {
+                "model": "anthropic/claude-sonnet-5",
+                "reasoning": "max"
+              },
+              {
+                "model": "openai-codex/gpt-5.6-sol",
+                "reasoning": "max"
+              }
+            ]
+          },
+          "git": {
+            "models": [
+              {
+                "model": "anthropic/claude-haiku-4-5",
+                "reasoning": "low"
+              },
+              {
+                "model": "openai-codex/gpt-5.6-luna-fast",
+                "reasoning": "low"
+              }
+            ]
+          }
+        },
+        "agents": {
+          "explore": {
+            "models": [
+              {
+                "model": "anthropic/claude-haiku-4-5",
+                "reasoning": "low"
+              },
+              {
+                "model": "openai-codex/gpt-5.6-luna-fast",
+                "reasoning": "low"
+              }
+            ]
+          },
+          "librarian": {
+            "models": [
+              {
+                "model": "anthropic/claude-haiku-4-5",
+                "reasoning": "low"
+              },
+              {
+                "model": "openai-codex/gpt-5.6-luna-fast",
+                "reasoning": "low"
+              }
+            ]
+          },
+          "oracle": {
+            "models": [
+              {
+                "model": "anthropic/claude-sonnet-5",
+                "reasoning": "xhigh"
+              },
+              {
+                "model": "openai-codex/gpt-5.5",
+                "reasoning": "high"
+              }
+            ]
+          },
+          "metis": {
+            "models": [
+              {
+                "model": "openai-codex/gpt-6-astra",
+                "reasoning": "xhigh"
+              },
+              {
+                "model": "openai-codex/gpt-5.6-terra",
+                "reasoning": "high"
+              }
+            ]
+          },
+          "momus": {
+            "models": [
+              {
+                "model": "anthropic/claude-sonnet-5",
+                "reasoning": "medium"
+              },
+              {
+                "model": "openai-codex/gpt-5.6-sol",
+                "reasoning": "xhigh"
+              }
+            ]
+          },
+          "multimodal-looker": {
+            "models": [
+              {
+                "model": "anthropic/claude-sonnet-5",
+                "reasoning": "medium"
+              },
+              {
+                "model": "openai-codex/gpt-5.5",
+                "reasoning": "medium"
+              }
+            ]
+          }
+        },
+        "models": {
+          "sisyphus": {
+            "model": "openai-codex/gpt-6-astra",
+            "reasoning": "xhigh"
+          },
+          "prometheus": {
+            "model": "openai-codex/gpt-6-astra",
+            "reasoning": "xhigh"
+          },
+          "atlas": {
+            "model": "openai-codex/gpt-6-astra",
+            "reasoning": "xhigh"
+          },
+          "hephaestus": {
+            "model": "anthropic/claude-sonnet-5",
+            "reasoning": "medium"
+          },
+          "planner": {
+            "model": "openai-codex/gpt-6-astra",
+            "reasoning": "xhigh"
+          }
+        }
+      }
+    },
+    "mixed": {
+      "[senpi]": {
+        "categories": {
+          "quick": {
+            "models": [
+              {
+                "model": "openai-codex/gpt-5.6-luna-fast",
+                "reasoning": "low"
+              },
+              {
+                "model": "openai-codex/gpt-5.6-sol",
+                "reasoning": "high"
+              }
+            ]
+          },
+          "unspecified-low": {
+            "models": [
+              {
+                "model": "openai-codex/gpt-5.6-luna-fast",
+                "reasoning": "medium"
+              },
+              {
+                "model": "openai-codex/gpt-5.6-sol",
+                "reasoning": "high"
+              }
+            ]
+          },
+          "unspecified-high": {
+            "models": [
+              {
+                "model": "anthropic/claude-sonnet-5",
+                "reasoning": "medium"
+              },
+              {
+                "model": "openai-codex/gpt-5.6-sol",
+                "reasoning": "xhigh"
+              }
+            ]
+          },
+          "artistry": {
+            "models": [
+              {
+                "model": "anthropic/claude-sonnet-5",
+                "reasoning": "high"
+              },
+              {
+                "model": "openai-codex/gpt-5.6-terra",
+                "reasoning": "high"
+              }
+            ]
+          },
+          "writing": {
+            "models": [
+              {
+                "model": "anthropic/claude-sonnet-5",
+                "reasoning": "medium"
+              },
+              {
+                "model": "openai-codex/gpt-5.6-terra",
+                "reasoning": "medium"
+              }
+            ]
+          },
+          "visual-engineering": {
+            "models": [
+              {
+                "model": "anthropic/claude-sonnet-5",
+                "reasoning": "high"
+              },
+              {
+                "model": "openai-codex/gpt-5.6-sol",
+                "reasoning": "xhigh"
+              }
+            ]
+          },
+          "architect": {
+            "models": [
+              {
+                "model": "openai-codex/gpt-5.6-sol",
+                "reasoning": "xhigh"
+              },
+              {
+                "model": "openai-codex/gpt-5.6-terra",
+                "reasoning": "high"
+              }
+            ]
+          },
+          "deep": {
+            "models": [
+              {
+                "model": "openai-codex/gpt-5.6-terra",
+                "reasoning": "xhigh"
+              },
+              {
+                "model": "openai-codex/gpt-5.6-sol",
+                "reasoning": "high"
+              }
+            ]
+          },
+          "ultrabrain": {
+            "models": [
+              {
+                "model": "openai-codex/gpt-5.6-sol",
+                "reasoning": "max"
+              },
+              {
+                "model": "openai-codex/gpt-5.6-terra",
+                "reasoning": "high"
+              }
+            ]
+          },
+          "git": {
+            "models": [
+              {
+                "model": "anthropic/claude-haiku-4-5",
+                "reasoning": "low"
+              },
+              {
+                "model": "openai-codex/gpt-5.6-luna-fast",
+                "reasoning": "low"
+              }
+            ]
+          }
+        },
+        "agents": {
+          "explore": {
+            "models": [
+              {
+                "model": "openai-codex/gpt-5.6-luna-fast",
+                "reasoning": "low"
+              },
+              {
+                "model": "openai-codex/gpt-5.6-sol",
+                "reasoning": "high"
+              }
+            ]
+          },
+          "librarian": {
+            "models": [
+              {
+                "model": "openai-codex/gpt-5.6-luna-fast",
+                "reasoning": "low"
+              },
+              {
+                "model": "openai-codex/gpt-5.6-sol",
+                "reasoning": "high"
+              }
+            ]
+          },
+          "oracle": {
+            "models": [
+              {
+                "model": "openai-codex/gpt-5.5",
+                "reasoning": "high"
+              },
+              {
+                "model": "openai-codex/gpt-5.6-sol",
+                "reasoning": "high"
+              }
+            ]
+          },
+          "metis": {
+            "models": [
+              {
+                "model": "openai-codex/gpt-6-astra",
+                "reasoning": "xhigh"
+              },
+              {
+                "model": "openai-codex/gpt-5.6-terra",
+                "reasoning": "high"
+              }
+            ]
+          },
+          "momus": {
+            "models": [
+              {
+                "model": "openai-codex/gpt-5.6-sol",
+                "reasoning": "xhigh"
+              },
+              {
+                "model": "openai-codex/gpt-5.6-terra",
+                "reasoning": "high"
+              }
+            ]
+          },
+          "multimodal-looker": {
+            "models": [
+              {
+                "model": "openai-codex/gpt-5.5",
+                "reasoning": "medium"
+              },
+              {
+                "model": "openai-codex/gpt-5.6-sol",
+                "reasoning": "high"
+              }
+            ]
+          }
+        },
+        "models": {
+          "sisyphus": {
+            "model": "openai-codex/gpt-6-astra",
+            "reasoning": "xhigh"
+          },
+          "prometheus": {
+            "model": "openai-codex/gpt-6-astra",
+            "reasoning": "xhigh"
+          },
+          "atlas": {
+            "model": "openai-codex/gpt-6-astra",
+            "reasoning": "xhigh"
+          },
+          "hephaestus": {
+            "model": "openai-codex/gpt-5.6-sol",
+            "reasoning": "medium"
+          },
+          "planner": {
+            "model": "openai-codex/gpt-6-astra",
+            "reasoning": "xhigh"
+          }
+        }
+      }
+    }
+  }
+}

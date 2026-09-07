@@ -16,6 +16,20 @@ dotcheck
 # or: bash ~/dotfiles/initial-setup-macos.sh --check
 ```
 
+## OMO
+
+The [`omo/`](omo/README.md) directory contains the portable native OMO setup:
+model routes, UI preferences, pinned plugins, Bash hooks, 119 user/shared skills,
+and the Argent rule. With Node.js 24+, Bun 1.4+, Git, DCG, and RTK installed:
+
+```bash
+npm install -g omo-ai@5.0.0-0.beta.48
+bun ~/dotfiles/omo/restore.mjs
+```
+
+Authenticate with `/login` and review `/hooks` on the new computer. Credentials
+and agent runtime state are excluded.
+
 ## Oh My Pi
 
 The `omp/` directory mirrors the portable parts of `~/.omp`:

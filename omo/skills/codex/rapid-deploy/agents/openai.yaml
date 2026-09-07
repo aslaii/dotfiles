@@ -1,0 +1,4 @@
+interface:
+  display_name: "Rapid Deploy"
+  short_description: "PR promotion and Gondoor prod deploy"
+  default_prompt: "Use $rapid-deploy to promote this branch through dev, staging, and main, then deploy Gondoor production."

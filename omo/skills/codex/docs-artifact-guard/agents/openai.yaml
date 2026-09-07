@@ -1,0 +1,4 @@
+interface:
+  display_name: "Docs Artifact Guard"
+  short_description: "Keep generated docs out of repos and PRs"
+  default_prompt: "Use $docs-artifact-guard to clean generated docs artifacts, update ignore rules, and check that docs will not enter the PR."
