@@ -49,10 +49,47 @@ bun ~/dotfiles/omo/restore.mjs --home "/tmp/omo test home" --skip-packages
 | `rules/` | `~/.claude/rules/`: the Argent interaction rule imported by OMO |
 | `restore.json` | OMO version, resource destinations, and `tps`, `prompt-url-widget`, `files`, `diff` extension selection |
 
-Main, Planner, Prometheus, Metis, and Atlas use GPT-6 Astra with `xhigh`
-reasoning, the configured maximum. Planning roles retain this choice in the
-GPT, Claude, and mixed profiles. Other Claude work uses Sonnet 5 or Haiku 4.5;
-fallbacks are GPT-only.
+| Role | Model | Reasoning |
+|---|---|---|
+| Main / Sisyphus | GPT-6 Astra | `medium` |
+| Planner, Prometheus, Metis, Atlas | GPT-6 Astra | `max` |
+| Former Terra/Luna selections and fallbacks | Muse Spark 1.3 Contributor Free | `xhigh` |
+| Optional manual selection | GLM-5.3 through OpenCode Go | `max` |
+
+These choices apply across the default, GPT, Claude, and mixed profiles.
+Other Claude work remains on Sonnet 5 or Haiku 4.5. Existing Sol and Mini
+fallbacks remain; replacement chains are deduplicated and do not fall back to
+themselves.
+
+`max` is a distinct Astra level above `xhigh`, confirmed by the
+[OpenAI model reference](https://developers.openai.com/api/docs/models/gpt-6-astra).
+Main uses `medium` because OpenAI's [reasoning guide](https://developers.openai.com/api/docs/guides/reasoning)
+recommends it for judgment and delegation. This is a cautious default, not a
+claim that a published Astra low-versus-medium benchmark proves it optimal.
+
+[Artificial Analysis](https://artificialanalysis.ai/articles/muse-spark-1-3)
+reports Muse Spark 1.3 `xhigh` at 61 on its Intelligence Index and 85% on
+Terminal-Bench 2.1, with GLM-5.3 `max` at 60 on the same Intelligence Index.
+Those aggregate results do not prove Muse wins every coding workload.
+Muse's higher-scoring `max` variant is limited-preview and is not supported by
+the free Contributor endpoint, whose highest supported level is `xhigh`.
+
+The free model ID is `opencode/muse-spark-1.3-contributor-free`, on
+[OpenCode Zen](https://opencode.ai/docs/zen/). Its offer is temporary and
+permits training on prompts and completions. Authenticate the `opencode`
+provider separately if only `opencode-go` is connected.
+
+[OpenCode Go](https://opencode.ai/docs/go/) costs $10/month; GLM-5.3 consumes
+subscription allowance and is not a free endpoint. It is selectable but is
+not assigned to any agent or automatic fallback. GLM-5.3 is text-only, and
+[Z.ai recommends `max` for coding](https://docs.z.ai/guides/llm/glm-5.3).
+
+[OMO's documentation](https://omo.dev/docs) describes custom model overrides.
+The installed native runtime lists Muse explicitly, and a real OMO child
+using the free Muse model successfully executed a read tool. This confirms
+runtime/tool compatibility, not comprehensive upstream evaluation of every
+OMO workflow. Restart existing OMO sessions after changing routes; a running
+session can retain its previous category model mapping.
 
 The Grok Night dark theme, fullscreen mode, quiet startup, visible thinking
 blocks, Sol priority service tier, and existing permission preferences are

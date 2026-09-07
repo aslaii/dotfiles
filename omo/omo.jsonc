@@ -8,8 +8,8 @@
             "reasoning": "low"
           },
           {
-            "model": "openai-codex/gpt-5.6-luna-fast",
-            "reasoning": "low"
+            "model": "opencode/muse-spark-1.3-contributor-free",
+            "reasoning": "xhigh"
           }
         ]
       },
@@ -20,8 +20,8 @@
             "reasoning": "medium"
           },
           {
-            "model": "openai-codex/gpt-5.6-luna-fast",
-            "reasoning": "high"
+            "model": "opencode/muse-spark-1.3-contributor-free",
+            "reasoning": "xhigh"
           }
         ]
       },
@@ -88,7 +88,7 @@
       "deep": {
         "models": [
           {
-            "model": "openai-codex/gpt-5.6-terra",
+            "model": "opencode/muse-spark-1.3-contributor-free",
             "reasoning": "xhigh"
           },
           {
@@ -116,8 +116,8 @@
             "reasoning": "low"
           },
           {
-            "model": "openai-codex/gpt-5.6-luna-fast",
-            "reasoning": "low"
+            "model": "opencode/muse-spark-1.3-contributor-free",
+            "reasoning": "xhigh"
           }
         ]
       }
@@ -130,8 +130,8 @@
             "reasoning": "low"
           },
           {
-            "model": "openai-codex/gpt-5.6-luna-fast",
-            "reasoning": "low"
+            "model": "opencode/muse-spark-1.3-contributor-free",
+            "reasoning": "xhigh"
           }
         ]
       },
@@ -142,8 +142,8 @@
             "reasoning": "low"
           },
           {
-            "model": "openai-codex/gpt-5.6-luna-fast",
-            "reasoning": "low"
+            "model": "opencode/muse-spark-1.3-contributor-free",
+            "reasoning": "xhigh"
           }
         ]
       },
@@ -163,7 +163,7 @@
         "models": [
           {
             "model": "openai-codex/gpt-6-astra",
-            "reasoning": "xhigh"
+            "reasoning": "max"
           },
           {
             "model": "openai-codex/gpt-5.6-sol",
@@ -178,16 +178,16 @@
             "reasoning": "xhigh"
           },
           {
-            "model": "openai-codex/gpt-5.6-terra",
-            "reasoning": "high"
+            "model": "opencode/muse-spark-1.3-contributor-free",
+            "reasoning": "xhigh"
           }
         ]
       },
       "multimodal-looker": {
         "models": [
           {
-            "model": "openai-codex/gpt-5.6-terra",
-            "reasoning": "high"
+            "model": "opencode/muse-spark-1.3-contributor-free",
+            "reasoning": "xhigh"
           },
           {
             "model": "openai-codex/gpt-5.6-sol",
@@ -199,23 +199,23 @@
     "models": {
       "sisyphus": {
         "model": "openai-codex/gpt-6-astra",
-        "reasoning": "xhigh"
+        "reasoning": "medium"
       },
       "prometheus": {
         "model": "openai-codex/gpt-6-astra",
-        "reasoning": "xhigh"
+        "reasoning": "max"
       },
       "atlas": {
         "model": "openai-codex/gpt-6-astra",
-        "reasoning": "xhigh"
+        "reasoning": "max"
       },
       "hephaestus": {
-        "model": "openai-codex/gpt-5.6-terra",
+        "model": "opencode/muse-spark-1.3-contributor-free",
         "reasoning": "xhigh"
       },
       "planner": {
         "model": "openai-codex/gpt-6-astra",
-        "reasoning": "xhigh"
+        "reasoning": "max"
       }
     },
     "task": {
@@ -234,8 +234,8 @@
           "quick": {
             "models": [
               {
-                "model": "openai-codex/gpt-5.6-luna-fast",
-                "reasoning": "low"
+                "model": "opencode/muse-spark-1.3-contributor-free",
+                "reasoning": "xhigh"
               },
               {
                 "model": "openai-codex/gpt-5.4-mini",
@@ -246,12 +246,8 @@
           "unspecified-low": {
             "models": [
               {
-                "model": "openai-codex/gpt-5.6-luna-fast",
-                "reasoning": "medium"
-              },
-              {
-                "model": "openai-codex/gpt-5.6-terra-fast",
-                "reasoning": "medium"
+                "model": "opencode/muse-spark-1.3-contributor-free",
+                "reasoning": "xhigh"
               }
             ]
           },
@@ -262,16 +258,16 @@
                 "reasoning": "xhigh"
               },
               {
-                "model": "openai-codex/gpt-5.6-terra",
-                "reasoning": "high"
+                "model": "opencode/muse-spark-1.3-contributor-free",
+                "reasoning": "xhigh"
               }
             ]
           },
           "artistry": {
             "models": [
               {
-                "model": "openai-codex/gpt-5.6-terra",
-                "reasoning": "high"
+                "model": "opencode/muse-spark-1.3-contributor-free",
+                "reasoning": "xhigh"
               },
               {
                 "model": "openai-codex/gpt-5.6-sol",
@@ -282,12 +278,8 @@
           "writing": {
             "models": [
               {
-                "model": "openai-codex/gpt-5.6-terra",
-                "reasoning": "medium"
-              },
-              {
-                "model": "openai-codex/gpt-5.6-luna-fast",
-                "reasoning": "medium"
+                "model": "opencode/muse-spark-1.3-contributor-free",
+                "reasoning": "xhigh"
               }
             ]
           },
@@ -298,8 +290,8 @@
                 "reasoning": "xhigh"
               },
               {
-                "model": "openai-codex/gpt-5.6-terra",
-                "reasoning": "high"
+                "model": "opencode/muse-spark-1.3-contributor-free",
+                "reasoning": "xhigh"
               }
             ]
           },
@@ -318,7 +310,7 @@
           "deep": {
             "models": [
               {
-                "model": "openai-codex/gpt-5.6-terra",
+                "model": "opencode/muse-spark-1.3-contributor-free",
                 "reasoning": "xhigh"
               },
               {
@@ -334,7 +326,7 @@
                 "reasoning": "max"
               },
               {
-                "model": "openai-codex/gpt-5.6-terra",
+                "model": "opencode/muse-spark-1.3-contributor-free",
                 "reasoning": "xhigh"
               }
             ]
@@ -342,8 +334,8 @@
           "git": {
             "models": [
               {
-                "model": "openai-codex/gpt-5.6-luna-fast",
-                "reasoning": "low"
+                "model": "opencode/muse-spark-1.3-contributor-free",
+                "reasoning": "xhigh"
               },
               {
                 "model": "openai-codex/gpt-5.4-mini",
@@ -356,8 +348,8 @@
           "explore": {
             "models": [
               {
-                "model": "openai-codex/gpt-5.6-luna-fast",
-                "reasoning": "low"
+                "model": "opencode/muse-spark-1.3-contributor-free",
+                "reasoning": "xhigh"
               },
               {
                 "model": "openai-codex/gpt-5.4-mini",
@@ -368,8 +360,8 @@
           "librarian": {
             "models": [
               {
-                "model": "openai-codex/gpt-5.6-luna-fast",
-                "reasoning": "low"
+                "model": "opencode/muse-spark-1.3-contributor-free",
+                "reasoning": "xhigh"
               },
               {
                 "model": "openai-codex/gpt-5.4-mini",
@@ -393,7 +385,7 @@
             "models": [
               {
                 "model": "openai-codex/gpt-6-astra",
-                "reasoning": "xhigh"
+                "reasoning": "max"
               },
               {
                 "model": "openai-codex/gpt-5.6-sol",
@@ -408,8 +400,8 @@
                 "reasoning": "xhigh"
               },
               {
-                "model": "openai-codex/gpt-5.6-terra",
-                "reasoning": "high"
+                "model": "opencode/muse-spark-1.3-contributor-free",
+                "reasoning": "xhigh"
               }
             ]
           },
@@ -420,8 +412,8 @@
                 "reasoning": "medium"
               },
               {
-                "model": "openai-codex/gpt-5.6-luna-fast",
-                "reasoning": "medium"
+                "model": "opencode/muse-spark-1.3-contributor-free",
+                "reasoning": "xhigh"
               }
             ]
           }
@@ -429,15 +421,15 @@
         "models": {
           "sisyphus": {
             "model": "openai-codex/gpt-6-astra",
-            "reasoning": "xhigh"
+            "reasoning": "medium"
           },
           "prometheus": {
             "model": "openai-codex/gpt-6-astra",
-            "reasoning": "xhigh"
+            "reasoning": "max"
           },
           "atlas": {
             "model": "openai-codex/gpt-6-astra",
-            "reasoning": "xhigh"
+            "reasoning": "max"
           },
           "hephaestus": {
             "model": "openai-codex/gpt-5.6-sol",
@@ -445,7 +437,7 @@
           },
           "planner": {
             "model": "openai-codex/gpt-6-astra",
-            "reasoning": "xhigh"
+            "reasoning": "max"
           }
         }
       }
@@ -460,8 +452,8 @@
                 "reasoning": "low"
               },
               {
-                "model": "openai-codex/gpt-5.6-luna-fast",
-                "reasoning": "low"
+                "model": "opencode/muse-spark-1.3-contributor-free",
+                "reasoning": "xhigh"
               }
             ]
           },
@@ -472,8 +464,8 @@
                 "reasoning": "medium"
               },
               {
-                "model": "openai-codex/gpt-5.6-luna-fast",
-                "reasoning": "medium"
+                "model": "opencode/muse-spark-1.3-contributor-free",
+                "reasoning": "xhigh"
               }
             ]
           },
@@ -496,8 +488,8 @@
                 "reasoning": "high"
               },
               {
-                "model": "openai-codex/gpt-5.6-terra",
-                "reasoning": "high"
+                "model": "opencode/muse-spark-1.3-contributor-free",
+                "reasoning": "xhigh"
               }
             ]
           },
@@ -508,8 +500,8 @@
                 "reasoning": "medium"
               },
               {
-                "model": "openai-codex/gpt-5.6-terra",
-                "reasoning": "medium"
+                "model": "opencode/muse-spark-1.3-contributor-free",
+                "reasoning": "xhigh"
               }
             ]
           },
@@ -544,7 +536,7 @@
                 "reasoning": "medium"
               },
               {
-                "model": "openai-codex/gpt-5.6-terra",
+                "model": "opencode/muse-spark-1.3-contributor-free",
                 "reasoning": "xhigh"
               }
             ]
@@ -568,8 +560,8 @@
                 "reasoning": "low"
               },
               {
-                "model": "openai-codex/gpt-5.6-luna-fast",
-                "reasoning": "low"
+                "model": "opencode/muse-spark-1.3-contributor-free",
+                "reasoning": "xhigh"
               }
             ]
           }
@@ -582,8 +574,8 @@
                 "reasoning": "low"
               },
               {
-                "model": "openai-codex/gpt-5.6-luna-fast",
-                "reasoning": "low"
+                "model": "opencode/muse-spark-1.3-contributor-free",
+                "reasoning": "xhigh"
               }
             ]
           },
@@ -594,8 +586,8 @@
                 "reasoning": "low"
               },
               {
-                "model": "openai-codex/gpt-5.6-luna-fast",
-                "reasoning": "low"
+                "model": "opencode/muse-spark-1.3-contributor-free",
+                "reasoning": "xhigh"
               }
             ]
           },
@@ -615,11 +607,11 @@
             "models": [
               {
                 "model": "openai-codex/gpt-6-astra",
-                "reasoning": "xhigh"
+                "reasoning": "max"
               },
               {
-                "model": "openai-codex/gpt-5.6-terra",
-                "reasoning": "high"
+                "model": "opencode/muse-spark-1.3-contributor-free",
+                "reasoning": "xhigh"
               }
             ]
           },
@@ -651,15 +643,15 @@
         "models": {
           "sisyphus": {
             "model": "openai-codex/gpt-6-astra",
-            "reasoning": "xhigh"
+            "reasoning": "medium"
           },
           "prometheus": {
             "model": "openai-codex/gpt-6-astra",
-            "reasoning": "xhigh"
+            "reasoning": "max"
           },
           "atlas": {
             "model": "openai-codex/gpt-6-astra",
-            "reasoning": "xhigh"
+            "reasoning": "max"
           },
           "hephaestus": {
             "model": "anthropic/claude-sonnet-5",
@@ -667,7 +659,7 @@
           },
           "planner": {
             "model": "openai-codex/gpt-6-astra",
-            "reasoning": "xhigh"
+            "reasoning": "max"
           }
         }
       }
@@ -678,8 +670,8 @@
           "quick": {
             "models": [
               {
-                "model": "openai-codex/gpt-5.6-luna-fast",
-                "reasoning": "low"
+                "model": "opencode/muse-spark-1.3-contributor-free",
+                "reasoning": "xhigh"
               },
               {
                 "model": "openai-codex/gpt-5.6-sol",
@@ -690,8 +682,8 @@
           "unspecified-low": {
             "models": [
               {
-                "model": "openai-codex/gpt-5.6-luna-fast",
-                "reasoning": "medium"
+                "model": "opencode/muse-spark-1.3-contributor-free",
+                "reasoning": "xhigh"
               },
               {
                 "model": "openai-codex/gpt-5.6-sol",
@@ -718,8 +710,8 @@
                 "reasoning": "high"
               },
               {
-                "model": "openai-codex/gpt-5.6-terra",
-                "reasoning": "high"
+                "model": "opencode/muse-spark-1.3-contributor-free",
+                "reasoning": "xhigh"
               }
             ]
           },
@@ -730,8 +722,8 @@
                 "reasoning": "medium"
               },
               {
-                "model": "openai-codex/gpt-5.6-terra",
-                "reasoning": "medium"
+                "model": "opencode/muse-spark-1.3-contributor-free",
+                "reasoning": "xhigh"
               }
             ]
           },
@@ -754,15 +746,15 @@
                 "reasoning": "xhigh"
               },
               {
-                "model": "openai-codex/gpt-5.6-terra",
-                "reasoning": "high"
+                "model": "opencode/muse-spark-1.3-contributor-free",
+                "reasoning": "xhigh"
               }
             ]
           },
           "deep": {
             "models": [
               {
-                "model": "openai-codex/gpt-5.6-terra",
+                "model": "opencode/muse-spark-1.3-contributor-free",
                 "reasoning": "xhigh"
               },
               {
@@ -778,8 +770,8 @@
                 "reasoning": "max"
               },
               {
-                "model": "openai-codex/gpt-5.6-terra",
-                "reasoning": "high"
+                "model": "opencode/muse-spark-1.3-contributor-free",
+                "reasoning": "xhigh"
               }
             ]
           },
@@ -790,8 +782,8 @@
                 "reasoning": "low"
               },
               {
-                "model": "openai-codex/gpt-5.6-luna-fast",
-                "reasoning": "low"
+                "model": "opencode/muse-spark-1.3-contributor-free",
+                "reasoning": "xhigh"
               }
             ]
           }
@@ -800,8 +792,8 @@
           "explore": {
             "models": [
               {
-                "model": "openai-codex/gpt-5.6-luna-fast",
-                "reasoning": "low"
+                "model": "opencode/muse-spark-1.3-contributor-free",
+                "reasoning": "xhigh"
               },
               {
                 "model": "openai-codex/gpt-5.6-sol",
@@ -812,8 +804,8 @@
           "librarian": {
             "models": [
               {
-                "model": "openai-codex/gpt-5.6-luna-fast",
-                "reasoning": "low"
+                "model": "opencode/muse-spark-1.3-contributor-free",
+                "reasoning": "xhigh"
               },
               {
                 "model": "openai-codex/gpt-5.6-sol",
@@ -837,11 +829,11 @@
             "models": [
               {
                 "model": "openai-codex/gpt-6-astra",
-                "reasoning": "xhigh"
+                "reasoning": "max"
               },
               {
-                "model": "openai-codex/gpt-5.6-terra",
-                "reasoning": "high"
+                "model": "opencode/muse-spark-1.3-contributor-free",
+                "reasoning": "xhigh"
               }
             ]
           },
@@ -852,8 +844,8 @@
                 "reasoning": "xhigh"
               },
               {
-                "model": "openai-codex/gpt-5.6-terra",
-                "reasoning": "high"
+                "model": "opencode/muse-spark-1.3-contributor-free",
+                "reasoning": "xhigh"
               }
             ]
           },
@@ -873,15 +865,15 @@
         "models": {
           "sisyphus": {
             "model": "openai-codex/gpt-6-astra",
-            "reasoning": "xhigh"
+            "reasoning": "medium"
           },
           "prometheus": {
             "model": "openai-codex/gpt-6-astra",
-            "reasoning": "xhigh"
+            "reasoning": "max"
           },
           "atlas": {
             "model": "openai-codex/gpt-6-astra",
-            "reasoning": "xhigh"
+            "reasoning": "max"
           },
           "hephaestus": {
             "model": "openai-codex/gpt-5.6-sol",
@@ -889,7 +881,7 @@
           },
           "planner": {
             "model": "openai-codex/gpt-6-astra",
-            "reasoning": "xhigh"
+            "reasoning": "max"
           }
         }
       }
