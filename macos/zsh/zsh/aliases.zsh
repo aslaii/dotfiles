@@ -20,9 +20,9 @@ alias nf='nvimGoToFiles'
 alias ngl='nvimGoToLine'
 
 # Work scripts
-alias rave="~/dotfiles/setups/rave_setup.sh"
-alias gondoor="~/dotfiles/setups/gondoor_setup.sh"
-alias gondoor-stop="~/dotfiles/setups/gondoor_setup.sh --stop"
+alias rave="~/.local/share/dotfiles-tools/setups/rave_setup.sh"
+alias gondoor="~/.local/share/dotfiles-tools/setups/gondoor_setup.sh"
+alias gondoor-stop="~/.local/share/dotfiles-tools/setups/gondoor_setup.sh --stop"
 alias dotconfig="~/dotfiles/setups/dotconfig_setup.sh"
 alias cpr="~/dotfiles/scripts/create-pr.sh"
 
