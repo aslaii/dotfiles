@@ -1,6 +1,9 @@
 # Only portable configuration, authored skills, and plugin manifests belong here.
 *
 !.gitignore
+!launch.mjs
+!isolation.test.js
+!preload.mjs
 !agent/
 !agent/config.yml
 !agent/APPEND_SYSTEM.md

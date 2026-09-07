@@ -6,6 +6,7 @@ disabledProviders:
   - agents-md
   - agents
   - claude
+  - claude-md
   - claude-plugins
   - cline
   - codex
