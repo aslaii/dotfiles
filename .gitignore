@@ -130,3 +130,22 @@ gemini/extensions/code-review/
 gemini/extensions/superpowers/
 gemini/antigravity-cli/plugins/code-review/
 gemini/antigravity-cli/plugins/superpowers/
+
+# Machine-local state and historical configuration backups
+claude/plugins/.last_inuse_sweep
+claude/plugins/oh-my-claudecode/.usage-cache-anthropic.json
+gemini/config/projects/
+gemini/settings.json.bak.*
+opencode/mcp-oauth/
+opencode/oh-my-openagent.json.pre-*
+fullstack-bridge.skill
+
+# Pinned project tooling restored outside this checkout
+setups/auto_setup.sh
+setups/functions.sh
+setups/gondoor_setup.sh
+setups/goose_setup.sh
+setups/rave_setup.sh
+scripts/gondoor-link-env.sh
+extra/timed_kill.sh
+unlock/pixel6.md
