@@ -22,15 +22,15 @@ modelRoles:
   plan: openai-codex/gpt-6-astra:max
   task: anthropic/claude-sonnet-5:high
   slow: openai-codex/gpt-6-astra:max
-  smol: opencode-zen/muse-spark-1.3-contributor-free:medium
-  vision: opencode-zen/muse-spark-1.3-contributor-free:high
+  smol: opencode-zen/muse-spark-1.3-contributor-free:xhigh
+  vision: opencode-zen/muse-spark-1.3-contributor-free:xhigh
   designer: anthropic/claude-opus-5:high
-  commit: opencode-zen/muse-spark-1.3-contributor-free:low
-  tiny: opencode-zen/muse-spark-1.3-contributor-free:low
+  commit: opencode-zen/muse-spark-1.3-contributor-free:medium
+  tiny: opencode-zen/muse-spark-1.3-contributor-free:medium
   planner: openai-codex/gpt-6-astra:max
   advisor: anthropic/claude-sonnet-5:medium
   review: anthropic/claude-opus-5:xhigh
-  verify: opencode-zen/muse-spark-1.3-contributor-free:high
+  verify: opencode-zen/muse-spark-1.3-contributor-free:xhigh
   research: opencode-zen/muse-spark-1.3-contributor-free:xhigh
   free: opencode-zen/muse-spark-1.3-contributor-free:xhigh
 defaultThinkingLevel: medium
