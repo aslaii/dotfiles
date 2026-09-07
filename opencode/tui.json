@@ -2,7 +2,8 @@
   "$schema": "https://opencode.ai/tui.json",
   "theme": "catppuccin",
   "plugin": [
-    "oh-my-openagent@latest"
+    "oh-my-openagent@latest",
+    "oh-my-openagent@beta"
   ],
   "session_child_first": "ctrl+x j",
   "session_parent": "ctrl+x k",

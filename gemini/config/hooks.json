@@ -1,4 +1,13 @@
 {
+  "herdr": {
+    "PreInvocation": [
+      {
+        "command": "bash '/Users/aslaii/.gemini/config/hooks/herdr-agent-state.sh' session",
+        "timeout": 10,
+        "type": "command"
+      }
+    ]
+  },
   "moshi-hook": {
     "PreInvocation": [
       {
