@@ -1,4 +1,0 @@
-interface:
-  display_name: "Gondoor Prod Inspect"
-  short_description: "Read-only Gondoor prod PM2 inspection"
-  default_prompt: "Use $gondoor-prod-inspect to inspect production PM2 status and recent logs read-only."

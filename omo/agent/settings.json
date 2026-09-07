@@ -37,8 +37,10 @@
     "opencode-go/glm-5.3": "max"
   },
   "skills": [
-    "~/.codex/skills",
-    "~/.agents/skills"
+    "__OMO_HOME__/.omo/agent/skill-library/codex",
+    "__OMO_HOME__/.omo/agent/skill-library/shared",
+    "!__OMO_HOME__/.agents/skills/**",
+    "!__OMO_HOME__/.claude/skills/**"
   ],
   "permission": {
     "*": "allow"

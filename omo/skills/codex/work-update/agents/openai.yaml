@@ -1,4 +1,0 @@
-interface:
-  display_name: "Work Update"
-  short_description: "Generate Discord update text from landed work across Gondoor, templates, Ramiro Law, and active worktree progress."
-  default_prompt: "Use $work-update to generate a Discord work update for today, including in-progress work."

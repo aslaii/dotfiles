@@ -1,4 +1,0 @@
-interface:
-  display_name: "Gondoor Local Test User"
-  short_description: "Run local PM2 onboarding and build smokes"
-  default_prompt: "Use $gondoor-local-test-user to onboard a trusted local smoke user against the worktree PM2 backend and inspect local PM2 logs."

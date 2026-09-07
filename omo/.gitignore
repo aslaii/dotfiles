@@ -7,11 +7,11 @@
 !restore.mjs
 !restore.test.js
 !config.test.js
+!launch.sh
+!isolation.test.js
 !agent/
 !agent/settings.json
 !agent/hooks.json
-!skills/
-!skills/**
 !rules/
 !rules/**
 

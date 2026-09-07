@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
-import { chmod, lstat, mkdir, readFile, readdir, rename, stat, writeFile } from "node:fs/promises"
-import { homedir } from "node:os"
+import { chmod, lstat, mkdir, mkdtemp, readFile, readdir, rename, rm, stat, writeFile } from "node:fs/promises"
+import { homedir, tmpdir } from "node:os"
 import { dirname, isAbsolute, join, relative, resolve } from "node:path"
 import { randomUUID } from "node:crypto"
 import { fileURLToPath, pathToFileURL } from "node:url"
@@ -55,6 +55,7 @@ function mergePackages(destination, source) {
 
 function mergeArrays(destination, source, key, mergeAllArrays) {
   if (key === "packages") return mergePackages(destination, source)
+  if (key === "skills") return structuredClone(source)
   if (mergeAllArrays || /(?:skill|path|root)/i.test(key)) return unique([...destination, ...source]).map((value) => structuredClone(value))
   return structuredClone(source)
 }
@@ -271,6 +272,31 @@ function textWithHome(bytes, home) {
   return Buffer.from(text.replaceAll(token, home))
 }
 
+function rebaseSkillRefs(bytes, home) {
+  let text
+  try {
+    text = new TextDecoder("utf-8", { fatal: true }).decode(bytes)
+  } catch {
+    return bytes
+  }
+  if (!text.includes(".codex/skills") && !text.includes(".agents/skills")) return bytes
+  const codex = `${home}/.omo/agent/skill-library/codex`
+  const shared = `${home}/.omo/agent/skill-library/shared`
+  for (const [oldRoot, newRoot] of [
+    [`${home}/.codex/skills`, codex],
+    [`${home}/.agents/skills`, shared],
+    ["~/.codex/skills", codex],
+    ["~/.agents/skills", shared],
+    ["$HOME/.codex/skills", codex],
+    ["$HOME/.agents/skills", shared],
+    ["${HOME}/.codex/skills", codex],
+    ["${HOME}/.agents/skills", shared],
+  ]) {
+    text = text.replaceAll(oldRoot, newRoot)
+  }
+  return Buffer.from(text)
+}
+
 function decodeBase64(bytes, label) {
   const encoded = Buffer.from(bytes).toString("ascii").replace(/\s/g, "")
   if (encoded.length % 4 === 1 || !/^[A-Za-z0-9+/]*={0,2}$/.test(encoded)) {
@@ -279,12 +305,13 @@ function decodeBase64(bytes, label) {
   return Buffer.from(encoded, "base64")
 }
 
-async function copyDirectory(source, target, state) {
+async function copyDirectory(source, target, state, rebase = false, excludedTop = undefined) {
   await ensureDirectory(target, state)
   const entries = (await readdir(source, { withFileTypes: true })).sort((left, right) => left.name.localeCompare(right.name))
   const outputNames = new Set()
   for (const entry of entries) {
     const name = entry.isFile() && entry.name.endsWith(".b64") ? entry.name.slice(0, -4) : entry.name
+    if (excludedTop?.has(name)) continue
     if (!name || outputNames.has(name)) fail(`resource has conflicting output paths: ${source}/${name}`)
     outputNames.add(name)
   }
@@ -292,18 +319,156 @@ async function copyDirectory(source, target, state) {
   for (const entry of entries) {
     const sourcePath = join(source, entry.name)
     const targetName = entry.isFile() && entry.name.endsWith(".b64") ? entry.name.slice(0, -4) : entry.name
+    if (excludedTop?.has(targetName)) continue
     const targetPath = join(target, targetName)
     const info = await lstat(sourcePath)
     if (info.isSymbolicLink()) fail(`resource snapshots cannot contain symlinks: ${sourcePath}`)
     if (info.isDirectory()) {
-      await copyDirectory(sourcePath, targetPath, state)
+      await copyDirectory(sourcePath, targetPath, state, rebase)
     } else if (info.isFile()) {
       const contents = await readFile(sourcePath)
-      const bytes = entry.name.endsWith(".b64") ? decodeBase64(contents, sourcePath) : textWithHome(contents, state.home)
+      const staged = entry.name.endsWith(".b64") ? decodeBase64(contents, sourcePath) : textWithHome(contents, state.home)
+      const bytes = rebase && !entry.name.endsWith(".b64") ? rebaseSkillRefs(staged, state.home) : staged
       await writeManagedFile(targetPath, bytes, state, info.mode & 0o777)
     } else {
       fail(`resource contains unsupported entry: ${sourcePath}`)
     }
+  }
+}
+
+async function assertNoSymlinkParent(path, state) {
+  const parent = dirname(path)
+  const rel = relative(state.home, parent)
+  if (rel === "") return
+  if (rel.startsWith("..") || isAbsolute(rel)) fail(`refusing to prune path outside home: ${path}`)
+  let current = state.home
+  for (const part of rel.split("/").filter(Boolean)) {
+    current = join(current, part)
+    const info = await lstatOrUndefined(current)
+    if (!info) return
+    if (info.isSymbolicLink()) fail(`refusing to modify files through directory symlink: ${current}`)
+    if (!info.isDirectory()) fail(`refusing to prune through non-directory parent: ${current}`)
+  }
+}
+
+async function pruneExcludedSkills(target, excluded, state) {
+  for (const name of excluded) {
+    const victim = join(target, name)
+    if (!isWithin(state.home, victim)) fail(`refusing to prune path outside home: ${victim}`)
+    await assertNoSymlinkParent(victim, state)
+    const info = await lstatOrUndefined(victim)
+    if (!info) continue
+    await backup(victim, state)
+  }
+}
+
+async function gitBytes(args) {
+  const child = Bun.spawn(["git", ...args], { stdout: "pipe", stderr: "pipe" })
+  const [stdout, stderr, exitCode] = await Promise.all([
+    new Response(child.stdout).arrayBuffer(),
+    new Response(child.stderr).text(),
+    child.exited,
+  ])
+  if (exitCode !== 0) fail(`git ${args.join(" ")} failed: ${stderr.trim()}`)
+  return Buffer.from(stdout)
+}
+
+async function hasLocalCommit(dir, commit) {
+  try {
+    const child = Bun.spawn(["git", "-C", dir, "cat-file", "-t", commit], { stdout: "pipe", stderr: "pipe" })
+    const [stdout, , exitCode] = await Promise.all([
+      new Response(child.stdout).text(),
+      new Response(child.stderr).text(),
+      child.exited,
+    ])
+    return exitCode === 0 && stdout.trim() === "commit"
+  } catch {
+    return false
+  }
+}
+
+function validateSkillSource(value) {
+  if (value === undefined) return undefined
+  if (!isObject(value)) fail("restore.json skillSource must be an object")
+  const { repository, commit, tree, prefix, snapshots } = value
+  if (typeof repository !== "string" || !repository) fail("restore.json skillSource.repository is required")
+  if (typeof commit !== "string" || !/^[0-9a-f]{40}$/.test(commit)) fail("restore.json skillSource.commit must be a full commit sha")
+  if (typeof tree !== "string" || !/^[0-9a-f]{40}$/.test(tree)) fail("restore.json skillSource.tree must be a full tree sha")
+  if (typeof prefix !== "string" || !prefix || isAbsolute(prefix)) fail("restore.json skillSource.prefix must be a non-empty relative path")
+  if (prefix.split("/").includes("..") || prefix.split("/").some((part) => !part)) fail(`restore.json skillSource.prefix is not a safe relative path: ${prefix}`)
+  if (!Array.isArray(snapshots) || snapshots.length === 0) fail("restore.json skillSource.snapshots must be a non-empty array")
+  const normalized = []
+  for (const [index, entry] of snapshots.entries()) {
+    if (!isObject(entry)) fail(`restore.json skillSource.snapshots[${index}] must be an object`)
+    if (typeof entry.source !== "string" || !entry.source || isAbsolute(entry.source)) fail(`restore.json skillSource.snapshots[${index}].source must be a non-empty relative path`)
+    if (entry.source.split("/").includes("..") || entry.source.split("/").some((part) => !part)) fail(`restore.json skillSource.snapshots[${index}].source escapes its root: ${entry.source}`)
+    if (typeof entry.target !== "string" || !entry.target || isAbsolute(entry.target)) fail(`restore.json skillSource.snapshots[${index}].target must be a non-empty relative path`)
+    if (entry.target.split("/").includes("..") || entry.target.split("/").some((part) => !part)) fail(`restore.json skillSource.snapshots[${index}].target escapes home: ${entry.target}`)
+    if (!entry.target.startsWith(".omo/")) fail(`restore.json skillSource.snapshots[${index}].target must stay inside .omo/: ${entry.target}`)
+    let excluded = []
+    if (entry.excluded !== undefined) {
+      if (!Array.isArray(entry.excluded)) fail(`restore.json skillSource.snapshots[${index}].excluded must be an array`)
+      for (const [excludedIndex, name] of entry.excluded.entries()) {
+        if (typeof name !== "string" || !/^[A-Za-z0-9][A-Za-z0-9._-]*$/.test(name)) fail(`restore.json skillSource.snapshots[${index}].excluded[${excludedIndex}] must be a simple skill name: ${String(name)}`)
+      }
+      excluded = [...new Set(entry.excluded)]
+    }
+    normalized.push({ source: entry.source, target: entry.target, excluded })
+  }
+  return { repository, commit, tree, prefix, snapshots: normalized }
+}
+
+async function materializeSkillSource(skillSource) {
+  const tempDir = await mkdtemp(join(tmpdir(), "omo-skills-"))
+  try {
+    let scope
+    if (await hasLocalCommit(sourceRoot, skillSource.commit)) {
+      const toplevel = (await gitBytes(["-C", sourceRoot, "rev-parse", "--show-toplevel"])).toString("utf8").trim()
+      if (!toplevel) fail("could not locate repository top level for pinned skills")
+      scope = ["-C", toplevel]
+    } else {
+      const gitDir = join(tempDir, "fetch.git")
+      await gitBytes(["init", "--bare", gitDir])
+      await gitBytes(["--git-dir", gitDir, "fetch", "--depth", "1", skillSource.repository, skillSource.commit])
+      scope = ["--git-dir", gitDir]
+    }
+    const actualTree = (await gitBytes([...scope, "rev-parse", `${skillSource.commit}:${skillSource.prefix}`])).toString("utf8").trim()
+    if (actualTree !== skillSource.tree) fail(`skill pin mismatch for ${skillSource.prefix}: ${actualTree} != pinned ${skillSource.tree}`)
+    const listing = (await gitBytes(["-c", "core.quotePath=false", ...scope, "ls-tree", "-r", skillSource.commit, "--", skillSource.prefix])).toString("utf8")
+    const payloadRoot = join(tempDir, "payload")
+    const modes = new Map()
+    for (const line of listing.split("\n")) {
+      if (!line) continue
+      const tab = line.indexOf("\t")
+      if (tab === -1) fail(`unexpected ls-tree line: ${line}`)
+      const [mode, type] = line.slice(0, tab).split(" ")
+      const path = line.slice(tab + 1)
+      if (type !== "blob") fail(`skill snapshots cannot contain non-file entry: ${path}`)
+      if (mode === "120000" || mode === "160000") fail(`skill snapshots cannot contain symlinks: ${path}`)
+      if (path !== skillSource.prefix && !path.startsWith(`${skillSource.prefix}/`)) fail(`skill entry escapes prefix: ${path}`)
+      if (!isWithin(payloadRoot, join(payloadRoot, path))) fail(`skill entry escapes payload: ${path}`)
+      modes.set(path, parseInt(mode, 8) & 0o777)
+    }
+    if (modes.size === 0) fail(`skill pin contains no files: ${skillSource.prefix}`)
+    const archive = await gitBytes([...scope, "archive", skillSource.commit, "--", skillSource.prefix])
+    await mkdir(payloadRoot, { recursive: true })
+    let tar
+    try {
+      tar = Bun.spawn(["tar", "-x", "-C", payloadRoot], { stdin: "pipe", stdout: "pipe", stderr: "pipe" })
+    } catch {
+      fail("tar is required to extract the pinned skill snapshot")
+    }
+    tar.stdin.write(archive)
+    tar.stdin.end()
+    const [tarStderr, tarExit] = await Promise.all([new Response(tar.stderr).text(), tar.exited])
+    if (tarExit !== 0) fail(`tar extraction failed: ${tarStderr.trim()}`)
+    for (const [path, mode] of modes) {
+      await chmod(join(payloadRoot, path), mode)
+    }
+    return { tempDir, payloadRoot }
+  } catch (error) {
+    await rm(tempDir, { recursive: true, force: true })
+    throw error
   }
 }
 
@@ -389,43 +554,61 @@ async function installPackages(packages, state) {
 
 async function restore() {
   const { home, skipPackages } = parseOptions(process.argv.slice(2))
-  await prepareHome(home)
 
   const manifestFile = manifestPath(sourceRoot, "restore.json", "restore manifest")
   const manifest = parseJson(await readSourceText(manifestFile, "restore manifest"), "restore manifest")
   if (typeof manifest.omoVersion !== "string" || !manifest.omoVersion) fail("restore.json omoVersion is required")
   if (!Array.isArray(manifest.resources)) fail("restore.json resources must be an array")
+  const skillSource = validateSkillSource(manifest.skillSource)
   await verifyOmo(manifest.omoVersion)
 
-  const state = { home, backupRoot: undefined }
-  const omoSource = manifestPath(sourceRoot, "omo.jsonc", "portable omo config")
-  const settingsSource = manifestPath(sourceRoot, "agent/settings.json", "portable agent settings")
-  const hooksSource = manifestPath(sourceRoot, "agent/hooks.json", "portable agent hooks")
-  const portableOmo = parseJson((await readSourceText(omoSource, "portable omo config")).replaceAll(token, home), "portable omo config", Bun.JSONC.parse)
-  const portableSettings = parseJson((await readSourceText(settingsSource, "portable agent settings")).replaceAll(token, home), "portable agent settings")
-  const portableHooks = parseJson((await readSourceText(hooksSource, "portable agent hooks")).replaceAll(token, home), "portable agent hooks")
+  let staging = undefined
+  try {
+    if (skillSource) staging = await materializeSkillSource(skillSource)
+    await prepareHome(home)
+    const state = { home, backupRoot: undefined }
+    const omoSource = manifestPath(sourceRoot, "omo.jsonc", "portable omo config")
+    const settingsSource = manifestPath(sourceRoot, "agent/settings.json", "portable agent settings")
+    const hooksSource = manifestPath(sourceRoot, "agent/hooks.json", "portable agent hooks")
+    const portableOmo = parseJson((await readSourceText(omoSource, "portable omo config")).replaceAll(token, home), "portable omo config", Bun.JSONC.parse)
+    const portableSettings = parseJson((await readSourceText(settingsSource, "portable agent settings")).replaceAll(token, home), "portable agent settings")
+    const portableHooks = parseJson((await readSourceText(hooksSource, "portable agent hooks")).replaceAll(token, home), "portable agent hooks")
 
-  const omoTarget = join(home, ".omo", "omo.jsonc")
-  const settingsTarget = join(home, ".omo", "agent", "settings.json")
-  const hooksTarget = join(home, ".omo", "agent", "hooks.json")
-  const mergedOmo = merge(await readDestinationObject(omoTarget, "existing omo config", Bun.JSONC.parse), portableOmo)
-  const mergedSettings = merge(await readDestinationObject(settingsTarget, "existing agent settings"), portableSettings)
-  const mergedHooks = mergeHooks(await readDestinationObject(hooksTarget, "existing agent hooks"), portableHooks, home)
-  await writeManagedFile(omoTarget, Buffer.from(`${JSON.stringify(mergedOmo, null, 2)}\n`), state)
-  await writeManagedFile(settingsTarget, Buffer.from(`${JSON.stringify(mergedSettings, null, 2)}\n`), state)
-  await writeManagedFile(hooksTarget, Buffer.from(`${JSON.stringify(mergedHooks, null, 2)}\n`), state)
+    const omoTarget = join(home, ".omo", "omo.jsonc")
+    const settingsTarget = join(home, ".omo", "agent", "settings.json")
+    const hooksTarget = join(home, ".omo", "agent", "hooks.json")
+    const mergedOmo = merge(await readDestinationObject(omoTarget, "existing omo config", Bun.JSONC.parse), portableOmo)
+    const mergedSettings = merge(await readDestinationObject(settingsTarget, "existing agent settings"), portableSettings)
+    const mergedHooks = mergeHooks(await readDestinationObject(hooksTarget, "existing agent hooks"), portableHooks, home)
+    await writeManagedFile(omoTarget, Buffer.from(`${JSON.stringify(mergedOmo, null, 2)}\n`), state)
+    await writeManagedFile(settingsTarget, Buffer.from(`${JSON.stringify(mergedSettings, null, 2)}\n`), state)
+    await writeManagedFile(hooksTarget, Buffer.from(`${JSON.stringify(mergedHooks, null, 2)}\n`), state)
 
-  for (const [index, resource] of manifest.resources.entries()) {
-    if (!isObject(resource)) fail(`restore.json resources[${index}] must be an object`)
-    const source = manifestPath(sourceRoot, resource.source, `resources[${index}].source`)
-    const target = manifestPath(home, resource.target, `resources[${index}].target`)
-    await requireDirectorySource(source, `resource source ${resource.source}`)
-    await copyDirectory(source, target, state)
+    for (const [index, resource] of manifest.resources.entries()) {
+      if (!isObject(resource)) fail(`restore.json resources[${index}] must be an object`)
+      const source = manifestPath(sourceRoot, resource.source, `resources[${index}].source`)
+      const target = manifestPath(home, resource.target, `resources[${index}].target`)
+      await requireDirectorySource(source, `resource source ${resource.source}`)
+      await copyDirectory(source, target, state)
+    }
+
+    if (staging) {
+      for (const [index, snapshot] of skillSource.snapshots.entries()) {
+        const source = join(staging.payloadRoot, skillSource.prefix, snapshot.source)
+        const target = manifestPath(home, snapshot.target, `skillSource.snapshots[${index}].target`)
+        const excluded = Array.isArray(snapshot.excluded) ? snapshot.excluded : []
+        await requireDirectorySource(source, `skill snapshot ${snapshot.source}`)
+        await copyDirectory(source, target, state, true, new Set(excluded))
+        await pruneExcludedSkills(target, excluded, state)
+      }
+    }
+
+    await installBuiltinExtensions(manifest.builtinExtensions, state)
+    if (!skipPackages) await installPackages(Array.isArray(portableSettings.packages) ? portableSettings.packages : [], state)
+    console.log(`Restored OMO configuration into ${home}${skipPackages ? " (packages skipped)" : ""}.`)
+  } finally {
+    if (staging) await rm(staging.tempDir, { recursive: true, force: true })
   }
-
-  await installBuiltinExtensions(manifest.builtinExtensions, state)
-  if (!skipPackages) await installPackages(Array.isArray(portableSettings.packages) ? portableSettings.packages : [], state)
-  console.log(`Restored OMO configuration into ${home}${skipPackages ? " (packages skipped)" : ""}.`)
 }
 
 restore().catch((error) => {

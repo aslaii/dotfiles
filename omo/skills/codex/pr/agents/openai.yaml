@@ -1,4 +1,0 @@
-interface:
-  display_name: "PR to Main"
-  short_description: "Create pull requests to main"
-  default_prompt: "Use $pr to main for the current branch."

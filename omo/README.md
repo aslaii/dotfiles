@@ -1,6 +1,7 @@
 # OMO
 
-Portable native OMO configuration, plugins, hooks, skills, and rules.
+Portable native OMO configuration, plugins, hooks, and rules, with a pinned
+external skill source. OMO is separate from Claude Code/OMC and OMP.
 
 ## Restore on another computer
 
@@ -12,7 +13,7 @@ Use macOS or Linux with Node.js 24+, Bun 1.4+, npm, and Git. Install `dcg` and
 git clone https://github.com/aslaii/dotfiles.git ~/dotfiles
 npm install -g omo-ai@5.0.0-0.beta.48
 bun ~/dotfiles/omo/restore.mjs
-omo
+bash ~/dotfiles/omo/launch.sh
 ```
 
 In OMO, authenticate OpenAI Codex and Claude with `/login`, then review and
@@ -21,16 +22,22 @@ each computer. Restart OMO after restoring; resumed sessions may retain an
 older model selection.
 
 The restore command copies resources rather than linking the checkout. It
-merges settings, preserves unrelated configuration and credentials, and backs
-up conflicting originals under `~/.omo/backups/`. An unchanged rerun does not
+merges settings, replaces the managed skill-path list, preserves unrelated
+configuration and credentials, and backs up conflicting originals under
+`~/.omo/backups/`. An unchanged rerun does not
 create more backups. It installs the three pinned packages and regenerates
 the four built-in extension loaders using the destination OMO installation.
 Existing directory symlinks are left in place when their files already match.
 The command refuses changed writes through those links rather than modifying
 another checkout or moving unrelated application state.
 
-To restore local files without downloading packages, or restore into a separate
-home directory:
+Use `launch.sh` for isolated skill discovery. Updated Zsh functions route `omo`
+through it automatically in new shells. It retains OMO's own package extensions,
+loads only explicitly selected skill roots, and refuses global or project
+settings that enable Claude MCP imports. It loads the OMO-owned Argent rule
+explicitly; project context files and native rule discovery remain enabled.
+
+To skip plugin installation or restore into a separate home directory:
 
 ```bash
 bun ~/dotfiles/omo/restore.mjs --skip-packages
@@ -44,9 +51,9 @@ bun ~/dotfiles/omo/restore.mjs --home "/tmp/omo test home" --skip-packages
 | `omo.jsonc` | `~/.omo/omo.jsonc`: native model routes, profiles, and task/team limits |
 | `agent/settings.json` | `~/.omo/agent/settings.json`: models, fallbacks, package sources, skill paths, permission settings, and UI preferences |
 | `agent/hooks.json` | `~/.omo/agent/hooks.json`: `dcg` and `rtk hook claude`, before Bash calls, with 10-second timeouts |
-| `skills/codex/` | `~/.codex/skills/`: 31 user skills and their bundled resources |
-| `skills/shared/` | `~/.agents/skills/`: 88 shared skills and their bundled resources |
-| `rules/` | `~/.claude/rules/`: the Argent interaction rule imported by OMO |
+| Pinned `codex` skill snapshot | `~/.omo/agent/skill-library/codex/`: 30 selected skills, isolated from live Codex |
+| Pinned `shared` skill snapshot | `~/.omo/agent/skill-library/shared/`: 66 selected skills, isolated from live shared/Claude skills |
+| `rules/` | `~/.omo/agent/rules/`: OMO-owned Argent interaction rule |
 | `restore.json` | OMO version, resource destinations, and `tps`, `prompt-url-widget`, `files`, `diff` extension selection |
 
 | Role | Model | Reasoning |
@@ -106,9 +113,20 @@ included.
   instruction, not a shell hook. Other skills load when their tasks match.
 
 OMO's own skills and theme come with the pinned OMO installation. User skill
-sources are snapshotted because their install registry does not cover the
-complete collection. Licenses, reference documents, scripts, and source test
-fixtures remain with the skills.
+snapshots are fetched from commit `a2ab0135829a04dcd8dcc5354a7c09ba6b2161bc`
+of the published dotfiles repository. `restore.json` pins the exact `omo/skills`
+Git tree, verified before any destination write. The current checkout does not
+need to contain that payload. Licenses, custom adaptations, references, scripts,
+and fixtures remain intact in the installed copy.
+
+Restoration uses local Git objects when available and otherwise fetches the
+immutable commit. `--skip-packages` does not disable that fetch. It does not
+install into or modify `~/.codex/skills`, `~/.agents/skills`, or `~/.claude`.
+The snapshot retains all original resources, but `restore.json` excludes 23
+approved optional skills from installation: Academic Research Suite, unused
+service integrations, the GSAP family, and selected overlapping audit tools.
+Restoration moves existing excluded skill directories into `~/.omo/backups/`
+and does not reinstall them. The remaining 96 skills retain their resources.
 
 `__OMO_HOME__` in source resources is replaced with the destination home.
 Small binary assets and empty fixtures are stored as `.b64` files and decoded
@@ -134,7 +152,5 @@ bun test omo/config.test.js omo/restore.test.js
 gitleaks dir omo --redact --no-banner
 ```
 
-The bundled upstream examples produce 13 known Gitleaks matches: bibliography
-keys such as `forthcoming2024`, `YOUR_API_TOKEN` placeholders, deliberately fake
-keys in examples of unsafe code, and a mocked verification token. These were
-reviewed as non-secrets; the scanner is not disabled or broadly allowlisted.
+The external skill snapshot includes upstream test/example credentials and
+placeholders. Scan installed payloads separately from the configuration tree.

@@ -1,4 +1,0 @@
-interface:
-  display_name: "Exam PDF Reviewer"
-  short_description: "OCR exam PDFs into verified Markdown"
-  default_prompt: "Use $exam-pdf-reviewer to reconstruct this image-based exam PDF into compact Markdown with verified answers."

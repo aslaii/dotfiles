@@ -1,4 +1,0 @@
-interface:
-  display_name: "Gondoor Prod Fix Loop"
-  short_description: "ULW-backed Gondoor prod fix loop"
-  default_prompt: "Use $gondoor-prod-fix-loop with $omo:ulw-loop to fix the failure, PR to main, merge, deploy backend, onboard a fresh prod test user, watch prod, and record evidence until it passes."

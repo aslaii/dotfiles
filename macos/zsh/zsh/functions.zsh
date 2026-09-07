@@ -92,3 +92,11 @@ function opencode() {
     CODEGRAPH_NODE_BIN="$HOME/.omo/codegraph/node" \
     command opencode "$@"
 }
+
+function omo() {
+  bash "${DOTFILES_DIR:-$HOME/dotfiles}/omo/launch.sh" "$@"
+}
+
+function omp() {
+  bun "${DOTFILES_DIR:-$HOME/dotfiles}/omp/launch.mjs" "$@"
+}

@@ -3,6 +3,14 @@ function displayFZFFiles {
   fzf --preview 'batcat --theme=gruvbox-dark --color=always --style=header,grid --line-range :400 {}'
 }
 
+function omo() {
+  bash "${DOTFILES_DIR:-$HOME/dotfiles}/omo/launch.sh" "$@"
+}
+
+function omp() {
+  bun "${DOTFILES_DIR:-$HOME/dotfiles}/omp/launch.mjs" "$@"
+}
+
 function nvimGoToFiles {
   nvimExists=$(which nvim)
   if [ -z "$nvimExists" ]; then

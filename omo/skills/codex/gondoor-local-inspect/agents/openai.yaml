@@ -1,4 +1,0 @@
-interface:
-  display_name: "Gondoor Local Inspect"
-  short_description: "Read-only local Gondoor PM2 inspection"
-  default_prompt: "Use $gondoor-local-inspect to inspect local Gondoor PM2 status, cwd, health, and bounded logs read-only."
