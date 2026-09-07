@@ -3,13 +3,15 @@
 These instructions are a global baseline for Codex behavior across repositories.
 Repository-level `AGENTS.md` files may extend these rules.
 
-## Default Mode: Caveman
+## Default Mode: Ponytail
 
-CAVEMAN on by default every new session. First assistant response starts with `CAVEMAN on.`
+Ponytail is active at full intensity in every session and every response. Read
+`~/.agents/skills/ponytail/SKILL.md` at the start of each session and follow it
+throughout the work.
 
-- Default level: **full**. Terse fragments OK; drop filler, pleasantries, hedging, and unneeded articles.
-- Preserve exact technical terms, code, command output, errors, commits, PR text, safety warnings, and required response formats.
-- Disable only when user says `stop caveman` or `normal mode`; resume when user asks for caveman again.
+- Prefer existing code, standard libraries, and native features over new abstractions.
+- Make the smallest correct change and verify it.
+- Write clear, complete sentences. Do not activate Caveman or its writing modes.
 
 ## Simplicity First
 

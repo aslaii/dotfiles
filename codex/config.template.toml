@@ -103,3 +103,32 @@ config_file = "agents/gsd-user-profiler.toml"
 [agents.gsd-verifier]
 description = "Verifies phase goal achievement through goal-backward analysis. Checks codebase delivers what phase promised, not just that tasks completed. Creates VERIFICATION.md report."
 config_file = "agents/gsd-verifier.toml"
+
+# Codex-only skill policy: hide Caveman skills from Codex without deleting the
+# shared ~/.agents/skills files used by Claude/OMO/OMP.
+# Supported mechanism: name-based [[skills.config]] selectors
+# (SkillConfig { name, path, enabled }; name-only entries are portable).
+# Ponytail remains enabled; Caveman delegation presets are excluded too.
+[[skills.config]]
+name = "caveman-commit"
+enabled = false
+
+[[skills.config]]
+name = "caveman-compress"
+enabled = false
+
+[[skills.config]]
+name = "caveman-help"
+enabled = false
+
+[[skills.config]]
+name = "caveman-review"
+enabled = false
+
+[[skills.config]]
+name = "caveman-stats"
+enabled = false
+
+[[skills.config]]
+name = "cavecrew"
+enabled = false
