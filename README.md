@@ -1,6 +1,7 @@
 # Dotfiles
 
-Personal macOS dotfiles -- one command to full productivity.
+Personal configuration for macOS and Debian/Ubuntu-based Linux or WSL.
+Application state, installed dependencies, and project tooling stay outside Git.
 
 ## Quick Start
 
@@ -8,19 +9,40 @@ Personal macOS dotfiles -- one command to full productivity.
 # Clone the repo
 git clone https://github.com/aslaii/dotfiles.git ~/dotfiles
 
-# Run the bootstrap (idempotent -- safe to rerun)
+# macOS
 bash ~/dotfiles/initial-setup-macos.sh
 
-# Verify symlinks
-dotcheck
-# or: bash ~/dotfiles/initial-setup-macos.sh --check
+# Linux / WSL
+bash ~/dotfiles/initial-setup-linux.sh
+
+# Auto-select the platform and check links without installing anything
+bash ~/dotfiles/initial-setup.sh --check
 ```
+
+Existing valid files and links are preserved. The Linux installer installs shell
+essentials, not project databases or application stacks.
+
+## Project tools
+
+Project launchers are restored from the immutable commit in
+`scripts/tools-source.json`, not bundled with the current configuration tree:
+
+```bash
+node ~/dotfiles/scripts/restore-tools.mjs
+node ~/dotfiles/scripts/restore-tools.mjs --check
+```
+
+They live under `~/.local/share/dotfiles-tools/`; the shell aliases point there.
+Restoration verifies file hashes and refuses to overwrite modified files or write
+through symlinks. Local modifications must be retained separately before updating.
+The first restore needs network access if the pinned Git objects are absent.
 
 ## OMO
 
 The [`omo/`](omo/README.md) directory contains the portable native OMO setup:
-model routes, UI preferences, pinned plugins, Bash hooks, 119 user/shared skills,
-and the Argent rule. With Node.js 24+, Bun 1.4+, Git, DCG, and RTK installed:
+model routes, UI preferences, pinned plugins, Bash hooks, and an OMO-owned
+Argent rule. Its 96 selected skills restore from a pinned installation source
+into OMO's own directory. With Node.js 24+, Bun 1.4+, Git, DCG, and RTK installed:
 
 ```bash
 npm install -g omo-ai@5.0.0-0.beta.48
@@ -52,8 +74,8 @@ macOS bootstrap:
 
 ```bash
 rtk bash ~/dotfiles/initial-setup-macos.sh --omp
-rtk omp plugin list
-rtk omp --model @default --no-prewalk
+bun ~/dotfiles/omp/launch.mjs plugin list
+bun ~/dotfiles/omp/launch.mjs --model @default --no-prewalk
 ```
 
 The OMP-only option uses the default `~/.omp` layout and the existing non-destructive
@@ -67,16 +89,17 @@ Authenticate separately with `/login` inside OMP on each computer. Model access
 depends on that computer's authenticated accounts; the config contains no credentials.
 
 Deployed routing keeps Main on Astra-medium (`@default`) for orchestration,
-bounded workers on Luna-max (`@task`), difficult workers on Terra-max (`@slow`),
-planning on Opus-high (`@planner`), review on Sonnet-high (`@review`), and research
-or free fallback on Muse Contributor Free-xhigh (`@research`/`@free`). Advisor and
+bounded workers on Sonnet-high (`@task`), difficult workers and planning on
+Astra-max (`@slow`/`@planner`), review on Opus-xhigh (`@review`), and verification,
+research, or free fallback on Muse Contributor Free-xhigh (`@verify`/`@research`/`@free`). Advisor and
 prewalk are off by default; dispatch allows at most two workers and no nested workers.
 The free endpoint is promotional; Contributor inputs and history may be used for
 training. There is no automatic paid Zen fallback.
 
 Existing sessions keep their old state and rendered prompts. For reliable adoption of
 the new policy, run `/advisor off`, select `@default` in `/model`, and start a fresh
-continuation; fresh launches use `rtk omp --model @default --no-prewalk`.
+continuation; fresh launches use `omp --model @default --no-prewalk` after
+loading the updated shell functions.
 
 ```text
 /skill:omp-prompt feature add CSV export without changing existing filters
@@ -115,8 +138,33 @@ separately if needed; shared skills from other harnesses are not part of this OM
 Usage example:
 
 ```bash
-CONFIG_VARIANT=linux bash ~/dotfiles/initial-setup-macos.sh
+CONFIG_VARIANT=linux bash ~/dotfiles/initial-setup-linux.sh
 ```
+
+## Agent isolation
+
+New Zsh sessions route `omo` and `omp` through the repository launchers.
+For other shells or automation, invoke them explicitly:
+
+```bash
+bash ~/dotfiles/omo/launch.sh
+bun ~/dotfiles/omp/launch.mjs
+```
+
+OMO loads only its owned skill library, native skills, bundled skills, and
+active package skill paths. It refuses configured Claude MCP imports. Its own
+Ponytail extension remains enabled. Project AGENTS/CLAUDE context files and the
+native rules engine retain their normal behavior.
+
+OMP blocks Claude skills, MCP, plugins, and context providers before settings
+discovery. The launcher uses the installed package's shipped source CLI under
+Bun so the early provider exclusions take effect. This was verified with OMP
+18.1.14; it fails closed if the required source layout or exclusions are missing.
+Neither launcher patches an installed runtime. Calling raw binaries, including
+through `rtk omp`, bypasses these launchers.
+
+Codex defaults to Ponytail full. Its Caveman skills and Cavecrew are disabled
+by name without deleting shared files used by other agents.
 
 ## Tools
 
