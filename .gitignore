@@ -124,5 +124,9 @@ gemini/antigravity-cli/import_manifest.json
 gemini/antigravity-cli/last_check.timestamp
 
 # Locally installed plugin repositories, not dotfiles submodules
+claude/plugins/marketplaces/omc/
+claude/plugins/marketplaces/ponytail/
+gemini/extensions/code-review/
+gemini/extensions/superpowers/
 gemini/antigravity-cli/plugins/code-review/
 gemini/antigravity-cli/plugins/superpowers/
