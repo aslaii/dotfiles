@@ -122,3 +122,7 @@ gemini/antigravity-cli/updater/
 gemini/antigravity-cli/history.jsonl
 gemini/antigravity-cli/import_manifest.json
 gemini/antigravity-cli/last_check.timestamp
+
+# Locally installed plugin repositories, not dotfiles submodules
+gemini/antigravity-cli/plugins/code-review/
+gemini/antigravity-cli/plugins/superpowers/
