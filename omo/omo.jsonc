@@ -228,6 +228,258 @@
     }
   },
   "profiles": {
+    "fast": {
+      "[senpi]": {
+        "categories": {
+          "quick": {
+            "models": [
+              {
+                "model": "anthropic/claude-haiku-4-5",
+                "reasoning": "low"
+              },
+              {
+                "model": "openai-codex/gpt-6-astra",
+                "reasoning": "medium"
+              },
+              {
+                "model": "opencode/muse-spark-1.3-contributor-free",
+                "reasoning": "xhigh"
+              }
+            ]
+          },
+          "unspecified-low": {
+            "models": [
+              {
+                "model": "anthropic/claude-sonnet-5",
+                "reasoning": "medium"
+              },
+              {
+                "model": "openai-codex/gpt-6-astra",
+                "reasoning": "medium"
+              },
+              {
+                "model": "opencode/muse-spark-1.3-contributor-free",
+                "reasoning": "xhigh"
+              }
+            ]
+          },
+          "unspecified-high": {
+            "models": [
+              {
+                "model": "anthropic/claude-sonnet-5",
+                "reasoning": "medium"
+              },
+              {
+                "model": "openai-codex/gpt-5.6-sol",
+                "reasoning": "high"
+              }
+            ]
+          },
+          "artistry": {
+            "models": [
+              {
+                "model": "anthropic/claude-sonnet-5",
+                "reasoning": "high"
+              },
+              {
+                "model": "openai-codex/gpt-5.6-sol",
+                "reasoning": "high"
+              }
+            ]
+          },
+          "writing": {
+            "models": [
+              {
+                "model": "anthropic/claude-sonnet-5",
+                "reasoning": "medium"
+              },
+              {
+                "model": "openai-codex/gpt-5.6-sol",
+                "reasoning": "high"
+              }
+            ]
+          },
+          "visual-engineering": {
+            "models": [
+              {
+                "model": "anthropic/claude-sonnet-5",
+                "reasoning": "high"
+              },
+              {
+                "model": "openai-codex/gpt-5.6-sol",
+                "reasoning": "high"
+              }
+            ]
+          },
+          "architect": {
+            "models": [
+              {
+                "model": "anthropic/claude-sonnet-5",
+                "reasoning": "high"
+              },
+              {
+                "model": "openai-codex/gpt-5.6-sol",
+                "reasoning": "high"
+              }
+            ]
+          },
+          "deep": {
+            "models": [
+              {
+                "model": "opencode/muse-spark-1.3-contributor-free",
+                "reasoning": "xhigh"
+              },
+              {
+                "model": "openai-codex/gpt-5.6-sol",
+                "reasoning": "high"
+              }
+            ]
+          },
+          "ultrabrain": {
+            "models": [
+              {
+                "model": "openai-codex/gpt-6-astra",
+                "reasoning": "xhigh"
+              },
+              {
+                "model": "openai-codex/gpt-5.6-sol",
+                "reasoning": "high"
+              }
+            ]
+          },
+          "git": {
+            "models": [
+              {
+                "model": "anthropic/claude-haiku-4-5",
+                "reasoning": "low"
+              },
+              {
+                "model": "openai-codex/gpt-6-astra",
+                "reasoning": "medium"
+              },
+              {
+                "model": "opencode/muse-spark-1.3-contributor-free",
+                "reasoning": "xhigh"
+              }
+            ]
+          }
+        },
+        "agents": {
+          "explore": {
+            "models": [
+              {
+                "model": "anthropic/claude-haiku-4-5",
+                "reasoning": "low"
+              },
+              {
+                "model": "openai-codex/gpt-6-astra",
+                "reasoning": "medium"
+              },
+              {
+                "model": "opencode/muse-spark-1.3-contributor-free",
+                "reasoning": "xhigh"
+              }
+            ]
+          },
+          "librarian": {
+            "models": [
+              {
+                "model": "anthropic/claude-haiku-4-5",
+                "reasoning": "low"
+              },
+              {
+                "model": "openai-codex/gpt-6-astra",
+                "reasoning": "medium"
+              },
+              {
+                "model": "opencode/muse-spark-1.3-contributor-free",
+                "reasoning": "xhigh"
+              }
+            ]
+          },
+          "oracle": {
+            "models": [
+              {
+                "model": "openai-codex/gpt-6-astra",
+                "reasoning": "xhigh"
+              },
+              {
+                "model": "openai-codex/gpt-5.6-sol",
+                "reasoning": "high"
+              }
+            ]
+          },
+          "metis": {
+            "models": [
+              {
+                "model": "openai-codex/gpt-6-astra",
+                "reasoning": "max"
+              },
+              {
+                "model": "openai-codex/gpt-5.6-sol",
+                "reasoning": "high"
+              }
+            ]
+          },
+          "momus": {
+            "models": [
+              {
+                "model": "openai-codex/gpt-5.6-sol",
+                "reasoning": "xhigh"
+              },
+              {
+                "model": "opencode/muse-spark-1.3-contributor-free",
+                "reasoning": "xhigh"
+              }
+            ]
+          },
+          "multimodal-looker": {
+            "models": [
+              {
+                "model": "opencode/muse-spark-1.3-contributor-free",
+                "reasoning": "xhigh"
+              },
+              {
+                "model": "openai-codex/gpt-5.6-sol",
+                "reasoning": "high"
+              }
+            ]
+          }
+        },
+        "models": {
+          "sisyphus": {
+            "model": "openai-codex/gpt-6-astra",
+            "reasoning": "medium"
+          },
+          "prometheus": {
+            "model": "openai-codex/gpt-6-astra",
+            "reasoning": "max"
+          },
+          "atlas": {
+            "model": "openai-codex/gpt-6-astra",
+            "reasoning": "max"
+          },
+          "hephaestus": {
+            "model": "opencode/muse-spark-1.3-contributor-free",
+            "reasoning": "xhigh"
+          },
+          "planner": {
+            "model": "openai-codex/gpt-6-astra",
+            "reasoning": "max"
+          }
+        },
+        "task": {
+          "default_concurrency": 8,
+          "global_concurrency": 8,
+          "residency_max_children": 8,
+          "team": {
+            "max_members": 8,
+            "max_parallel_members": 8,
+            "max_wall_clock_minutes": 120
+          }
+        }
+      }
+    },
     "gpt": {
       "[senpi]": {
         "categories": {

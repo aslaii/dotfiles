@@ -151,6 +151,30 @@ bash ~/dotfiles/omo/launch.sh
 bun ~/dotfiles/omp/launch.mjs
 ```
 
+For time-critical work, use `omo-fast` or `omp-fast`. Both request fast
+Claude and priority GPT for main sessions and subagents, use GPT fallback
+when Claude is unavailable, and allow eight parallel agents. Muse and
+OpenCode Go models retain their existing settings, including reasoning.
+Normal `omo` and `omp` keep their defaults. Reload an existing shell with
+`source ~/.zsh/functions.zsh` before using the new commands.
+
+For other shells:
+
+```bash
+OMO_PROFILE=fast bash ~/dotfiles/omo/launch.sh --extension ~/dotfiles/omo/fast.mjs
+bun ~/dotfiles/omp/launch.mjs --config ~/dotfiles/omp/fast.yml --extension ~/dotfiles/omp/fast.mjs
+```
+
+OMO's `fast` profile is included in `omo/restore.mjs`. Its fast extension
+adds request-local priority settings without saving them to normal settings.
+GPT fallback also carries native priority metadata for session status and
+usage accounting. OMO's task row may still omit tier/thinking suffixes after
+fallback (upstream issues #6795 and #7934); the row alone does not establish
+the serving tier. Restart the OMO process after updating the fast extension.
+OMP's guard prevents its native retry from silently dropping Claude fast
+mode. Eight is a concurrency limit, not a requirement to run dependent tasks
+before their prerequisites finish. Provider access and rate limits still apply.
+
 OMO loads only its owned skill library, native skills, bundled skills, and
 active package skill paths. It refuses configured Claude MCP imports. Its own
 Ponytail extension remains enabled. Project AGENTS/CLAUDE context files and the

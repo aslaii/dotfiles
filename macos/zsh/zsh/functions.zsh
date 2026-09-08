@@ -100,3 +100,14 @@ function omo() {
 function omp() {
   bun "${DOTFILES_DIR:-$HOME/dotfiles}/omp/launch.mjs" "$@"
 }
+
+function omo-fast() {
+  OMO_PROFILE=fast bash "${DOTFILES_DIR:-$HOME/dotfiles}/omo/launch.sh" \
+    --extension "${DOTFILES_DIR:-$HOME/dotfiles}/omo/fast.mjs" "$@"
+}
+
+function omp-fast() {
+  bun "${DOTFILES_DIR:-$HOME/dotfiles}/omp/launch.mjs" \
+    --config "${DOTFILES_DIR:-$HOME/dotfiles}/omp/fast.yml" \
+    --extension "${DOTFILES_DIR:-$HOME/dotfiles}/omp/fast.mjs" "$@"
+}

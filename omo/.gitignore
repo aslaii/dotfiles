@@ -9,6 +9,8 @@
 !config.test.js
 !launch.sh
 !isolation.test.js
+!fast.mjs
+!fast.test.js
 !agent/
 !agent/settings.json
 !agent/hooks.json

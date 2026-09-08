@@ -1,6 +1,35 @@
 import { expect, test } from "bun:test";
 import { readFile } from "node:fs/promises";
 
+test("fast profile keeps routes and reasoning, with GPT immediately after Claude", async () => {
+  const config = Bun.JSONC.parse(await readFile(new URL("./omo.jsonc", import.meta.url), "utf8"));
+  const base = config["[senpi]"];
+  const fast = config.profiles.fast?.["[senpi]"];
+  expect(fast).toBeDefined();
+  expect(fast.models).toEqual(base.models);
+  expect(fast.task.default_concurrency).toBe(8);
+  expect(fast.task.global_concurrency).toBe(8);
+  expect(fast.task.residency_max_children).toBe(8);
+  expect(fast.task.team.max_members).toBe(8);
+  expect(fast.task.team.max_parallel_members).toBe(8);
+  for (const group of ["categories", "agents"]) {
+    expect(Object.keys(fast[group])).toEqual(Object.keys(base[group]));
+    for (const [name, route] of Object.entries(base[group])) {
+      const models = fast[group][name].models;
+      expect(models[0]).toEqual(route.models[0]);
+      expect(models.filter((entry) => entry.model.startsWith("opencode"))).toEqual(
+        route.models.filter((entry) => entry.model.startsWith("opencode")),
+      );
+      for (const entry of route.models) expect(models).toContainEqual(entry);
+      for (let i = 0; i < models.length; i++) {
+        if (models[i].model.startsWith("anthropic/")) {
+          expect(models[i + 1]?.model.startsWith("openai-codex/")).toBe(true);
+        }
+      }
+    }
+  }
+});
+
 test("planning roles use Astra at maximum reasoning in every profile", async () => {
   const config = Bun.JSONC.parse(
     await readFile(new URL("./omo.jsonc", import.meta.url), "utf8"),

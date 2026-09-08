@@ -3,6 +3,9 @@
 !.gitignore
 !launch.mjs
 !isolation.test.js
+!fast.test.js
+!fast.yml
+!fast.mjs
 !preload.mjs
 !agent/
 !agent/config.yml

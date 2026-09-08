@@ -1,0 +1,48 @@
+# omp-fast opt-in overlay (native `--config` overlay, no source edits).
+#
+# Load ONLY for fast sessions; normal omp never passes --config and is unaffected:
+#   omp --config /Users/aslaii/dotfiles/omp/fast.yml ...
+# or:
+#   PI_CONFIG_FILES=/Users/aslaii/dotfiles/omp/fast.yml omp ...
+#
+# Precedence (src/config/settings.ts #rebuildMerged): global config.yml <
+# project settings < THIS overlay < runtime overrides. Arrays replace per key,
+# so each fallbackChains key below fully replaces that key only; every other
+# key (default chain, zen chains, modelRoles, providers, plugins) is inherited
+# untouched from the normal config. Auth, agent dir, skills and plugins are
+# resolved independently of overlays and are fully preserved.
+tier:
+  # Main session: OpenAI/Codex requests send service_tier=priority;
+  # direct Claude requests send speed=fast (+ fast-mode beta). Per-request
+  # resolution covers every modelRole automatically.
+  openai: priority
+  anthropic: priority
+  # google stays none: Muse/OpenCode Go models are exactly as-is.
+  # Subagents (custom agents, task children, grandchildren) track the live
+  # session tiers via inherit; advisor tracks instead of staying standard.
+  subagent: inherit
+  advisor: inherit
+task:
+  # Fast sessions run 8-wide spawn waves (native ceiling is read live from
+  # session.settings at every acquire: task/index.ts spawn semaphore +
+  # workpool.ts limit). Normal config keeps its pinned 2. Subagent snapshots
+  # copy every unpinned key, so 8 holds at every depth of the spawn tree.
+  maxConcurrency: 8
+retry:
+  # Hard-require the fallback machinery fast sessions depend on: startup
+  # fallback-state resolution is gated on modelFallback (sdk.ts), so inherit
+  # the live default true AND pin it here against a global false.
+  enabled: true
+  modelFallback: true
+  fallbackChains:
+    # Claude primaries fall back to GPT Astra (fast: tier.openai=priority
+    # applies to the fallback request) before the previous entries, which are
+    # preserved verbatim after it. Exact key shadows for Opus (resolution:
+    # exact model > provider/* > role > default).
+    anthropic/*:
+      - openai-codex/gpt-6-astra:medium
+      - opencode-zen/muse-spark-1.3-contributor-free:xhigh
+    anthropic/claude-opus-5:
+      - openai-codex/gpt-6-astra:medium
+      - anthropic/claude-sonnet-5:high
+      - opencode-zen/muse-spark-1.3-contributor-free:xhigh
