@@ -16,6 +16,9 @@
 !agent/hooks.json
 !agent/extensions/
 !agent/extensions/herdr-presence.js
+!agent/extensions/comment-checker.js
+!comment-checker.test.js
+!comment-checker-qa.mjs
 !herdr-presence.test.js
 !rules/
 !rules/**
