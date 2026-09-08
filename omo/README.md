@@ -11,7 +11,7 @@ Use macOS or Linux with Node.js 24+, Bun 1.4+, npm, and Git. Install `dcg` and
 
 ```bash
 git clone https://github.com/aslaii/dotfiles.git ~/dotfiles
-npm install -g omo-ai@5.0.0-0.beta.48
+npm install -g omo-ai@beta
 bun ~/dotfiles/omo/restore.mjs
 bash ~/dotfiles/omo/launch.sh
 ```
@@ -36,7 +36,12 @@ A restore archives obsolete OMO-local `skill-library/codex` and
 modifies external `~/.codex`, `~/.agents`, or `~/.claude` skill sources.
 
 Use `launch.sh` for isolated skill discovery. Updated Zsh functions route `omo`
-through it automatically in new shells. It retains OMO's own package extensions
+through it automatically in new shells. The launcher always runs the globally
+npm-installed `omo-ai` package from `npm root -g`, not `omo` from `PATH`.
+Use Node LTS with `nvm use --lts`. Bundled skills come from the
+selected npm package; without a complete install it exits 127 telling you to
+run `npm i -g omo-ai@beta`. `OMO_BUNDLED_SKILLS_DIR` still overrides only the
+bundled-skill directory. It retains OMO's own package extensions
 and loads only individual OMO-native, bundled OMO, and active-package skills.
 Imported snapshots, `caveman-*`, and `cavecrew` are excluded at both settings
 and launcher boundaries. The launcher refuses global or project settings that

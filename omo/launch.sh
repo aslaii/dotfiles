@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 # omo/launch.sh - isolated OMO launcher.
+# Resolves the globally npm-installed omo-ai package (never a Bun-installed
+# `omo` from PATH).
 # Always --no-skills plus one explicit --skill per allowed native agent,
 # bundled omo-ai, and active-package skill. Imported snapshots and skill names
 # matching caveman/caveman-* or cavecrew are never passed to OMO.
@@ -29,28 +31,22 @@ for var in OMO_CODING_AGENT_DIR SENPI_CODING_AGENT_DIR PI_CODING_AGENT_DIR; do
 done
 [[ -z "$AGENT_DIR" ]] && AGENT_DIR="${HOME:?HOME is required}/.omo/agent"
 
-OMO_BIN="$(command -v omo 2>/dev/null || true)"
-[[ -z "$OMO_BIN" ]] && { echo "omo/launch.sh: omo not found on PATH" >&2; exit 127; }
+NPM_ROOT="$(npm root -g 2>/dev/null || true)"
+NPM_PKG="$NPM_ROOT/omo-ai"
+[[ -n "$NPM_ROOT" && -f "$NPM_PKG/bin/omo.js" ]] || { echo "omo/launch.sh: globally npm-installed omo-ai not found; run: npm i -g omo-ai@beta" >&2; exit 127; }
+OMO_BIN="$NPM_PKG/bin/omo.js"
+# In-process extensions (omo/fast.mjs) resolve Senpi from OMO_BIN, keeping
+# them on the selected npm package. The omo launcher itself overwrites
+# OMO_BIN for its own children.
+export OMO_BIN
 
 if [[ -n "${OMO_BUNDLED_SKILLS_DIR-}" ]]; then
   BUNDLED_SKILLS="$OMO_BUNDLED_SKILLS_DIR"
 else
-  BUNDLED_SKILLS=""
-  if command -v npm >/dev/null 2>&1; then
-    R="$(npm root -g 2>/dev/null || true)"
-    [[ -n "$R" && -d "$R/omo-ai/plugin/skills" ]] && BUNDLED_SKILLS="$R/omo-ai/plugin/skills"
-  fi
-  if [[ -z "$BUNDLED_SKILLS" ]]; then
-    RB="$(realpath "$OMO_BIN" 2>/dev/null || printf '%s' "$OMO_BIN")"
-    PR="$(dirname "$(dirname "$RB")")"
-    [[ -d "$PR/plugin/skills" ]] && BUNDLED_SKILLS="$PR/plugin/skills"
-  fi
-  if [[ -z "$BUNDLED_SKILLS" ]]; then
-    R="${BUN_INSTALL:-$HOME/.bun}/install/global/node_modules"
-    [[ -d "$R/omo-ai/plugin/skills" ]] && BUNDLED_SKILLS="$R/omo-ai/plugin/skills"
-  fi
+  # Bundled skills always come from the selected npm package.
+  BUNDLED_SKILLS="$NPM_PKG/plugin/skills"
 fi
-[[ -d "${BUNDLED_SKILLS-}" ]] || { echo "omo/launch.sh: bundled OMO skills not found" >&2; exit 127; }
+[[ -d "${BUNDLED_SKILLS-}" ]] || { echo "omo/launch.sh: bundled OMO skills not found in $NPM_PKG; run: npm i -g omo-ai@beta" >&2; exit 127; }
 [[ -f "$AGENT_DIR/settings.json" ]] || { echo "omo/launch.sh: missing $AGENT_DIR/settings.json" >&2; exit 127; }
 
 # Fail closed on Claude MCP import (parsed JSON, global + project).
@@ -147,4 +143,4 @@ if [[ "${OMO_LAUNCH_DRY_RUN-}" == "1" ]]; then
   exit 0
 fi
 
-exec "$OMO_BIN" "${ARGS[@]}" "$@"
+exec node "$OMO_BIN" "${ARGS[@]}" "$@"
