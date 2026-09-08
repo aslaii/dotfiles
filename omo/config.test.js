@@ -56,10 +56,113 @@ test("planning roles use Astra at maximum reasoning in every profile", async () 
         reasoning: "max",
       });
     }
-    expect(section.agents.metis.models[0]).toEqual({
-      model: "openai-codex/gpt-6-astra",
-      reasoning: "max",
-    });
+  }
+});
+
+test("exact native routing matches requested order in base and every profile", async () => {
+  const config = Bun.JSONC.parse(
+    await readFile(new URL("./omo.jsonc", import.meta.url), "utf8"),
+  );
+  const astra = "openai-codex/gpt-6-astra";
+  const sol = "openai-codex/gpt-5.6-sol";
+  const terra = "openai-codex/gpt-5.6-terra";
+  const luna = "openai-codex/gpt-5.6-luna-fast";
+  const sonnet = "claude-sdk-oauth/claude-sonnet-5";
+  const haiku = "claude-sdk-oauth/claude-haiku-4-5";
+  const muse = "opencode/muse-spark-1.3-contributor-free";
+  const expectedCategories = {
+    ultrabrain: [
+      { model: astra, reasoning: "max" },
+      { model: sol, reasoning: "max" },
+    ],
+    deep: [
+      { model: astra, reasoning: "high" },
+      { model: sol, reasoning: "medium" },
+    ],
+    "unspecified-high": [
+      { model: astra, reasoning: "high" },
+      { model: sonnet, reasoning: "high" },
+      { model: muse, reasoning: "xhigh" },
+      { model: sol, reasoning: "high" },
+    ],
+    quick: [
+      { model: haiku, reasoning: "low" },
+      { model: muse, reasoning: "xhigh" },
+      { model: luna, reasoning: "low" },
+    ],
+    git: [
+      { model: haiku, reasoning: "low" },
+      { model: muse, reasoning: "xhigh" },
+      { model: luna, reasoning: "low" },
+    ],
+    writing: [
+      { model: sonnet, reasoning: "medium" },
+      { model: muse, reasoning: "xhigh" },
+      { model: terra, reasoning: "medium" },
+    ],
+    artistry: [
+      { model: sonnet, reasoning: "medium" },
+      { model: muse, reasoning: "xhigh" },
+      { model: terra, reasoning: "medium" },
+    ],
+    "visual-engineering": [
+      { model: sonnet, reasoning: "medium" },
+      { model: muse, reasoning: "xhigh" },
+      { model: terra, reasoning: "medium" },
+    ],
+    "unspecified-low": [
+      { model: sonnet, reasoning: "medium" },
+      { model: muse, reasoning: "xhigh" },
+      { model: terra, reasoning: "medium" },
+    ],
+    architect: [
+      { model: sonnet, reasoning: "high" },
+      { model: muse, reasoning: "xhigh" },
+      { model: sol, reasoning: "high" },
+    ],
+  };
+  const expectedAgents = {
+    momus: [
+      { model: astra, reasoning: "xhigh" },
+      { model: sol, reasoning: "xhigh" },
+    ],
+    oracle: [
+      { model: sol, reasoning: "xhigh" },
+      { model: sonnet, reasoning: "high" },
+      { model: muse, reasoning: "xhigh" },
+    ],
+    explore: [
+      { model: haiku, reasoning: "low" },
+      { model: muse, reasoning: "xhigh" },
+      { model: luna, reasoning: "low" },
+    ],
+    librarian: [
+      { model: haiku, reasoning: "low" },
+      { model: muse, reasoning: "xhigh" },
+      { model: luna, reasoning: "low" },
+    ],
+    "multimodal-looker": [
+      { model: sonnet, reasoning: "medium" },
+      { model: muse, reasoning: "xhigh" },
+      { model: terra, reasoning: "medium" },
+    ],
+    metis: [
+      { model: sonnet, reasoning: "high" },
+      { model: muse, reasoning: "xhigh" },
+      { model: sol, reasoning: "high" },
+    ],
+  };
+  for (const section of [
+    config["[senpi]"],
+    ...Object.values(config.profiles).map((profile) => profile["[senpi]"]),
+  ]) {
+    expect(section.models.sisyphus).toEqual({ model: astra, reasoning: "medium" });
+    for (const [name, models] of Object.entries(expectedCategories)) {
+      expect(section.categories[name].models).toEqual(models);
+    }
+    for (const [name, models] of Object.entries(expectedAgents)) {
+      expect(section.agents[name].models).toEqual(models);
+    }
   }
 });
 
@@ -76,20 +179,20 @@ test("approved fallback policy is uniform across base and profile routes", async
   const luna = "openai-codex/gpt-5.6-luna-fast";
   const terra = "openai-codex/gpt-5.6-terra";
   const sol = "openai-codex/gpt-5.6-sol";
-  const cheap = [
-    { model: muse, reasoning: "xhigh" },
+  const astra = "openai-codex/gpt-6-astra";
+  const quickLow = [
     { model: haiku, reasoning: "low" },
+    { model: muse, reasoning: "xhigh" },
     { model: luna, reasoning: "low" },
   ];
-  const general = [
-    { model: muse, reasoning: "xhigh" },
+  const lowMedium = [
     { model: sonnet, reasoning: "medium" },
+    { model: muse, reasoning: "xhigh" },
     { model: terra, reasoning: "medium" },
   ];
-  const deep = [
-    { model: muse, reasoning: "xhigh" },
+  const highTrio = [
     { model: sonnet, reasoning: "high" },
-    { model: terra, reasoning: "high" },
+    { model: muse, reasoning: "xhigh" },
     { model: sol, reasoning: "high" },
   ];
   for (const section of [
@@ -101,24 +204,40 @@ test("approved fallback policy is uniform across base and profile routes", async
       reasoning: "medium",
     });
     for (const category of ["quick", "git"]) {
-      expect(section.categories[category].models).toEqual(cheap);
+      expect(section.categories[category].models).toEqual(quickLow);
     }
     for (const category of ["unspecified-low", "artistry", "writing", "visual-engineering"]) {
-      expect(section.categories[category].models).toEqual(general);
+      expect(section.categories[category].models).toEqual(lowMedium);
     }
-    for (const category of ["unspecified-high", "architect", "deep", "ultrabrain"]) {
-      expect(section.categories[category].models).toEqual(deep);
-    }
-    for (const agent of ["explore", "librarian"]) {
-      expect(section.agents[agent].models).toEqual(cheap);
-    }
-    expect(section.agents.oracle.models).toEqual(deep);
-    expect(section.agents.momus.models).toEqual(deep);
-    expect(section.agents.metis.models).toEqual([
-      { model: "openai-codex/gpt-6-astra", reasoning: "max" },
-      ...deep,
+    expect(section.categories["unspecified-high"].models).toEqual([
+      { model: astra, reasoning: "high" },
+      { model: sonnet, reasoning: "high" },
+      { model: muse, reasoning: "xhigh" },
+      { model: sol, reasoning: "high" },
     ]);
-    expect(section.agents["multimodal-looker"].models).toEqual(general);
+    expect(section.categories.architect.models).toEqual(highTrio);
+    expect(section.categories.deep.models).toEqual([
+      { model: astra, reasoning: "high" },
+      { model: sol, reasoning: "medium" },
+    ]);
+    expect(section.categories.ultrabrain.models).toEqual([
+      { model: astra, reasoning: "max" },
+      { model: sol, reasoning: "max" },
+    ]);
+    for (const agent of ["explore", "librarian"]) {
+      expect(section.agents[agent].models).toEqual(quickLow);
+    }
+    expect(section.agents.oracle.models).toEqual([
+      { model: sol, reasoning: "xhigh" },
+      { model: sonnet, reasoning: "high" },
+      { model: muse, reasoning: "xhigh" },
+    ]);
+    expect(section.agents.momus.models).toEqual([
+      { model: astra, reasoning: "xhigh" },
+      { model: sol, reasoning: "xhigh" },
+    ]);
+    expect(section.agents.metis.models).toEqual(highTrio);
+    expect(section.agents["multimodal-looker"].models).toEqual(lowMedium);
     expect(section.models.hephaestus).toEqual({ model: muse, reasoning: "xhigh" });
   }
   expect(settings.defaultThinkingLevel).toBe("medium");
