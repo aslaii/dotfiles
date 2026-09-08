@@ -59,6 +59,16 @@ test("planning roles use Astra at maximum reasoning in every profile", async () 
   }
 });
 
+// Append the sole free model (Muse) as the ultimate fallback to any route whose
+// last entry is not already Muse. Muse may legitimately repeat (once as an
+// earlier rung, once as the terminal free safety net); every other model must
+// stay unique within a chain.
+function withFreeTail(muse, models) {
+  const last = models[models.length - 1];
+  if (last.model === muse && last.reasoning === "xhigh") return models;
+  return [...models, { model: muse, reasoning: "xhigh" }];
+}
+
 test("exact native routing matches requested order in base and every profile", async () => {
   const config = Bun.JSONC.parse(
     await readFile(new URL("./omo.jsonc", import.meta.url), "utf8"),
@@ -71,86 +81,86 @@ test("exact native routing matches requested order in base and every profile", a
   const haiku = "claude-sdk-oauth/claude-haiku-4-5";
   const muse = "opencode/muse-spark-1.3-contributor-free";
   const expectedCategories = {
-    ultrabrain: [
+    ultrabrain: withFreeTail(muse, [
       { model: astra, reasoning: "max" },
       { model: sol, reasoning: "max" },
-    ],
-    deep: [
+    ]),
+    deep: withFreeTail(muse, [
       { model: astra, reasoning: "high" },
       { model: sol, reasoning: "medium" },
-    ],
-    "unspecified-high": [
+    ]),
+    "unspecified-high": withFreeTail(muse, [
       { model: astra, reasoning: "high" },
       { model: sonnet, reasoning: "high" },
       { model: muse, reasoning: "xhigh" },
       { model: sol, reasoning: "high" },
-    ],
-    quick: [
+    ]),
+    quick: withFreeTail(muse, [
       { model: haiku, reasoning: "low" },
       { model: muse, reasoning: "xhigh" },
       { model: luna, reasoning: "low" },
-    ],
-    git: [
+    ]),
+    git: withFreeTail(muse, [
       { model: haiku, reasoning: "low" },
       { model: muse, reasoning: "xhigh" },
       { model: luna, reasoning: "low" },
-    ],
-    writing: [
+    ]),
+    writing: withFreeTail(muse, [
       { model: sonnet, reasoning: "medium" },
       { model: muse, reasoning: "xhigh" },
       { model: terra, reasoning: "medium" },
-    ],
-    artistry: [
+    ]),
+    artistry: withFreeTail(muse, [
       { model: sonnet, reasoning: "medium" },
       { model: muse, reasoning: "xhigh" },
       { model: terra, reasoning: "medium" },
-    ],
-    "visual-engineering": [
+    ]),
+    "visual-engineering": withFreeTail(muse, [
       { model: sonnet, reasoning: "medium" },
       { model: muse, reasoning: "xhigh" },
       { model: terra, reasoning: "medium" },
-    ],
-    "unspecified-low": [
+    ]),
+    "unspecified-low": withFreeTail(muse, [
       { model: sonnet, reasoning: "medium" },
       { model: muse, reasoning: "xhigh" },
       { model: terra, reasoning: "medium" },
-    ],
-    architect: [
+    ]),
+    architect: withFreeTail(muse, [
       { model: sonnet, reasoning: "high" },
       { model: muse, reasoning: "xhigh" },
       { model: sol, reasoning: "high" },
-    ],
+    ]),
   };
   const expectedAgents = {
-    momus: [
+    momus: withFreeTail(muse, [
       { model: astra, reasoning: "xhigh" },
       { model: sol, reasoning: "xhigh" },
-    ],
-    oracle: [
+    ]),
+    oracle: withFreeTail(muse, [
       { model: sol, reasoning: "xhigh" },
       { model: sonnet, reasoning: "high" },
       { model: muse, reasoning: "xhigh" },
-    ],
-    explore: [
+    ]),
+    explore: withFreeTail(muse, [
       { model: haiku, reasoning: "low" },
       { model: muse, reasoning: "xhigh" },
       { model: luna, reasoning: "low" },
-    ],
-    librarian: [
+    ]),
+    librarian: withFreeTail(muse, [
       { model: haiku, reasoning: "low" },
       { model: muse, reasoning: "xhigh" },
       { model: luna, reasoning: "low" },
-    ],
-    "multimodal-looker": [
+    ]),
+    "multimodal-looker": withFreeTail(muse, [
       { model: sonnet, reasoning: "medium" },
       { model: muse, reasoning: "xhigh" },
       { model: terra, reasoning: "medium" },
-    ],
-    metis: [
+    ]),
+    metis: withFreeTail(muse, [
       { model: sonnet, reasoning: "high" },
       { model: muse, reasoning: "xhigh" },
       { model: sol, reasoning: "high" },
-    ],
+    ]),
   };
   for (const section of [
     config["[senpi]"],
@@ -162,6 +172,25 @@ test("exact native routing matches requested order in base and every profile", a
     }
     for (const [name, models] of Object.entries(expectedAgents)) {
       expect(section.agents[name].models).toEqual(models);
+    }
+  }
+});
+
+test("every category and agent chain ends in the sole free model as ultimate fallback", async () => {
+  const config = Bun.JSONC.parse(
+    await readFile(new URL("./omo.jsonc", import.meta.url), "utf8"),
+  );
+  const muse = "opencode/muse-spark-1.3-contributor-free";
+  for (const section of [
+    config["[senpi]"],
+    ...Object.values(config.profiles).map((profile) => profile["[senpi]"]),
+  ]) {
+    for (const group of ["categories", "agents"]) {
+      for (const [name, route] of Object.entries(section[group])) {
+        const models = route.models;
+        const last = models[models.length - 1];
+        expect(last).toEqual({ model: muse, reasoning: "xhigh" });
+      }
     }
   }
 });
@@ -180,21 +209,21 @@ test("approved fallback policy is uniform across base and profile routes", async
   const terra = "openai-codex/gpt-5.6-terra";
   const sol = "openai-codex/gpt-5.6-sol";
   const astra = "openai-codex/gpt-6-astra";
-  const quickLow = [
+  const quickLow = withFreeTail(muse, [
     { model: haiku, reasoning: "low" },
     { model: muse, reasoning: "xhigh" },
     { model: luna, reasoning: "low" },
-  ];
-  const lowMedium = [
+  ]);
+  const lowMedium = withFreeTail(muse, [
     { model: sonnet, reasoning: "medium" },
     { model: muse, reasoning: "xhigh" },
     { model: terra, reasoning: "medium" },
-  ];
-  const highTrio = [
+  ]);
+  const highTrio = withFreeTail(muse, [
     { model: sonnet, reasoning: "high" },
     { model: muse, reasoning: "xhigh" },
     { model: sol, reasoning: "high" },
-  ];
+  ]);
   for (const section of [
     config["[senpi]"],
     ...Object.values(config.profiles).map((profile) => profile["[senpi]"]),
@@ -209,33 +238,33 @@ test("approved fallback policy is uniform across base and profile routes", async
     for (const category of ["unspecified-low", "artistry", "writing", "visual-engineering"]) {
       expect(section.categories[category].models).toEqual(lowMedium);
     }
-    expect(section.categories["unspecified-high"].models).toEqual([
+    expect(section.categories["unspecified-high"].models).toEqual(withFreeTail(muse, [
       { model: astra, reasoning: "high" },
       { model: sonnet, reasoning: "high" },
       { model: muse, reasoning: "xhigh" },
       { model: sol, reasoning: "high" },
-    ]);
+    ]));
     expect(section.categories.architect.models).toEqual(highTrio);
-    expect(section.categories.deep.models).toEqual([
+    expect(section.categories.deep.models).toEqual(withFreeTail(muse, [
       { model: astra, reasoning: "high" },
       { model: sol, reasoning: "medium" },
-    ]);
-    expect(section.categories.ultrabrain.models).toEqual([
+    ]));
+    expect(section.categories.ultrabrain.models).toEqual(withFreeTail(muse, [
       { model: astra, reasoning: "max" },
       { model: sol, reasoning: "max" },
-    ]);
+    ]));
     for (const agent of ["explore", "librarian"]) {
       expect(section.agents[agent].models).toEqual(quickLow);
     }
-    expect(section.agents.oracle.models).toEqual([
+    expect(section.agents.oracle.models).toEqual(withFreeTail(muse, [
       { model: sol, reasoning: "xhigh" },
       { model: sonnet, reasoning: "high" },
       { model: muse, reasoning: "xhigh" },
-    ]);
-    expect(section.agents.momus.models).toEqual([
+    ]));
+    expect(section.agents.momus.models).toEqual(withFreeTail(muse, [
       { model: astra, reasoning: "xhigh" },
       { model: sol, reasoning: "xhigh" },
-    ]);
+    ]));
     expect(section.agents.metis.models).toEqual(highTrio);
     expect(section.agents["multimodal-looker"].models).toEqual(lowMedium);
     expect(section.models.hephaestus).toEqual({ model: muse, reasoning: "xhigh" });
@@ -255,20 +284,45 @@ test("approved fallback policy is uniform across base and profile routes", async
     "openai-codex/gpt-6-astra": "auto",
   });
   expect(settings.retry.fallbackRevertPolicy).toBe("cooldown-expiry");
+  expect(settings.retry.fallbackChains["openai-codex/gpt-6-astra"]).toEqual([
+    `${muse}:xhigh`,
+    `${sonnet}:medium`,
+    `${muse}:xhigh`,
+  ]);
   expect(settings.retry.fallbackChains[muse]).toEqual([
     `${sonnet}:medium`,
     `${terra}:medium`,
   ]);
-  expect(settings.retry.fallbackChains[haiku]).toEqual([`${luna}:low`]);
+  expect(settings.retry.fallbackChains[haiku]).toEqual([`${luna}:low`, `${muse}:xhigh`]);
   expect(settings.retry.fallbackChains[sonnet]).toEqual([
     `${terra}:high`,
     `${sol}:high`,
+    `${muse}:xhigh`,
   ]);
-  expect(settings.retry.fallbackChains[terra]).toEqual([`${sol}:high`]);
+  expect(settings.retry.fallbackChains[terra]).toEqual([`${sol}:high`, `${muse}:xhigh`]);
   expect(JSON.stringify({ config, settings })).not.toContain('"anthropic/');
   for (const [primary, fallbacks] of Object.entries(settings.retry.fallbackChains)) {
     const models = fallbacks.map((entry) => entry.replace(/:[^:]+$/, ""));
-    expect(models).not.toContain(primary);
-    expect(new Set(models).size).toBe(models.length);
+    // The sole free model (Muse) may legitimately repeat as both an earlier
+    // rung and the terminal ultimate fallback; every other model stays unique.
+    const nonFreeModels = models.filter((model) => model !== muse);
+    expect(models).not.toContain(primary === muse ? "__never__" : primary);
+    expect(new Set(nonFreeModels).size).toBe(nonFreeModels.length);
   }
+});
+
+test("every fallback chain ends in the sole free model as ultimate fallback", async () => {
+  const settings = JSON.parse(
+    await readFile(new URL("./agent/settings.json", import.meta.url), "utf8"),
+  );
+  const muse = "opencode/muse-spark-1.3-contributor-free";
+  for (const [primary, fallbacks] of Object.entries(settings.retry.fallbackChains)) {
+    if (primary === muse) continue;
+    expect(fallbacks[fallbacks.length - 1]).toBe(`${muse}:xhigh`);
+  }
+});
+
+test("git attribution stays disabled at the shared top level", async () => {
+  const config = Bun.JSONC.parse(await readFile(new URL("./omo.jsonc", import.meta.url), "utf8"));
+  expect(config.git_master).toEqual({ commit_footer: false, include_co_authored_by: false });
 });
