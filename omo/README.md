@@ -154,3 +154,152 @@ gitleaks dir omo --redact --no-banner
 
 The external skill snapshot includes upstream test/example credentials and
 placeholders. Scan installed payloads separately from the configuration tree.
+
+## Herdr Agents presence
+
+`agent/extensions/herdr-presence.js` is a native OMO extension. Inside a
+Herdr pane it registers the running TUI as an Agents entry, agent `omo`,
+state `unknown`, so you can click that row in Herdr and land back on the
+right OMO pane. It reports once at session start and again on reload, new
+session, resume, or fork; it releases the entry on normal quit or process
+exit. A file pane opened with `less`, or any non-TUI OMO invocation such as
+`--mode rpc`, never appears. This extension is not part of `restore.mjs`;
+restore does not install, remove, or otherwise touch it, and running restore
+is unaffected either way.
+
+### Prerequisites
+
+You need a Herdr pane: `HERDR_ENV=1` and nonempty `HERDR_BIN_PATH`,
+`HERDR_SOCKET_PATH`, and `HERDR_PANE_ID` in the environment OMO starts in.
+Herdr sets these for panes it manages. Outside a Herdr pane, or in a non-TUI
+OMO mode, the extension loads but does nothing.
+
+### Install
+
+OMO loads `.js`/`.ts` extensions from `<agentDir>/extensions`, where
+`agentDir` is the first nonblank value among `OMO_CODING_AGENT_DIR`,
+`SENPI_CODING_AGENT_DIR`, and `PI_CODING_AGENT_DIR`, trimmed and resolved
+against your working directory if relative, falling back to
+`~/.omo/agent` when none are set. Resolve that same directory before
+installing, so the file lands where OMO will actually look for it:
+
+```bash
+REPO="$HOME/dotfiles" # set to the checkout location
+AGENT_DIR="$(node --input-type=module -e '
+  import {homedir} from "node:os";
+  import {resolve, join} from "node:path";
+  const env=process.env;
+  const override=["OMO_CODING_AGENT_DIR","SENPI_CODING_AGENT_DIR","PI_CODING_AGENT_DIR"]
+    .map(k=>env[k]?.trim()).find(Boolean);
+  console.log(override ? resolve(override) : join(env.HOME || env.USERPROFILE || homedir(), ".omo", "agent"));
+')" || exit
+SRC="$REPO/omo/agent/extensions/herdr-presence.js"
+DEST="$AGENT_DIR/extensions/herdr-presence.js"
+test -f "$SRC" || exit 1
+mkdir -p "$AGENT_DIR/extensions"
+if test -e "$DEST" || test -L "$DEST"; then
+  printf '%s\n' "Already exists; inspect without overwriting: $DEST" >&2
+  exit 1
+fi
+ln -s "$SRC" "$DEST"
+```
+
+If you want a separate agent directory instead of `~/.omo/agent`, export the
+override before running the recipe, for example
+`export OMO_CODING_AGENT_DIR="$HOME/omo-work/agent"`, and use that same
+exported value for the ordinary `omo` launches that follow. This project does
+not export that variable for you and does not write it to any shell startup
+file. The refusal above is deliberate: if `$DEST` already resolves to `$SRC`,
+the extension is already installed and the command exits without touching it.
+
+Some filesystems and editors don't preserve symlinks. Use a copy instead:
+run the same recipe above through the `mkdir -p` and the `test -e "$DEST" ||
+test -L "$DEST"` refusal, then replace only the final `ln -s "$SRC" "$DEST"`
+line with this `COPYFILE_EXCL` copy, which fails closed the same way the
+symlink line does if `$DEST` already exists:
+
+```bash
+node --input-type=module -e '
+  import {copyFileSync, constants} from "node:fs";
+  copyFileSync(process.argv[1], process.argv[2], constants.COPYFILE_EXCL);
+' "$SRC" "$DEST"
+```
+
+Don't run the symlink recipe to completion and then copy on top of it; the
+copy would fail because the destination already exists. Swap the last line
+before you run it.
+
+### Reload, new session, and normal exit
+
+A native `/reload` or a new session in the same pane keeps reporting the
+same `omo` entry; it does not release and re-add it. Quitting OMO normally
+releases the entry once. The extension also installs a synchronous Node
+`exit` handler with no async work, as a fallback release path for a normal
+process exit that skips OMO's own quit flow. It does not install a signal
+handler of its own and does not change how OMO handles signals or quit, so
+cleanup on a signal-terminated or crashed process is not promised. `SIGKILL`
+never runs it, since `SIGKILL` bypasses all handlers unconditionally.
+Herdr's own state, not this extension, decides what happens to a row left
+behind by a process that died that way.
+
+### Transport failure recovery
+
+Each report or release call is bounded to one second and never retried on a
+timer. If a report call fails, OMO shows a warning in the current TUI naming
+the failed visibility and telling you to `/reload` once the transport is
+available again; the next native session start or `/reload` for that pane
+retries once, with no background retry loop in between. A release or
+process-exit failure instead goes to stderr, since the TUI may already be
+gone by the time exit runs. That recovery instruction only covers a Herdr
+socket or binary that comes back; it does not change a process's inherited
+`HERDR_BIN_PATH` after the fact. If `HERDR_BIN_PATH` was wrong or missing for
+that pane, fix the environment and relaunch OMO in it. If a pane's OMO
+already stopped and Herdr still shows a stale `omo` row for it, confirm the
+process is gone, then release the entry directly with the same identity the
+extension would have used:
+
+```bash
+herdr pane release-agent "$PANE_ID" --source custom:omo-presence --agent omo
+```
+
+Use the actual Herdr pane ID for that pane, from `herdr pane list` or the
+Agents view. Don't release an entry for a pane where OMO is still running;
+its next native session start or `/reload` reports it again, not this
+cleanup command.
+
+### Uninstall
+
+Resolve `SRC` and `DEST` the same way as install. Confirm `DEST` is the
+installed artifact, either `readlink "$DEST"` equals `"$SRC"` for a symlink
+or `cmp "$DEST" "$SRC"` for a copy, then remove only that file:
+
+```bash
+rm "$DEST"
+```
+
+Don't remove the whole `extensions` directory; other extensions may live
+there. After removing the file, use OMO's native `/reload` or quit and
+relaunch: native extension removal detects the missing installed path and
+releases that pane's entry once, with no timer or background report cycle
+involved. A pane with the extension still installed is unaffected.
+
+### Tests
+
+```bash
+bun test omo/herdr-presence.test.js
+```
+
+The tests exercise the default factory through its runtime seam: argv and
+addressing, eligibility per OMO mode, listener handoff across reload and
+rebuild, matching removal and quit cleanup, pane isolation, and a real Node
+child for the process-exit fallback. They don't call the network or Herdr
+itself.
+
+### Unsupported
+
+This extension makes no promise around: an identity that ages out on its
+own, cleanup after `SIGKILL`, delivery that survives a Herdr server
+restart, or coverage of every possible way something might embed and
+launch OMO as a child process. It reports presence only. It does not report
+task status, session metadata, or completion, and it does not read or send
+model output.

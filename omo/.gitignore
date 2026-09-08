@@ -12,6 +12,9 @@
 !agent/
 !agent/settings.json
 !agent/hooks.json
+!agent/extensions/
+!agent/extensions/herdr-presence.js
+!herdr-presence.test.js
 !rules/
 !rules/**
 
