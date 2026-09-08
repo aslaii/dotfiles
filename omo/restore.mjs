@@ -516,8 +516,10 @@ async function builtinRoot() {
   ])
   const npmRoot = stdout.trim()
   if (exitCode !== 0 || !npmRoot) fail(`could not locate npm global root: ${stderr.trim()}`)
-  const root = resolve(npmRoot, "omo-ai/node_modules/@code-yeongyu/senpi/dist/core/extensions/builtin")
-  if (!isWithin(resolve(npmRoot), root)) fail("resolved builtin extension path escapes npm global root")
+  let root = resolve(npmRoot, "omo-ai/node_modules/@code-yeongyu/senpi/dist/core/extensions/builtin")
+  if (!(await lstatOrUndefined(join(root, "tps.js")))) {
+    root = resolve(process.env.BUN_INSTALL || join(homedir(), ".bun"), "install/global/node_modules/@code-yeongyu/senpi/dist/core/extensions/builtin")
+  }
   await requireDirectorySource(root, "installed OMO builtin extensions")
   return root
 }

@@ -45,6 +45,10 @@ else
     PR="$(dirname "$(dirname "$RB")")"
     [[ -d "$PR/plugin/skills" ]] && BUNDLED_SKILLS="$PR/plugin/skills"
   fi
+  if [[ -z "$BUNDLED_SKILLS" ]]; then
+    R="${BUN_INSTALL:-$HOME/.bun}/install/global/node_modules"
+    [[ -d "$R/omo-ai/plugin/skills" ]] && BUNDLED_SKILLS="$R/omo-ai/plugin/skills"
+  fi
 fi
 [[ -d "${BUNDLED_SKILLS-}" ]] || { echo "omo/launch.sh: bundled OMO skills not found" >&2; exit 127; }
 [[ -f "$AGENT_DIR/settings.json" ]] || { echo "omo/launch.sh: missing $AGENT_DIR/settings.json" >&2; exit 127; }
