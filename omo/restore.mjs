@@ -351,6 +351,17 @@ async function assertNoSymlinkParent(path, state) {
   }
 }
 
+async function retireLegacySkillLibraries(state) {
+  for (const relativePath of [
+    ".omo/agent/skill-library/codex",
+    ".omo/agent/skill-library/shared",
+  ]) {
+    const target = manifestPath(state.home, relativePath, "legacy skill library")
+    await assertNoSymlinkParent(target, state)
+    await backup(target, state)
+  }
+}
+
 async function pruneExcludedSkills(target, excluded, state) {
   for (const name of excluded) {
     const victim = join(target, name)
@@ -560,6 +571,18 @@ async function restore() {
   if (typeof manifest.omoVersion !== "string" || !manifest.omoVersion) fail("restore.json omoVersion is required")
   if (!Array.isArray(manifest.resources)) fail("restore.json resources must be an array")
   const skillSource = validateSkillSource(manifest.skillSource)
+  const resources = []
+  for (const [index, resource] of manifest.resources.entries()) {
+    if (!isObject(resource)) fail(`restore.json resources[${index}] must be an object`)
+    const source = manifestPath(sourceRoot, resource.source, `resources[${index}].source`)
+    const target = manifestPath(home, resource.target, `resources[${index}].target`)
+    const info = await lstatOrUndefined(source)
+    if (!info) fail(`missing resource source ${resource.source}: ${source}`)
+    if (info.isSymbolicLink() || (!info.isDirectory() && !info.isFile())) {
+      fail(`resource source must be a regular file or directory, not a symlink: ${source}`)
+    }
+    resources.push({ source, target, info })
+  }
   await verifyOmo(manifest.omoVersion)
 
   let staging = undefined
@@ -567,6 +590,7 @@ async function restore() {
     if (skillSource) staging = await materializeSkillSource(skillSource)
     await prepareHome(home)
     const state = { home, backupRoot: undefined }
+    if (!skillSource) await retireLegacySkillLibraries(state)
     const omoSource = manifestPath(sourceRoot, "omo.jsonc", "portable omo config")
     const settingsSource = manifestPath(sourceRoot, "agent/settings.json", "portable agent settings")
     const hooksSource = manifestPath(sourceRoot, "agent/hooks.json", "portable agent hooks")
@@ -584,12 +608,13 @@ async function restore() {
     await writeManagedFile(settingsTarget, Buffer.from(`${JSON.stringify(mergedSettings, null, 2)}\n`), state)
     await writeManagedFile(hooksTarget, Buffer.from(`${JSON.stringify(mergedHooks, null, 2)}\n`), state)
 
-    for (const [index, resource] of manifest.resources.entries()) {
-      if (!isObject(resource)) fail(`restore.json resources[${index}] must be an object`)
-      const source = manifestPath(sourceRoot, resource.source, `resources[${index}].source`)
-      const target = manifestPath(home, resource.target, `resources[${index}].target`)
-      await requireDirectorySource(source, `resource source ${resource.source}`)
-      await copyDirectory(source, target, state)
+    for (const resource of resources) {
+      if (resource.info.isDirectory()) {
+        await copyDirectory(resource.source, resource.target, state)
+      } else {
+        const bytes = textWithHome(await readFile(resource.source), state.home)
+        await writeManagedFile(resource.target, bytes, state, resource.info.mode & 0o777)
+      }
     }
 
     if (staging) {

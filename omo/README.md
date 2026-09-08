@@ -1,7 +1,7 @@
 # OMO
 
-Portable native OMO configuration, plugins, hooks, and rules, with a pinned
-external skill source. OMO is separate from Claude Code/OMC and OMP.
+Portable native OMO configuration, plugins, hooks, rules, and isolated skill
+loading. OMO is separate from Claude Code/OMC and OMP.
 
 ## Restore on another computer
 
@@ -24,18 +24,24 @@ older model selection.
 The restore command copies resources rather than linking the checkout. It
 merges settings, replaces the managed skill-path list, preserves unrelated
 configuration and credentials, and backs up conflicting originals under
-`~/.omo/backups/`. An unchanged rerun does not
-create more backups. It installs the three pinned packages and regenerates
-the four built-in extension loaders using the destination OMO installation.
-Existing directory symlinks are left in place when their files already match.
-The command refuses changed writes through those links rather than modifying
+`~/.omo/backups/`. An unchanged rerun does not create more backups. It installs
+the three pinned packages, the owned comment-checker extension, and the four
+built-in extension loaders using the destination OMO installation. Existing
+directory symlinks are left in place when their files already match. The
+command refuses changed writes through those links rather than modifying
 another checkout or moving unrelated application state.
 
+A restore archives obsolete OMO-local `skill-library/codex` and
+`skill-library/shared` directories through the same backup mechanism. It never
+modifies external `~/.codex`, `~/.agents`, or `~/.claude` skill sources.
+
 Use `launch.sh` for isolated skill discovery. Updated Zsh functions route `omo`
-through it automatically in new shells. It retains OMO's own package extensions,
-loads only explicitly selected skill roots, and refuses global or project
-settings that enable Claude MCP imports. It loads the OMO-owned Argent rule
-explicitly; project context files and native rule discovery remain enabled.
+through it automatically in new shells. It retains OMO's own package extensions
+and loads only individual OMO-native, bundled OMO, and active-package skills.
+Imported snapshots, `caveman-*`, and `cavecrew` are excluded at both settings
+and launcher boundaries. The launcher refuses global or project settings that
+enable Claude MCP imports. It loads the OMO-owned Argent rule explicitly;
+project context files and native rule discovery remain enabled.
 
 To skip plugin installation or restore into a separate home directory:
 
@@ -49,10 +55,11 @@ bun ~/dotfiles/omo/restore.mjs --home "/tmp/omo test home" --skip-packages
 | Source | Restored location and purpose |
 |---|---|
 | `omo.jsonc` | `~/.omo/omo.jsonc`: native model routes, profiles, and task/team limits |
-| `agent/settings.json` | `~/.omo/agent/settings.json`: models, fallbacks, package sources, skill paths, permission settings, and UI preferences |
+| `agent/settings.json` | `~/.omo/agent/settings.json`: models, fallbacks, package sources, skill exclusions, permission settings, and UI preferences |
 | `agent/hooks.json` | `~/.omo/agent/hooks.json`: `dcg` and `rtk hook claude`, before Bash calls, with 10-second timeouts |
-| Pinned `codex` skill snapshot | `~/.omo/agent/skill-library/codex/`: 30 selected skills, isolated from live Codex |
-| Pinned `shared` skill snapshot | `~/.omo/agent/skill-library/shared/`: 66 selected skills, isolated from live shared/Claude skills |
+| Native and bundled OMO skills | Loaded from `~/.omo/agent/skills` and the pinned OMO installation, excluding Caveman names |
+| Ponytail package skills | Six skills loaded from `@dietrichgebert/ponytail@4.9.0`, with package-local Caveman exclusions |
+| `agent/extensions/comment-checker.js` | `~/.omo/agent/extensions/comment-checker.js`: owned checker integration |
 | `rules/` | `~/.omo/agent/rules/`: OMO-owned Argent interaction rule |
 | `restore.json` | OMO version, resource destinations, and `tps`, `prompt-url-widget`, `files`, `diff` extension selection |
 
@@ -107,32 +114,36 @@ included.
 - `@dietrichgebert/ponytail@4.9.0` injects its instructions before agent turns.
   Its default is `full`; `/ponytail` changes the session mode.
 - `@code-yeongyu/comment-checker@0.8.0` provides the checker binary.
-- `pi-comment-checker` is pinned to
-  `0a38dd8ff362be1b6020f2baba7b5723cbc5ea76` and runs the checker after file edits.
+- `pi-comment-checker` remains pinned to
+  `0a38dd8ff362be1b6020f2baba7b5723cbc5ea76` for its parser and runner, while
+  its automatic extension is disabled with `extensions: []`.
+- The restored owned `comment-checker.js` extension runs the checker without
+  replacing unrelated files such as `herdr-presence.js`.
 - The bundled `unslop` skill says to apply it to all writing. This is an agent
   instruction, not a shell hook. Other skills load when their tasks match.
 
-OMO's own skills and theme come with the pinned OMO installation. User skill
-snapshots are fetched from commit `a2ab0135829a04dcd8dcc5354a7c09ba6b2161bc`
-of the published dotfiles repository. `restore.json` pins the exact `omo/skills`
-Git tree, verified before any destination write. The current checkout does not
-need to contain that payload. Licenses, custom adaptations, references, scripts,
-and fixtures remain intact in the installed copy.
+The owned checker handles native `write`, `edit`, `multiedit`, and `apply_patch`
+results, including nested `tool.*` calls in `eval`. It checks successful files
+in a partially applied patch. Findings appear in both the tool result and
+session context, even when an eval cell discards its nested tool result.
+Missing dependencies, checker crashes, timeouts, and invalid-input skips are
+reported as checker errors rather than clean checks. Necessary comments can
+remain after review; the checker does not automatically delete them.
 
-Restoration uses local Git objects when available and otherwise fetches the
-immutable commit. `--skip-packages` does not disable that fetch. It does not
-install into or modify `~/.codex/skills`, `~/.agents/skills`, or `~/.claude`.
-The snapshot retains all original resources, but `restore.json` excludes 23
-approved optional skills from installation: Academic Research Suite, unused
-service integrations, the GSAP family, and selected overlapping audit tools.
-Restoration moves existing excluded skill directories into `~/.omo/backups/`
-and does not reinstall them. The remaining 96 skills retain their resources.
+Use those mutation tools for file changes. Direct filesystem helpers, shell
+redirection, and external editors do not emit OMO tool events and are outside
+this hook's coverage. Restart existing OMO sessions after restoring so they
+load the owned extension and the new skill policy.
+
+OMO's bundled skills and theme come with the pinned OMO installation. Additional
+OMO-native skills may be placed in `~/.omo/agent/skills`. Ponytail is supplied
+only by its pinned installed package; restore does not fetch or materialize a
+Codex/shared skill snapshot. `--skip-packages` skips package installation but
+still restores configuration and owned resources.
 
 `__OMO_HOME__` in source resources is replaced with the destination home.
-Small binary assets and empty fixtures are stored as `.b64` files and decoded
-during restoration. Project-specific skills still require their repositories,
-SSH keys, API environment variables, and tools described in each skill.
-Install skill-specific dependencies when using that skill; browser dependencies
+Project-specific native skills still require their repositories, SSH keys, API
+environment variables, and tools described by those skills. Browser dependencies
 and browser profiles are not part of this backup.
 
 ## Excluded state
@@ -148,12 +159,13 @@ The tracked `omo/` directory is configuration. Hidden `.omo/`, `.omc/`, and
 ## Check the restore code
 
 ```bash
-bun test omo/config.test.js omo/restore.test.js
+bun test omo/isolation.test.js omo/restore.test.js
+bun test omo/config.test.js omo/fast.test.js omo/herdr-presence.test.js omo/comment-checker.test.js
+bun omo/comment-checker-qa.mjs
 gitleaks dir omo --redact --no-banner
 ```
 
-The external skill snapshot includes upstream test/example credentials and
-placeholders. Scan installed payloads separately from the configuration tree.
+Scan installed package payloads separately from the portable configuration tree.
 
 ## Herdr Agents presence
 

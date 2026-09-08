@@ -459,3 +459,95 @@ test("rejects invalid excluded skill names before mutating anything", async () =
   expect(await lstat(join(home, ".omo/backups")).catch(() => undefined)).toBeUndefined()
   expect(await skillTemps()).toEqual(tempsBefore)
 })
+
+test("production restore archives legacy local libraries and installs only the owned checker file", async () => {
+  const root = await mkdtemp(join(tmpdir(), "omo restore production "))
+  cleanup.push(root)
+  const snapshot = join(root, "snapshot")
+  const home = join(root, "home with spaces")
+  const fresh = join(root, "fresh home")
+  const script = join(snapshot, "restore.mjs")
+  await cp(restore, script)
+  await write(join(snapshot, "restore.json"), JSON.stringify({
+    omoVersion: "5.0.0-0.beta.48",
+    builtinExtensions: ["tps", "prompt-url-widget", "files", "diff"],
+    resources: [
+      { source: "rules", target: ".omo/agent/rules" },
+      { source: "agent/extensions/comment-checker.js", target: ".omo/agent/extensions/comment-checker.js" },
+    ],
+  }))
+  await writePortableConfig(snapshot)
+  await write(join(snapshot, "agent/settings.json"), JSON.stringify({
+    packages: [
+      { source: "npm:@dietrichgebert/ponytail@4.9.0", skills: ["!caveman-*", "!cavecrew"] },
+      "npm:@code-yeongyu/comment-checker@0.8.0",
+      { source: "git:github.com/code-yeongyu/pi-comment-checker@0a38dd8ff362be1b6020f2baba7b5723cbc5ea76", extensions: [] },
+    ],
+    skills: ["!caveman-*", "!cavecrew"],
+  }))
+  await write(join(snapshot, "agent/extensions/comment-checker.js"), "export default function commentChecker() {}\n")
+  await writeDestinationConfig(home)
+  await write(join(home, ".omo/agent/skill-library/codex/legacy.md"), "legacy codex\n")
+  await write(join(home, ".omo/agent/skill-library/shared/legacy.md"), "legacy shared\n")
+  await write(join(home, ".omo/agent/extensions/herdr-presence.js"), "existing herdr\n")
+  await write(join(home, ".codex/skills/external.md"), "external codex\n")
+  await write(join(home, ".agents/skills/external.md"), "external agents\n")
+  await write(join(home, ".claude/skills/external.md"), "external claude\n")
+
+  await run(script, home)
+
+  expect(await lstat(join(home, ".omo/agent/skill-library/codex")).catch(() => undefined)).toBeUndefined()
+  expect(await lstat(join(home, ".omo/agent/skill-library/shared")).catch(() => undefined)).toBeUndefined()
+  expect(await readFile(join(home, ".codex/skills/external.md"), "utf8")).toBe("external codex\n")
+  expect(await readFile(join(home, ".agents/skills/external.md"), "utf8")).toBe("external agents\n")
+  expect(await readFile(join(home, ".claude/skills/external.md"), "utf8")).toBe("external claude\n")
+  expect(await readFile(join(home, ".omo/agent/extensions/comment-checker.js"), "utf8")).toBe("export default function commentChecker() {}\n")
+  expect(await readFile(join(home, ".omo/agent/extensions/herdr-presence.js"), "utf8")).toBe("existing herdr\n")
+
+  const settings = await json(join(home, ".omo/agent/settings.json"))
+  expect(settings.packages).toEqual([
+    { source: "npm:@dietrichgebert/ponytail@4.9.0", skills: ["!caveman-*", "!cavecrew"] },
+    "npm:@code-yeongyu/comment-checker@0.8.0",
+    { source: "git:github.com/code-yeongyu/pi-comment-checker@0a38dd8ff362be1b6020f2baba7b5723cbc5ea76", extensions: [] },
+    { source: "npm:destination-package@1.0.0", skills: [] },
+  ])
+
+  const backups = join(home, ".omo/backups")
+  const backupNames = await readdir(backups)
+  expect(backupNames).toHaveLength(1)
+  expect(await readFile(join(backups, backupNames[0], ".omo/agent/skill-library/codex/legacy.md"), "utf8")).toBe("legacy codex\n")
+  expect(await readFile(join(backups, backupNames[0], ".omo/agent/skill-library/shared/legacy.md"), "utf8")).toBe("legacy shared\n")
+
+  await run(script, home)
+  expect(await readdir(backups)).toEqual(backupNames)
+
+  await run(script, fresh)
+  expect(await lstat(join(fresh, ".omo/agent/skill-library/codex")).catch(() => undefined)).toBeUndefined()
+  expect(await lstat(join(fresh, ".omo/agent/skill-library/shared")).catch(() => undefined)).toBeUndefined()
+  expect(await readFile(join(fresh, ".omo/agent/extensions/comment-checker.js"), "utf8")).toBe("export default function commentChecker() {}\n")
+})
+
+test("legacy library retirement refuses a symlinked parent and leaves its external target untouched", async () => {
+  const root = await mkdtemp(join(tmpdir(), "omo restore retirement "))
+  cleanup.push(root)
+  const snapshot = join(root, "snapshot")
+  const home = join(root, "home")
+  const external = join(root, "external library")
+  const script = join(snapshot, "restore.mjs")
+  await cp(restore, script)
+  await write(join(snapshot, "restore.json"), JSON.stringify({
+    omoVersion: "5.0.0-0.beta.48",
+    builtinExtensions: [],
+    resources: [],
+  }))
+  await writePortableConfig(snapshot)
+  await write(join(external, "codex/keep.md"), "external legacy\n")
+  await mkdir(join(home, ".omo/agent"), { recursive: true })
+  await symlink(external, join(home, ".omo/agent/skill-library"))
+
+  const result = await runResult(script, home)
+  expect(result.exitCode).not.toBe(0)
+  expect(`${result.stdout}${result.stderr}`).toMatch(/symlink/)
+  expect(await readFile(join(external, "codex/keep.md"), "utf8")).toBe("external legacy\n")
+  expect((await lstat(join(home, ".omo/agent/skill-library"))).isSymbolicLink()).toBe(true)
+})

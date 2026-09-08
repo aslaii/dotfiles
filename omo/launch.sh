@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # omo/launch.sh - isolated OMO launcher.
-# Always --no-skills plus explicit --skill for: skill-library/codex+shared
-# (when restored), native agent/skills (when present), bundled omo-ai skills,
-# and skills of active packages in agent/settings.json only.
+# Always --no-skills plus one explicit --skill per allowed native agent,
+# bundled omo-ai, and active-package skill. Imported snapshots and skill names
+# matching caveman/caveman-* or cavecrew are never passed to OMO.
 # Fails closed on Claude MCP import (global + project .omo/mcp.json) and on
 # missing settings/bundled skills. Never passes --no-extensions.
 # Residual (honest, out of skills/MCP/plugins scope): context discovery still
@@ -70,16 +70,14 @@ for (const f of files) {
   exit 1
 fi
 
-# Explicit skill dirs: library + native + bundled + active-package skills only.
-SKILL_DIRS=()
-[[ -d "$AGENT_DIR/skill-library/codex" ]] && SKILL_DIRS+=("$AGENT_DIR/skill-library/codex")
-[[ -d "$AGENT_DIR/skill-library/shared" ]] && SKILL_DIRS+=("$AGENT_DIR/skill-library/shared")
-[[ -d "$AGENT_DIR/skills" ]] && SKILL_DIRS+=("$AGENT_DIR/skills")
-SKILL_DIRS+=("$BUNDLED_SKILLS")
+# Candidate roots: native agent + bundled OMO + active package skills only.
+SKILL_ROOTS=()
+[[ -d "$AGENT_DIR/skills" ]] && SKILL_ROOTS+=("$AGENT_DIR/skills")
+SKILL_ROOTS+=("$BUNDLED_SKILLS")
 
 while IFS= read -r d; do
   [[ -z "$d" ]] && continue
-  [[ -d "$d" ]] && SKILL_DIRS+=("$d")
+  [[ -d "$d" ]] && SKILL_ROOTS+=("$d")
 done < <(OMO_LAUNCH_AGENT_DIR="$AGENT_DIR" node -e '
 const fs = require("fs"), path = require("path");
 const agentDir = process.env.OMO_LAUNCH_AGENT_DIR;
@@ -115,8 +113,24 @@ for (const entry of pkgs) {
 console.log(out.join("\n"));
 ' || exit 1)
 
+is_forbidden_skill_name() {
+  case "$1" in
+    caveman|caveman-*|cavecrew) return 0 ;;
+    *) return 1 ;;
+  esac
+}
+
 ARGS=(--no-skills)
-for d in "${SKILL_DIRS[@]}"; do ARGS+=(--skill "$d"); done
+for root in "${SKILL_ROOTS[@]}"; do
+  if [[ -f "$root/SKILL.md" ]] && ! is_forbidden_skill_name "$(basename "$root")"; then
+    ARGS+=(--skill "$root")
+  fi
+  while IFS= read -r -d '' d; do
+    [[ -f "$d/SKILL.md" ]] || continue
+    is_forbidden_skill_name "$(basename "$d")" && continue
+    ARGS+=(--skill "$d")
+  done < <(find "$root" -mindepth 1 -maxdepth 1 -type d -print0)
+done
 # Owned Argent rule is outside the built-in finder scan roots, load explicitly.
 if [[ -f "$AGENT_DIR/rules/argent.md" ]]; then
   ARGS+=(--append-system-prompt "$AGENT_DIR/rules/argent.md")

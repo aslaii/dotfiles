@@ -1,14 +1,22 @@
 import { afterEach, expect, test } from "bun:test"
-import { mkdir, mkdtemp, readdir, rm, stat, writeFile } from "node:fs/promises"
+import { cp, mkdir, mkdtemp, readFile, readdir, rm, writeFile } from "node:fs/promises"
 import { tmpdir } from "node:os"
-import { dirname, join } from "node:path"
+import { basename, dirname, join, resolve } from "node:path"
 import { fileURLToPath } from "node:url"
 
 const launch = fileURLToPath(new URL("./launch.sh", import.meta.url))
 const cleanup = []
+const ponytailNames = [
+  "ponytail",
+  "ponytail-audit",
+  "ponytail-debt",
+  "ponytail-gain",
+  "ponytail-help",
+  "ponytail-review",
+]
 
 afterEach(async () => {
-  await Promise.all(cleanup.splice(0).map((p) => rm(p, { recursive: true, force: true })))
+  await Promise.all(cleanup.splice(0).map((path) => rm(path, { recursive: true, force: true })))
 })
 
 async function write(path, contents) {
@@ -28,33 +36,27 @@ function cleanEnv() {
   return env
 }
 
-function omoSenpiDist() {
-  const { existsSync, realpathSync } = require("node:fs")
-  const { dirname: dname, join: pjoin } = require("node:path")
-  const which = Bun.which("omo")
-  if (which) {
-    try {
-      const real = realpathSync(which)
-      const pkgRoot = dname(dname(real))
-      const cand = pjoin(pkgRoot, "node_modules", "@code-yeongyu", "senpi", "dist")
-      if (existsSync(join(cand, "core", "resource-loader.js"))) return cand
-      const direct = pjoin(dname(real), "..", "node_modules", "@code-yeongyu", "senpi", "dist")
-      void direct
-    } catch {}
-  }
-  try {
-    const { execFileSync } = require("node:child_process")
-    const npmRoot = execFileSync("npm", ["root", "-g"], { encoding: "utf8" }).trim()
-    const cand = join(npmRoot, "omo-ai", "node_modules", "@code-yeongyu", "senpi", "dist")
-    if (require("node:fs").existsSync(join(cand, "core", "resource-loader.js"))) return cand
-  } catch {}
-  throw new Error("omo senpi dist not found")
+async function npmRoot() {
+  const child = Bun.spawn(["npm", "root", "-g"], { stdout: "pipe", stderr: "pipe" })
+  const [stdout, stderr, exitCode] = await Promise.all([
+    new Response(child.stdout).text(),
+    new Response(child.stderr).text(),
+    child.exited,
+  ])
+  if (exitCode !== 0 || !stdout.trim()) throw new Error(`npm root -g failed: ${stderr}`)
+  return stdout.trim()
 }
 
 async function dryRun({ home, agentDir, bundled, args = [], cwd }) {
   const child = Bun.spawn(["bash", launch, ...args], {
     cwd: cwd ?? process.cwd(),
-    env: { ...cleanEnv(), HOME: home, OMO_CODING_AGENT_DIR: agentDir, OMO_BUNDLED_SKILLS_DIR: bundled, OMO_LAUNCH_DRY_RUN: "1" },
+    env: {
+      ...cleanEnv(),
+      HOME: home,
+      OMO_CODING_AGENT_DIR: agentDir,
+      OMO_BUNDLED_SKILLS_DIR: bundled,
+      OMO_LAUNCH_DRY_RUN: "1",
+    },
     stdout: "pipe",
     stderr: "pipe",
   })
@@ -67,42 +69,161 @@ async function dryRun({ home, agentDir, bundled, args = [], cwd }) {
 }
 
 function argv(stdout) {
-  return stdout.split("\n").filter((l) => l.startsWith("arg: ")).map((l) => l.slice(5))
+  return stdout.split("\n").filter((line) => line.startsWith("arg: ")).map((line) => line.slice(5))
+}
+
+function explicitSkills(args) {
+  const paths = []
+  for (let index = 0; index < args.length; index++) {
+    if (args[index] === "--skill") paths.push(args[++index])
+  }
+  return paths
 }
 
 async function freshRoot() {
-  const r = await mkdtemp(join(tmpdir(), "omo isolation "))
-  cleanup.push(r)
-  return r
+  const root = await mkdtemp(join(tmpdir(), "omo isolation "))
+  cleanup.push(root)
+  return root
 }
 
-test("launcher passes only library+native+bundled+active skills, never disables extensions", async () => {
+async function loadProductionSettings(home) {
+  const source = await readFile(new URL("./agent/settings.json", import.meta.url), "utf8")
+  return JSON.parse(source.replaceAll("__OMO_HOME__", home))
+}
+
+test("production manifest selects only native OMO and filtered Ponytail resources", async () => {
+  const settings = await loadProductionSettings("/fixture-home")
+  expect(settings.skills).toEqual([
+    "!/fixture-home/.agents/skills/**",
+    "!/fixture-home/.claude/skills/**",
+    "!caveman-*",
+    "!cavecrew",
+  ])
+  expect(settings.packages).toContainEqual({
+    source: "npm:@dietrichgebert/ponytail@4.9.0",
+    skills: ["!caveman-*", "!cavecrew"],
+  })
+  expect(settings.packages).toContainEqual({
+    source: "git:github.com/code-yeongyu/pi-comment-checker@0a38dd8ff362be1b6020f2baba7b5723cbc5ea76",
+    extensions: [],
+  })
+
+  const manifest = JSON.parse(await readFile(new URL("./restore.json", import.meta.url), "utf8"))
+  expect(manifest).not.toHaveProperty("skillSource")
+  expect(manifest.resources).toContainEqual({
+    source: "agent/extensions/comment-checker.js",
+    target: ".omo/agent/extensions/comment-checker.js",
+  })
+})
+
+test("installed DefaultResourceLoader resolves native OMO and six Ponytail skills without imported or Caveman skills", async () => {
   const root = await freshRoot()
   const home = join(root, "home")
   const agentDir = join(home, ".omo", "agent")
-  const bundled = join(root, "bundled", "skills")
-  await mkdir(join(agentDir, "skill-library", "codex"), { recursive: true })
-  await mkdir(join(agentDir, "skill-library", "shared"), { recursive: true })
-  await mkdir(join(agentDir, "skills", "native-own"), { recursive: true })
-  await mkdir(join(bundled, "bundled-own"), { recursive: true })
-  const activeSkills = join(agentDir, "npm", "node_modules", "@dietrichgebert", "ponytail", "skills")
-  const disabledSkills = join(agentDir, "npm", "node_modules", "disabled-pkg", "skills")
-  await mkdir(join(activeSkills, "ponytail"), { recursive: true })
-  await mkdir(join(disabledSkills, "ghost"), { recursive: true })
-  await write(join(agentDir, "settings.json"), JSON.stringify({ packages: ["npm:@dietrichgebert/ponytail@4.9.0"] }))
+  const project = join(root, "project")
+  const globalRoot = await npmRoot()
+  const dist = join(globalRoot, "omo-ai", "node_modules", "@code-yeongyu", "senpi", "dist")
+  const bundled = join(globalRoot, "omo-ai", "plugin", "skills")
+  const installedPonytail = join(process.env.HOME, ".omo", "agent", "npm", "node_modules", "@dietrichgebert", "ponytail")
+  const fixturePonytail = join(agentDir, "npm", "node_modules", "@dietrichgebert", "ponytail")
 
-  const r = await dryRun({ home, agentDir, bundled, args: ["--print", "hi"] })
-  expect(r.exitCode).toBe(0)
-  const args = argv(r.stdout)
+  await mkdir(project, { recursive: true })
+  await cp(installedPonytail, fixturePonytail, { recursive: true })
+  await skill(join(agentDir, "skills", "native-omo-fixture"), "native-omo-fixture")
+  await skill(join(agentDir, "skills", "caveman-native"), "caveman-native")
+  await skill(join(agentDir, "skills", "cavecrew"), "cavecrew")
+  await skill(join(agentDir, "skill-library", "codex", "imported-codex"), "imported-codex")
+  await skill(join(agentDir, "skill-library", "shared", "imported-shared"), "imported-shared")
+  await skill(join(fixturePonytail, "skills", "caveman-package"), "caveman-package")
+  await skill(join(fixturePonytail, "skills", "cavecrew"), "cavecrew")
+  await skill(join(home, ".agents", "skills", "external-agents"), "external-agents")
+  await skill(join(home, ".claude", "skills", "external-claude"), "external-claude")
+
+  const settings = await loadProductionSettings(home)
+  settings.packages = settings.packages.filter((entry) => {
+    const source = typeof entry === "string" ? entry : entry.source
+    return source.startsWith("npm:@dietrichgebert/ponytail@")
+  })
+  await write(join(agentDir, "settings.json"), `${JSON.stringify(settings, null, 2)}\n`)
+
+  const dry = await dryRun({ home, agentDir, bundled, args: ["--print", "fixture"], cwd: project })
+  expect(dry.exitCode).toBe(0)
+  const args = argv(dry.stdout)
   expect(args).toContain("--no-skills")
-  expect(args).toContain(join(agentDir, "skill-library", "codex"))
-  expect(args).toContain(join(agentDir, "skill-library", "shared"))
-  expect(args).toContain(join(agentDir, "skills"))
-  expect(args).toContain(bundled)
-  expect(args).toContain(activeSkills)
-  expect(args.join("\n")).not.toContain("disabled-pkg")
   expect(args).not.toContain("--no-extensions")
-  expect(args.slice(-2)).toEqual(["--print", "hi"])
+  expect(args.slice(-2)).toEqual(["--print", "fixture"])
+  const explicit = explicitSkills(args)
+  expect(explicit.length).toBeGreaterThan(0)
+  for (const path of explicit) {
+    expect(path).not.toMatch(/[/\\]skill-library[/\\](?:codex|shared)(?:[/\\]|$)/)
+    expect(basename(path)).not.toMatch(/^(?:caveman(?:-|$)|cavecrew$)/)
+  }
+
+  const expectedBundled = (await readdir(bundled, { withFileTypes: true }))
+    .filter((entry) => entry.isDirectory())
+    .map((entry) => join(bundled, entry.name, "SKILL.md"))
+    .filter((path) => Bun.file(path).size > 0)
+    .map((path) => resolve(path))
+    .sort()
+
+  const driver = join(root, "resolve.mjs")
+  await write(driver, `
+import { DefaultResourceLoader } from ${JSON.stringify("file://" + join(dist, "core", "resource-loader.js"))};
+import { SettingsManager } from ${JSON.stringify("file://" + join(dist, "core", "settings-manager.js"))};
+const agentDir = ${JSON.stringify(agentDir)};
+const cwd = ${JSON.stringify(project)};
+const explicit = ${JSON.stringify(explicit)};
+async function load(noSkills, additionalSkillPaths) {
+  const settingsManager = SettingsManager.create(cwd, agentDir, { projectTrusted: false });
+  await settingsManager.reload();
+  const loader = new DefaultResourceLoader({
+    cwd, agentDir, settingsManager, additionalSkillPaths, noSkills,
+    noExtensions: true, noPromptTemplates: true, noThemes: true, noContextFiles: true,
+  });
+  await loader.reload({ settingsAlreadyReloadedFor: settingsManager });
+  const result = loader.getSkills();
+  return { diagnostics: result.diagnostics, skills: result.skills.map(({ name, filePath }) => ({ name, filePath })) };
+}
+process.stdout.write("RESULT " + JSON.stringify({
+  raw: await load(false, []),
+  launched: await load(true, explicit),
+}) + "\\n");
+`)
+  const child = Bun.spawn([process.execPath, driver], {
+    env: { ...cleanEnv(), HOME: home, OMO_CODING_AGENT_DIR: agentDir },
+    stdout: "pipe",
+    stderr: "pipe",
+  })
+  const [stdout, stderr, exitCode] = await Promise.all([
+    new Response(child.stdout).text(),
+    new Response(child.stderr).text(),
+    child.exited,
+  ])
+  if (exitCode !== 0) throw new Error(`resolver failed: ${stdout}${stderr}`)
+  const resultLine = stdout.split("\n").find((line) => line.startsWith("RESULT "))
+  if (!resultLine) throw new Error(`resolver missing RESULT: ${stdout}${stderr}`)
+  const results = JSON.parse(resultLine.slice(7))
+
+  for (const [label, result] of Object.entries(results)) {
+    expect(result.diagnostics).toEqual([])
+    const names = result.skills.map((entry) => entry.name)
+    expect(names).toContain("native-omo-fixture")
+    for (const forbidden of [
+      "caveman-native", "caveman-package", "cavecrew", "imported-codex", "imported-shared",
+      "external-agents", "external-claude",
+    ]) expect(names).not.toContain(forbidden)
+    const packageNames = result.skills
+      .filter((entry) => resolve(entry.filePath).startsWith(`${resolve(join(fixturePonytail, "skills"))}/`))
+      .map((entry) => entry.name)
+      .sort()
+    expect(packageNames, label).toEqual([...ponytailNames].sort())
+  }
+
+  const launchedBundled = results.launched.skills
+    .map((entry) => resolve(entry.filePath))
+    .filter((path) => path.startsWith(`${resolve(bundled)}/`))
+    .sort()
+  expect(launchedBundled).toEqual(expectedBundled)
 })
 
 test("launcher loads owned Argent rule explicitly when present, omits when absent", async () => {
@@ -117,10 +238,10 @@ test("launcher loads owned Argent rule explicitly when present, omits when absen
 
   const withRule = await dryRun({ home, agentDir, bundled })
   expect(withRule.exitCode).toBe(0)
-  const a1 = argv(withRule.stdout)
-  const i = a1.indexOf("--append-system-prompt")
-  expect(i).toBeGreaterThan(-1)
-  expect(a1[i + 1]).toBe(join(agentDir, "rules", "argent.md"))
+  const withArgs = argv(withRule.stdout)
+  const index = withArgs.indexOf("--append-system-prompt")
+  expect(index).toBeGreaterThan(-1)
+  expect(withArgs[index + 1]).toBe(join(agentDir, "rules", "argent.md"))
 
   await rm(join(agentDir, "rules", "argent.md"), { force: true })
   const withoutRule = await dryRun({ home, agentDir, bundled })
@@ -133,107 +254,34 @@ test("launcher rejects Claude MCP import globally and in project, fail closed", 
   const home = join(root, "home")
   const agentDir = join(home, ".omo", "agent")
   const bundled = join(root, "bundled")
-  const project = join(root, "proj")
+  const project = join(root, "project")
   await mkdir(agentDir, { recursive: true })
   await mkdir(bundled, { recursive: true })
   await mkdir(project, { recursive: true })
   await write(join(agentDir, "settings.json"), JSON.stringify({ packages: [] }))
 
   await write(join(agentDir, "mcp.json"), JSON.stringify({ settings: { importConfigs: ["claude"] } }))
-  const badGlobal = Bun.spawn(["bash", launch, "--help"], {
-    cwd: project,
-    env: { ...cleanEnv(), HOME: home, OMO_CODING_AGENT_DIR: agentDir, OMO_BUNDLED_SKILLS_DIR: bundled },
-    stdout: "pipe",
-    stderr: "pipe",
-  })
-  const [gsOut, gsErr, gsCode] = await Promise.all([
-    new Response(badGlobal.stdout).text(),
-    new Response(badGlobal.stderr).text(),
-    badGlobal.exited,
-  ])
-  expect(gsCode).not.toBe(0)
-  expect(gsErr).toContain("Claude MCP")
-  expect(gsOut).not.toContain("Usage:")
+  const badGlobal = await dryRun({ home, agentDir, bundled, cwd: project })
+  expect(badGlobal.exitCode).not.toBe(0)
+  expect(badGlobal.stderr).toContain("Claude MCP")
 
   await rm(join(agentDir, "mcp.json"), { force: true })
   await write(join(project, ".omo", "mcp.json"), JSON.stringify({ settings: { importConfigs: ["claude"] } }))
-  const badProject = Bun.spawn(["bash", launch, "--help"], {
-    cwd: project,
-    env: { ...cleanEnv(), HOME: home, OMO_CODING_AGENT_DIR: agentDir, OMO_BUNDLED_SKILLS_DIR: bundled },
-    stdout: "pipe",
-    stderr: "pipe",
-  })
-  const [psOut, psErr, psCode] = await Promise.all([
-    new Response(badProject.stdout).text(),
-    new Response(badProject.stderr).text(),
-    badProject.exited,
-  ])
-  expect(psCode).not.toBe(0)
-  expect(psErr).toContain("Claude MCP")
-  expect(psOut).not.toContain("Usage:")
+  const badProject = await dryRun({ home, agentDir, bundled, cwd: project })
+  expect(badProject.exitCode).not.toBe(0)
+  expect(badProject.stderr).toContain("Claude MCP")
 })
 
-test("fresh loader without launcher leaks agents skills; launcher list is green", async () => {
-  const root = await freshRoot()
-  const home = join(root, "home")
-  const agentDir = join(home, ".omo", "agent")
-  await skill(join(home, ".agents", "skills", "fake-agents-sentinel"), "fake-agents-sentinel")
-  await skill(join(agentDir, "skill-library", "codex", "own-codex"), "own-codex")
-  await skill(join(agentDir, "skill-library", "shared", "own-shared"), "own-shared")
-  await skill(join(root, "bundled", "skills", "bundled-own"), "bundled-own")
-  await skill(join(agentDir, "npm", "node_modules", "@dietrichgebert", "ponytail", "skills", "ponytail"), "ponytail")
-  await write(join(agentDir, "settings.json"), JSON.stringify({ packages: ["npm:@dietrichgebert/ponytail@4.9.0"] }))
-  const project = join(root, "proj")
-  await mkdir(project, { recursive: true })
-
-  const dist = omoSenpiDist()
-  const driver = join(root, "resolve.mjs")
-  await write(driver, `
-import { DefaultResourceLoader } from ${JSON.stringify("file://" + join(dist, "core", "resource-loader.js"))};
-import { SettingsManager } from ${JSON.stringify("file://" + join(dist, "core", "settings-manager.js"))};
-const agentDir = ${JSON.stringify(agentDir)};
-const cwd = ${JSON.stringify(project)};
-const explicit = ${JSON.stringify([join(agentDir, "skill-library", "codex"), join(agentDir, "skill-library", "shared"), join(root, "bundled", "skills"), join(agentDir, "npm", "node_modules", "@dietrichgebert", "ponytail", "skills")])};
-async function load({ noSkills, extra }) {
-  const sm = SettingsManager.create(cwd, agentDir, { projectTrusted: false });
-  await sm.reload();
-  const loader = new DefaultResourceLoader({ cwd, agentDir, settingsManager: sm, additionalSkillPaths: extra, noSkills, noExtensions: false, noPromptTemplates: true, noThemes: true, noContextFiles: true });
-  await loader.reload();
-  return loader.getSkills().skills.map((s) => s.name).sort();
-}
-const leaky = await load({ noSkills: false, extra: [] });
-const clean = await load({ noSkills: true, extra: explicit });
-process.stdout.write("RESULT " + JSON.stringify({ leaky, clean }) + "\\n");
-`)
-  const child = Bun.spawn([process.execPath, driver], {
-    env: { ...cleanEnv(), HOME: home, OMO_CODING_AGENT_DIR: agentDir },
-    stdout: "pipe",
-    stderr: "pipe",
-  })
-  const [stdout, stderr, exitCode] = await Promise.all([
-    new Response(child.stdout).text(),
-    new Response(child.stderr).text(),
-    child.exited,
-  ])
-  if (exitCode !== 0) throw new Error(`resolver failed: ${stdout}${stderr}`)
-  const line = stdout.split("\n").find((l) => l.startsWith("RESULT "))
-  if (!line) throw new Error(`resolver missing RESULT: ${stdout}${stderr}`)
-  const { leaky, clean } = JSON.parse(line.slice(7))
-  expect(leaky).toContain("fake-agents-sentinel")
-  for (const n of ["own-codex", "own-shared", "bundled-own", "ponytail"]) expect(clean).toContain(n)
-  expect(clean).not.toContain("fake-agents-sentinel")
-})
-
-test("real launcher executes omo --help from sentinel project (no model)", async () => {
+test("real launcher executes omo --help from a fixture project without a model call", async () => {
   const root = await freshRoot()
   const home = join(root, "home")
   const agentDir = join(home, ".omo", "agent")
   const bundled = join(root, "bundled")
-  const project = join(root, "proj")
-  await mkdir(join(agentDir, "skill-library", "codex"), { recursive: true })
+  const project = join(root, "project")
+  await mkdir(agentDir, { recursive: true })
   await mkdir(bundled, { recursive: true })
-  await write(join(agentDir, "settings.json"), JSON.stringify({ packages: [] }))
   await mkdir(project, { recursive: true })
+  await write(join(agentDir, "settings.json"), JSON.stringify({ packages: [] }))
   const child = Bun.spawn(["bash", launch, "--help"], {
     cwd: project,
     env: { ...cleanEnv(), HOME: home, OMO_CODING_AGENT_DIR: agentDir, OMO_BUNDLED_SKILLS_DIR: bundled },
@@ -248,18 +296,4 @@ test("real launcher executes omo --help from sentinel project (no model)", async
   expect(exitCode).toBe(0)
   expect(stdout).toContain("Usage:")
   expect(stderr).not.toContain("Claude MCP")
-})
-
-test("live skill-library counts, settings paths, and Argent file exist (no prose asserts)", async () => {
-  const home = process.env.HOME ?? ""
-  const codex = await readdir(join(home, ".omo", "agent", "skill-library", "codex"))
-  const shared = await readdir(join(home, ".omo", "agent", "skill-library", "shared"))
-  expect(codex.length).toBe(30)
-  expect(shared.length).toBe(66)
-  const settings = JSON.parse(await (await Bun.file(join(home, ".omo", "agent", "settings.json")).text()))
-  expect(Array.isArray(settings.skills)).toBe(true)
-  expect(settings.skills).toContain(join(home, ".omo", "agent", "skill-library", "codex"))
-  expect(settings.skills).toContain(join(home, ".omo", "agent", "skill-library", "shared"))
-  const st = await stat(join(home, ".omo", "agent", "rules", "argent.md"))
-  expect(st.size).toBeGreaterThan(0)
 })

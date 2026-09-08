@@ -9,9 +9,15 @@
   "defaultModel": "gpt-6-astra",
   "defaultThinkingLevel": "medium",
   "packages": [
-    "npm:@dietrichgebert/ponytail@4.9.0",
+    {
+      "source": "npm:@dietrichgebert/ponytail@4.9.0",
+      "skills": ["!caveman-*", "!cavecrew"]
+    },
     "npm:@code-yeongyu/comment-checker@0.8.0",
-    "git:github.com/code-yeongyu/pi-comment-checker@0a38dd8ff362be1b6020f2baba7b5723cbc5ea76"
+    {
+      "source": "git:github.com/code-yeongyu/pi-comment-checker@0a38dd8ff362be1b6020f2baba7b5723cbc5ea76",
+      "extensions": []
+    }
   ],
   "warnings": {
     "anthropicExtraUsage": false
@@ -37,10 +43,10 @@
     "opencode-go/glm-5.3": "max"
   },
   "skills": [
-    "__OMO_HOME__/.omo/agent/skill-library/codex",
-    "__OMO_HOME__/.omo/agent/skill-library/shared",
     "!__OMO_HOME__/.agents/skills/**",
-    "!__OMO_HOME__/.claude/skills/**"
+    "!__OMO_HOME__/.claude/skills/**",
+    "!caveman-*",
+    "!cavecrew"
   ],
   "permission": {
     "*": "allow"

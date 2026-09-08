@@ -2,47 +2,7 @@
   "omoVersion": "5.0.0-0.beta.48",
   "builtinExtensions": ["tps", "prompt-url-widget", "files", "diff"],
   "resources": [
-    { "source": "rules", "target": ".omo/agent/rules" }
-  ],
-  "skillSource": {
-    "repository": "https://github.com/aslaii/dotfiles.git",
-    "commit": "a2ab0135829a04dcd8dcc5354a7c09ba6b2161bc",
-    "tree": "4d7f2eadf5cb842792eeb9af0770daa3a6557a2d",
-    "prefix": "omo/skills",
-    "snapshots": [
-      {
-        "source": "codex",
-        "target": ".omo/agent/skill-library/codex",
-        "excluded": ["academic-research-suite"]
-      },
-      {
-        "source": "shared",
-        "target": ".omo/agent/skill-library/shared",
-        "excluded": [
-          "best-practices",
-          "blaxel-cli",
-          "blaxel-sdk",
-          "browser",
-          "code-optimizer",
-          "debug-like-expert",
-          "gsap-core",
-          "gsap-frameworks",
-          "gsap-performance",
-          "gsap-plugins",
-          "gsap-react",
-          "gsap-scrolltrigger",
-          "gsap-timeline",
-          "gsap-utils",
-          "gws-sheets",
-          "make-interfaces-feel-better",
-          "n8n-workflow-patterns",
-          "slack-web-api",
-          "telegram",
-          "use-runway-api",
-          "userinterface-wiki",
-          "web-quality-audit"
-        ]
-      }
-    ]
-  }
+    { "source": "rules", "target": ".omo/agent/rules" },
+    { "source": "agent/extensions/comment-checker.js", "target": ".omo/agent/extensions/comment-checker.js" }
+  ]
 }
