@@ -28,19 +28,23 @@
     "openai-codex/gpt-6-astra",
     "opencode/muse-spark-1.3-contributor-free",
     "openai-codex/gpt-5.6-sol",
-    "anthropic/claude-haiku-4-5",
-    "anthropic/claude-sonnet-5",
-    "opencode-go/glm-5.3"
+    "opencode-go/glm-5.3",
+    "claude-sdk-oauth/claude-haiku-4-5",
+    "claude-sdk-oauth/claude-sonnet-5",
+    "openai-codex/gpt-5.6-luna-fast",
+    "openai-codex/gpt-5.6-terra"
   ],
   "modelThinkingLevels": {
-    "anthropic/claude-opus-5": "medium",
     "openai-codex/gpt-5.6-sol": "high",
     "google/gemini-3.1-pro-preview": "low",
     "openai-codex/gpt-5.6-sol-fast": "high",
-    "anthropic/claude-sonnet-5": "high",
     "openai-codex/gpt-6-astra": "medium",
     "opencode/muse-spark-1.3-contributor-free": "xhigh",
-    "opencode-go/glm-5.3": "max"
+    "opencode-go/glm-5.3": "max",
+    "claude-sdk-oauth/claude-haiku-4-5": "low",
+    "claude-sdk-oauth/claude-sonnet-5": "medium",
+    "openai-codex/gpt-5.6-luna-fast": "low",
+    "openai-codex/gpt-5.6-terra": "medium"
   },
   "skills": [
     "!__OMO_HOME__/.agents/skills/**",
@@ -56,17 +60,21 @@
     "opencode/muse-spark-1.3-contributor-free",
     "openai-codex/gpt-5.6-sol",
     "openai-codex/gpt-5.6-sol-fast",
-    "anthropic/claude-haiku-4-5",
-    "anthropic/claude-sonnet-5",
     "openai-codex/gpt-5.4-mini",
-    "opencode-go/glm-5.3"
+    "opencode-go/glm-5.3",
+    "claude-sdk-oauth/claude-haiku-4-5",
+    "claude-sdk-oauth/claude-sonnet-5",
+    "openai-codex/gpt-5.6-luna-fast",
+    "openai-codex/gpt-5.6-terra"
   ],
   "terminal": {
     "showTerminalProgress": false
   },
   "uiMode": "fullscreen",
   "modelServiceTiers": {
-    "openai-codex/gpt-5.6-sol": "priority"
+    "openai-codex/gpt-5.6-sol": "auto",
+    "openai-codex/gpt-5.6-luna-fast": "priority",
+    "openai-codex/gpt-6-astra": "auto"
   },
   "recommendedModels": [
     "gpt-6-astra",
@@ -76,44 +84,48 @@
   "retry": {
     "enabled": true,
     "modelFallback": true,
-    "fallbackRevertPolicy": "never",
+    "fallbackRevertPolicy": "cooldown-expiry",
     "fallbackChains": {
       "openai-codex/gpt-6-astra": [
-        "openai-codex/gpt-5.6-sol:high",
         "opencode/muse-spark-1.3-contributor-free:xhigh",
-        "openai-codex/gpt-5.4-mini:low"
-      ],
-      "openai-codex/gpt-5.6-sol": [
-        "opencode/muse-spark-1.3-contributor-free:xhigh",
-        "openai-codex/gpt-5.4-mini:low"
-      ],
-      "openai-codex/gpt-5.6-sol-fast": [
-        "openai-codex/gpt-5.6-sol:high",
-        "opencode/muse-spark-1.3-contributor-free:xhigh",
-        "openai-codex/gpt-5.4-mini:low"
-      ],
-      "anthropic/claude-haiku-4-5": [
-        "opencode/muse-spark-1.3-contributor-free:xhigh",
-        "openai-codex/gpt-5.4-mini:low"
-      ],
-      "anthropic/claude-sonnet-5": [
-        "openai-codex/gpt-5.6-sol:high",
-        "opencode/muse-spark-1.3-contributor-free:xhigh",
-        "openai-codex/gpt-5.4-mini:low"
-      ],
-      "openai-codex/gpt-5.4-mini": [],
-      "openai-codex/gpt-5.5": [
-        "openai-codex/gpt-5.6-sol:high",
-        "opencode/muse-spark-1.3-contributor-free:xhigh",
-        "openai-codex/gpt-5.4-mini:low"
+        "claude-sdk-oauth/claude-sonnet-5:high",
+        "openai-codex/gpt-5.6-terra:high",
+        "openai-codex/gpt-5.6-sol:high"
       ],
       "opencode/muse-spark-1.3-contributor-free": [
-        "openai-codex/gpt-5.4-mini:low"
+        "claude-sdk-oauth/claude-sonnet-5:medium",
+        "openai-codex/gpt-5.6-terra:medium"
+      ],
+      "claude-sdk-oauth/claude-haiku-4-5": [
+        "openai-codex/gpt-5.6-luna-fast:low"
+      ],
+      "openai-codex/gpt-5.6-luna-fast": [],
+      "claude-sdk-oauth/claude-sonnet-5": [
+        "openai-codex/gpt-5.6-terra:high",
+        "openai-codex/gpt-5.6-sol:high"
+      ],
+      "openai-codex/gpt-5.6-terra": [
+        "openai-codex/gpt-5.6-sol:high"
+      ],
+      "openai-codex/gpt-5.6-sol": [],
+      "openai-codex/gpt-5.6-sol-fast": [
+        "openai-codex/gpt-5.6-sol:high"
+      ],
+      "openai-codex/gpt-5.4-mini": [
+        "openai-codex/gpt-5.6-luna-fast:low"
+      ],
+      "openai-codex/gpt-5.5": [
+        "openai-codex/gpt-5.6-terra:high",
+        "openai-codex/gpt-5.6-sol:high"
       ],
       "opencode-go/glm-5.3": [
         "opencode/muse-spark-1.3-contributor-free:xhigh",
-        "openai-codex/gpt-5.4-mini:low"
+        "claude-sdk-oauth/claude-sonnet-5:medium",
+        "openai-codex/gpt-5.6-terra:medium"
       ]
     }
+  },
+  "claudeSdkOauthProvider": {
+    "enabled": true
   }
 }

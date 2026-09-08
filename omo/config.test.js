@@ -1,6 +1,17 @@
 import { expect, test } from "bun:test";
 import { readFile } from "node:fs/promises";
 
+test("default and all profiles allow eight concurrent children", async () => {
+  const config = Bun.JSONC.parse(await readFile(new URL("./omo.jsonc", import.meta.url), "utf8"));
+  for (const profile of [{}, ...Object.values(config.profiles)]) {
+    const task = { ...config["[senpi]"].task, ...profile["[senpi]"]?.task };
+    expect(task.default_concurrency).toBe(8);
+    expect(task.global_concurrency).toBe(8);
+    expect(task.residency_max_children).toBe(8);
+    expect(task.team.max_parallel_members).toBe(8);
+  }
+});
+
 test("fast profile keeps routes and reasoning, with GPT immediately after Claude", async () => {
   const config = Bun.JSONC.parse(await readFile(new URL("./omo.jsonc", import.meta.url), "utf8"));
   const base = config["[senpi]"];
@@ -52,7 +63,7 @@ test("planning roles use Astra at maximum reasoning in every profile", async () 
   }
 });
 
-test("main uses medium while Muse replaces Terra and Luna throughout routing", async () => {
+test("approved fallback policy is uniform across base and profile routes", async () => {
   const config = Bun.JSONC.parse(
     await readFile(new URL("./omo.jsonc", import.meta.url), "utf8"),
   );
@@ -60,6 +71,27 @@ test("main uses medium while Muse replaces Terra and Luna throughout routing", a
     await readFile(new URL("./agent/settings.json", import.meta.url), "utf8"),
   );
   const muse = "opencode/muse-spark-1.3-contributor-free";
+  const haiku = "claude-sdk-oauth/claude-haiku-4-5";
+  const sonnet = "claude-sdk-oauth/claude-sonnet-5";
+  const luna = "openai-codex/gpt-5.6-luna-fast";
+  const terra = "openai-codex/gpt-5.6-terra";
+  const sol = "openai-codex/gpt-5.6-sol";
+  const cheap = [
+    { model: muse, reasoning: "xhigh" },
+    { model: haiku, reasoning: "low" },
+    { model: luna, reasoning: "low" },
+  ];
+  const general = [
+    { model: muse, reasoning: "xhigh" },
+    { model: sonnet, reasoning: "medium" },
+    { model: terra, reasoning: "medium" },
+  ];
+  const deep = [
+    { model: muse, reasoning: "xhigh" },
+    { model: sonnet, reasoning: "high" },
+    { model: terra, reasoning: "high" },
+    { model: sol, reasoning: "high" },
+  ];
   for (const section of [
     config["[senpi]"],
     ...Object.values(config.profiles).map((profile) => profile["[senpi]"]),
@@ -68,18 +100,53 @@ test("main uses medium while Muse replaces Terra and Luna throughout routing", a
       model: "openai-codex/gpt-6-astra",
       reasoning: "medium",
     });
+    for (const category of ["quick", "git"]) {
+      expect(section.categories[category].models).toEqual(cheap);
+    }
+    for (const category of ["unspecified-low", "artistry", "writing", "visual-engineering"]) {
+      expect(section.categories[category].models).toEqual(general);
+    }
+    for (const category of ["unspecified-high", "architect", "deep", "ultrabrain"]) {
+      expect(section.categories[category].models).toEqual(deep);
+    }
+    for (const agent of ["explore", "librarian"]) {
+      expect(section.agents[agent].models).toEqual(cheap);
+    }
+    expect(section.agents.oracle.models).toEqual(deep);
+    expect(section.agents.momus.models).toEqual(deep);
+    expect(section.agents.metis.models).toEqual([
+      { model: "openai-codex/gpt-6-astra", reasoning: "max" },
+      ...deep,
+    ]);
+    expect(section.agents["multimodal-looker"].models).toEqual(general);
+    expect(section.models.hephaestus).toEqual({ model: muse, reasoning: "xhigh" });
   }
-  expect(config["[senpi]"].categories.deep.models[0]).toEqual({
-    model: muse,
-    reasoning: "xhigh",
-  });
   expect(settings.defaultThinkingLevel).toBe("medium");
   expect(settings.modelThinkingLevels["openai-codex/gpt-6-astra"]).toBe("medium");
   expect(settings.modelThinkingLevels[muse]).toBe("xhigh");
-  expect(settings.enabledModels).toContain(muse);
+  expect(settings.claudeSdkOauthProvider.enabled).toBe(true);
+  for (const model of [muse, haiku, sonnet, luna, terra, sol]) {
+    expect(settings.enabledModels).toContain(model);
+  }
   expect(settings.enabledModels).toContain("opencode-go/glm-5.3");
   expect(settings.modelThinkingLevels["opencode-go/glm-5.3"]).toBe("max");
-  expect(JSON.stringify({ config, settings })).not.toMatch(/gpt-5\.6-(terra|luna)/);
+  expect(settings.modelServiceTiers).toMatchObject({
+    [luna]: "priority",
+    [sol]: "auto",
+    "openai-codex/gpt-6-astra": "auto",
+  });
+  expect(settings.retry.fallbackRevertPolicy).toBe("cooldown-expiry");
+  expect(settings.retry.fallbackChains[muse]).toEqual([
+    `${sonnet}:medium`,
+    `${terra}:medium`,
+  ]);
+  expect(settings.retry.fallbackChains[haiku]).toEqual([`${luna}:low`]);
+  expect(settings.retry.fallbackChains[sonnet]).toEqual([
+    `${terra}:high`,
+    `${sol}:high`,
+  ]);
+  expect(settings.retry.fallbackChains[terra]).toEqual([`${sol}:high`]);
+  expect(JSON.stringify({ config, settings })).not.toContain('"anthropic/');
   for (const [primary, fallbacks] of Object.entries(settings.retry.fallbackChains)) {
     const models = fallbacks.map((entry) => entry.replace(/:[^:]+$/, ""));
     expect(models).not.toContain(primary);
