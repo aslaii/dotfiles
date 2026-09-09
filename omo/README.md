@@ -71,14 +71,18 @@ bun ~/dotfiles/omo/restore.mjs --home "/tmp/omo test home" --skip-packages
 | Role | Model | Reasoning |
 |---|---|---|
 | Main / Sisyphus | GPT-6 Astra | `medium` |
-| Planner, Prometheus, Metis, Atlas | GPT-6 Astra | `max` |
-| Former Terra/Luna selections and fallbacks | Muse Spark 1.3 Contributor Free | `xhigh` |
+| Planner, Prometheus, Atlas | GPT-6 Astra | `max` |
+| Quick, Git, Explore, Librarian | Claude Haiku 4.5 | `low` |
+| Other subagents, including Metis | Claude Sonnet 5 | `medium` or `high` |
+| First subagent fallback | Muse Spark 1.3 Contributor Free | `xhigh` |
+| Final subagent fallback | GPT Luna Fast, Terra, or Sol | Per route |
 | Optional manual selection | GLM-5.3 through OpenCode Go | `max` |
 
-These choices apply across the default, GPT, Claude, and mixed profiles.
-Other Claude work remains on Sonnet 5 or Haiku 4.5. Existing Sol and Mini
-fallbacks remain; replacement chains are deduplicated and do not fall back to
-themselves.
+These choices apply across the default, fast, GPT, Claude, and mixed profiles.
+Every category and named subagent uses Claude, then Muse, then GPT.
+Subagent routes contain no Astra entry or duplicate Muse fallback.
+Claude session fallbacks also put Muse before GPT. Muse falls back to GPT,
+not Claude. Main and planning mode selections remain unchanged.
 
 `max` is a distinct Astra level above `xhigh`, confirmed by the
 [OpenAI model reference](https://developers.openai.com/api/docs/models/gpt-6-astra).

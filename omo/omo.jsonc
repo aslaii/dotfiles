@@ -18,10 +18,6 @@
           {
             "model": "openai-codex/gpt-5.6-luna-fast",
             "reasoning": "low"
-          },
-          {
-            "model": "opencode/muse-spark-1.3-contributor-free",
-            "reasoning": "xhigh"
           }
         ]
       },
@@ -38,19 +34,11 @@
           {
             "model": "openai-codex/gpt-5.6-terra",
             "reasoning": "medium"
-          },
-          {
-            "model": "opencode/muse-spark-1.3-contributor-free",
-            "reasoning": "xhigh"
           }
         ]
       },
       "unspecified-high": {
         "models": [
-          {
-            "model": "openai-codex/gpt-6-astra",
-            "reasoning": "high"
-          },
           {
             "model": "claude-sdk-oauth/claude-sonnet-5",
             "reasoning": "high"
@@ -62,10 +50,6 @@
           {
             "model": "openai-codex/gpt-5.6-sol",
             "reasoning": "high"
-          },
-          {
-            "model": "opencode/muse-spark-1.3-contributor-free",
-            "reasoning": "xhigh"
           }
         ]
       },
@@ -82,10 +66,6 @@
           {
             "model": "openai-codex/gpt-5.6-terra",
             "reasoning": "medium"
-          },
-          {
-            "model": "opencode/muse-spark-1.3-contributor-free",
-            "reasoning": "xhigh"
           }
         ]
       },
@@ -102,10 +82,6 @@
           {
             "model": "openai-codex/gpt-5.6-terra",
             "reasoning": "medium"
-          },
-          {
-            "model": "opencode/muse-spark-1.3-contributor-free",
-            "reasoning": "xhigh"
           }
         ]
       },
@@ -122,10 +98,6 @@
           {
             "model": "openai-codex/gpt-5.6-terra",
             "reasoning": "medium"
-          },
-          {
-            "model": "opencode/muse-spark-1.3-contributor-free",
-            "reasoning": "xhigh"
           }
         ]
       },
@@ -142,42 +114,38 @@
           {
             "model": "openai-codex/gpt-5.6-sol",
             "reasoning": "high"
-          },
-          {
-            "model": "opencode/muse-spark-1.3-contributor-free",
-            "reasoning": "xhigh"
           }
         ]
       },
       "deep": {
         "models": [
           {
-            "model": "openai-codex/gpt-6-astra",
+            "model": "claude-sdk-oauth/claude-sonnet-5",
             "reasoning": "high"
-          },
-          {
-            "model": "openai-codex/gpt-5.6-sol",
-            "reasoning": "medium"
           },
           {
             "model": "opencode/muse-spark-1.3-contributor-free",
             "reasoning": "xhigh"
+          },
+          {
+            "model": "openai-codex/gpt-5.6-sol",
+            "reasoning": "medium"
           }
         ]
       },
       "ultrabrain": {
         "models": [
           {
-            "model": "openai-codex/gpt-6-astra",
-            "reasoning": "max"
-          },
-          {
-            "model": "openai-codex/gpt-5.6-sol",
-            "reasoning": "max"
+            "model": "claude-sdk-oauth/claude-sonnet-5",
+            "reasoning": "high"
           },
           {
             "model": "opencode/muse-spark-1.3-contributor-free",
             "reasoning": "xhigh"
+          },
+          {
+            "model": "openai-codex/gpt-5.6-sol",
+            "reasoning": "max"
           }
         ]
       },
@@ -194,10 +162,6 @@
           {
             "model": "openai-codex/gpt-5.6-luna-fast",
             "reasoning": "low"
-          },
-          {
-            "model": "opencode/muse-spark-1.3-contributor-free",
-            "reasoning": "xhigh"
           }
         ]
       }
@@ -216,10 +180,6 @@
           {
             "model": "openai-codex/gpt-5.6-luna-fast",
             "reasoning": "low"
-          },
-          {
-            "model": "opencode/muse-spark-1.3-contributor-free",
-            "reasoning": "xhigh"
           }
         ]
       },
@@ -236,25 +196,21 @@
           {
             "model": "openai-codex/gpt-5.6-luna-fast",
             "reasoning": "low"
-          },
-          {
-            "model": "opencode/muse-spark-1.3-contributor-free",
-            "reasoning": "xhigh"
           }
         ]
       },
       "oracle": {
         "models": [
           {
-            "model": "openai-codex/gpt-5.6-sol",
-            "reasoning": "xhigh"
-          },
-          {
             "model": "claude-sdk-oauth/claude-sonnet-5",
             "reasoning": "high"
           },
           {
             "model": "opencode/muse-spark-1.3-contributor-free",
+            "reasoning": "xhigh"
+          },
+          {
+            "model": "openai-codex/gpt-5.6-sol",
             "reasoning": "xhigh"
           }
         ]
@@ -272,25 +228,21 @@
           {
             "model": "openai-codex/gpt-5.6-sol",
             "reasoning": "high"
-          },
-          {
-            "model": "opencode/muse-spark-1.3-contributor-free",
-            "reasoning": "xhigh"
           }
         ]
       },
       "momus": {
         "models": [
           {
-            "model": "openai-codex/gpt-6-astra",
+            "model": "claude-sdk-oauth/claude-sonnet-5",
+            "reasoning": "high"
+          },
+          {
+            "model": "opencode/muse-spark-1.3-contributor-free",
             "reasoning": "xhigh"
           },
           {
             "model": "openai-codex/gpt-5.6-sol",
-            "reasoning": "xhigh"
-          },
-          {
-            "model": "opencode/muse-spark-1.3-contributor-free",
             "reasoning": "xhigh"
           }
         ]
@@ -308,10 +260,6 @@
           {
             "model": "openai-codex/gpt-5.6-terra",
             "reasoning": "medium"
-          },
-          {
-            "model": "opencode/muse-spark-1.3-contributor-free",
-            "reasoning": "xhigh"
           }
         ]
       }
@@ -366,10 +314,6 @@
               {
                 "model": "openai-codex/gpt-5.6-luna-fast",
                 "reasoning": "low"
-              },
-              {
-                "model": "opencode/muse-spark-1.3-contributor-free",
-                "reasoning": "xhigh"
               }
             ]
           },
@@ -386,19 +330,11 @@
               {
                 "model": "openai-codex/gpt-5.6-terra",
                 "reasoning": "medium"
-              },
-              {
-                "model": "opencode/muse-spark-1.3-contributor-free",
-                "reasoning": "xhigh"
               }
             ]
           },
           "unspecified-high": {
             "models": [
-              {
-                "model": "openai-codex/gpt-6-astra",
-                "reasoning": "high"
-              },
               {
                 "model": "claude-sdk-oauth/claude-sonnet-5",
                 "reasoning": "high"
@@ -410,10 +346,6 @@
               {
                 "model": "openai-codex/gpt-5.6-sol",
                 "reasoning": "high"
-              },
-              {
-                "model": "opencode/muse-spark-1.3-contributor-free",
-                "reasoning": "xhigh"
               }
             ]
           },
@@ -430,10 +362,6 @@
               {
                 "model": "openai-codex/gpt-5.6-terra",
                 "reasoning": "medium"
-              },
-              {
-                "model": "opencode/muse-spark-1.3-contributor-free",
-                "reasoning": "xhigh"
               }
             ]
           },
@@ -450,10 +378,6 @@
               {
                 "model": "openai-codex/gpt-5.6-terra",
                 "reasoning": "medium"
-              },
-              {
-                "model": "opencode/muse-spark-1.3-contributor-free",
-                "reasoning": "xhigh"
               }
             ]
           },
@@ -470,10 +394,6 @@
               {
                 "model": "openai-codex/gpt-5.6-terra",
                 "reasoning": "medium"
-              },
-              {
-                "model": "opencode/muse-spark-1.3-contributor-free",
-                "reasoning": "xhigh"
               }
             ]
           },
@@ -490,42 +410,38 @@
               {
                 "model": "openai-codex/gpt-5.6-sol",
                 "reasoning": "high"
-              },
-              {
-                "model": "opencode/muse-spark-1.3-contributor-free",
-                "reasoning": "xhigh"
               }
             ]
           },
           "deep": {
             "models": [
               {
-                "model": "openai-codex/gpt-6-astra",
+                "model": "claude-sdk-oauth/claude-sonnet-5",
                 "reasoning": "high"
-              },
-              {
-                "model": "openai-codex/gpt-5.6-sol",
-                "reasoning": "medium"
               },
               {
                 "model": "opencode/muse-spark-1.3-contributor-free",
                 "reasoning": "xhigh"
+              },
+              {
+                "model": "openai-codex/gpt-5.6-sol",
+                "reasoning": "medium"
               }
             ]
           },
           "ultrabrain": {
             "models": [
               {
-                "model": "openai-codex/gpt-6-astra",
-                "reasoning": "max"
-              },
-              {
-                "model": "openai-codex/gpt-5.6-sol",
-                "reasoning": "max"
+                "model": "claude-sdk-oauth/claude-sonnet-5",
+                "reasoning": "high"
               },
               {
                 "model": "opencode/muse-spark-1.3-contributor-free",
                 "reasoning": "xhigh"
+              },
+              {
+                "model": "openai-codex/gpt-5.6-sol",
+                "reasoning": "max"
               }
             ]
           },
@@ -542,10 +458,6 @@
               {
                 "model": "openai-codex/gpt-5.6-luna-fast",
                 "reasoning": "low"
-              },
-              {
-                "model": "opencode/muse-spark-1.3-contributor-free",
-                "reasoning": "xhigh"
               }
             ]
           }
@@ -564,10 +476,6 @@
               {
                 "model": "openai-codex/gpt-5.6-luna-fast",
                 "reasoning": "low"
-              },
-              {
-                "model": "opencode/muse-spark-1.3-contributor-free",
-                "reasoning": "xhigh"
               }
             ]
           },
@@ -584,25 +492,21 @@
               {
                 "model": "openai-codex/gpt-5.6-luna-fast",
                 "reasoning": "low"
-              },
-              {
-                "model": "opencode/muse-spark-1.3-contributor-free",
-                "reasoning": "xhigh"
               }
             ]
           },
           "oracle": {
             "models": [
               {
-                "model": "openai-codex/gpt-5.6-sol",
-                "reasoning": "xhigh"
-              },
-              {
                 "model": "claude-sdk-oauth/claude-sonnet-5",
                 "reasoning": "high"
               },
               {
                 "model": "opencode/muse-spark-1.3-contributor-free",
+                "reasoning": "xhigh"
+              },
+              {
+                "model": "openai-codex/gpt-5.6-sol",
                 "reasoning": "xhigh"
               }
             ]
@@ -620,25 +524,21 @@
               {
                 "model": "openai-codex/gpt-5.6-sol",
                 "reasoning": "high"
-              },
-              {
-                "model": "opencode/muse-spark-1.3-contributor-free",
-                "reasoning": "xhigh"
               }
             ]
           },
           "momus": {
             "models": [
               {
-                "model": "openai-codex/gpt-6-astra",
+                "model": "claude-sdk-oauth/claude-sonnet-5",
+                "reasoning": "high"
+              },
+              {
+                "model": "opencode/muse-spark-1.3-contributor-free",
                 "reasoning": "xhigh"
               },
               {
                 "model": "openai-codex/gpt-5.6-sol",
-                "reasoning": "xhigh"
-              },
-              {
-                "model": "opencode/muse-spark-1.3-contributor-free",
                 "reasoning": "xhigh"
               }
             ]
@@ -656,10 +556,6 @@
               {
                 "model": "openai-codex/gpt-5.6-terra",
                 "reasoning": "medium"
-              },
-              {
-                "model": "opencode/muse-spark-1.3-contributor-free",
-                "reasoning": "xhigh"
               }
             ]
           }
@@ -714,10 +610,6 @@
               {
                 "model": "openai-codex/gpt-5.6-luna-fast",
                 "reasoning": "low"
-              },
-              {
-                "model": "opencode/muse-spark-1.3-contributor-free",
-                "reasoning": "xhigh"
               }
             ]
           },
@@ -734,19 +626,11 @@
               {
                 "model": "openai-codex/gpt-5.6-terra",
                 "reasoning": "medium"
-              },
-              {
-                "model": "opencode/muse-spark-1.3-contributor-free",
-                "reasoning": "xhigh"
               }
             ]
           },
           "unspecified-high": {
             "models": [
-              {
-                "model": "openai-codex/gpt-6-astra",
-                "reasoning": "high"
-              },
               {
                 "model": "claude-sdk-oauth/claude-sonnet-5",
                 "reasoning": "high"
@@ -758,10 +642,6 @@
               {
                 "model": "openai-codex/gpt-5.6-sol",
                 "reasoning": "high"
-              },
-              {
-                "model": "opencode/muse-spark-1.3-contributor-free",
-                "reasoning": "xhigh"
               }
             ]
           },
@@ -778,10 +658,6 @@
               {
                 "model": "openai-codex/gpt-5.6-terra",
                 "reasoning": "medium"
-              },
-              {
-                "model": "opencode/muse-spark-1.3-contributor-free",
-                "reasoning": "xhigh"
               }
             ]
           },
@@ -798,10 +674,6 @@
               {
                 "model": "openai-codex/gpt-5.6-terra",
                 "reasoning": "medium"
-              },
-              {
-                "model": "opencode/muse-spark-1.3-contributor-free",
-                "reasoning": "xhigh"
               }
             ]
           },
@@ -818,10 +690,6 @@
               {
                 "model": "openai-codex/gpt-5.6-terra",
                 "reasoning": "medium"
-              },
-              {
-                "model": "opencode/muse-spark-1.3-contributor-free",
-                "reasoning": "xhigh"
               }
             ]
           },
@@ -838,42 +706,38 @@
               {
                 "model": "openai-codex/gpt-5.6-sol",
                 "reasoning": "high"
-              },
-              {
-                "model": "opencode/muse-spark-1.3-contributor-free",
-                "reasoning": "xhigh"
               }
             ]
           },
           "deep": {
             "models": [
               {
-                "model": "openai-codex/gpt-6-astra",
+                "model": "claude-sdk-oauth/claude-sonnet-5",
                 "reasoning": "high"
-              },
-              {
-                "model": "openai-codex/gpt-5.6-sol",
-                "reasoning": "medium"
               },
               {
                 "model": "opencode/muse-spark-1.3-contributor-free",
                 "reasoning": "xhigh"
+              },
+              {
+                "model": "openai-codex/gpt-5.6-sol",
+                "reasoning": "medium"
               }
             ]
           },
           "ultrabrain": {
             "models": [
               {
-                "model": "openai-codex/gpt-6-astra",
-                "reasoning": "max"
-              },
-              {
-                "model": "openai-codex/gpt-5.6-sol",
-                "reasoning": "max"
+                "model": "claude-sdk-oauth/claude-sonnet-5",
+                "reasoning": "high"
               },
               {
                 "model": "opencode/muse-spark-1.3-contributor-free",
                 "reasoning": "xhigh"
+              },
+              {
+                "model": "openai-codex/gpt-5.6-sol",
+                "reasoning": "max"
               }
             ]
           },
@@ -890,10 +754,6 @@
               {
                 "model": "openai-codex/gpt-5.6-luna-fast",
                 "reasoning": "low"
-              },
-              {
-                "model": "opencode/muse-spark-1.3-contributor-free",
-                "reasoning": "xhigh"
               }
             ]
           }
@@ -912,10 +772,6 @@
               {
                 "model": "openai-codex/gpt-5.6-luna-fast",
                 "reasoning": "low"
-              },
-              {
-                "model": "opencode/muse-spark-1.3-contributor-free",
-                "reasoning": "xhigh"
               }
             ]
           },
@@ -932,25 +788,21 @@
               {
                 "model": "openai-codex/gpt-5.6-luna-fast",
                 "reasoning": "low"
-              },
-              {
-                "model": "opencode/muse-spark-1.3-contributor-free",
-                "reasoning": "xhigh"
               }
             ]
           },
           "oracle": {
             "models": [
               {
-                "model": "openai-codex/gpt-5.6-sol",
-                "reasoning": "xhigh"
-              },
-              {
                 "model": "claude-sdk-oauth/claude-sonnet-5",
                 "reasoning": "high"
               },
               {
                 "model": "opencode/muse-spark-1.3-contributor-free",
+                "reasoning": "xhigh"
+              },
+              {
+                "model": "openai-codex/gpt-5.6-sol",
                 "reasoning": "xhigh"
               }
             ]
@@ -968,25 +820,21 @@
               {
                 "model": "openai-codex/gpt-5.6-sol",
                 "reasoning": "high"
-              },
-              {
-                "model": "opencode/muse-spark-1.3-contributor-free",
-                "reasoning": "xhigh"
               }
             ]
           },
           "momus": {
             "models": [
               {
-                "model": "openai-codex/gpt-6-astra",
+                "model": "claude-sdk-oauth/claude-sonnet-5",
+                "reasoning": "high"
+              },
+              {
+                "model": "opencode/muse-spark-1.3-contributor-free",
                 "reasoning": "xhigh"
               },
               {
                 "model": "openai-codex/gpt-5.6-sol",
-                "reasoning": "xhigh"
-              },
-              {
-                "model": "opencode/muse-spark-1.3-contributor-free",
                 "reasoning": "xhigh"
               }
             ]
@@ -1004,10 +852,6 @@
               {
                 "model": "openai-codex/gpt-5.6-terra",
                 "reasoning": "medium"
-              },
-              {
-                "model": "opencode/muse-spark-1.3-contributor-free",
-                "reasoning": "xhigh"
               }
             ]
           }
@@ -1052,10 +896,6 @@
               {
                 "model": "openai-codex/gpt-5.6-luna-fast",
                 "reasoning": "low"
-              },
-              {
-                "model": "opencode/muse-spark-1.3-contributor-free",
-                "reasoning": "xhigh"
               }
             ]
           },
@@ -1072,19 +912,11 @@
               {
                 "model": "openai-codex/gpt-5.6-terra",
                 "reasoning": "medium"
-              },
-              {
-                "model": "opencode/muse-spark-1.3-contributor-free",
-                "reasoning": "xhigh"
               }
             ]
           },
           "unspecified-high": {
             "models": [
-              {
-                "model": "openai-codex/gpt-6-astra",
-                "reasoning": "high"
-              },
               {
                 "model": "claude-sdk-oauth/claude-sonnet-5",
                 "reasoning": "high"
@@ -1096,10 +928,6 @@
               {
                 "model": "openai-codex/gpt-5.6-sol",
                 "reasoning": "high"
-              },
-              {
-                "model": "opencode/muse-spark-1.3-contributor-free",
-                "reasoning": "xhigh"
               }
             ]
           },
@@ -1116,10 +944,6 @@
               {
                 "model": "openai-codex/gpt-5.6-terra",
                 "reasoning": "medium"
-              },
-              {
-                "model": "opencode/muse-spark-1.3-contributor-free",
-                "reasoning": "xhigh"
               }
             ]
           },
@@ -1136,10 +960,6 @@
               {
                 "model": "openai-codex/gpt-5.6-terra",
                 "reasoning": "medium"
-              },
-              {
-                "model": "opencode/muse-spark-1.3-contributor-free",
-                "reasoning": "xhigh"
               }
             ]
           },
@@ -1156,10 +976,6 @@
               {
                 "model": "openai-codex/gpt-5.6-terra",
                 "reasoning": "medium"
-              },
-              {
-                "model": "opencode/muse-spark-1.3-contributor-free",
-                "reasoning": "xhigh"
               }
             ]
           },
@@ -1176,42 +992,38 @@
               {
                 "model": "openai-codex/gpt-5.6-sol",
                 "reasoning": "high"
-              },
-              {
-                "model": "opencode/muse-spark-1.3-contributor-free",
-                "reasoning": "xhigh"
               }
             ]
           },
           "deep": {
             "models": [
               {
-                "model": "openai-codex/gpt-6-astra",
+                "model": "claude-sdk-oauth/claude-sonnet-5",
                 "reasoning": "high"
-              },
-              {
-                "model": "openai-codex/gpt-5.6-sol",
-                "reasoning": "medium"
               },
               {
                 "model": "opencode/muse-spark-1.3-contributor-free",
                 "reasoning": "xhigh"
+              },
+              {
+                "model": "openai-codex/gpt-5.6-sol",
+                "reasoning": "medium"
               }
             ]
           },
           "ultrabrain": {
             "models": [
               {
-                "model": "openai-codex/gpt-6-astra",
-                "reasoning": "max"
-              },
-              {
-                "model": "openai-codex/gpt-5.6-sol",
-                "reasoning": "max"
+                "model": "claude-sdk-oauth/claude-sonnet-5",
+                "reasoning": "high"
               },
               {
                 "model": "opencode/muse-spark-1.3-contributor-free",
                 "reasoning": "xhigh"
+              },
+              {
+                "model": "openai-codex/gpt-5.6-sol",
+                "reasoning": "max"
               }
             ]
           },
@@ -1228,10 +1040,6 @@
               {
                 "model": "openai-codex/gpt-5.6-luna-fast",
                 "reasoning": "low"
-              },
-              {
-                "model": "opencode/muse-spark-1.3-contributor-free",
-                "reasoning": "xhigh"
               }
             ]
           }
@@ -1250,10 +1058,6 @@
               {
                 "model": "openai-codex/gpt-5.6-luna-fast",
                 "reasoning": "low"
-              },
-              {
-                "model": "opencode/muse-spark-1.3-contributor-free",
-                "reasoning": "xhigh"
               }
             ]
           },
@@ -1270,25 +1074,21 @@
               {
                 "model": "openai-codex/gpt-5.6-luna-fast",
                 "reasoning": "low"
-              },
-              {
-                "model": "opencode/muse-spark-1.3-contributor-free",
-                "reasoning": "xhigh"
               }
             ]
           },
           "oracle": {
             "models": [
               {
-                "model": "openai-codex/gpt-5.6-sol",
-                "reasoning": "xhigh"
-              },
-              {
                 "model": "claude-sdk-oauth/claude-sonnet-5",
                 "reasoning": "high"
               },
               {
                 "model": "opencode/muse-spark-1.3-contributor-free",
+                "reasoning": "xhigh"
+              },
+              {
+                "model": "openai-codex/gpt-5.6-sol",
                 "reasoning": "xhigh"
               }
             ]
@@ -1306,25 +1106,21 @@
               {
                 "model": "openai-codex/gpt-5.6-sol",
                 "reasoning": "high"
-              },
-              {
-                "model": "opencode/muse-spark-1.3-contributor-free",
-                "reasoning": "xhigh"
               }
             ]
           },
           "momus": {
             "models": [
               {
-                "model": "openai-codex/gpt-6-astra",
+                "model": "claude-sdk-oauth/claude-sonnet-5",
+                "reasoning": "high"
+              },
+              {
+                "model": "opencode/muse-spark-1.3-contributor-free",
                 "reasoning": "xhigh"
               },
               {
                 "model": "openai-codex/gpt-5.6-sol",
-                "reasoning": "xhigh"
-              },
-              {
-                "model": "opencode/muse-spark-1.3-contributor-free",
                 "reasoning": "xhigh"
               }
             ]
@@ -1342,10 +1138,6 @@
               {
                 "model": "openai-codex/gpt-5.6-terra",
                 "reasoning": "medium"
-              },
-              {
-                "model": "opencode/muse-spark-1.3-contributor-free",
-                "reasoning": "xhigh"
               }
             ]
           }
@@ -1390,10 +1182,6 @@
               {
                 "model": "openai-codex/gpt-5.6-luna-fast",
                 "reasoning": "low"
-              },
-              {
-                "model": "opencode/muse-spark-1.3-contributor-free",
-                "reasoning": "xhigh"
               }
             ]
           },
@@ -1410,19 +1198,11 @@
               {
                 "model": "openai-codex/gpt-5.6-terra",
                 "reasoning": "medium"
-              },
-              {
-                "model": "opencode/muse-spark-1.3-contributor-free",
-                "reasoning": "xhigh"
               }
             ]
           },
           "unspecified-high": {
             "models": [
-              {
-                "model": "openai-codex/gpt-6-astra",
-                "reasoning": "high"
-              },
               {
                 "model": "claude-sdk-oauth/claude-sonnet-5",
                 "reasoning": "high"
@@ -1434,10 +1214,6 @@
               {
                 "model": "openai-codex/gpt-5.6-sol",
                 "reasoning": "high"
-              },
-              {
-                "model": "opencode/muse-spark-1.3-contributor-free",
-                "reasoning": "xhigh"
               }
             ]
           },
@@ -1454,10 +1230,6 @@
               {
                 "model": "openai-codex/gpt-5.6-terra",
                 "reasoning": "medium"
-              },
-              {
-                "model": "opencode/muse-spark-1.3-contributor-free",
-                "reasoning": "xhigh"
               }
             ]
           },
@@ -1474,10 +1246,6 @@
               {
                 "model": "openai-codex/gpt-5.6-terra",
                 "reasoning": "medium"
-              },
-              {
-                "model": "opencode/muse-spark-1.3-contributor-free",
-                "reasoning": "xhigh"
               }
             ]
           },
@@ -1494,10 +1262,6 @@
               {
                 "model": "openai-codex/gpt-5.6-terra",
                 "reasoning": "medium"
-              },
-              {
-                "model": "opencode/muse-spark-1.3-contributor-free",
-                "reasoning": "xhigh"
               }
             ]
           },
@@ -1514,42 +1278,38 @@
               {
                 "model": "openai-codex/gpt-5.6-sol",
                 "reasoning": "high"
-              },
-              {
-                "model": "opencode/muse-spark-1.3-contributor-free",
-                "reasoning": "xhigh"
               }
             ]
           },
           "deep": {
             "models": [
               {
-                "model": "openai-codex/gpt-6-astra",
+                "model": "claude-sdk-oauth/claude-sonnet-5",
                 "reasoning": "high"
-              },
-              {
-                "model": "openai-codex/gpt-5.6-sol",
-                "reasoning": "medium"
               },
               {
                 "model": "opencode/muse-spark-1.3-contributor-free",
                 "reasoning": "xhigh"
+              },
+              {
+                "model": "openai-codex/gpt-5.6-sol",
+                "reasoning": "medium"
               }
             ]
           },
           "ultrabrain": {
             "models": [
               {
-                "model": "openai-codex/gpt-6-astra",
-                "reasoning": "max"
-              },
-              {
-                "model": "openai-codex/gpt-5.6-sol",
-                "reasoning": "max"
+                "model": "claude-sdk-oauth/claude-sonnet-5",
+                "reasoning": "high"
               },
               {
                 "model": "opencode/muse-spark-1.3-contributor-free",
                 "reasoning": "xhigh"
+              },
+              {
+                "model": "openai-codex/gpt-5.6-sol",
+                "reasoning": "max"
               }
             ]
           },
@@ -1566,10 +1326,6 @@
               {
                 "model": "openai-codex/gpt-5.6-luna-fast",
                 "reasoning": "low"
-              },
-              {
-                "model": "opencode/muse-spark-1.3-contributor-free",
-                "reasoning": "xhigh"
               }
             ]
           }
@@ -1588,10 +1344,6 @@
               {
                 "model": "openai-codex/gpt-5.6-luna-fast",
                 "reasoning": "low"
-              },
-              {
-                "model": "opencode/muse-spark-1.3-contributor-free",
-                "reasoning": "xhigh"
               }
             ]
           },
@@ -1608,25 +1360,21 @@
               {
                 "model": "openai-codex/gpt-5.6-luna-fast",
                 "reasoning": "low"
-              },
-              {
-                "model": "opencode/muse-spark-1.3-contributor-free",
-                "reasoning": "xhigh"
               }
             ]
           },
           "oracle": {
             "models": [
               {
-                "model": "openai-codex/gpt-5.6-sol",
-                "reasoning": "xhigh"
-              },
-              {
                 "model": "claude-sdk-oauth/claude-sonnet-5",
                 "reasoning": "high"
               },
               {
                 "model": "opencode/muse-spark-1.3-contributor-free",
+                "reasoning": "xhigh"
+              },
+              {
+                "model": "openai-codex/gpt-5.6-sol",
                 "reasoning": "xhigh"
               }
             ]
@@ -1644,25 +1392,21 @@
               {
                 "model": "openai-codex/gpt-5.6-sol",
                 "reasoning": "high"
-              },
-              {
-                "model": "opencode/muse-spark-1.3-contributor-free",
-                "reasoning": "xhigh"
               }
             ]
           },
           "momus": {
             "models": [
               {
-                "model": "openai-codex/gpt-6-astra",
+                "model": "claude-sdk-oauth/claude-sonnet-5",
+                "reasoning": "high"
+              },
+              {
+                "model": "opencode/muse-spark-1.3-contributor-free",
                 "reasoning": "xhigh"
               },
               {
                 "model": "openai-codex/gpt-5.6-sol",
-                "reasoning": "xhigh"
-              },
-              {
-                "model": "opencode/muse-spark-1.3-contributor-free",
                 "reasoning": "xhigh"
               }
             ]
@@ -1680,10 +1424,6 @@
               {
                 "model": "openai-codex/gpt-5.6-terra",
                 "reasoning": "medium"
-              },
-              {
-                "model": "opencode/muse-spark-1.3-contributor-free",
-                "reasoning": "xhigh"
               }
             ]
           }
