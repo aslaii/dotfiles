@@ -76,6 +76,18 @@ function merge(destination, source, key = "", mergeAllArrays = false) {
   return structuredClone(source)
 }
 
+function retireManagedNativeConfig(config) {
+  for (const [section, names] of [
+    [config["[senpi]"]?.agents, ["metis", "momus"]],
+    [config["[senpi]"]?.models, ["sisyphus", "prometheus", "atlas", "hephaestus", "planner"]],
+    [config.profiles, ["fast", "gpt", "claude", "mixed"]],
+  ]) {
+    if (!isObject(section)) continue
+    for (const name of names) delete section[name]
+  }
+  return config
+}
+
 function mergeHooks(destination, source, home) {
   const result = merge(destination, source, "", true)
   for (const [event, entries] of Object.entries(result.hooks ?? {})) {
@@ -603,7 +615,8 @@ async function restore() {
     const omoTarget = join(home, ".omo", "omo.jsonc")
     const settingsTarget = join(home, ".omo", "agent", "settings.json")
     const hooksTarget = join(home, ".omo", "agent", "hooks.json")
-    const mergedOmo = merge(await readDestinationObject(omoTarget, "existing omo config", Bun.JSONC.parse), portableOmo)
+    const existingOmo = retireManagedNativeConfig(await readDestinationObject(omoTarget, "existing omo config", Bun.JSONC.parse))
+    const mergedOmo = merge(existingOmo, portableOmo)
     const mergedSettings = merge(await readDestinationObject(settingsTarget, "existing agent settings"), portableSettings)
     const mergedHooks = mergeHooks(await readDestinationObject(hooksTarget, "existing agent hooks"), portableHooks, home)
     await writeManagedFile(omoTarget, Buffer.from(`${JSON.stringify(mergedOmo, null, 2)}\n`), state)

@@ -102,7 +102,7 @@ function omp() {
 }
 
 function omo-fast() {
-  OMO_PROFILE=fast bash "${DOTFILES_DIR:-$HOME/dotfiles}/omo/launch.sh" \
+  bash "${DOTFILES_DIR:-$HOME/dotfiles}/omo/launch.sh" \
     --extension "${DOTFILES_DIR:-$HOME/dotfiles}/omo/fast.mjs" "$@"
 }
 

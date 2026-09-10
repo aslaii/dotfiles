@@ -2,7 +2,7 @@ import { realpathSync } from "node:fs"
 import { dirname, join } from "node:path"
 import { pathToFileURL } from "node:url"
 
-export const FAST_GPT_ENTRY = "openai-codex/gpt-6-astra:medium"
+export const FAST_GPT_ENTRY = "openai-codex/gpt-6-astra:xhigh"
 const installed = Symbol.for("dotfiles.omo-fast")
 const claudeModels = new Set()
 

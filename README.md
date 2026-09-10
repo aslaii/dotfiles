@@ -151,21 +151,22 @@ bash ~/dotfiles/omo/launch.sh
 bun ~/dotfiles/omp/launch.mjs
 ```
 
-For time-critical work, use `omo-fast` or `omp-fast`. Both request fast
-Claude and priority GPT for main sessions and subagents, use GPT fallback
-when Claude is unavailable, and allow eight parallel agents. Muse and
-OpenCode Go models retain their existing settings, including reasoning.
+For time-critical work, use `omo-fast` or `omp-fast`. Native OMO requests
+priority GPT while retaining its Claude SDK OAuth and Muse routing.
+OMP requests fast Claude and priority GPT with GPT fallback when Claude is
+unavailable. Both allow eight parallel agents; Muse and OpenCode Go models
+retain their existing settings, including reasoning.
 Normal `omo` and `omp` keep their defaults. Reload an existing shell with
 `source ~/.zsh/functions.zsh` before using the new commands.
 
 For other shells:
 
 ```bash
-OMO_PROFILE=fast bash ~/dotfiles/omo/launch.sh --extension ~/dotfiles/omo/fast.mjs
+bash ~/dotfiles/omo/launch.sh --extension ~/dotfiles/omo/fast.mjs
 bun ~/dotfiles/omp/launch.mjs --config ~/dotfiles/omp/fast.yml --extension ~/dotfiles/omp/fast.mjs
 ```
 
-OMO's `fast` profile is included in `omo/restore.mjs`. Its fast extension
+OMO uses its native model configuration in both launch modes. Its fast extension
 adds request-local priority settings without saving them to normal settings.
 GPT fallback also carries native priority metadata for session status and
 usage accounting. OMO's task row may still omit tier/thinking suffixes after

@@ -134,7 +134,7 @@ test("native fallback selects fast GPT without changing saved settings or other 
   expect(await controller.tryFallback("hard-error", { errorMessage: "Claude unavailable" })).toBe(true)
   expect(current.model.provider).toBe("openai-codex")
   expect(current.model.id).toBe("gpt-6-astra")
-  expect(current.thinkingLevel).toBe("medium")
+  expect(current.thinkingLevel).toBe("xhigh")
   expect(await payload(await prepared(rt, current.model.provider, current.model.id), {}))
     .toEqual({ service_tier: "priority" })
   expect(settings.getGlobalSettings()).toEqual(original)
@@ -249,7 +249,7 @@ test("real OMO child fallback keeps GPT priority on the wire and in session meta
       modelRuntime: rt,
       authStorage: auth,
       toolAllowlist: [],
-      fallbackModels: [{ provider: "openai-codex", model_id: "gpt-6-astra", reasoning_effort: "medium" }],
+      fallbackModels: [{ provider: "openai-codex", model_id: "gpt-6-astra", reasoning_effort: "xhigh" }],
       retry: { maxRetries: 0 },
     })
     const outcome = await handle.waitForIdle()

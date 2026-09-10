@@ -7,6 +7,7 @@
 !restore.mjs
 !restore.test.js
 !config.test.js
+!native-config.test.js
 !launch.sh
 !isolation.test.js
 !fast.mjs

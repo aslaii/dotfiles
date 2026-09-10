@@ -1,10 +1,35 @@
 import { expect, test } from "bun:test";
 import { readFile } from "node:fs/promises";
 
-test("default and all profiles allow eight concurrent children", async () => {
+test("native startup profiles use supported models and Astra xhigh", async () => {
   const config = Bun.JSONC.parse(await readFile(new URL("./omo.jsonc", import.meta.url), "utf8"));
-  for (const profile of [{}, ...Object.values(config.profiles)]) {
-    const task = { ...config["[senpi]"].task, ...profile["[senpi]"]?.task };
+  const settings = JSON.parse(await readFile(new URL("./agent/settings.json", import.meta.url), "utf8"));
+  const native = config["[senpi]"];
+  expect(settings.defaultThinkingLevel).toBe("xhigh");
+  expect(settings.modelThinkingLevels["openai-codex/gpt-6-astra"]).toBe("xhigh");
+  expect(native.model_profile).toBe("deep-work");
+  expect(native.model_profiles["deep-work"].models).toEqual([
+    { model: "openai-codex/gpt-6-astra", reasoning: "xhigh" },
+    { model: "openai-codex/gpt-5.6-sol", reasoning: "medium" },
+  ]);
+  expect(native.model_profiles.capable.models).toEqual([
+    { model: "claude-sdk-oauth/claude-sonnet-5", reasoning: "high" },
+    { model: "opencode/muse-spark-1.3-contributor-free", reasoning: "xhigh" },
+    { model: "openai-codex/gpt-5.6-sol", reasoning: "high" },
+  ]);
+  expect(config["[opencode]"]).toBeUndefined();
+  expect(config.profiles).toBeUndefined();
+  expect(native.models).toBeUndefined();
+  expect(native.agents.metis).toBeUndefined();
+  expect(native.agents.momus).toBeUndefined();
+  expect(native.agents["plan-consultant"]).toBeDefined();
+  expect(native.agents["plan-reviewer"]).toBeDefined();
+});
+
+test("native task limits allow eight concurrent children", async () => {
+  const config = Bun.JSONC.parse(await readFile(new URL("./omo.jsonc", import.meta.url), "utf8"));
+  {
+    const task = config["[senpi]"].task;
     expect(task.default_concurrency).toBe(8);
     expect(task.global_concurrency).toBe(8);
     expect(task.residency_max_children).toBe(8);
@@ -12,58 +37,10 @@ test("default and all profiles allow eight concurrent children", async () => {
   }
 });
 
-test("fast profile keeps routes and reasoning, with Muse immediately after Claude", async () => {
-  const config = Bun.JSONC.parse(await readFile(new URL("./omo.jsonc", import.meta.url), "utf8"));
-  const base = config["[senpi]"];
-  const fast = config.profiles.fast?.["[senpi]"];
-  expect(fast).toBeDefined();
-  expect(fast.models).toEqual(base.models);
-  expect(fast.task.default_concurrency).toBe(8);
-  expect(fast.task.global_concurrency).toBe(8);
-  expect(fast.task.residency_max_children).toBe(8);
-  expect(fast.task.team.max_members).toBe(8);
-  expect(fast.task.team.max_parallel_members).toBe(8);
-  for (const group of ["categories", "agents"]) {
-    expect(Object.keys(fast[group])).toEqual(Object.keys(base[group]));
-    for (const [name, route] of Object.entries(base[group])) {
-      const models = fast[group][name].models;
-      expect(models[0]).toEqual(route.models[0]);
-      expect(models.filter((entry) => entry.model.startsWith("opencode"))).toEqual(
-        route.models.filter((entry) => entry.model.startsWith("opencode")),
-      );
-      for (const entry of route.models) expect(models).toContainEqual(entry);
-      for (let i = 0; i < models.length; i++) {
-        if (models[i].model.startsWith("claude-sdk-oauth/")) {
-          expect(models[i + 1]?.model).toBe("opencode/muse-spark-1.3-contributor-free");
-        }
-      }
-    }
-  }
-});
-
-test("planning roles use Astra at maximum reasoning in every profile", async () => {
+test("exact native routing matches requested category and agent order", async () => {
   const config = Bun.JSONC.parse(
     await readFile(new URL("./omo.jsonc", import.meta.url), "utf8"),
   );
-  const sections = [
-    config["[senpi]"],
-    ...Object.values(config.profiles).map((profile) => profile["[senpi]"]),
-  ];
-  for (const section of sections) {
-    for (const role of ["planner", "prometheus", "atlas"]) {
-      expect(section.models[role]).toEqual({
-        model: "openai-codex/gpt-6-astra",
-        reasoning: "max",
-      });
-    }
-  }
-});
-
-test("exact native routing matches requested order in base and every profile", async () => {
-  const config = Bun.JSONC.parse(
-    await readFile(new URL("./omo.jsonc", import.meta.url), "utf8"),
-  );
-  const astra = "openai-codex/gpt-6-astra";
   const sol = "openai-codex/gpt-5.6-sol";
   const terra = "openai-codex/gpt-5.6-terra";
   const luna = "openai-codex/gpt-5.6-luna-fast";
@@ -123,7 +100,7 @@ test("exact native routing matches requested order in base and every profile", a
     ],
   };
   const expectedAgents = {
-    momus: [
+    "plan-reviewer": [
       { model: sonnet, reasoning: "high" },
       { model: muse, reasoning: "xhigh" },
       { model: sol, reasoning: "xhigh" },
@@ -148,7 +125,7 @@ test("exact native routing matches requested order in base and every profile", a
       { model: muse, reasoning: "xhigh" },
       { model: terra, reasoning: "medium" },
     ],
-    metis: [
+    "plan-consultant": [
       { model: sonnet, reasoning: "high" },
       { model: muse, reasoning: "xhigh" },
       { model: sol, reasoning: "high" },
@@ -156,9 +133,7 @@ test("exact native routing matches requested order in base and every profile", a
   };
   for (const section of [
     config["[senpi]"],
-    ...Object.values(config.profiles).map((profile) => profile["[senpi]"]),
   ]) {
-    expect(section.models.sisyphus).toEqual({ model: astra, reasoning: "medium" });
     for (const [name, models] of Object.entries(expectedCategories)) {
       expect(section.categories[name].models).toEqual(models);
     }
@@ -175,7 +150,6 @@ test("every category and agent uses exactly Claude, Muse, then GPT", async () =>
   const muse = "opencode/muse-spark-1.3-contributor-free";
   for (const section of [
     config["[senpi]"],
-    ...Object.values(config.profiles).map((profile) => profile["[senpi]"]),
   ]) {
     for (const group of ["categories", "agents"]) {
       for (const [name, route] of Object.entries(section[group])) {
@@ -189,7 +163,7 @@ test("every category and agent uses exactly Claude, Muse, then GPT", async () =>
   }
 });
 
-test("approved fallback policy is uniform across base and profile routes", async () => {
+test("approved native fallback policy preserves settings and provider order", async () => {
   const config = Bun.JSONC.parse(
     await readFile(new URL("./omo.jsonc", import.meta.url), "utf8"),
   );
@@ -202,7 +176,6 @@ test("approved fallback policy is uniform across base and profile routes", async
   const luna = "openai-codex/gpt-5.6-luna-fast";
   const terra = "openai-codex/gpt-5.6-terra";
   const sol = "openai-codex/gpt-5.6-sol";
-  const astra = "openai-codex/gpt-6-astra";
   const quickLow = [
     { model: haiku, reasoning: "low" },
     { model: muse, reasoning: "xhigh" },
@@ -220,12 +193,7 @@ test("approved fallback policy is uniform across base and profile routes", async
   ];
   for (const section of [
     config["[senpi]"],
-    ...Object.values(config.profiles).map((profile) => profile["[senpi]"]),
   ]) {
-    expect(section.models.sisyphus).toEqual({
-      model: "openai-codex/gpt-6-astra",
-      reasoning: "medium",
-    });
     for (const category of ["quick", "git"]) {
       expect(section.categories[category].models).toEqual(quickLow);
     }
@@ -256,17 +224,16 @@ test("approved fallback policy is uniform across base and profile routes", async
       { model: muse, reasoning: "xhigh" },
       { model: sol, reasoning: "xhigh" },
     ]);
-    expect(section.agents.momus.models).toEqual([
+    expect(section.agents["plan-reviewer"].models).toEqual([
       { model: sonnet, reasoning: "high" },
       { model: muse, reasoning: "xhigh" },
       { model: sol, reasoning: "xhigh" },
     ]);
-    expect(section.agents.metis.models).toEqual(highTrio);
+    expect(section.agents["plan-consultant"].models).toEqual(highTrio);
     expect(section.agents["multimodal-looker"].models).toEqual(lowMedium);
-    expect(section.models.hephaestus).toEqual({ model: muse, reasoning: "xhigh" });
   }
-  expect(settings.defaultThinkingLevel).toBe("medium");
-  expect(settings.modelThinkingLevels["openai-codex/gpt-6-astra"]).toBe("medium");
+  expect(settings.defaultThinkingLevel).toBe("xhigh");
+  expect(settings.modelThinkingLevels["openai-codex/gpt-6-astra"]).toBe("xhigh");
   expect(settings.modelThinkingLevels[muse]).toBe("xhigh");
   expect(settings.claudeSdkOauthProvider.enabled).toBe(true);
   for (const model of [muse, haiku, sonnet, luna, terra, sol]) {

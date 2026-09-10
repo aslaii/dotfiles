@@ -48,6 +48,3 @@ alias btop='btop_themed'
 
 # goose
 alias goose='cd ~/work/goose/'
-
-# omo profiles: ~/.local/bin/omo-{gpt,mixed,claude} set OMO_PROFILE *and* the
-# favorite-model list. Aliases here would shadow those scripts, so there are none.

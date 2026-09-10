@@ -85,7 +85,7 @@ async function skillTemps() {
 
 function skillSourceManifest(fixture) {
   return {
-    omoVersion: "5.0.0-0.beta.48",
+    omoVersion: "5.0.0-0.beta.53",
     builtinExtensions: ["tps", "prompt-url-widget", "files", "diff"],
     resources: [{ source: "rules", target: ".omo/agent/rules" }],
     skillSource: {
@@ -469,7 +469,7 @@ test("production restore archives legacy local libraries and installs only the o
   const script = join(snapshot, "restore.mjs")
   await cp(restore, script)
   await write(join(snapshot, "restore.json"), JSON.stringify({
-    omoVersion: "5.0.0-0.beta.48",
+    omoVersion: "5.0.0-0.beta.53",
     builtinExtensions: ["tps", "prompt-url-widget", "files", "diff"],
     resources: [
       { source: "rules", target: ".omo/agent/rules" },
@@ -536,7 +536,7 @@ test("legacy library retirement refuses a symlinked parent and leaves its extern
   const script = join(snapshot, "restore.mjs")
   await cp(restore, script)
   await write(join(snapshot, "restore.json"), JSON.stringify({
-    omoVersion: "5.0.0-0.beta.48",
+    omoVersion: "5.0.0-0.beta.53",
     builtinExtensions: [],
     resources: [],
   }))
@@ -550,4 +550,77 @@ test("legacy library retirement refuses a symlinked parent and leaves its extern
   expect(`${result.stdout}${result.stderr}`).toMatch(/symlink/)
   expect(await readFile(join(external, "codex/keep.md"), "utf8")).toBe("external legacy\n")
   expect((await lstat(join(home, ".omo/agent/skill-library"))).isSymbolicLink()).toBe(true)
+})
+
+test("restore migrates retired managed native config without removing custom config", async () => {
+  const root = await mkdtemp(join(tmpdir(), "omo restore migration "))
+  cleanup.push(root)
+  const snapshot = join(root, "snapshot")
+  const home = join(root, "home")
+  const script = join(snapshot, "restore.mjs")
+  await cp(restore, script)
+  await write(join(snapshot, "restore.json"), JSON.stringify({
+    omoVersion: "5.0.0-0.beta.53",
+    builtinExtensions: [],
+    resources: [],
+  }))
+  await write(join(snapshot, "omo.jsonc"), JSON.stringify({
+    git_master: { commit_footer: false },
+    "[senpi]": {
+      categories: { deep: { models: [{ model: "openai-codex/gpt-6-astra", reasoning: "xhigh" }] } },
+      agents: {
+        "plan-consultant": { models: [{ model: "openai-codex/gpt-6-astra", reasoning: "xhigh" }] },
+        "plan-reviewer": { models: [{ model: "claude-sdk-oauth/claude-sonnet-5", reasoning: "high" }] },
+      },
+      task: { default_concurrency: 8 },
+      model_profile: "deep-work",
+      model_profiles: {
+        "deep-work": { models: [{ model: "openai-codex/gpt-6-astra", reasoning: "xhigh" }] },
+        capable: { models: [{ model: "claude-sdk-oauth/claude-sonnet-5", reasoning: "high" }] },
+      },
+    },
+  }))
+  await write(join(snapshot, "agent/settings.json"), "{}")
+  await write(join(snapshot, "agent/hooks.json"), "{}")
+  await write(join(home, ".omo/omo.jsonc"), JSON.stringify({
+    "[senpi]": {
+      agents: { metis: { managed: true }, momus: { managed: true }, "custom-agent": { kept: true } },
+      models: {
+        sisyphus: { managed: true },
+        prometheus: { managed: true },
+        atlas: { managed: true },
+        hephaestus: { managed: true },
+        planner: { managed: true },
+        "custom-model": { kept: true },
+      },
+      "custom-senpi-setting": { kept: true },
+    },
+    profiles: {
+      fast: { managed: true },
+      gpt: { managed: true },
+      claude: { managed: true },
+      mixed: { managed: true },
+      "custom-profile": { kept: true },
+    },
+    "custom-harness-setting": { kept: true },
+  }))
+  await write(join(home, ".omo/agent/auth.json"), "user credential")
+
+  await run(script, home)
+
+  const config = await json(join(home, ".omo/omo.jsonc"))
+  expect(config["[senpi]"].agents).not.toHaveProperty("metis")
+  expect(config["[senpi]"].agents).not.toHaveProperty("momus")
+  expect(config["[senpi]"].agents["custom-agent"]).toEqual({ kept: true })
+  for (const name of ["sisyphus", "prometheus", "atlas", "hephaestus", "planner"]) {
+    expect(config["[senpi]"].models).not.toHaveProperty(name)
+  }
+  expect(config["[senpi]"].models["custom-model"]).toEqual({ kept: true })
+  for (const name of ["fast", "gpt", "claude", "mixed"]) {
+    expect(config.profiles).not.toHaveProperty(name)
+  }
+  expect(config.profiles["custom-profile"]).toEqual({ kept: true })
+  expect(config["[senpi]"]["custom-senpi-setting"]).toEqual({ kept: true })
+  expect(config["custom-harness-setting"]).toEqual({ kept: true })
+  expect(await readFile(join(home, ".omo/agent/auth.json"), "utf8")).toBe("user credential")
 })

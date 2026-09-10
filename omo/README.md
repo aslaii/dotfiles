@@ -11,7 +11,7 @@ Use macOS or Linux with Node.js 24+, Bun 1.4+, npm, and Git. Install `dcg` and
 
 ```bash
 git clone https://github.com/aslaii/dotfiles.git ~/dotfiles
-npm install -g omo-ai@beta
+npm install -g omo-ai@5.0.0-0.beta.53
 bun ~/dotfiles/omo/restore.mjs
 bash ~/dotfiles/omo/launch.sh
 ```
@@ -20,6 +20,9 @@ In OMO, authenticate OpenAI Codex and Claude with `/login`, then review and
 enable the imported hooks with `/hooks`. Hook trust is deliberately local to
 each computer. Restart OMO after restoring; resumed sessions may retain an
 older model selection.
+
+The required version is recorded in `restore.json`. Update that pin with the
+configuration when upgrading OMO; restore checks the exact installed version.
 
 The restore command copies resources rather than linking the checkout. It
 merges settings, replaces the managed skill-path list, preserves unrelated
@@ -30,6 +33,10 @@ built-in extension loaders using the destination OMO installation. Existing
 directory symlinks are left in place when their files already match. The
 command refuses changed writes through those links rather than modifying
 another checkout or moving unrelated application state.
+
+Restore retires the managed native `metis`/`momus` keys, unused role catalog
+aliases, and old `fast`/`gpt`/`claude`/`mixed` configuration overlays. Unrelated
+custom agents, catalog entries, profiles, and other harness settings are preserved.
 
 A restore archives obsolete OMO-local `skill-library/codex` and
 `skill-library/shared` directories through the same backup mechanism. It never
@@ -70,25 +77,40 @@ bun ~/dotfiles/omo/restore.mjs --home "/tmp/omo test home" --skip-packages
 
 | Role | Model | Reasoning |
 |---|---|---|
-| Main / Sisyphus | GPT-6 Astra | `medium` |
-| Planner, Prometheus, Atlas | GPT-6 Astra | `max` |
+| Main session, including native planning | GPT-6 Astra | `xhigh` |
 | Quick, Git, Explore, Librarian | Claude Haiku 4.5 | `low` |
-| Other subagents, including Metis | Claude Sonnet 5 | `medium` or `high` |
+| Other subagents, including `plan-consultant` and `plan-reviewer` | Claude Sonnet 5 | `medium` or `high` |
 | First subagent fallback | Muse Spark 1.3 Contributor Free | `xhigh` |
 | Final subagent fallback | GPT Luna Fast, Terra, or Sol | Per route |
-| Optional manual selection | GLM-5.3 through OpenCode Go | `max` |
 
-These choices apply across the default, fast, GPT, Claude, and mixed profiles.
 Every category and named subagent uses Claude, then Muse, then GPT.
 Subagent routes contain no Astra entry or duplicate Muse fallback.
 Claude session fallbacks also put Muse before GPT. Muse falls back to GPT,
-not Claude. Main and planning mode selections remain unchanged.
+not Claude. The `opencode/` Muse identifier names the Zen provider used by
+native OMO; it is not an OpenCode harness configuration.
 
-`max` is a distinct Astra level above `xhigh`, confirmed by the
-[OpenAI model reference](https://developers.openai.com/api/docs/models/gpt-6-astra).
-Main uses `medium` because OpenAI's [reasoning guide](https://developers.openai.com/api/docs/guides/reasoning)
-recommends it for judgment and delegation. This is a cautious default, not a
-claim that a published Astra low-versus-medium benchmark proves it optimal.
+The native `[senpi]` block selects `model_profile: "deep-work"` and replaces
+two built-in model profiles:
+
+| Model profile | Startup model order |
+|---|---|
+| `deep-work` (active) | Astra `xhigh`, then Sol `medium` |
+| `capable` (optional) | Claude SDK OAuth Sonnet 5 `high`, Muse `xhigh`, then Sol `high` |
+
+The custom `capable` chain uses the Claude subscription lane rather than
+Fable, Opus, Kimi, or GLM. To use it, set `[senpi].model_profile` to `capable`.
+The upstream `simple-work` profile remains available without a local override.
+
+Model profiles choose only the main model in a fresh session. They do not
+override explicit `--model` selections or resumed sessions, change subagent
+routes, or replace `agent/settings.json` retry chains. Availability is a
+registry/auth check, not a guarantee of remaining quota.
+
+The old `models.sisyphus`, `models.planner`, and related entries were unused
+catalog aliases, not native role assignments. Planning uses the current
+session model; its consultant and reviewer have explicit agent routes.
+`omo-fast` keeps the native configuration and adds its priority extension.
+The unused `omo-gpt`, `omo-claude`, and `omo-mixed` launchers are retired.
 
 [Artificial Analysis](https://artificialanalysis.ai/articles/muse-spark-1-3)
 reports Muse Spark 1.3 `xhigh` at 61 on its Intelligence Index and 85% on
@@ -102,10 +124,7 @@ The free model ID is `opencode/muse-spark-1.3-contributor-free`, on
 permits training on prompts and completions. Authenticate the `opencode`
 provider separately if only `opencode-go` is connected.
 
-[OpenCode Go](https://opencode.ai/docs/go/) costs $10/month; GLM-5.3 consumes
-subscription allowance and is not a free endpoint. It is selectable but is
-not assigned to any agent or automatic fallback. GLM-5.3 is text-only, and
-[Z.ai recommends `max` for coding](https://docs.z.ai/guides/llm/glm-5.3).
+Saved manual favorites are separate from these automatic routes.
 
 [OMO's documentation](https://omo.dev/docs) describes custom model overrides.
 The installed native runtime lists Muse explicitly, and a real OMO child
@@ -169,7 +188,7 @@ The tracked `omo/` directory is configuration. Hidden `.omo/`, `.omc/`, and
 
 ```bash
 bun test omo/isolation.test.js omo/restore.test.js
-bun test omo/config.test.js omo/fast.test.js omo/herdr-presence.test.js omo/comment-checker.test.js
+bun test omo/config.test.js omo/native-config.test.js omo/fast.test.js omo/herdr-presence.test.js omo/comment-checker.test.js
 bun omo/comment-checker-qa.mjs
 gitleaks dir omo --redact --no-banner
 ```
