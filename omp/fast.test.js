@@ -23,7 +23,7 @@ function ompPkgRoot() {
 }
 
 const ZEN = "opencode-zen/muse-spark-1.3-contributor-free:xhigh"
-const GPT_FAST = "openai-codex/gpt-6-astra:medium"
+const GPT_FAST = "openai-codex/gpt-5.6-sol:medium"
 
 async function write(path, contents) {
   await mkdir(dirname(path), { recursive: true })
@@ -101,7 +101,7 @@ test("child subagents inherit live fast tiers (native createSubagentSettings)", 
   expect(child.get("tier.subagent")).toBe("inherit")
 }, 30000)
 
-test("claude fallback starts with GPT Astra, zen preserved, sibling chains untouched", async () => {
+test("claude fallback starts with GPT Sol, zen preserved, sibling chains untouched", async () => {
   const { agentDir, project } = await makeBase()
   const s = await loadSettings(agentDir, project, [fastOverlay])
   const chains = s.get("retry.fallbackChains")

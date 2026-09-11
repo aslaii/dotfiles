@@ -10,4 +10,4 @@ Dispatch complete owned slices, acceptance criteria, necessary context, and exac
 
 Keep the main context to decisions, compact worker results, and relevant evidence anchors. Reuse the same worker via hub for corrections. No routine progress polling, whole-transcript replay, duplicate searches, or continuous advisors. A result should state changed paths, observed verification, unresolved blockers, and relevant artifact references; never hide failures to fit a summary.
 
-Native quota fallbacks are allowed. Do not raise Astra effort, change saved routing, enable prewalk/advisors, or activate paid-overage paths unless the user requests it. Existing tool safety, secret handling, host pressure, plan approval, and diagnostics requirements remain in force.
+Native quota fallbacks are allowed. Do not raise Sol effort, change saved routing, enable prewalk/advisors, or activate paid-overage paths unless the user requests it. Existing tool safety, secret handling, host pressure, plan approval, and diagnostics requirements remain in force.

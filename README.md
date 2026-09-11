@@ -88,9 +88,9 @@ The normal macOS bootstrap and its `--check` option remain unchanged.
 Authenticate separately with `/login` inside OMP on each computer. Model access
 depends on that computer's authenticated accounts; the config contains no credentials.
 
-Deployed routing keeps Main on Astra-medium (`@default`) for orchestration,
+Deployed routing keeps Main on Sol-medium (`@default`) for orchestration,
 bounded workers on Sonnet-high (`@task`), difficult workers and planning on
-Astra-max (`@slow`/`@planner`), review on Opus-xhigh (`@review`), and verification,
+Sol-max (`@slow`/`@planner`), review on Opus-xhigh (`@review`), and verification,
 research, or free fallback on Muse Contributor Free-xhigh (`@verify`/`@research`/`@free`). Advisor and
 prewalk are off by default; dispatch allows at most two workers and no nested workers.
 The free endpoint is promotional; Contributor inputs and history may be used for

@@ -35,14 +35,14 @@ retry:
   enabled: true
   modelFallback: true
   fallbackChains:
-    # Claude primaries fall back to GPT Astra (fast: tier.openai=priority
+    # Claude primaries fall back to GPT Sol (fast: tier.openai=priority
     # applies to the fallback request) before the previous entries, which are
     # preserved verbatim after it. Exact key shadows for Opus (resolution:
     # exact model > provider/* > role > default).
     anthropic/*:
-      - openai-codex/gpt-6-astra:medium
+      - openai-codex/gpt-5.6-sol:medium
       - opencode-zen/muse-spark-1.3-contributor-free:xhigh
     anthropic/claude-opus-5:
-      - openai-codex/gpt-6-astra:medium
+      - openai-codex/gpt-5.6-sol:medium
       - anthropic/claude-sonnet-5:high
       - opencode-zen/muse-spark-1.3-contributor-free:xhigh

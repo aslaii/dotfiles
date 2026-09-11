@@ -53,10 +53,10 @@ No magic keyword is required for coding delegation. Main orchestrates even a sin
 
 ## Setup
 
-- **Model:** Main uses `@default` (Astra-medium) for normal launches and `@plan` (Astra-medium) for planning. Delegate bounded implementation to `task`/Luna, difficult implementation to `terra`, and difficult plan construction to `planner`/Claude. Do not switch Main to `@smol` or `@slow` to code. Respect explicit user choices.
+- **Model:** Main uses `@default` (Sol-medium) for normal launches and `@plan` (Sol-medium) for planning. Delegate bounded implementation to `task`/Luna, difficult implementation to `terra`, and difficult plan construction to `planner`/Claude. Do not switch Main to `@smol` or `@slow` to code. Respect explicit user choices.
 - **Prewalk:** off for all recommended launches: `--no-prewalk`. Bounded features are delegated, not handed off by switching Main.
 - **Advisor:** off unless explicitly requested. Concrete architectural, security, billing, migration, data-loss, or concurrency risk calls for a bounded `reviewer` or `security-reviewer`, not continuous commentary. Review is not runtime verification or approval.
-- **Thinking:** retain each role's configured effort; do not raise Astra effort or add `--thinking max` unless explicitly requested.
+- **Thinking:** retain each role's configured effort; do not raise Sol effort or add `--thinking max` unless explicitly requested.
 
 Do not inventory settings. Prefer role aliases. Inspect only a consequential unknown: `modelRoles`, or `magicKeywords.enabled` plus the selected keyword switch. Reuse results unless project/profile settings changed. Never inspect credentials or mutate configuration. If native syntax remains uncertain, read only the relevant OMP doc.
 
