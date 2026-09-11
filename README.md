@@ -71,6 +71,9 @@ The `omp/` directory mirrors the portable parts of `~/.omp`:
 | `omp/plugins/bun.lock` | Exact plugin/dependency revisions for reproducible restoration |
 | `omp/plugins/omp-plugins.lock.json` | OMP plugin versions, enablement, and feature selections |
 
+Setup, launch profiles, and cross-machine transfer are documented in
+[`omp/README.md`](omp/README.md).
+
 On another macOS or Linux computer, install Bun, OMP, and RTK first. The earlier
 plugin snapshot was verified with Bun 1.4.0 and OMP 18.1.10; plugins were not
 reinstalled during this task. Runtime routing was verified against the currently

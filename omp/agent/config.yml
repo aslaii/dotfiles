@@ -19,7 +19,7 @@ disabledProviders:
   - vscode
   - windsurf
 modelRoles:
-  default: anthropic/claude-sonnet-5:medium
+  default: commandcode/deepseek/deepseek-v4.1-flash:medium
   plan: anthropic/claude-sonnet-5:high
   task: anthropic/claude-sonnet-5:high
   slow: anthropic/claude-sonnet-5:high
@@ -86,13 +86,14 @@ retry:
       - opencode-zen/muse-spark-1.3-contributor-free:xhigh
 symbolPreset: nerd
 composer:
-  shape: box
+  shape: band
 theme:
-  dark: dark-catppuccin
-  light: light-catppuccin
+  dark: titanium
+  light: light
 disabledExtensions:
   []
 browser:
   headless: true
 dev:
   autoqaConsent: granted
+setupVersion: 2

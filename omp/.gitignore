@@ -8,6 +8,7 @@
 !budget.yml
 !fast.mjs
 !preload.mjs
+!README.md
 !agent/
 !agent/config.yml
 !agent/APPEND_SYSTEM.md
