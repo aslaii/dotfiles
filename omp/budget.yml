@@ -3,7 +3,8 @@
 # A plan-only profile: every model role and every fallback edge stays on the
 # Command Code $10 plan's DeepSeek tier (registered by agent/models.yml's
 # native openai-models-list discovery: deepseek-v4.1-flash, deepseek-v4-pro,
-# deepseek-v4-flash) or the free OpenCode Zen Muse Contributor endpoint.
+# deepseek-v4-flash, deepseek-v4-flash-vision-exp) or the free OpenCode Zen
+# Muse Contributor endpoint.
 # Nothing here can escalate to Anthropic, OpenAI, GPT, Claude, or any paid
 # Zen model - the global config's Claude/GPT roles are overridden below.
 #
@@ -24,9 +25,10 @@ modelRoles:
   designer: commandcode/deepseek/deepseek-v4.1-flash:max
   task: commandcode/deepseek/deepseek-v4.1-flash:high
   advisor: commandcode/deepseek/deepseek-v4.1-flash:high
-  # Main + image reading stay on the plan's cheapest tier.
+  # Main stays on the plan's cheapest tier.
   default: commandcode/deepseek/deepseek-v4.1-flash:medium
-  vision: commandcode/deepseek/deepseek-v4.1-flash:medium
+  # Vision reads use the plan's dedicated, image-probe-verified vision model.
+  vision: commandcode/deepseek/deepseek-v4-flash-vision-exp:high
   # Grunt work -> free Muse Contributor, zero plan spend.
   smol: opencode-zen/muse-spark-1.3-contributor-free:xhigh
   commit: opencode-zen/muse-spark-1.3-contributor-free:medium
@@ -52,6 +54,9 @@ retry:
       - commandcode/deepseek/deepseek-v4.1-flash:max
       - commandcode/deepseek/deepseek-v4-flash:high
       - opencode-zen/muse-spark-1.3-contributor-free:xhigh
+    commandcode/deepseek/deepseek-v4-flash-vision-exp:
+      - opencode-zen/muse-spark-1.3-contributor-free:xhigh
+      - commandcode/deepseek/deepseek-v4.1-flash:medium
     commandcode/deepseek/*:
       - commandcode/deepseek/deepseek-v4.1-flash:high
       - opencode-zen/muse-spark-1.3-contributor-free:xhigh

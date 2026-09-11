@@ -39,13 +39,17 @@ bun ~/dotfiles/omp/launch.mjs --config ~/dotfiles/omp/budget.yml
 inherits the rest from `agent/config.yml`. Every model role and every
 fallback chain stays on the Command Code $10 plan's DeepSeek family
 (`deepseek/deepseek-v4.1-flash`, `deepseek/deepseek-v4-pro`,
-`deepseek/deepseek-v4-flash`, registered by `agent/models.yml`'s native
-`openai-models-list` discovery) or the free
-`opencode-zen/muse-spark-1.3-contributor-free` endpoint:
+`deepseek/deepseek-v4-flash`, `deepseek/deepseek-v4-flash-vision-exp`,
+registered by `agent/models.yml`'s native `openai-models-list` discovery) or
+the free `opencode-zen/muse-spark-1.3-contributor-free` endpoint:
 
 - `commandcode/deepseek/deepseek-v4.1-flash` (the plan's verified tier): `max`
-  for planning and review, `high` for task and advisor, `medium` for Main and
-  vision.
+  for planning and review, `high` for task and advisor, `medium` for Main.
+- `commandcode/deepseek/deepseek-v4-flash-vision-exp` (the plan's dedicated
+  vision model, confirmed by an actual image probe) at `high` for the
+  `vision` role, falling back to free Muse first (its documented rate-limit
+  escape), then `deepseek-v4.1-flash:medium` (also probe-confirmed
+  image-capable).
 - `opencode-zen/muse-spark-1.3-contributor-free` (free) for
   small/commit/tiny/verify/research/free, falling back to the plan when the
   free endpoint is unavailable.
