@@ -19,16 +19,16 @@ disabledProviders:
   - vscode
   - windsurf
 modelRoles:
-  default: openai-codex/gpt-5.6-sol:medium
-  plan: openai-codex/gpt-5.6-sol:max
+  default: anthropic/claude-sonnet-5:medium
+  plan: anthropic/claude-sonnet-5:high
   task: anthropic/claude-sonnet-5:high
-  slow: openai-codex/gpt-5.6-sol:max
+  slow: anthropic/claude-sonnet-5:high
   smol: opencode-zen/muse-spark-1.3-contributor-free:xhigh
   vision: opencode-zen/muse-spark-1.3-contributor-free:xhigh
   designer: anthropic/claude-opus-5:high
   commit: opencode-zen/muse-spark-1.3-contributor-free:medium
   tiny: opencode-zen/muse-spark-1.3-contributor-free:medium
-  planner: openai-codex/gpt-5.6-sol:max
+  planner: anthropic/claude-sonnet-5:high
   advisor: anthropic/claude-sonnet-5:medium
   review: anthropic/claude-opus-5:xhigh
   verify: opencode-zen/muse-spark-1.3-contributor-free:xhigh
@@ -65,18 +65,25 @@ retry:
   fallbackChains:
     default:
       - anthropic/claude-sonnet-5:medium
+      - commandcode/deepseek/deepseek-v4.1-flash:high
       - opencode-zen/muse-spark-1.3-contributor-free:xhigh
     openai-codex/*:
       - anthropic/claude-sonnet-5:medium
+      - commandcode/deepseek/deepseek-v4.1-flash:high
       - opencode-zen/muse-spark-1.3-contributor-free:xhigh
     anthropic/claude-opus-5:
       - anthropic/claude-sonnet-5:high
+      - commandcode/deepseek/deepseek-v4.1-flash:max
       - opencode-zen/muse-spark-1.3-contributor-free:xhigh
     anthropic/*:
+      - commandcode/deepseek/deepseek-v4.1-flash:high
       - opencode-zen/muse-spark-1.3-contributor-free:xhigh
     opencode-zen/muse-spark-1.3-contributor-free:
+      - commandcode/deepseek/deepseek-v4.1-flash:medium
       - anthropic/claude-sonnet-5:high
-      - openai-codex/gpt-5.6-sol:high
+    commandcode/deepseek/deepseek-v4.1-flash:
+      - anthropic/claude-sonnet-5:medium
+      - opencode-zen/muse-spark-1.3-contributor-free:xhigh
 symbolPreset: nerd
 composer:
   shape: box

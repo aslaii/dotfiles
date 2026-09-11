@@ -16,7 +16,7 @@
           "reasoning": "xhigh"
         },
         {
-          "model": "openai-codex/gpt-5.6-luna-fast",
+          "model": "commandcode/deepseek/deepseek-v4.1-flash",
           "reasoning": "low"
         }
       ]
@@ -32,7 +32,7 @@
           "reasoning": "xhigh"
         },
         {
-          "model": "openai-codex/gpt-5.6-terra",
+          "model": "commandcode/deepseek/deepseek-v4.1-flash",
           "reasoning": "medium"
         }
       ]
@@ -48,7 +48,7 @@
           "reasoning": "xhigh"
         },
         {
-          "model": "openai-codex/gpt-5.6-sol",
+          "model": "commandcode/deepseek/deepseek-v4.1-flash",
           "reasoning": "high"
         }
       ]
@@ -64,7 +64,7 @@
           "reasoning": "xhigh"
         },
         {
-          "model": "openai-codex/gpt-5.6-terra",
+          "model": "commandcode/deepseek/deepseek-v4.1-flash",
           "reasoning": "medium"
         }
       ]
@@ -80,7 +80,7 @@
           "reasoning": "xhigh"
         },
         {
-          "model": "openai-codex/gpt-5.6-terra",
+          "model": "commandcode/deepseek/deepseek-v4.1-flash",
           "reasoning": "medium"
         }
       ]
@@ -96,7 +96,7 @@
           "reasoning": "xhigh"
         },
         {
-          "model": "openai-codex/gpt-5.6-terra",
+          "model": "commandcode/deepseek/deepseek-v4.1-flash",
           "reasoning": "medium"
         }
       ]
@@ -112,7 +112,7 @@
           "reasoning": "xhigh"
         },
         {
-          "model": "openai-codex/gpt-5.6-sol",
+          "model": "commandcode/deepseek/deepseek-v4.1-flash",
           "reasoning": "high"
         }
       ]
@@ -124,12 +124,12 @@
           "reasoning": "high"
         },
         {
-          "model": "opencode/muse-spark-1.3-contributor-free",
-          "reasoning": "xhigh"
+          "model": "commandcode/deepseek/deepseek-v4.1-flash",
+          "reasoning": "max"
         },
         {
-          "model": "openai-codex/gpt-5.6-sol",
-          "reasoning": "medium"
+          "model": "opencode/muse-spark-1.3-contributor-free",
+          "reasoning": "xhigh"
         }
       ]
     },
@@ -140,12 +140,12 @@
           "reasoning": "high"
         },
         {
-          "model": "opencode/muse-spark-1.3-contributor-free",
-          "reasoning": "xhigh"
+          "model": "commandcode/deepseek/deepseek-v4.1-flash",
+          "reasoning": "max"
         },
         {
-          "model": "openai-codex/gpt-5.6-sol",
-          "reasoning": "max"
+          "model": "opencode/muse-spark-1.3-contributor-free",
+          "reasoning": "xhigh"
         }
       ]
     },
@@ -160,7 +160,7 @@
           "reasoning": "xhigh"
         },
         {
-          "model": "openai-codex/gpt-5.6-luna-fast",
+          "model": "commandcode/deepseek/deepseek-v4.1-flash",
           "reasoning": "low"
         }
       ]
@@ -178,7 +178,7 @@
           "reasoning": "xhigh"
         },
         {
-          "model": "openai-codex/gpt-5.6-luna-fast",
+          "model": "commandcode/deepseek/deepseek-v4.1-flash",
           "reasoning": "low"
         }
       ]
@@ -194,7 +194,7 @@
           "reasoning": "xhigh"
         },
         {
-          "model": "openai-codex/gpt-5.6-luna-fast",
+          "model": "commandcode/deepseek/deepseek-v4.1-flash",
           "reasoning": "low"
         }
       ]
@@ -206,11 +206,11 @@
           "reasoning": "high"
         },
         {
-          "model": "opencode/muse-spark-1.3-contributor-free",
-          "reasoning": "xhigh"
+          "model": "commandcode/deepseek/deepseek-v4.1-flash",
+          "reasoning": "max"
         },
         {
-          "model": "openai-codex/gpt-5.6-sol",
+          "model": "opencode/muse-spark-1.3-contributor-free",
           "reasoning": "xhigh"
         }
       ]
@@ -226,7 +226,7 @@
           "reasoning": "xhigh"
         },
         {
-          "model": "openai-codex/gpt-5.6-terra",
+          "model": "commandcode/deepseek/deepseek-v4.1-flash",
           "reasoning": "medium"
         }
       ]
@@ -242,7 +242,7 @@
           "reasoning": "xhigh"
         },
         {
-          "model": "openai-codex/gpt-5.6-sol",
+          "model": "commandcode/deepseek/deepseek-v4.1-flash",
           "reasoning": "high"
         }
       ]
@@ -254,11 +254,11 @@
           "reasoning": "high"
         },
         {
-          "model": "opencode/muse-spark-1.3-contributor-free",
-          "reasoning": "xhigh"
+          "model": "commandcode/deepseek/deepseek-v4.1-flash",
+          "reasoning": "max"
         },
         {
-          "model": "openai-codex/gpt-5.6-sol",
+          "model": "opencode/muse-spark-1.3-contributor-free",
           "reasoning": "xhigh"
         }
       ]
@@ -288,7 +288,7 @@
               "reasoning": "xhigh"
             },
             {
-              "model": "openai-codex/gpt-5.6-luna-fast",
+              "model": "commandcode/deepseek/deepseek-v4.1-flash",
               "reasoning": "low"
             }
           ]
@@ -304,7 +304,7 @@
               "reasoning": "xhigh"
             },
             {
-              "model": "openai-codex/gpt-5.6-terra",
+              "model": "commandcode/deepseek/deepseek-v4.1-flash",
               "reasoning": "medium"
             }
           ]
@@ -320,7 +320,7 @@
               "reasoning": "xhigh"
             },
             {
-              "model": "openai-codex/gpt-5.6-sol",
+              "model": "commandcode/deepseek/deepseek-v4.1-flash",
               "reasoning": "high"
             }
           ]
@@ -336,7 +336,7 @@
               "reasoning": "xhigh"
             },
             {
-              "model": "openai-codex/gpt-5.6-terra",
+              "model": "commandcode/deepseek/deepseek-v4.1-flash",
               "reasoning": "medium"
             }
           ]
@@ -352,7 +352,7 @@
               "reasoning": "xhigh"
             },
             {
-              "model": "openai-codex/gpt-5.6-terra",
+              "model": "commandcode/deepseek/deepseek-v4.1-flash",
               "reasoning": "medium"
             }
           ]
@@ -368,7 +368,7 @@
               "reasoning": "xhigh"
             },
             {
-              "model": "openai-codex/gpt-5.6-terra",
+              "model": "commandcode/deepseek/deepseek-v4.1-flash",
               "reasoning": "medium"
             }
           ]
@@ -384,7 +384,7 @@
               "reasoning": "xhigh"
             },
             {
-              "model": "openai-codex/gpt-5.6-sol",
+              "model": "commandcode/deepseek/deepseek-v4.1-flash",
               "reasoning": "high"
             }
           ]
@@ -396,12 +396,12 @@
               "reasoning": "high"
             },
             {
-              "model": "opencode/muse-spark-1.3-contributor-free",
-              "reasoning": "xhigh"
+              "model": "commandcode/deepseek/deepseek-v4.1-flash",
+              "reasoning": "max"
             },
             {
-              "model": "openai-codex/gpt-5.6-sol",
-              "reasoning": "medium"
+              "model": "opencode/muse-spark-1.3-contributor-free",
+              "reasoning": "xhigh"
             }
           ]
         },
@@ -412,12 +412,12 @@
               "reasoning": "high"
             },
             {
-              "model": "opencode/muse-spark-1.3-contributor-free",
-              "reasoning": "xhigh"
+              "model": "commandcode/deepseek/deepseek-v4.1-flash",
+              "reasoning": "max"
             },
             {
-              "model": "openai-codex/gpt-5.6-sol",
-              "reasoning": "max"
+              "model": "opencode/muse-spark-1.3-contributor-free",
+              "reasoning": "xhigh"
             }
           ]
         },
@@ -432,7 +432,7 @@
               "reasoning": "xhigh"
             },
             {
-              "model": "openai-codex/gpt-5.6-luna-fast",
+              "model": "commandcode/deepseek/deepseek-v4.1-flash",
               "reasoning": "low"
             }
           ]
@@ -450,7 +450,7 @@
               "reasoning": "xhigh"
             },
             {
-              "model": "openai-codex/gpt-5.6-luna-fast",
+              "model": "commandcode/deepseek/deepseek-v4.1-flash",
               "reasoning": "low"
             }
           ]
@@ -466,7 +466,7 @@
               "reasoning": "xhigh"
             },
             {
-              "model": "openai-codex/gpt-5.6-luna-fast",
+              "model": "commandcode/deepseek/deepseek-v4.1-flash",
               "reasoning": "low"
             }
           ]
@@ -478,11 +478,11 @@
               "reasoning": "high"
             },
             {
-              "model": "opencode/muse-spark-1.3-contributor-free",
-              "reasoning": "xhigh"
+              "model": "commandcode/deepseek/deepseek-v4.1-flash",
+              "reasoning": "max"
             },
             {
-              "model": "openai-codex/gpt-5.6-sol",
+              "model": "opencode/muse-spark-1.3-contributor-free",
               "reasoning": "xhigh"
             }
           ]
@@ -498,7 +498,7 @@
               "reasoning": "xhigh"
             },
             {
-              "model": "openai-codex/gpt-5.6-terra",
+              "model": "commandcode/deepseek/deepseek-v4.1-flash",
               "reasoning": "medium"
             }
           ]
@@ -514,7 +514,7 @@
               "reasoning": "xhigh"
             },
             {
-              "model": "openai-codex/gpt-5.6-sol",
+              "model": "commandcode/deepseek/deepseek-v4.1-flash",
               "reasoning": "high"
             }
           ]
@@ -526,11 +526,11 @@
               "reasoning": "high"
             },
             {
-              "model": "opencode/muse-spark-1.3-contributor-free",
-              "reasoning": "xhigh"
+              "model": "commandcode/deepseek/deepseek-v4.1-flash",
+              "reasoning": "max"
             },
             {
-              "model": "openai-codex/gpt-5.6-sol",
+              "model": "opencode/muse-spark-1.3-contributor-free",
               "reasoning": "xhigh"
             }
           ]
@@ -560,7 +560,7 @@
               "reasoning": "xhigh"
             },
             {
-              "model": "openai-codex/gpt-5.6-luna-fast",
+              "model": "commandcode/deepseek/deepseek-v4.1-flash",
               "reasoning": "low"
             }
           ]
@@ -576,7 +576,7 @@
               "reasoning": "xhigh"
             },
             {
-              "model": "openai-codex/gpt-5.6-terra",
+              "model": "commandcode/deepseek/deepseek-v4.1-flash",
               "reasoning": "medium"
             }
           ]
@@ -592,7 +592,7 @@
               "reasoning": "xhigh"
             },
             {
-              "model": "openai-codex/gpt-5.6-sol",
+              "model": "commandcode/deepseek/deepseek-v4.1-flash",
               "reasoning": "high"
             }
           ]
@@ -608,7 +608,7 @@
               "reasoning": "xhigh"
             },
             {
-              "model": "openai-codex/gpt-5.6-terra",
+              "model": "commandcode/deepseek/deepseek-v4.1-flash",
               "reasoning": "medium"
             }
           ]
@@ -624,7 +624,7 @@
               "reasoning": "xhigh"
             },
             {
-              "model": "openai-codex/gpt-5.6-terra",
+              "model": "commandcode/deepseek/deepseek-v4.1-flash",
               "reasoning": "medium"
             }
           ]
@@ -640,7 +640,7 @@
               "reasoning": "xhigh"
             },
             {
-              "model": "openai-codex/gpt-5.6-terra",
+              "model": "commandcode/deepseek/deepseek-v4.1-flash",
               "reasoning": "medium"
             }
           ]
@@ -656,7 +656,7 @@
               "reasoning": "xhigh"
             },
             {
-              "model": "openai-codex/gpt-5.6-sol",
+              "model": "commandcode/deepseek/deepseek-v4.1-flash",
               "reasoning": "high"
             }
           ]
@@ -668,12 +668,12 @@
               "reasoning": "high"
             },
             {
-              "model": "opencode/muse-spark-1.3-contributor-free",
-              "reasoning": "xhigh"
+              "model": "commandcode/deepseek/deepseek-v4.1-flash",
+              "reasoning": "max"
             },
             {
-              "model": "openai-codex/gpt-5.6-sol",
-              "reasoning": "medium"
+              "model": "opencode/muse-spark-1.3-contributor-free",
+              "reasoning": "xhigh"
             }
           ]
         },
@@ -684,12 +684,12 @@
               "reasoning": "high"
             },
             {
-              "model": "opencode/muse-spark-1.3-contributor-free",
-              "reasoning": "xhigh"
+              "model": "commandcode/deepseek/deepseek-v4.1-flash",
+              "reasoning": "max"
             },
             {
-              "model": "openai-codex/gpt-5.6-sol",
-              "reasoning": "max"
+              "model": "opencode/muse-spark-1.3-contributor-free",
+              "reasoning": "xhigh"
             }
           ]
         },
@@ -704,7 +704,7 @@
               "reasoning": "xhigh"
             },
             {
-              "model": "openai-codex/gpt-5.6-luna-fast",
+              "model": "commandcode/deepseek/deepseek-v4.1-flash",
               "reasoning": "low"
             }
           ]
@@ -722,7 +722,7 @@
               "reasoning": "xhigh"
             },
             {
-              "model": "openai-codex/gpt-5.6-luna-fast",
+              "model": "commandcode/deepseek/deepseek-v4.1-flash",
               "reasoning": "low"
             }
           ]
@@ -738,7 +738,7 @@
               "reasoning": "xhigh"
             },
             {
-              "model": "openai-codex/gpt-5.6-luna-fast",
+              "model": "commandcode/deepseek/deepseek-v4.1-flash",
               "reasoning": "low"
             }
           ]
@@ -750,11 +750,11 @@
               "reasoning": "high"
             },
             {
-              "model": "opencode/muse-spark-1.3-contributor-free",
-              "reasoning": "xhigh"
+              "model": "commandcode/deepseek/deepseek-v4.1-flash",
+              "reasoning": "max"
             },
             {
-              "model": "openai-codex/gpt-5.6-sol",
+              "model": "opencode/muse-spark-1.3-contributor-free",
               "reasoning": "xhigh"
             }
           ]
@@ -770,7 +770,7 @@
               "reasoning": "xhigh"
             },
             {
-              "model": "openai-codex/gpt-5.6-terra",
+              "model": "commandcode/deepseek/deepseek-v4.1-flash",
               "reasoning": "medium"
             }
           ]
@@ -786,7 +786,7 @@
               "reasoning": "xhigh"
             },
             {
-              "model": "openai-codex/gpt-5.6-sol",
+              "model": "commandcode/deepseek/deepseek-v4.1-flash",
               "reasoning": "high"
             }
           ]
@@ -798,11 +798,11 @@
               "reasoning": "high"
             },
             {
-              "model": "opencode/muse-spark-1.3-contributor-free",
-              "reasoning": "xhigh"
+              "model": "commandcode/deepseek/deepseek-v4.1-flash",
+              "reasoning": "max"
             },
             {
-              "model": "openai-codex/gpt-5.6-sol",
+              "model": "opencode/muse-spark-1.3-contributor-free",
               "reasoning": "xhigh"
             }
           ]
@@ -822,7 +822,7 @@
               "reasoning": "xhigh"
             },
             {
-              "model": "openai-codex/gpt-5.6-luna-fast",
+              "model": "commandcode/deepseek/deepseek-v4.1-flash",
               "reasoning": "low"
             }
           ]
@@ -838,7 +838,7 @@
               "reasoning": "xhigh"
             },
             {
-              "model": "openai-codex/gpt-5.6-terra",
+              "model": "commandcode/deepseek/deepseek-v4.1-flash",
               "reasoning": "medium"
             }
           ]
@@ -854,7 +854,7 @@
               "reasoning": "xhigh"
             },
             {
-              "model": "openai-codex/gpt-5.6-sol",
+              "model": "commandcode/deepseek/deepseek-v4.1-flash",
               "reasoning": "high"
             }
           ]
@@ -870,7 +870,7 @@
               "reasoning": "xhigh"
             },
             {
-              "model": "openai-codex/gpt-5.6-terra",
+              "model": "commandcode/deepseek/deepseek-v4.1-flash",
               "reasoning": "medium"
             }
           ]
@@ -886,7 +886,7 @@
               "reasoning": "xhigh"
             },
             {
-              "model": "openai-codex/gpt-5.6-terra",
+              "model": "commandcode/deepseek/deepseek-v4.1-flash",
               "reasoning": "medium"
             }
           ]
@@ -902,7 +902,7 @@
               "reasoning": "xhigh"
             },
             {
-              "model": "openai-codex/gpt-5.6-terra",
+              "model": "commandcode/deepseek/deepseek-v4.1-flash",
               "reasoning": "medium"
             }
           ]
@@ -918,7 +918,7 @@
               "reasoning": "xhigh"
             },
             {
-              "model": "openai-codex/gpt-5.6-sol",
+              "model": "commandcode/deepseek/deepseek-v4.1-flash",
               "reasoning": "high"
             }
           ]
@@ -930,12 +930,12 @@
               "reasoning": "high"
             },
             {
-              "model": "opencode/muse-spark-1.3-contributor-free",
-              "reasoning": "xhigh"
+              "model": "commandcode/deepseek/deepseek-v4.1-flash",
+              "reasoning": "max"
             },
             {
-              "model": "openai-codex/gpt-5.6-sol",
-              "reasoning": "medium"
+              "model": "opencode/muse-spark-1.3-contributor-free",
+              "reasoning": "xhigh"
             }
           ]
         },
@@ -946,12 +946,12 @@
               "reasoning": "high"
             },
             {
-              "model": "opencode/muse-spark-1.3-contributor-free",
-              "reasoning": "xhigh"
+              "model": "commandcode/deepseek/deepseek-v4.1-flash",
+              "reasoning": "max"
             },
             {
-              "model": "openai-codex/gpt-5.6-sol",
-              "reasoning": "max"
+              "model": "opencode/muse-spark-1.3-contributor-free",
+              "reasoning": "xhigh"
             }
           ]
         },
@@ -966,7 +966,7 @@
               "reasoning": "xhigh"
             },
             {
-              "model": "openai-codex/gpt-5.6-luna-fast",
+              "model": "commandcode/deepseek/deepseek-v4.1-flash",
               "reasoning": "low"
             }
           ]
@@ -984,7 +984,7 @@
               "reasoning": "xhigh"
             },
             {
-              "model": "openai-codex/gpt-5.6-luna-fast",
+              "model": "commandcode/deepseek/deepseek-v4.1-flash",
               "reasoning": "low"
             }
           ]
@@ -1000,7 +1000,7 @@
               "reasoning": "xhigh"
             },
             {
-              "model": "openai-codex/gpt-5.6-luna-fast",
+              "model": "commandcode/deepseek/deepseek-v4.1-flash",
               "reasoning": "low"
             }
           ]
@@ -1012,11 +1012,11 @@
               "reasoning": "high"
             },
             {
-              "model": "opencode/muse-spark-1.3-contributor-free",
-              "reasoning": "xhigh"
+              "model": "commandcode/deepseek/deepseek-v4.1-flash",
+              "reasoning": "max"
             },
             {
-              "model": "openai-codex/gpt-5.6-sol",
+              "model": "opencode/muse-spark-1.3-contributor-free",
               "reasoning": "xhigh"
             }
           ]
@@ -1032,7 +1032,7 @@
               "reasoning": "xhigh"
             },
             {
-              "model": "openai-codex/gpt-5.6-terra",
+              "model": "commandcode/deepseek/deepseek-v4.1-flash",
               "reasoning": "medium"
             }
           ]
@@ -1048,7 +1048,7 @@
               "reasoning": "xhigh"
             },
             {
-              "model": "openai-codex/gpt-5.6-sol",
+              "model": "commandcode/deepseek/deepseek-v4.1-flash",
               "reasoning": "high"
             }
           ]
@@ -1060,11 +1060,11 @@
               "reasoning": "high"
             },
             {
-              "model": "opencode/muse-spark-1.3-contributor-free",
-              "reasoning": "xhigh"
+              "model": "commandcode/deepseek/deepseek-v4.1-flash",
+              "reasoning": "max"
             },
             {
-              "model": "openai-codex/gpt-5.6-sol",
+              "model": "opencode/muse-spark-1.3-contributor-free",
               "reasoning": "xhigh"
             }
           ]
@@ -1084,7 +1084,7 @@
               "reasoning": "xhigh"
             },
             {
-              "model": "openai-codex/gpt-5.6-luna-fast",
+              "model": "commandcode/deepseek/deepseek-v4.1-flash",
               "reasoning": "low"
             }
           ]
@@ -1100,7 +1100,7 @@
               "reasoning": "xhigh"
             },
             {
-              "model": "openai-codex/gpt-5.6-terra",
+              "model": "commandcode/deepseek/deepseek-v4.1-flash",
               "reasoning": "medium"
             }
           ]
@@ -1116,7 +1116,7 @@
               "reasoning": "xhigh"
             },
             {
-              "model": "openai-codex/gpt-5.6-sol",
+              "model": "commandcode/deepseek/deepseek-v4.1-flash",
               "reasoning": "high"
             }
           ]
@@ -1132,7 +1132,7 @@
               "reasoning": "xhigh"
             },
             {
-              "model": "openai-codex/gpt-5.6-terra",
+              "model": "commandcode/deepseek/deepseek-v4.1-flash",
               "reasoning": "medium"
             }
           ]
@@ -1148,7 +1148,7 @@
               "reasoning": "xhigh"
             },
             {
-              "model": "openai-codex/gpt-5.6-terra",
+              "model": "commandcode/deepseek/deepseek-v4.1-flash",
               "reasoning": "medium"
             }
           ]
@@ -1164,7 +1164,7 @@
               "reasoning": "xhigh"
             },
             {
-              "model": "openai-codex/gpt-5.6-terra",
+              "model": "commandcode/deepseek/deepseek-v4.1-flash",
               "reasoning": "medium"
             }
           ]
@@ -1180,7 +1180,7 @@
               "reasoning": "xhigh"
             },
             {
-              "model": "openai-codex/gpt-5.6-sol",
+              "model": "commandcode/deepseek/deepseek-v4.1-flash",
               "reasoning": "high"
             }
           ]
@@ -1192,12 +1192,12 @@
               "reasoning": "high"
             },
             {
-              "model": "opencode/muse-spark-1.3-contributor-free",
-              "reasoning": "xhigh"
+              "model": "commandcode/deepseek/deepseek-v4.1-flash",
+              "reasoning": "max"
             },
             {
-              "model": "openai-codex/gpt-5.6-sol",
-              "reasoning": "medium"
+              "model": "opencode/muse-spark-1.3-contributor-free",
+              "reasoning": "xhigh"
             }
           ]
         },
@@ -1208,12 +1208,12 @@
               "reasoning": "high"
             },
             {
-              "model": "opencode/muse-spark-1.3-contributor-free",
-              "reasoning": "xhigh"
+              "model": "commandcode/deepseek/deepseek-v4.1-flash",
+              "reasoning": "max"
             },
             {
-              "model": "openai-codex/gpt-5.6-sol",
-              "reasoning": "max"
+              "model": "opencode/muse-spark-1.3-contributor-free",
+              "reasoning": "xhigh"
             }
           ]
         },
@@ -1228,7 +1228,7 @@
               "reasoning": "xhigh"
             },
             {
-              "model": "openai-codex/gpt-5.6-luna-fast",
+              "model": "commandcode/deepseek/deepseek-v4.1-flash",
               "reasoning": "low"
             }
           ]
@@ -1246,7 +1246,7 @@
               "reasoning": "xhigh"
             },
             {
-              "model": "openai-codex/gpt-5.6-luna-fast",
+              "model": "commandcode/deepseek/deepseek-v4.1-flash",
               "reasoning": "low"
             }
           ]
@@ -1262,7 +1262,7 @@
               "reasoning": "xhigh"
             },
             {
-              "model": "openai-codex/gpt-5.6-luna-fast",
+              "model": "commandcode/deepseek/deepseek-v4.1-flash",
               "reasoning": "low"
             }
           ]
@@ -1274,11 +1274,11 @@
               "reasoning": "high"
             },
             {
-              "model": "opencode/muse-spark-1.3-contributor-free",
-              "reasoning": "xhigh"
+              "model": "commandcode/deepseek/deepseek-v4.1-flash",
+              "reasoning": "max"
             },
             {
-              "model": "openai-codex/gpt-5.6-sol",
+              "model": "opencode/muse-spark-1.3-contributor-free",
               "reasoning": "xhigh"
             }
           ]
@@ -1294,7 +1294,7 @@
               "reasoning": "xhigh"
             },
             {
-              "model": "openai-codex/gpt-5.6-terra",
+              "model": "commandcode/deepseek/deepseek-v4.1-flash",
               "reasoning": "medium"
             }
           ]
@@ -1310,7 +1310,7 @@
               "reasoning": "xhigh"
             },
             {
-              "model": "openai-codex/gpt-5.6-sol",
+              "model": "commandcode/deepseek/deepseek-v4.1-flash",
               "reasoning": "high"
             }
           ]
@@ -1322,11 +1322,11 @@
               "reasoning": "high"
             },
             {
-              "model": "opencode/muse-spark-1.3-contributor-free",
-              "reasoning": "xhigh"
+              "model": "commandcode/deepseek/deepseek-v4.1-flash",
+              "reasoning": "max"
             },
             {
-              "model": "openai-codex/gpt-5.6-sol",
+              "model": "opencode/muse-spark-1.3-contributor-free",
               "reasoning": "xhigh"
             }
           ]
