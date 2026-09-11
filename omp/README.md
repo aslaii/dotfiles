@@ -18,7 +18,7 @@ Plugins are reinstalled from the frozen lockfile by Bun.
 | --- | --- | --- |
 | `omp` | none | Default routing from `agent/config.yml`. |
 | `omp-fast` | `fast.yml` + `fast.mjs` | Priority Claude/GPT requests, 8 parallel agents. |
-| `omp-budget` | `budget.yml` | Whole Command Code plan catalog plus free Muse. |
+| `omp-budget` | `budget.yml` | Plan's DeepSeek tier plus free Muse only. |
 
 The Zsh functions live in `macos/zsh/zsh/functions.zsh`. After restoring, reload
 the shell once:
@@ -37,22 +37,23 @@ bun ~/dotfiles/omp/launch.mjs --config ~/dotfiles/omp/budget.yml
 
 `budget.yml` is a `--config` overlay: it overrides only the keys it names and
 inherits the rest from `agent/config.yml`. Every model role and every
-fallback chain resolves to a model from the Command Code $10 plan's whole
-catalog (registered by `agent/models.yml`'s native `openai-models-list`
-discovery, ~69 ids) or the free `opencode-zen/muse-spark-1.3-contributor-free`
-endpoint:
+fallback chain stays on the Command Code $10 plan's DeepSeek family
+(`deepseek/deepseek-v4.1-flash`, `deepseek/deepseek-v4-pro`,
+`deepseek/deepseek-v4-flash`, registered by `agent/models.yml`'s native
+`openai-models-list` discovery) or the free
+`opencode-zen/muse-spark-1.3-contributor-free` endpoint:
 
-- Heavy lanes (`plan`, `review`, `designer`, `planner`) run
-  `commandcode/claude-opus-5`.
-- Mid lanes (`slow`, `task`, `advisor`) run `commandcode/claude-sonnet-5`.
-- Main/vision stay on `commandcode/deepseek/deepseek-v4.1-flash` at `medium`.
-- Grunt work (`smol`/`commit`/`tiny`/`verify`/`research`/`free`) runs the free
-  Muse Contributor endpoint.
-- Fallback chains cascade across the rest of the plan catalog (GPT-5.6,
-  DeepSeek, GLM, Qwen, MiniMax, Kimi) before dropping to free Muse.
+- `commandcode/deepseek/deepseek-v4.1-flash` (the plan's verified tier): `max`
+  for planning and review, `high` for task and advisor, `medium` for Main and
+  vision.
+- `opencode-zen/muse-spark-1.3-contributor-free` (free) for
+  small/commit/tiny/verify/research/free, falling back to the plan when the
+  free endpoint is unavailable.
+- Fallback chains cascade across the rest of the plan's DeepSeek family
+  (`deepseek-v4-pro`, `deepseek-v4-flash`) before dropping to free Muse.
 
-No budget role or fallback edge can reach Anthropic, OpenAI, or a paid Zen
-model.
+No budget role or fallback edge can reach Anthropic, OpenAI, Claude, GPT, or
+a paid Zen model.
 
 ## Set up on another machine
 
