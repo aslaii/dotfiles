@@ -154,5 +154,7 @@ The order used here:
 4. GPT last, and only while the Codex account is up.
 
 The tracked copies of the routing files are `omo/omo.jsonc`, `omo/agent/settings.json`,
-and `omp/agent/config.yml`. They restore on a new machine. The provider blocks above
-are runtime files and are not tracked. Copy them by hand or repeat steps 1 to 3.
+`omp/agent/config.yml`, and `omp/agent/models.yml`. They restore on a new machine. The
+OMO provider block above (step 2) is a runtime file and is not tracked; copy it by hand
+or repeat step 2. The OMP provider block (step 3) is tracked in `omp/agent/models.yml`
+and restores with the other OMP files.

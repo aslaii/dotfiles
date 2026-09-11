@@ -1,9 +1,15 @@
 # omp-budget opt-in overlay (native `--config` overlay, no source edits).
 #
-# A plan-only profile: every model role and every fallback edge stays on the
-# Command Code $10 plan (deepseek-v4.1-flash) or the free OpenCode Zen Muse
-# Contributor endpoint. Nothing here can escalate to Anthropic, OpenAI, or any
-# paid Zen model - the global config's Claude/GPT roles are overridden below.
+# A whole-catalog plan profile: every model role and every fallback edge
+# resolves to a Command Code $10 plan model (registered via the native
+# openai-models-list discovery in agent/models.yml, ~69 ids) or the free
+# OpenCode Zen Muse Contributor endpoint. Heavy lanes (plan/review/designer)
+# run the plan's Claude Opus 5; mid lanes (slow/task/advisor) run Claude
+# Sonnet 5; cheap lanes fall back across DeepSeek/GLM/Qwen/MiniMax/Kimi;
+# grunt work (smol/commit/tiny/verify/research/free) stays on the free Muse
+# endpoint. No role or fallback edge can reach the anthropic, openai-codex,
+# or any paid Zen provider - the global config's Claude/GPT roles are
+# overridden below.
 #
 #   omp --config /Users/aslaii/dotfiles/omp/budget.yml ...
 # or through the shell function:
@@ -14,14 +20,15 @@
 # per key, so only the roles/chains named here change; everything else
 # (disabledProviders, plugins, UI, thinking levels) is inherited untouched.
 modelRoles:
-  # Reasoning-heavy work -> Command Code plan, top thinking tier.
-  plan: commandcode/deepseek/deepseek-v4.1-flash:max
-  planner: commandcode/deepseek/deepseek-v4.1-flash:max
-  slow: commandcode/deepseek/deepseek-v4.1-flash:max
-  review: commandcode/deepseek/deepseek-v4.1-flash:max
-  designer: commandcode/deepseek/deepseek-v4.1-flash:max
-  task: commandcode/deepseek/deepseek-v4.1-flash:high
-  advisor: commandcode/deepseek/deepseek-v4.1-flash:high
+  # Reasoning-heavy work -> plan's Claude Opus 5, top thinking tiers.
+  plan: commandcode/claude-opus-5:xhigh
+  planner: commandcode/claude-opus-5:high
+  review: commandcode/claude-opus-5:xhigh
+  designer: commandcode/claude-opus-5:high
+  # Sustained task work -> plan's Claude Sonnet 5.
+  slow: commandcode/claude-sonnet-5:high
+  task: commandcode/claude-sonnet-5:high
+  advisor: commandcode/claude-sonnet-5:medium
   # Main + image reading stay on the plan's cheapest tier.
   default: commandcode/deepseek/deepseek-v4.1-flash:medium
   vision: commandcode/deepseek/deepseek-v4.1-flash:medium
@@ -34,17 +41,46 @@ modelRoles:
   free: opencode-zen/muse-spark-1.3-contributor-free:xhigh
 retry:
   # Hard-require the fallback machinery (startup resolution is gated on this),
-  # and pin the chains to budget providers only.
+  # and pin the chains to plan-catalog and free-Muse providers only.
   modelFallback: true
   fallbackChains:
     default:
+      - commandcode/claude-sonnet-5:high
+      - commandcode/gpt-5.6-sol:high
+      - commandcode/deepseek/deepseek-v4.1-flash:high
+      - commandcode/moonshotai/Kimi-K3:high
+      - opencode-zen/muse-spark-1.3-contributor-free:xhigh
+    commandcode/claude-opus-5:
+      - commandcode/claude-sonnet-5:high
+      - commandcode/gpt-5.6-sol:high
+      - commandcode/deepseek/deepseek-v4.1-flash:high
+      - opencode-zen/muse-spark-1.3-contributor-free:xhigh
+    commandcode/claude-sonnet-5:
+      - commandcode/gpt-5.6-sol:high
+      - commandcode/deepseek/deepseek-v4.1-flash:high
+      - commandcode/zai-org/GLM-5.3:high
+      - opencode-zen/muse-spark-1.3-contributor-free:xhigh
+    commandcode/gpt-5.6-*:
+      - commandcode/claude-sonnet-5:high
       - commandcode/deepseek/deepseek-v4.1-flash:high
       - opencode-zen/muse-spark-1.3-contributor-free:xhigh
     commandcode/*:
+      - commandcode/deepseek/deepseek-v4.1-flash:high
+      - commandcode/zai-org/GLM-5.3:high
+      - commandcode/Qwen/Qwen3.8-Max:high
+      - commandcode/MiniMaxAI/MiniMax-M3:high
       - opencode-zen/muse-spark-1.3-contributor-free:xhigh
-    commandcode/deepseek/deepseek-v4.1-flash:
+    anthropic/*:
+      - commandcode/claude-sonnet-5:high
+      - commandcode/deepseek/deepseek-v4.1-flash:high
+      - opencode-zen/muse-spark-1.3-contributor-free:xhigh
+    openai-codex/*:
+      - commandcode/claude-sonnet-5:high
+      - commandcode/deepseek/deepseek-v4.1-flash:high
       - opencode-zen/muse-spark-1.3-contributor-free:xhigh
     opencode-zen/muse-spark-1.3-contributor-free:
-      - commandcode/deepseek/deepseek-v4.1-flash:high
+      - commandcode/deepseek/deepseek-v4.1-flash:medium
+      - commandcode/claude-sonnet-5:high
     opencode-zen/*:
       - commandcode/deepseek/deepseek-v4.1-flash:high
+      - commandcode/claude-sonnet-5:high

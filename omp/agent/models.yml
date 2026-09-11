@@ -1,0 +1,25 @@
+providers:
+  commandcode:
+    baseUrl: https://api.commandcode.ai/provider/v1
+    api: openai-completions
+    apiKey: "!security find-generic-password -w -s commandcode-api-key"
+    authHeader: true
+    headers:
+      x-cmd-zdr: "1"
+    compat:
+      supportsDeveloperRole: false
+      supportsReasoningEffort: true
+      thinkingFormat: openai
+      disableReasoningOnToolChoice: true
+    discovery:
+      type: openai-models-list
+      injectV1: false
+    modelOverrides:
+      deepseek/deepseek-v4.1-flash:
+        reasoning: true
+        input: [text, image]
+        contextWindow: 1000000
+        maxTokens: 65536
+        thinking:
+          mode: effort
+          efforts: [low, medium, high, xhigh, max]

@@ -173,12 +173,14 @@ Normal `omo` and `omp` keep their defaults. Reload an existing shell with
 
 For a spend-capped session, use `omp-budget`. It is a `--config` overlay
 (`omp/budget.yml`, the same mechanism as `omp-fast`) that pins every model role
-and every fallback chain to the Command Code $10 plan
-(`commandcode/deepseek/deepseek-v4.1-flash`) or the free OpenCode Zen Muse
-Contributor endpoint. Reasoning roles take the plan's top thinking tier, Main
-and vision stay on its cheapest tier, and small/verify/research/free work runs
-free. No budget role can reach Anthropic, OpenAI, or a paid Zen model. From
-other shells:
+and every fallback chain to the whole Command Code $10 plan catalog
+(registered via native discovery in `omp/agent/models.yml`, ~69 models
+including Claude Opus/Sonnet 5, GPT-5.6, DeepSeek, GLM, Qwen, MiniMax, Kimi)
+or the free OpenCode Zen Muse Contributor endpoint. Heavy reasoning roles run
+the plan's Claude Opus 5, mid roles run Claude Sonnet 5, Main and vision stay
+on the plan's cheapest DeepSeek tier, and small/verify/research/free work
+runs free. No budget role can reach Anthropic, OpenAI, or a paid Zen model.
+From other shells:
 
 ```bash
 bun ~/dotfiles/omp/launch.mjs --config ~/dotfiles/omp/budget.yml

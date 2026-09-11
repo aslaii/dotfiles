@@ -429,6 +429,7 @@ main() {
 
     local omp_root="${HOME}/.omp" agent skill manifest
     link_file "${DOTFILES_DIR}/omp/agent/config.yml" "${omp_root}/agent/config.yml"
+    link_file "${DOTFILES_DIR}/omp/agent/models.yml" "${omp_root}/agent/models.yml"
     link_file "${DOTFILES_DIR}/omp/agent/APPEND_SYSTEM.md" "${omp_root}/agent/APPEND_SYSTEM.md"
     for agent in "${DOTFILES_DIR}"/omp/agent/agents/*.md; do
       [[ -f "$agent" ]] || continue

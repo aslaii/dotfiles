@@ -11,6 +11,7 @@
 !README.md
 !agent/
 !agent/config.yml
+!agent/models.yml
 !agent/APPEND_SYSTEM.md
 !agent/agents/
 !agent/agents/*.md
