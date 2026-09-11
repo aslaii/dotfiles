@@ -1,0 +1,50 @@
+# omp-budget opt-in overlay (native `--config` overlay, no source edits).
+#
+# A plan-only profile: every model role and every fallback edge stays on the
+# Command Code $10 plan (deepseek-v4.1-flash) or the free OpenCode Zen Muse
+# Contributor endpoint. Nothing here can escalate to Anthropic, OpenAI, or any
+# paid Zen model - the global config's Claude/GPT roles are overridden below.
+#
+#   omp --config /Users/aslaii/dotfiles/omp/budget.yml ...
+# or through the shell function:
+#   omp-budget
+#
+# Precedence (src/config/settings.ts #rebuildMerged): global config.yml <
+# project settings < THIS overlay < runtime overrides. Nested objects merge
+# per key, so only the roles/chains named here change; everything else
+# (disabledProviders, plugins, UI, thinking levels) is inherited untouched.
+modelRoles:
+  # Reasoning-heavy work -> Command Code plan, top thinking tier.
+  plan: commandcode/deepseek/deepseek-v4.1-flash:max
+  planner: commandcode/deepseek/deepseek-v4.1-flash:max
+  slow: commandcode/deepseek/deepseek-v4.1-flash:max
+  review: commandcode/deepseek/deepseek-v4.1-flash:max
+  designer: commandcode/deepseek/deepseek-v4.1-flash:max
+  task: commandcode/deepseek/deepseek-v4.1-flash:high
+  advisor: commandcode/deepseek/deepseek-v4.1-flash:high
+  # Main + image reading stay on the plan's cheapest tier.
+  default: commandcode/deepseek/deepseek-v4.1-flash:medium
+  vision: commandcode/deepseek/deepseek-v4.1-flash:medium
+  # Grunt work -> free Muse Contributor, zero plan spend.
+  smol: opencode-zen/muse-spark-1.3-contributor-free:xhigh
+  commit: opencode-zen/muse-spark-1.3-contributor-free:medium
+  tiny: opencode-zen/muse-spark-1.3-contributor-free:medium
+  verify: opencode-zen/muse-spark-1.3-contributor-free:xhigh
+  research: opencode-zen/muse-spark-1.3-contributor-free:xhigh
+  free: opencode-zen/muse-spark-1.3-contributor-free:xhigh
+retry:
+  # Hard-require the fallback machinery (startup resolution is gated on this),
+  # and pin the chains to budget providers only.
+  modelFallback: true
+  fallbackChains:
+    default:
+      - commandcode/deepseek/deepseek-v4.1-flash:high
+      - opencode-zen/muse-spark-1.3-contributor-free:xhigh
+    commandcode/*:
+      - opencode-zen/muse-spark-1.3-contributor-free:xhigh
+    commandcode/deepseek/deepseek-v4.1-flash:
+      - opencode-zen/muse-spark-1.3-contributor-free:xhigh
+    opencode-zen/muse-spark-1.3-contributor-free:
+      - commandcode/deepseek/deepseek-v4.1-flash:high
+    opencode-zen/*:
+      - commandcode/deepseek/deepseek-v4.1-flash:high

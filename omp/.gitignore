@@ -5,6 +5,7 @@
 !isolation.test.js
 !fast.test.js
 !fast.yml
+!budget.yml
 !fast.mjs
 !preload.mjs
 !agent/

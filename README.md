@@ -62,6 +62,7 @@ The `omp/` directory mirrors the portable parts of `~/.omp`:
 | Path | Contents |
 |------|----------|
 | `omp/agent/config.yml` | Model roles, thinking levels, prewalk, fallbacks, two-worker limit, and UI preferences |
+| `omp/fast.yml`, `omp/budget.yml` | Opt-in `--config` overlays: fast (priority Claude/GPT, 8-wide) and budget (Command Code $10 plan plus free Muse only) |
 | `omp/agent/APPEND_SYSTEM.md` | Main-only orchestration and dispatch/verification policy |
 | `omp/agent/agents/*.md` | Portable planner, Terra, verifier, and researcher prompts |
 | `omp/agent/skills/omp-prompt/` | OMP-only prompt refinement skill |
@@ -166,6 +167,19 @@ unavailable. Both allow eight parallel agents; Muse and OpenCode Go models
 retain their existing settings, including reasoning.
 Normal `omo` and `omp` keep their defaults. Reload an existing shell with
 `source ~/.zsh/functions.zsh` before using the new commands.
+
+For a spend-capped session, use `omp-budget`. It is a `--config` overlay
+(`omp/budget.yml`, the same mechanism as `omp-fast`) that pins every model role
+and every fallback chain to the Command Code $10 plan
+(`commandcode/deepseek/deepseek-v4.1-flash`) or the free OpenCode Zen Muse
+Contributor endpoint. Reasoning roles take the plan's top thinking tier, Main
+and vision stay on its cheapest tier, and small/verify/research/free work runs
+free. No budget role can reach Anthropic, OpenAI, or a paid Zen model. From
+other shells:
+
+```bash
+bun ~/dotfiles/omp/launch.mjs --config ~/dotfiles/omp/budget.yml
+```
 
 For other shells:
 

@@ -111,3 +111,8 @@ function omp-fast() {
     --config "${DOTFILES_DIR:-$HOME/dotfiles}/omp/fast.yml" \
     --extension "${DOTFILES_DIR:-$HOME/dotfiles}/omp/fast.mjs" "$@"
 }
+
+function omp-budget() {
+  bun "${DOTFILES_DIR:-$HOME/dotfiles}/omp/launch.mjs" \
+    --config "${DOTFILES_DIR:-$HOME/dotfiles}/omp/budget.yml" "$@"
+}
