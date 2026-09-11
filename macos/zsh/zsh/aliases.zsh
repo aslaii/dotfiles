@@ -48,3 +48,6 @@ alias btop='btop_themed'
 
 # goose
 alias goose='cd ~/work/goose/'
+
+# OMP
+alias ompb="omp-budget"
