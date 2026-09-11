@@ -77,14 +77,14 @@ bun ~/dotfiles/omo/restore.mjs --home "/tmp/omo test home" --skip-packages
 
 | Role | Model | Reasoning |
 |---|---|---|
-| Main session, including native planning | GPT-6 Astra | `xhigh` |
+| Main session, including native planning | GPT-5.6 Sol | `xhigh` |
 | Quick, Git, Explore, Librarian | Claude Haiku 4.5 | `low` |
 | Other subagents, including `plan-consultant` and `plan-reviewer` | Claude Sonnet 5 | `medium` or `high` |
 | First subagent fallback | Muse Spark 1.3 Contributor Free | `xhigh` |
 | Final subagent fallback | GPT Luna Fast, Terra, or Sol | Per route |
 
 Every category and named subagent uses Claude, then Muse, then GPT.
-Subagent routes contain no Astra entry or duplicate Muse fallback.
+Subagent routes contain no duplicate Muse fallback.
 Claude session fallbacks also put Muse before GPT. Muse falls back to GPT,
 not Claude. The `opencode/` Muse identifier names the Zen provider used by
 native OMO; it is not an OpenCode harness configuration.
@@ -94,7 +94,7 @@ two built-in model profiles:
 
 | Model profile | Startup model order |
 |---|---|
-| `deep-work` (active) | Astra `xhigh`, then Sol `medium` |
+| `deep-work` (active) | Sol `xhigh`, then Sol `medium` |
 | `capable` (optional) | Claude SDK OAuth Sonnet 5 `high`, Muse `xhigh`, then Sol `high` |
 
 The custom `capable` chain uses the Claude subscription lane rather than

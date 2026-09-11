@@ -104,12 +104,12 @@ function skillSourceManifest(fixture) {
 async function writePortableConfig(snapshot) {
   await write(join(snapshot, "omo.jsonc"), `// portable config
 {
-  "[senpi]": { "models": { "planner": { "model": "openai-codex/gpt-6-astra", "reasoning": "xhigh" } } },
+  "[senpi]": { "models": { "planner": { "model": "openai-codex/gpt-5.6-sol", "reasoning": "xhigh" } } },
   "portableOnly": true
 }
 `)
   await write(join(snapshot, "agent/settings.json"), JSON.stringify({
-    defaultModel: "gpt-6-astra",
+    defaultModel: "gpt-5.6-sol",
     packages: [
       "npm:@dietrichgebert/ponytail@4.9.0",
       "git:github.com/code-yeongyu/pi-comment-checker@0a38dd8ff362be1b6020f2baba7b5723cbc5ea76",
@@ -185,11 +185,11 @@ test("restore merges portable configuration, safely installs resources, and is i
   const omo = await json(join(home, ".omo/omo.jsonc"))
   expect(omo.destinationOnly).toEqual({ kept: true })
   expect(omo["[senpi]"].destinationPreference).toBe(true)
-  expect(omo["[senpi]"].models.planner).toEqual({ model: "openai-codex/gpt-6-astra", reasoning: "xhigh" })
+  expect(omo["[senpi]"].models.planner).toEqual({ model: "openai-codex/gpt-5.6-sol", reasoning: "xhigh" })
 
   const settings = await json(join(home, ".omo/agent/settings.json"))
   expect(settings.destinationPreference).toBe(true)
-  expect(settings.defaultModel).toBe("gpt-6-astra")
+  expect(settings.defaultModel).toBe("gpt-5.6-sol")
   expect(settings.packages).toEqual([
     "npm:@dietrichgebert/ponytail@4.9.0",
     "git:github.com/code-yeongyu/pi-comment-checker@0a38dd8ff362be1b6020f2baba7b5723cbc5ea76",
@@ -567,15 +567,15 @@ test("restore migrates retired managed native config without removing custom con
   await write(join(snapshot, "omo.jsonc"), JSON.stringify({
     git_master: { commit_footer: false },
     "[senpi]": {
-      categories: { deep: { models: [{ model: "openai-codex/gpt-6-astra", reasoning: "xhigh" }] } },
+      categories: { deep: { models: [{ model: "openai-codex/gpt-5.6-sol", reasoning: "xhigh" }] } },
       agents: {
-        "plan-consultant": { models: [{ model: "openai-codex/gpt-6-astra", reasoning: "xhigh" }] },
+        "plan-consultant": { models: [{ model: "openai-codex/gpt-5.6-sol", reasoning: "xhigh" }] },
         "plan-reviewer": { models: [{ model: "claude-sdk-oauth/claude-sonnet-5", reasoning: "high" }] },
       },
       task: { default_concurrency: 8 },
       model_profile: "deep-work",
       model_profiles: {
-        "deep-work": { models: [{ model: "openai-codex/gpt-6-astra", reasoning: "xhigh" }] },
+        "deep-work": { models: [{ model: "openai-codex/gpt-5.6-sol", reasoning: "xhigh" }] },
         capable: { models: [{ model: "claude-sdk-oauth/claude-sonnet-5", reasoning: "high" }] },
       },
     },

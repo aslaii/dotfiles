@@ -1,15 +1,15 @@
 import { expect, test } from "bun:test";
 import { readFile } from "node:fs/promises";
 
-test("native startup profiles use supported models and Astra xhigh", async () => {
+test("native startup profiles use supported models and Sol xhigh", async () => {
   const config = Bun.JSONC.parse(await readFile(new URL("./omo.jsonc", import.meta.url), "utf8"));
   const settings = JSON.parse(await readFile(new URL("./agent/settings.json", import.meta.url), "utf8"));
   const native = config["[senpi]"];
   expect(settings.defaultThinkingLevel).toBe("xhigh");
-  expect(settings.modelThinkingLevels["openai-codex/gpt-6-astra"]).toBe("xhigh");
+  expect(settings.modelThinkingLevels["openai-codex/gpt-5.6-sol"]).toBe("high");
   expect(native.model_profile).toBe("deep-work");
   expect(native.model_profiles["deep-work"].models).toEqual([
-    { model: "openai-codex/gpt-6-astra", reasoning: "xhigh" },
+    { model: "openai-codex/gpt-5.6-sol", reasoning: "xhigh" },
     { model: "openai-codex/gpt-5.6-sol", reasoning: "medium" },
   ]);
   expect(native.model_profiles.capable.models).toEqual([
@@ -233,7 +233,7 @@ test("approved native fallback policy preserves settings and provider order", as
     expect(section.agents["multimodal-looker"].models).toEqual(lowMedium);
   }
   expect(settings.defaultThinkingLevel).toBe("xhigh");
-  expect(settings.modelThinkingLevels["openai-codex/gpt-6-astra"]).toBe("xhigh");
+  expect(settings.modelThinkingLevels["openai-codex/gpt-5.6-sol"]).toBe("high");
   expect(settings.modelThinkingLevels[muse]).toBe("xhigh");
   expect(settings.claudeSdkOauthProvider.enabled).toBe(true);
   for (const model of [muse, haiku, sonnet, luna, terra, sol]) {
@@ -244,12 +244,9 @@ test("approved native fallback policy preserves settings and provider order", as
   expect(settings.modelServiceTiers).toMatchObject({
     [luna]: "priority",
     [sol]: "auto",
-    "openai-codex/gpt-6-astra": "auto",
   });
   expect(settings.retry.fallbackRevertPolicy).toBe("cooldown-expiry");
-  expect(settings.retry.fallbackChains["openai-codex/gpt-6-astra"]).toEqual([
-    `${muse}:xhigh`,
-    `${sonnet}:medium`,
+  expect(settings.retry.fallbackChains["openai-codex/gpt-5.6-sol"]).toEqual([
     `${muse}:xhigh`,
   ]);
   expect(settings.retry.fallbackChains[muse]).toEqual([

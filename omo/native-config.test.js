@@ -11,7 +11,7 @@ test("native RPC startup applies profiles but preserves an explicit model", asyn
   const binary = await realpath(process.env.OMO_BIN || Bun.which("omo"));
   const portable = Bun.JSONC.parse(await readFile(new URL("./omo.jsonc", import.meta.url), "utf8"));
   for (const [profile, args, provider, model, thinking] of [
-    ["deep-work", [], "openai-codex", "gpt-6-astra", "xhigh"],
+    ["deep-work", [], "openai-codex", "gpt-5.6-sol", "xhigh"],
     ["capable", [], "claude-sdk-oauth", "claude-sonnet-5", "high"],
     ["deep-work", ["--model", "openai-codex/gpt-5.6-luna-fast:low"], "openai-codex", "gpt-5.6-luna", "low"],
   ]) {

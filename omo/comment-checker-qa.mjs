@@ -108,7 +108,7 @@ try {
     code: `await tool.edit(${JSON.stringify({ path: "nested-edit.ts", edits: [{ oldText: "const n = 1;", newText: "// NESTED EDIT\nconst n = 2;" }] })}); return "ignored"`,
   }, false);
 
-  const gpt = await createSession(models.getModel("openai-codex", "gpt-6-astra"), ["apply_patch", "eval"]);
+  const gpt = await createSession(models.getModel("openai-codex", "gpt-5.6-sol"), ["apply_patch", "eval"]);
   const multifile = "*** Begin Patch\n*** Add File: multi-a.ts\n+// MULTI A\n+const a = 1;\n*** Add File: multi-b.ts\n+// MULTI B\n+const b = 1;\n*** End Patch\n";
   const multi = await expectWarning("direct multifile apply_patch", gpt, "apply_patch", { input: multifile });
   assert.match(multi.warning, /file="multi-a\.ts"/);

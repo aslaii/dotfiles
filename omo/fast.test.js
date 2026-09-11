@@ -47,14 +47,14 @@ test("Claude gets the real fast beta while preserving existing headers and paylo
 test("GPT priority is applied after existing payload hooks, retaining request metadata", async () => {
   for (const provider of ["openai", "openai-codex"]) {
     const seen = []
-    const request = await prepared(runtime(), provider, "gpt-6-astra", {
+    const request = await prepared(runtime(), provider, "gpt-5.6-sol", {
       onPayload: async (body, _model, metadata) => {
         seen.push(metadata.model.provider)
         return { ...body, marker: "hook", service_tier: "auto" }
       },
     })
-    expect(await payload(request, { model: "gpt-6-astra" })).toEqual({
-      model: "gpt-6-astra", marker: "hook", service_tier: "priority",
+    expect(await payload(request, { model: "gpt-5.6-sol" })).toEqual({
+      model: "gpt-5.6-sol", marker: "hook", service_tier: "priority",
     })
     expect(seen).toEqual([provider])
     expect(request.options.serviceTier).toBe("priority")
@@ -65,7 +65,7 @@ test("GPT priority is applied after existing payload hooks, retaining request me
 test("native model metadata exposes priority for GPT without changing Muse or Go", () => {
   const rt = runtime()
   for (const provider of ["openai", "openai-codex"]) {
-    expect(rt.getCompatibilityRequestConfig({ provider, id: "gpt-6-astra" }).serviceTier).toBe("priority")
+    expect(rt.getCompatibilityRequestConfig({ provider, id: "gpt-5.6-sol" }).serviceTier).toBe("priority")
   }
   for (const [provider, id] of [
     ["opencode", "muse-spark-1.3-contributor-free"],
@@ -79,7 +79,7 @@ test("native model metadata exposes priority for GPT without changing Muse or Go
 test("concurrent main and child runtime instances keep provider settings separate", async () => {
   const cases = [
     ["anthropic", "claude-sonnet-5", { speed: "fast" }],
-    ["openai-codex", "gpt-6-astra", { service_tier: "priority" }],
+    ["openai-codex", "gpt-5.6-sol", { service_tier: "priority" }],
     ["opencode", "muse-spark-1.3-contributor-free", {}],
     ["opencode-go", "glm-5.3", {}],
   ]
@@ -133,7 +133,7 @@ test("native fallback selects fast GPT without changing saved settings or other 
   })
   expect(await controller.tryFallback("hard-error", { errorMessage: "Claude unavailable" })).toBe(true)
   expect(current.model.provider).toBe("openai-codex")
-  expect(current.model.id).toBe("gpt-6-astra")
+  expect(current.model.id).toBe("gpt-5.6-sol")
   expect(current.thinkingLevel).toBe("xhigh")
   expect(await payload(await prepared(rt, current.model.provider, current.model.id), {}))
     .toEqual({ service_tier: "priority" })
@@ -249,7 +249,7 @@ test("real OMO child fallback keeps GPT priority on the wire and in session meta
       modelRuntime: rt,
       authStorage: auth,
       toolAllowlist: [],
-      fallbackModels: [{ provider: "openai-codex", model_id: "gpt-6-astra", reasoning_effort: "xhigh" }],
+      fallbackModels: [{ provider: "openai-codex", model_id: "gpt-5.6-sol", reasoning_effort: "xhigh" }],
       retry: { maxRetries: 0 },
     })
     const outcome = await handle.waitForIdle()

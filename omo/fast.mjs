@@ -2,7 +2,7 @@ import { realpathSync } from "node:fs"
 import { dirname, join } from "node:path"
 import { pathToFileURL } from "node:url"
 
-export const FAST_GPT_ENTRY = "openai-codex/gpt-6-astra:xhigh"
+export const FAST_GPT_ENTRY = "openai-codex/gpt-5.6-sol:xhigh"
 const installed = Symbol.for("dotfiles.omo-fast")
 const claudeModels = new Set()
 
@@ -69,7 +69,7 @@ export async function installFast() {
       if (!key.startsWith("anthropic/")) continue
       chains[key] = [
         FAST_GPT_ENTRY,
-        ...(chains[key] ?? []).filter((entry) => entry.split(":")[0] !== "openai-codex/gpt-6-astra"),
+        ...(chains[key] ?? []).filter((entry) => entry.split(":")[0] !== "openai-codex/gpt-5.6-sol"),
       ]
     }
     return { ...settings, modelFallback: true, chains }
