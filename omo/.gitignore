@@ -2,6 +2,7 @@
 *
 !.gitignore
 !README.md
+!commandcode-provider.md
 !omo.jsonc
 !restore.json
 !restore.mjs
