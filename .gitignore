@@ -109,6 +109,15 @@ coverage/
 *.tmp
 *.bak
 
+# Generated agent setup state
+/.agents/
+/.codex/
+/.opencode/
+/opencode.json
+/skills-lock.json
+/omo/agent/mcp.json
+/omp/agent/mcp.json
+
 # Antigravity installation payloads and private runtime history
 gemini/antigravity-cli/bin/
 gemini/antigravity-cli/brain/
