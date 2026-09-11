@@ -8,6 +8,7 @@ import { fileURLToPath } from "node:url";
 const here = dirname(fileURLToPath(import.meta.url));
 const preload = join(here, "preload.mjs");
 const REQUIRED = ["claude", "claude-md", "claude-plugins", "agent-plugins", "mcp-json"];
+const argentVersion = (await Bun.file(join(here, "..", "argent", "version")).text()).trim();
 
 const ompBin = Bun.which("omp");
 if (!ompBin) {
@@ -23,6 +24,24 @@ const pkgRoot = dirname(dirname(real));
 const srcCli = join(pkgRoot, "src", "cli.ts");
 if (!existsSync(srcCli) || !existsSync(preload)) {
   console.error("omp/launch: required source entry missing (src/cli.ts or preload.mjs)");
+  process.exit(127);
+}
+
+const argentBin = Bun.which("argent");
+if (!argentBin) {
+  console.error(`omp/launch: Argent ${argentVersion} not found; run: ${join(here, "..", "argent", "install.sh")}`);
+  process.exit(127);
+}
+const argentRoot = dirname(dirname(realpathSync(argentBin)));
+let argentManifest;
+try {
+  argentManifest = JSON.parse(await Bun.file(join(argentRoot, "package.json")).text());
+} catch {
+  console.error(`omp/launch: invalid Argent package at ${argentRoot}`);
+  process.exit(127);
+}
+if (argentManifest.name !== "@swmansion/argent" || argentManifest.version !== argentVersion) {
+  console.error(`omp/launch: expected Argent ${argentVersion}; run: ${join(here, "..", "argent", "install.sh")}`);
   process.exit(127);
 }
 
@@ -52,13 +71,14 @@ const userArgs = process.argv.slice(2);
 if (process.env.OMP_LAUNCH_DRY_RUN === "1") {
   console.log(`omp-binary: ${srcCli}`);
   console.log(`preload: ${preload}`);
+  console.log(`extension: ${argentRoot}`);
   for (const a of userArgs) console.log(`arg: ${a}`);
   process.exit(0);
 }
 
 const child = spawn(process.execPath, ["--preload", preload, srcCli, ...userArgs], {
   stdio: "inherit",
-  env: process.env,
+  env: { ...process.env, OMP_ARGENT_ROOT: argentRoot },
 });
 child.on("exit", (code, signal) => {
   if (signal) process.kill(process.pid, signal);

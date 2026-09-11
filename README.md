@@ -41,8 +41,11 @@ The first restore needs network access if the pinned Git objects are absent.
 
 The [`omo/`](omo/README.md) directory contains the portable native OMO setup:
 model routes, UI preferences, pinned plugins, Bash hooks, and an OMO-owned
-Argent rule. Its 96 selected skills restore from a pinned installation source
-into OMO's own directory. With Node.js 24+, Bun 1.4+, Git, DCG, and RTK installed:
+Argent rule. The restore installs the Argent version pinned in `argent/version`,
+disables its telemetry, and exposes its upstream skills through the CLI without
+registering MCP. The installer removes only stale `argent` entries from OMO and
+OMP MCP files, preserving any other configured servers. With Node.js 24+,
+Bun 1.4+, Git, DCG, and RTK installed:
 
 ```bash
 npm install -g omo-ai@5.0.0-0.beta.48
@@ -62,6 +65,7 @@ The `omp/` directory mirrors the portable parts of `~/.omp`:
 | `omp/agent/APPEND_SYSTEM.md` | Main-only orchestration and dispatch/verification policy |
 | `omp/agent/agents/*.md` | Portable planner, Terra, verifier, and researcher prompts |
 | `omp/agent/skills/omp-prompt/` | OMP-only prompt refinement skill |
+| `omp/agent/rules/argent-cli.md` | CLI-only override for upstream Argent MCP wording |
 | `omp/plugins/package.json` | Installed plugin sources: Ponytail and pi-comment-checker |
 | `omp/plugins/bun.lock` | Exact plugin/dependency revisions for reproducible restoration |
 | `omp/plugins/omp-plugins.lock.json` | OMP plugin versions, enablement, and feature selections |
@@ -78,12 +82,14 @@ bun ~/dotfiles/omp/launch.mjs plugin list
 bun ~/dotfiles/omp/launch.mjs --model @default --no-prewalk
 ```
 
-The OMP-only option uses the default `~/.omp` layout and the existing non-destructive
-symlink helper. Existing files and skills are preserved, not overwritten; move any
-conflicting files to your own backup before rerunning if you want the repository
-versions instead. Bun restores plugins with the active frozen lockfile. Keep the
-dotfiles checkout available because the configuration and custom skill are linked.
-The normal macOS bootstrap and its `--check` option remain unchanged.
+The OMP-only option installs the pinned Argent CLI with telemetry disabled and
+no MCP registration. It uses the default `~/.omp` layout and the existing
+non-destructive symlink helper. Existing files, skills, and rules are preserved,
+not overwritten; move any conflicting files to your own backup before rerunning
+if you want the repository versions instead. Bun restores plugins with the
+active frozen lockfile. Keep the dotfiles checkout available because the
+configuration, custom skill, and Argent CLI rule are linked. The normal macOS
+bootstrap and its `--check` option remain unchanged.
 
 Authenticate separately with `/login` inside OMP on each computer. Model access
 depends on that computer's authenticated accounts; the config contains no credentials.
@@ -109,8 +115,10 @@ loading the updated shell functions.
 
 Ponytail's skills are supplied by its locked plugin, not duplicated in `agent/skills`.
 Credentials, sessions, caches, databases, onboarding/consent state, and machine-local
-MCP, LSP, Herdr/Moshi integrations are intentionally excluded. Install those integrations
-separately if needed; shared skills from other harnesses are not part of this OMP-only snapshot.
+MCP, LSP, and Herdr/Moshi integrations are intentionally excluded. The OMP launcher
+loads the pinned global Argent package as an extension root for its upstream skills
+and rules, then applies the native CLI-only override. Shared skills from other
+harnesses are not part of this OMP-only snapshot.
 
 ## Symlink Map
 
@@ -176,10 +184,12 @@ OMP's guard prevents its native retry from silently dropping Claude fast
 mode. Eight is a concurrency limit, not a requirement to run dependent tasks
 before their prerequisites finish. Provider access and rate limits still apply.
 
-OMO loads only its owned skill library, native skills, bundled skills, and
-active package skill paths. It refuses configured Claude MCP imports. Its own
-Ponytail extension remains enabled. Project AGENTS/CLAUDE context files and the
-native rules engine retain their normal behavior.
+OMO loads only its owned skill library, native skills, bundled skills, pinned
+Argent skills, and active package skill paths. OMP loads the same pinned Argent
+package as an explicit extension root. Both use `argent tools` and `argent run`
+through Bash, not an MCP registration. OMO still refuses configured Claude MCP
+imports, and its own Ponytail extension remains enabled. Project AGENTS/CLAUDE
+context files and the native rules engine retain their normal behavior.
 
 OMP blocks Claude skills, MCP, plugins, and context providers before settings
 discovery. The launcher uses the installed package's shipped source CLI under

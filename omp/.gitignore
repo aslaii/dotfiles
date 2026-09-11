@@ -14,6 +14,8 @@
 !agent/agents/*.md
 !agent/skills/
 !agent/skills/**
+!agent/rules/
+!agent/rules/**
 !plugins/
 !plugins/package.json
 !plugins/bun.lock

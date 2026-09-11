@@ -24,7 +24,9 @@ older model selection.
 The required version is recorded in `restore.json`. Update that pin with the
 configuration when upgrading OMO; restore checks the exact installed version.
 
-The restore command copies resources rather than linking the checkout. It
+The restore command installs the pinned Argent CLI with telemetry disabled,
+without registering MCP, removes stale Argent-only MCP entries while preserving
+other servers, then copies resources rather than linking the checkout. It
 merges settings, replaces the managed skill-path list, preserves unrelated
 configuration and credentials, and backs up conflicting originals under
 `~/.omo/backups/`. An unchanged rerun does not create more backups. It installs
@@ -47,15 +49,18 @@ through it automatically in new shells. The launcher always runs the globally
 npm-installed `omo-ai` package from `npm root -g`, not `omo` from `PATH`.
 Use Node LTS with `nvm use --lts`. Bundled skills come from the
 selected npm package; without a complete install it exits 127 telling you to
-run `npm i -g omo-ai@beta`. `OMO_BUNDLED_SKILLS_DIR` still overrides only the
-bundled-skill directory. It retains OMO's own package extensions
-and loads only individual OMO-native, bundled OMO, and active-package skills.
+run `npm i -g omo-ai@beta`. It also loads the pinned global Argent package's
+upstream skills and requires the exact version in `argent/version`.
+`OMO_BUNDLED_SKILLS_DIR` still overrides only the bundled-skill directory.
+It retains OMO's own package extensions and loads only individual OMO-native,
+bundled OMO, Argent, and active-package skills.
 Imported snapshots, `caveman-*`, and `cavecrew` are excluded at both settings
 and launcher boundaries. The launcher refuses global or project settings that
-enable Claude MCP imports. It loads the OMO-owned Argent rule explicitly;
-project context files and native rule discovery remain enabled.
+enable Claude MCP imports. It loads the OMO-owned Argent rule plus a CLI-only
+transport override explicitly; no Argent MCP server is registered. Project
+context files and native rule discovery remain enabled.
 
-To skip plugin installation or restore into a separate home directory:
+To skip plugin and Argent installation, or restore into a separate home directory:
 
 ```bash
 bun ~/dotfiles/omo/restore.mjs --skip-packages
@@ -69,10 +74,10 @@ bun ~/dotfiles/omo/restore.mjs --home "/tmp/omo test home" --skip-packages
 | `omo.jsonc` | `~/.omo/omo.jsonc`: native model routes, profiles, and task/team limits |
 | `agent/settings.json` | `~/.omo/agent/settings.json`: models, fallbacks, package sources, skill exclusions, permission settings, and UI preferences |
 | `agent/hooks.json` | `~/.omo/agent/hooks.json`: `dcg` and `rtk hook claude`, before Bash calls, with 10-second timeouts |
-| Native and bundled OMO skills | Loaded from `~/.omo/agent/skills` and the pinned OMO installation, excluding Caveman names |
+| Native, bundled, and Argent skills | Loaded from `~/.omo/agent/skills`, the pinned OMO installation, and pinned global Argent package, excluding Caveman names |
 | Ponytail package skills | Six skills loaded from `@dietrichgebert/ponytail@4.9.0`, with package-local Caveman exclusions |
 | `agent/extensions/comment-checker.js` | `~/.omo/agent/extensions/comment-checker.js`: owned checker integration |
-| `rules/` | `~/.omo/agent/rules/`: OMO-owned Argent interaction rule |
+| `rules/` | `~/.omo/agent/rules/`: OMO-owned Argent workflow and CLI-only transport rules |
 | `restore.json` | OMO version, resource destinations, and `tps`, `prompt-url-widget`, `files`, `diff` extension selection |
 
 | Role | Model | Reasoning |

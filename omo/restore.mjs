@@ -577,6 +577,17 @@ async function installPackages(packages, state) {
   }
 }
 
+async function installArgent(home) {
+  const script = resolve(sourceRoot, "..", "argent", "install.sh")
+  await requireRegularSource(script, "Argent installer")
+  const child = Bun.spawn(["bash", script], {
+    stdout: "inherit",
+    stderr: "inherit",
+    env: { ...process.env, HOME: home },
+  })
+  if (await child.exited !== 0) fail("failed to install pinned Argent CLI")
+}
+
 async function restore() {
   const { home, skipPackages } = parseOptions(process.argv.slice(2))
 
@@ -644,7 +655,10 @@ async function restore() {
     }
 
     await installBuiltinExtensions(manifest.builtinExtensions, state)
-    if (!skipPackages) await installPackages(Array.isArray(portableSettings.packages) ? portableSettings.packages : [], state)
+    if (!skipPackages) {
+      await installArgent(state.home)
+      await installPackages(Array.isArray(portableSettings.packages) ? portableSettings.packages : [], state)
+    }
     console.log(`Restored OMO configuration into ${home}${skipPackages ? " (packages skipped)" : ""}.`)
   } finally {
     if (staging) await rm(staging.tempDir, { recursive: true, force: true })

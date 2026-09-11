@@ -425,6 +425,7 @@ main() {
   if [[ "${1:-}" == "--omp" ]]; then
     ensure_dotfiles_dir
     command -v bun >/dev/null 2>&1 || die "Install Bun before restoring OMP plugins."
+    bash "${DOTFILES_DIR}/argent/install.sh"
 
     local omp_root="${HOME}/.omp" agent skill manifest
     link_file "${DOTFILES_DIR}/omp/agent/config.yml" "${omp_root}/agent/config.yml"
@@ -435,6 +436,10 @@ main() {
     done
     for skill in "${DOTFILES_DIR}"/omp/agent/skills/*; do
       link_file "$skill" "${omp_root}/agent/skills/$(basename "$skill")"
+    done
+    for rule in "${DOTFILES_DIR}"/omp/agent/rules/*.md; do
+      [[ -f "$rule" ]] || continue
+      link_file "$rule" "${omp_root}/agent/rules/$(basename "$rule")"
     done
     for manifest in package.json bun.lock omp-plugins.lock.json; do
       link_file "${DOTFILES_DIR}/omp/plugins/${manifest}" "${omp_root}/plugins/${manifest}"

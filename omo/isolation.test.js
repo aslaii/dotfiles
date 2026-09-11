@@ -5,6 +5,7 @@ import { basename, dirname, join, resolve } from "node:path"
 import { fileURLToPath } from "node:url"
 
 const launch = fileURLToPath(new URL("./launch.sh", import.meta.url))
+const argentVersion = (await readFile(new URL("../argent/version", import.meta.url), "utf8")).trim()
 const cleanup = []
 const ponytailNames = [
   "ponytail",
@@ -40,7 +41,9 @@ async function makeNpmShim(npmRoot) {
   const dir = await mkdtemp(join(tmpdir(), "omo npmshim "))
   cleanup.push(dir)
   await write(join(dir, "npm"), '#!/bin/sh\nif [ "$1" = "root" ] && [ "$2" = "-g" ]; then\n  printf \'%s\\n\' "$FAKE_NPM_ROOT"\n  exit 0\nfi\necho "npm shim: unsupported invocation: $*" >&2\nexit 1\n')
+  await write(join(dir, "argent"), `#!/bin/sh\nif [ "$1" = "--version" ]; then printf '%s\\n' "${argentVersion}"; exit 0; fi\nexit 1\n`)
   await chmod(join(dir, "npm"), 0o755)
+  await chmod(join(dir, "argent"), 0o755)
   return dir
 }
 
@@ -54,6 +57,10 @@ async function fixtureNpmPackage(npmRoot, skillNames = ["npm-bundled-marker"]) {
   await chmod(join(pkg, "bin", "omo.js"), 0o755)
   await mkdir(join(pkg, "plugin", "skills"), { recursive: true })
   for (const name of skillNames) await skill(join(pkg, "plugin", "skills", name), name)
+  const argent = join(npmRoot, "@swmansion", "argent")
+  await write(join(argent, "package.json"), JSON.stringify({ name: "@swmansion/argent", version: argentVersion }))
+  await write(join(argent, "dist", "cli.js"), "#!/usr/bin/env node\n")
+  await skill(join(argent, "skills", "argent-device-interact"), "argent-device-interact")
   return pkg
 }
 
@@ -92,6 +99,19 @@ async function realNpmPackage() {
     } catch {}
   }
   throw new Error("no complete npm omo-ai install found (npm root -g or ~/.nvm)")
+}
+
+async function realArgentPackage() {
+  const child = Bun.spawn(["npm", "root", "-g"], { stdout: "pipe", stderr: "pipe" })
+  const [out, exitCode] = await Promise.all([new Response(child.stdout).text(), child.exited])
+  const path = join(out.trim(), "@swmansion", "argent")
+  if (exitCode === 0) {
+    try {
+      const manifest = JSON.parse(await readFile(join(path, "package.json"), "utf8"))
+      if (manifest.name === "@swmansion/argent" && manifest.version === argentVersion) return path
+    } catch {}
+  }
+  throw new Error(`no complete @swmansion/argent@${argentVersion} install found`)
 }
 
 async function dryRun({ home, agentDir, bundled, args = [], cwd, npmRoot, extraPathDirs = [] }) {
@@ -216,6 +236,8 @@ test("installed DefaultResourceLoader resolves native OMO and six Ponytail skill
   // the real install in so bundled skills and the Senpi driver stay genuine.
   await mkdir(npmRoot, { recursive: true })
   await symlink(await realNpmPackage(), join(npmRoot, "omo-ai"))
+  await mkdir(join(npmRoot, "@swmansion"), { recursive: true })
+  await symlink(await realArgentPackage(), join(npmRoot, "@swmansion", "argent"))
   const dist = join(npmRoot, "omo-ai", "node_modules", "@code-yeongyu", "senpi", "dist")
   const bundled = join(npmRoot, "omo-ai", "plugin", "skills")
   const installedPonytail = join(process.env.HOME, ".omo", "agent", "npm", "node_modules", "@dietrichgebert", "ponytail")
@@ -385,6 +407,8 @@ test("real launcher executes npm omo --help from a fixture project without a mod
   await mkdir(agentDir, { recursive: true })
   await mkdir(npmRoot, { recursive: true })
   await symlink(await realNpmPackage(), join(npmRoot, "omo-ai"))
+  await mkdir(join(npmRoot, "@swmansion"), { recursive: true })
+  await symlink(await realArgentPackage(), join(npmRoot, "@swmansion", "argent"))
   await mkdir(project, { recursive: true })
   await write(join(agentDir, "settings.json"), JSON.stringify({ packages: [] }))
   const shim = await makeNpmShim(npmRoot)
