@@ -176,13 +176,17 @@ For a spend-capped session, use `omp-budget`. It is a `--config` overlay
 and every fallback chain to the Command Code $10 plan's DeepSeek family
 (`deepseek/deepseek-v4.1-flash`, `deepseek/deepseek-v4-pro`,
 `deepseek/deepseek-v4-flash`, `deepseek/deepseek-v4-flash-vision-exp`,
-registered via native discovery in `omp/agent/models.yml`) or the free
-OpenCode Zen Muse Contributor endpoint. Reasoning roles take the plan's top
+registered via native discovery in `omp/agent/models.yml`), the plan-hosted
+Muse Spark 1.3 Contributor, or the free OpenCode Zen Muse Contributor
+endpoint as a last-resort backstop. Reasoning roles take the plan's top
 thinking tier, Main stays on its cheapest tier, vision uses the plan's
-dedicated vision model (image capability confirmed with a real image probe,
+dedicated image-native vision model (confirmed with a real image probe,
 falling back to free Muse for rate limits and then `deepseek-v4.1-flash`),
-and small/verify/research/free work runs free. No budget role can reach
-Anthropic, OpenAI, Claude, GPT, or a paid Zen model.
+and small/verify/research/free work runs on the plan-hosted Muse
+Contributor, the plan's cheapest capable model, falling back to free Muse.
+No budget role can reach Anthropic, OpenAI, Claude, GPT, or a paid Zen
+model, and no request forces the Command Code ZDR header (opt-in there,
+and forcing it caps a model's usable allowance at the plan default).
 From other shells:
 
 ```bash

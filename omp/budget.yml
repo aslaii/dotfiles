@@ -1,12 +1,11 @@
 # omp-budget opt-in overlay (native `--config` overlay, no source edits).
 #
-# A plan-only profile: every model role and every fallback edge stays on the
-# Command Code $10 plan's DeepSeek tier (registered by agent/models.yml's
-# native openai-models-list discovery: deepseek-v4.1-flash, deepseek-v4-pro,
-# deepseek-v4-flash, deepseek-v4-flash-vision-exp) or the free OpenCode Zen
-# Muse Contributor endpoint.
-# Nothing here can escalate to Anthropic, OpenAI, GPT, Claude, or any paid
-# Zen model - the global config's Claude/GPT roles are overridden below.
+# Stack: Command Code $10 plan DeepSeek tier for reasoning roles, the
+# plan-hosted Muse Spark 1.3 Contributor (commandcode/meta/muse-spark-1.3-contributor)
+# for grunt lanes, free OpenCode Zen Muse Contributor as last-resort backstop.
+# No x-cmd-zdr header (opt-in on Command Code; most models default to ZDR;
+# forcing it caps a model at the plan's default allowance).
+# No Anthropic, OpenAI, GPT, Claude, or paid Zen model in this file.
 #
 #   omp --config /Users/aslaii/dotfiles/omp/budget.yml ...
 # or through the shell function:
@@ -29,13 +28,13 @@ modelRoles:
   default: commandcode/deepseek/deepseek-v4.1-flash:medium
   # Vision reads use the plan's dedicated, image-probe-verified vision model.
   vision: commandcode/deepseek/deepseek-v4-flash-vision-exp:high
-  # Grunt work -> free Muse Contributor, zero plan spend.
-  smol: opencode-zen/muse-spark-1.3-contributor-free:xhigh
-  commit: opencode-zen/muse-spark-1.3-contributor-free:medium
-  tiny: opencode-zen/muse-spark-1.3-contributor-free:medium
-  verify: opencode-zen/muse-spark-1.3-contributor-free:xhigh
-  research: opencode-zen/muse-spark-1.3-contributor-free:xhigh
-  free: opencode-zen/muse-spark-1.3-contributor-free:xhigh
+  # Grunt work -> plan-hosted Muse Contributor, the plan's cheapest capable model.
+  smol: commandcode/meta/muse-spark-1.3-contributor:xhigh
+  commit: commandcode/meta/muse-spark-1.3-contributor:medium
+  tiny: commandcode/meta/muse-spark-1.3-contributor:medium
+  verify: commandcode/meta/muse-spark-1.3-contributor:xhigh
+  research: commandcode/meta/muse-spark-1.3-contributor:xhigh
+  free: commandcode/meta/muse-spark-1.3-contributor:xhigh
 retry:
   # Hard-require the fallback machinery (startup resolution is gated on this),
   # and pin the chains to the plan's DeepSeek family and free Muse only.
@@ -69,8 +68,11 @@ retry:
     openai-codex/*:
       - commandcode/deepseek/deepseek-v4.1-flash:high
       - opencode-zen/muse-spark-1.3-contributor-free:xhigh
-    opencode-zen/muse-spark-1.3-contributor-free:
+    commandcode/meta/muse-spark-1.3-contributor:
       - commandcode/deepseek/deepseek-v4.1-flash:medium
-      - commandcode/deepseek/deepseek-v4-flash:high
+      - opencode-zen/muse-spark-1.3-contributor-free:xhigh
+    opencode-zen/muse-spark-1.3-contributor-free:
+      - commandcode/meta/muse-spark-1.3-contributor:xhigh
+      - commandcode/deepseek/deepseek-v4.1-flash:high
     opencode-zen/*:
       - commandcode/deepseek/deepseek-v4.1-flash:high

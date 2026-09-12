@@ -4,8 +4,6 @@ providers:
     api: openai-completions
     apiKey: "!security find-generic-password -w -s commandcode-api-key"
     authHeader: true
-    headers:
-      x-cmd-zdr: "1"
     compat:
       supportsDeveloperRole: false
       supportsReasoningEffort: true

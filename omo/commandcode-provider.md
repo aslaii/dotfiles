@@ -43,7 +43,6 @@ Add this key inside the existing `providers` object:
     "api": "openai-completions",
     "apiKey": "!security find-generic-password -w -s commandcode-api-key",
     "authHeader": true,
-    "headers": { "x-cmd-zdr": "1" },
     "compat": {
       "supportsDeveloperRole": false,
       "supportsReasoningEffort": true,
@@ -86,35 +85,42 @@ providers:
     api: openai-completions
     apiKey: "!security find-generic-password -w -s commandcode-api-key"
     authHeader: true
-    headers:
-      x-cmd-zdr: "1"
     compat:
       supportsDeveloperRole: false
       supportsReasoningEffort: true
       thinkingFormat: openai
       disableReasoningOnToolChoice: true
-    models:
-      - id: deepseek/deepseek-v4.1-flash
-        name: DeepSeek V4.1 Flash via Command Code
+    discovery:
+      type: openai-models-list
+      injectV1: false
+    modelOverrides:
+      deepseek/deepseek-v4.1-flash:
         reasoning: true
         input: [text, image]
         contextWindow: 1000000
-        maxTokens: 384000
-        thinkingLevelMap:
-          off: null
-          minimal: null
-          low: low
-          medium: null
-          high: high
-          xhigh: null
-          max: max
+        maxTokens: 65536
+        thinking:
+          mode: effort
+          efforts: [low, medium, high, xhigh, max]
 ```
+
+OMP discovers the full Command Code plan catalog live via `discovery` (an
+`openai-models-list` call against the provider's `/models` endpoint) instead
+of a static `models:` list. `modelOverrides` only patches the entries OMP
+needs richer metadata for (thinking efforts, context window, image input);
+every other discovered model, including `meta/muse-spark-1.3-contributor`,
+is used with its discovered defaults.
 
 OMP accepts only `openai` for `thinkingFormat` and rejects `deepseek`. Start OMP
 once and it creates `models.yml` when the file is absent.
 
-The `x-cmd-zdr: "1"` header asks for the zero-data-retention route. Command Code
-rejects the request instead of sending code over a non-ZDR route. Keep the header.
+ZDR (zero data retention) is opt-in on Command Code, not required: a
+request that omits the ZDR header still returns 200 with a valid
+completion, and most models route through ZDR-capable upstreams by
+default anyway. Forcing that header restricts routing to ZDR-capable
+upstreams and caps the model's usable allowance at the plan's default
+tier (for example $20 on GOAT, instead of the $40-$60 boosted allowance a
+model normally gets), so the tracked config omits it.
 
 ## 4. Verify
 
@@ -142,16 +148,25 @@ Registration alone adds no routing. The fallback order lives in three places:
 | OMO Native | `~/.omo/omo.jsonc` | `categories`, `agents`, and the four profiles `fast`, `gpt`, `claude`, `mixed` |
 | OMO session | `~/.omo/agent/settings.json` | `favoriteModels`, `enabledModels`, `recommendedModels`, `retry.fallbackChains` |
 | OMP | `~/.omp/agent/config.yml` | `modelRoles`, `retry.fallbackChains` |
+| OMP budget overlay | `omp/budget.yml` (tracked; `--config` overlay for `omp-budget`) | `modelRoles`, `retry.fallbackChains` |
 
 `~/.omo/agent/models-store.json` is a provider catalog cache. Do not edit it.
 
-The order used here:
+The default order used in `~/.omp/agent/config.yml`:
 
 1. Claude first, because company policy says to use it.
 2. `commandcode/deepseek/deepseek-v4.1-flash` next. Heavy lanes (`deep`,
    `ultrabrain`, `plan-reviewer`, `oracle`) run it at `max`.
 3. Free Muse Spark as the zero-cost backstop.
 4. GPT last, and only while the Codex account is up.
+
+`omp/budget.yml` replaces that order entirely with a plan-only stack: the
+Command Code DeepSeek tier for reasoning roles, the plan-hosted Muse Spark
+1.3 Contributor (`commandcode/meta/muse-spark-1.3-contributor`, the plan's
+cheapest capable model) for grunt lanes, and the free, rate-limited
+OpenCode Zen Muse Contributor endpoint only as a last-resort backstop. No
+role or fallback edge in that overlay reaches Claude, GPT, or a paid Zen
+model.
 
 The tracked copies of the routing files are `omo/omo.jsonc`, `omo/agent/settings.json`,
 `omp/agent/config.yml`, and `omp/agent/models.yml`. They restore on a new machine. The

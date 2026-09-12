@@ -40,24 +40,31 @@ inherits the rest from `agent/config.yml`. Every model role and every
 fallback chain stays on the Command Code $10 plan's DeepSeek family
 (`deepseek/deepseek-v4.1-flash`, `deepseek/deepseek-v4-pro`,
 `deepseek/deepseek-v4-flash`, `deepseek/deepseek-v4-flash-vision-exp`,
-registered by `agent/models.yml`'s native `openai-models-list` discovery) or
-the free `opencode-zen/muse-spark-1.3-contributor-free` endpoint:
+registered by `agent/models.yml`'s native `openai-models-list` discovery),
+the plan-hosted `commandcode/meta/muse-spark-1.3-contributor` (the plan's
+cheapest capable model), or the free `opencode-zen/muse-spark-1.3-contributor-free`
+endpoint as a last-resort backstop:
 
 - `commandcode/deepseek/deepseek-v4.1-flash` (the plan's verified tier): `max`
   for planning and review, `high` for task and advisor, `medium` for Main.
-- `commandcode/deepseek/deepseek-v4-flash-vision-exp` (the plan's dedicated
-  vision model, confirmed by an actual image probe) at `high` for the
-  `vision` role, falling back to free Muse first (its documented rate-limit
-  escape), then `deepseek-v4.1-flash:medium` (also probe-confirmed
+- `commandcode/deepseek/deepseek-v4-flash-vision-exp` (the plan's dedicated,
+  image-native vision model, confirmed by an actual image probe) at `high`
+  for the `vision` role, falling back to free Muse first (its documented
+  rate-limit escape), then `deepseek-v4.1-flash:medium` (also probe-confirmed
   image-capable).
-- `opencode-zen/muse-spark-1.3-contributor-free` (free) for
-  small/commit/tiny/verify/research/free, falling back to the plan when the
-  free endpoint is unavailable.
+- `commandcode/meta/muse-spark-1.3-contributor` for
+  small/commit/tiny/verify/research/free, falling back to the plan's
+  DeepSeek tier and then to the free `opencode-zen` Muse endpoint.
+- `opencode-zen/muse-spark-1.3-contributor-free` stays wired only as a
+  last-resort backstop (its own chain now tries the plan-hosted Muse first),
+  since the free endpoint rate-limits under load.
 - Fallback chains cascade across the rest of the plan's DeepSeek family
   (`deepseek-v4-pro`, `deepseek-v4-flash`) before dropping to free Muse.
 
 No budget role or fallback edge can reach Anthropic, OpenAI, Claude, GPT, or
-a paid Zen model.
+a paid Zen model. The Command Code provider no longer sends a forced ZDR
+header: it is opt-in on Command Code, most models default to it anyway, and
+forcing it capped a model's usable allowance at the plan's default tier.
 
 ## Set up on another machine
 
