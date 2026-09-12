@@ -56,6 +56,9 @@ task:
     planner: "@planner"
     verifier: "@verify"
     researcher: "@research"
+  disabledAgents:
+    - terra
+    - terra-live-verifier
 retry:
   usageAwareFallback: true
   usageReservePct: 10
@@ -88,8 +91,8 @@ symbolPreset: nerd
 composer:
   shape: band
 theme:
-  dark: titanium
-  light: light
+  dark: dark-catppuccin
+  light: light-catppuccin
 disabledExtensions:
   []
 browser:
