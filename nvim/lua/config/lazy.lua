@@ -6,15 +6,15 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
     vim.api.nvim_echo({
       { "Failed to clone lazy.nvim:\n", "ErrorMsg" },
       { out, "WarningMsg" },
-      { "\nLazyVim bootstrap skipped. Run :messages to review the error.", "WarningMsg" },
+      { "\nPress any key to exit..." },
     }, true, {})
-    return
+    vim.fn.getchar()
+    os.exit(1)
   end
 end
 vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
-  colorscheme = "catppuccin",
   spec = {
     -- add LazyVim and import its plugins
     { "LazyVim/LazyVim", import = "lazyvim.plugins" },
@@ -30,7 +30,7 @@ require("lazy").setup({
     version = false, -- always use the latest git commit
     -- version = "*", -- try installing the latest stable version for plugins that support semver
   },
-  install = { colorscheme = { "catppuccin" } },
+  install = { colorscheme = { "catppuccin", "tokyonight", "habamax" } },
   checker = {
     enabled = true, -- check for plugin updates periodically
     notify = false, -- notify on update

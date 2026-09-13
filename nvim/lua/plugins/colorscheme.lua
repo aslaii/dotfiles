@@ -15,6 +15,7 @@ local function get_system_flavour()
     if vim.v.shell_error == 0 and output:match("Dark") then
       return "mocha"
     end
+
     return "latte"
   end
 
