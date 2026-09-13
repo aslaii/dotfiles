@@ -62,7 +62,7 @@ The `omp/` directory mirrors the portable parts of `~/.omp`:
 | Path | Contents |
 |------|----------|
 | `omp/agent/config.yml` | Model roles, thinking levels, prewalk, fallbacks, two-worker limit, and UI preferences |
-| `omp/fast.yml`, `omp/budget.yml` | Opt-in `--config` overlays: fast (priority Claude/GPT, 8-wide) and budget (Command Code $10 plan plus free Muse only) |
+| `omp/fast.yml`, `omp/budget.yml` | Opt-in `--config` overlays: fast (priority Claude/GPT, 8-wide) and budget (Claude Sonnet 5 via the $20 subscription first, Command Code $10 plan DeepSeek on Claude limits, free Muse as backstop) |
 | `omp/agent/APPEND_SYSTEM.md` | Main-only orchestration and dispatch/verification policy |
 | `omp/agent/agents/*.md` | Portable planner, Terra, verifier, and researcher prompts |
 | `omp/agent/skills/omp-prompt/` | OMP-only prompt refinement skill |
@@ -172,21 +172,18 @@ Normal `omo` and `omp` keep their defaults. Reload an existing shell with
 `source ~/.zsh/functions.zsh` before using the new commands.
 
 For a spend-capped session, use `omp-budget`. It is a `--config` overlay
-(`omp/budget.yml`, the same mechanism as `omp-fast`) that pins every model role
-and every fallback chain to the Command Code $10 plan's DeepSeek family
-(`deepseek/deepseek-v4.1-flash`, `deepseek/deepseek-v4-pro`,
-`deepseek/deepseek-v4-flash`, `deepseek/deepseek-v4-flash-vision-exp`,
-registered via native discovery in `omp/agent/models.yml`), the plan-hosted
-Muse Spark 1.3 Contributor, or the free OpenCode Zen Muse Contributor
-endpoint as a last-resort backstop. Reasoning roles take the plan's top
-thinking tier, Main stays on its cheapest tier, vision uses the plan's
-dedicated image-native vision model (confirmed with a real image probe,
-falling back to free Muse for rate limits and then `deepseek-v4.1-flash`),
-and small/verify/research/free work runs on the plan-hosted Muse
-Contributor, the plan's cheapest capable model, falling back to free Muse.
-No budget role can reach Anthropic, OpenAI, Claude, GPT, or a paid Zen
-model, and no request forces the Command Code ZDR header (opt-in there,
-and forcing it caps a model's usable allowance at the plan default).
+(`omp/budget.yml`, the same mechanism as `omp-fast`) that runs the driving
+roles on `anthropic/claude-sonnet-5` through the $20/mo Claude subscription's
+OAuth login first, falling back — once that credential's usage-aware
+preflight reports it inside its reserve margin — to the Command Code $10
+plan's DeepSeek V4.1 Flash tier, then to the plan-hosted Muse Spark 1.3
+Contributor. Vision reads stay on the plan's dedicated image-native vision
+model (confirmed with a real image probe), designer and small/verify/research/free
+work stay on the plan-hosted Muse Contributor and DeepSeek tier, and the free
+OpenCode Zen Muse Contributor endpoint remains wired only as a last-resort
+backstop. No budget role can reach OpenAI, GPT, or a paid Zen model, and no
+request forces the Command Code ZDR header (opt-in there, and forcing it
+caps a model's usable allowance at the plan default).
 From other shells:
 
 ```bash
