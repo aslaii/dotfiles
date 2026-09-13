@@ -412,6 +412,40 @@ ensure_default_shell() {
   chsh -s "$desired_shell"
 }
 
+patch_herdr_omp_source() {
+  local omp_root="$1"
+  local agent_dir="${PI_CODING_AGENT_DIR:-${omp_root}/agent}"
+  local ext_file="${agent_dir}/extensions/herdr-omp-agent-state.ts"
+  local old='const source = "herdr:omp";'
+  local new='const source = "custom:omp";'
+
+  if [[ ! -f "$ext_file" ]]; then
+    log "No herdr OMP extension at ${ext_file}; herdr integration not installed, skipping source patch."
+    return
+  fi
+
+  if grep -qF "$new" "$ext_file"; then
+    log "Herdr OMP extension source already patched to custom:omp."
+    return
+  fi
+
+  if ! grep -qF "$old" "$ext_file"; then
+    die "Herdr OMP extension ${ext_file} no longer contains the expected literal: ${old} -- herdr's integration likely changed; update patch_herdr_omp_source."
+  fi
+
+  sed -i '' "s/${old}/${new}/" "$ext_file"
+
+  if grep -qF 'herdr:omp' "$ext_file"; then
+    die "Failed to patch ${ext_file}: literal herdr:omp still present after substitution."
+  fi
+
+  if ! command -v bun >/dev/null 2>&1 || ! bun -e "await import(\"file://${ext_file}\")" >/dev/null 2>&1; then
+    die "Patched ${ext_file} failed to load as a module; herdr's integration format may have changed."
+  fi
+
+  log "Patched herdr OMP extension source: herdr:omp -> custom:omp (${ext_file})."
+}
+
 print_next_steps() {
   cat <<'MSG'
 
@@ -446,8 +480,8 @@ main() {
       link_file "${DOTFILES_DIR}/omp/plugins/${manifest}" "${omp_root}/plugins/${manifest}"
     done
     bun install --cwd "${omp_root}/plugins" --frozen-lockfile --concurrent-scripts 2 --network-concurrency 2
+    patch_herdr_omp_source "$omp_root"
     log "OMP files linked where missing; existing files preserved. Plugins restored from the active lockfile."
-    log "Install OMP and RTK if needed, then run omp and /login on this machine."
     return
   fi
 
