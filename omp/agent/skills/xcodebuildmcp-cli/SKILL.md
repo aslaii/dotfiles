@@ -5,7 +5,7 @@ description: Official skill for the XcodeBuildMCP CLI. Use when doing iOS/macOS/
 
 # XcodeBuildMCP CLI
 
-Use XcodeBuildMCP tools via the `xcodebuildmcp` executable instead of raw `xcodebuild`, `xcrun`, `simctl`, or Argent. Argent's native tool-server covers general device/accessibility automation; for Xcode project build/test/run/debug/log work, `xcodebuildmcp` is the specialized, more capable path — prefer it whenever the task is Xcode-project-shaped.
+Use XcodeBuildMCP tools via the `xcodebuildmcp` executable instead of raw `xcodebuild`, `xcrun`, or `simctl`. For Xcode project build/test/run/debug/log work, `xcodebuildmcp` is the specialized, more capable path — prefer it whenever the task is Xcode-project-shaped.
 
 ## Step 1: Ensure the CLI Exists
 

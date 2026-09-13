@@ -106,6 +106,12 @@ function omo-fast() {
     --extension "${DOTFILES_DIR:-$HOME/dotfiles}/omo/fast.mjs" "$@"
 }
 
+function omob() {
+  bash "${DOTFILES_DIR:-$HOME/dotfiles}/omo/launch.sh" \
+    --model claude-sdk-oauth/claude-sonnet-5:medium \
+    --append-system-prompt "${DOTFILES_DIR:-$HOME/dotfiles}/omo/orchestrator-only.md" "$@"
+}
+
 function omp-fast() {
   bun "${DOTFILES_DIR:-$HOME/dotfiles}/omp/launch.mjs" \
     --config "${DOTFILES_DIR:-$HOME/dotfiles}/omp/fast.yml" \

@@ -459,7 +459,6 @@ main() {
   if [[ "${1:-}" == "--omp" ]]; then
     ensure_dotfiles_dir
     command -v bun >/dev/null 2>&1 || die "Install Bun before restoring OMP plugins."
-    bash "${DOTFILES_DIR}/argent/install.sh"
 
     local omp_root="${HOME}/.omp" agent skill manifest
     link_file "${DOTFILES_DIR}/omp/agent/config.yml" "${omp_root}/agent/config.yml"

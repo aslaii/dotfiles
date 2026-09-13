@@ -37,15 +37,6 @@ NPM_ROOT="$(npm root -g 2>/dev/null || true)"
 NPM_PKG="$NPM_ROOT/omo-ai"
 [[ -n "$NPM_ROOT" && -f "$NPM_PKG/bin/omo.js" ]] || { echo "omo/launch.sh: globally npm-installed omo-ai not found; run: npm i -g omo-ai@beta" >&2; exit 127; }
 OMO_BIN="$NPM_PKG/bin/omo.js"
-IFS= read -r ARGENT_VERSION <"$SCRIPT_DIR/../argent/version"
-ARGENT_PKG="$NPM_ROOT/@swmansion/argent"
-FOUND_ARGENT="$(argent --version 2>/dev/null || true)"
-FOUND_ARGENT="${FOUND_ARGENT##* }"
-FOUND_ARGENT="${FOUND_ARGENT#v}"
-[[ -f "$ARGENT_PKG/dist/cli.js" && -d "$ARGENT_PKG/skills" && "$FOUND_ARGENT" == "$ARGENT_VERSION" ]] || {
-  echo "omo/launch.sh: Argent $ARGENT_VERSION not found; run: $SCRIPT_DIR/../argent/install.sh" >&2
-  exit 127
-}
 # In-process extensions (omo/fast.mjs) resolve Senpi from OMO_BIN, keeping
 # them on the selected npm package. The omo launcher itself overwrites
 # OMO_BIN for its own children.
@@ -84,7 +75,7 @@ fi
 # Candidate roots: native agent + bundled OMO + active package skills only.
 SKILL_ROOTS=()
 [[ -d "$AGENT_DIR/skills" ]] && SKILL_ROOTS+=("$AGENT_DIR/skills")
-SKILL_ROOTS+=("$BUNDLED_SKILLS" "$ARGENT_PKG/skills")
+SKILL_ROOTS+=("$BUNDLED_SKILLS")
 
 while IFS= read -r d; do
   [[ -z "$d" ]] && continue
@@ -141,9 +132,6 @@ for root in "${SKILL_ROOTS[@]}"; do
     is_forbidden_skill_name "$(basename "$d")" && continue
     ARGS+=(--skill "$d")
   done < <(find "$root" -mindepth 1 -maxdepth 1 -type d -print0)
-done
-for rule in argent.md argent-cli.md; do
-  [[ -f "$AGENT_DIR/rules/$rule" ]] && ARGS+=(--append-system-prompt "$AGENT_DIR/rules/$rule")
 done
 
 if [[ "${OMO_LAUNCH_DRY_RUN-}" == "1" ]]; then

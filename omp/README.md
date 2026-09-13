@@ -9,7 +9,7 @@ rtk bash ~/dotfiles/initial-setup-macos.sh --omp
 
 The installer links this directory's `agent/` over `~/.omp/agent`, so
 `config.yml`, `models.yml` (the Command Code plan catalog), the agent
-prompts, the `omp-prompt` skill, and the Argent CLI rule load automatically.
+prompts, and the `omp-prompt` skill load automatically.
 Plugins are reinstalled from the frozen lockfile by Bun.
 
 ## Launch profiles

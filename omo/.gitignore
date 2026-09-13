@@ -22,6 +22,7 @@
 !comment-checker.test.js
 !comment-checker-qa.mjs
 !herdr-presence.test.js
+!orchestrator-only.md
 !rules/
 !rules/**
 
