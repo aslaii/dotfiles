@@ -48,6 +48,11 @@ Other shells call the launcher directly, for example:
 bun ~/dotfiles/omp/launch.mjs --config ~/dotfiles/omp/budget.yml
 ```
 
+## herdr tracking
+
+OMP sessions are supposed to be reported by herdr's own OMP integration, but that integration currently reports unreliably (one-shot socket write, silent failure), so the launcher publishes pane state itself (`working` at start, releasing its authority at exit). State is coarse: `blocked` is NOT reported.
+Track with `herdr agent list`, `herdr agent read w3:pX --lines 40`, `herdr agent attach`, `herdr agent wait <pane> --until blocked --timeout 600000`; manual control with `herdr pane report-agent ...`.
+
 ## omp-budget
 
 `budget.yml` is a `--config` overlay: it overrides only the keys it names and

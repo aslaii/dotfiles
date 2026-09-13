@@ -113,6 +113,14 @@ function omp-fast() {
 }
 
 function omp-budget() {
+  local label="${OMP_PROFILE:-ompb}" rc
+  if [[ "${HERDR_ENV:-}" == "1" && -n "${HERDR_PANE_ID:-}" && -n "${HERDR_BIN_PATH:-}" ]]; then
+    "$HERDR_BIN_PATH" pane report-agent "$HERDR_PANE_ID" --source "custom:$label" --agent "$label" --state working >/dev/null 2>&1
+  fi
   bun "${DOTFILES_DIR:-$HOME/dotfiles}/omp/launch.mjs" \
-    --config "${DOTFILES_DIR:-$HOME/dotfiles}/omp/budget.yml" "$@"
+    --config "${DOTFILES_DIR:-$HOME/dotfiles}/omp/budget.yml" "$@"; rc=$?
+  if [[ "${HERDR_ENV:-}" == "1" && -n "${HERDR_PANE_ID:-}" && -n "${HERDR_BIN_PATH:-}" ]]; then
+    "$HERDR_BIN_PATH" pane release-agent "$HERDR_PANE_ID" --source "custom:$label" --agent "$label" >/dev/null 2>&1
+  fi
+  return $rc
 }

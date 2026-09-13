@@ -51,4 +51,4 @@ alias goose='cd ~/work/goose/'
 
 # OMP
 alias ompb="omp-budget"
-alias ompd='ompb --config "$HOME/dotfiles/omp/no-claude.yml"'
+alias ompd='OMP_PROFILE=ompd ompb --config "$HOME/dotfiles/omp/no-claude.yml"'
