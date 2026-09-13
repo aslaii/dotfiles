@@ -106,6 +106,10 @@ function omo-fast() {
     --extension "${DOTFILES_DIR:-$HOME/dotfiles}/omo/fast.mjs" "$@"
 }
 
+function omo-gpt() {
+  OMO_PROFILE=gpt-5.6 bash "${DOTFILES_DIR:-$HOME/dotfiles}/omo/launch.sh" "$@"
+}
+
 function omob() {
   bash "${DOTFILES_DIR:-$HOME/dotfiles}/omo/launch.sh" \
     --model claude-sdk-oauth/claude-sonnet-5:medium \
@@ -121,4 +125,9 @@ function omp-fast() {
 function omp-budget() {
   bun "${DOTFILES_DIR:-$HOME/dotfiles}/omp/launch.mjs" \
     --config "${DOTFILES_DIR:-$HOME/dotfiles}/omp/budget.yml" "$@"
+}
+
+function omp-gpt() {
+  bun "${DOTFILES_DIR:-$HOME/dotfiles}/omp/launch.mjs" \
+    --config "${DOTFILES_DIR:-$HOME/dotfiles}/omp/gpt.yml" "$@"
 }

@@ -1,0 +1,68 @@
+# omp-gpt opt-in overlay (native `--config` overlay, no source edits).
+#
+# GPT-5.6-only routing: every role resolves to an `openai-codex` GPT 5.6 model
+# (sol / terra / luna), ceiling `sol:max`. No GPT 6.x model (the Astra line) and
+# no non-GPT primary anywhere, including the roles the global config.yml gives
+# to Claude, DeepSeek, or Muse.
+#
+#   omp --config /Users/aslaii/dotfiles/omp/gpt.yml ...
+# or through the shell function:
+#   omp-gpt
+#
+# Precedence (src/config/settings.ts #rebuildMerged): global config.yml <
+# project settings < THIS overlay < runtime overrides. `--config` only ever
+# *adds* an overlay on top of the global profile, and settings.ts #deepMerge
+# recurses per key for plain objects: modelRoles merges per role, fallbackChains
+# merges per chain key with arrays replaced wholesale. So all 16 roles
+# agent/config.yml assigns are named below — a role left out here would
+# silently keep its global Claude/Muse model.
+#
+# `task.agentModelOverrides` is inherited unchanged and needs no entry: every
+# one of its nine agent names is an alias into a role named here (task→@task,
+# scout→@smol, sonic→@tiny, reviewer/security-reviewer→@review, terra→@slow,
+# planner→@planner, verifier→@verify, researcher→@research), so each resolves
+# to a GPT 5.6 model without restating the alias map.
+modelRoles:
+  default: openai-codex/gpt-5.6-sol:medium
+  plan: openai-codex/gpt-5.6-sol:high
+  task: openai-codex/gpt-5.6-sol:medium
+  slow: openai-codex/gpt-5.6-sol:high
+  smol: openai-codex/gpt-5.6-luna:low
+  vision: openai-codex/gpt-5.6-sol:medium
+  designer: openai-codex/gpt-5.6-sol:max
+  commit: openai-codex/gpt-5.6-luna:low
+  tiny: openai-codex/gpt-5.6-luna:low
+  planner: openai-codex/gpt-5.6-sol:high
+  advisor: openai-codex/gpt-5.6-sol:medium
+  review: openai-codex/gpt-5.6-sol:high
+  verify: openai-codex/gpt-5.6-terra:high
+  research: openai-codex/gpt-5.6-sol:medium
+  free: openai-codex/gpt-5.6-luna:low
+  PREWALK: openai-codex/gpt-5.6-luna:low
+retry:
+  # Hard-require the fallback machinery (startup fallback-state resolution is
+  # gated on modelFallback): pin both against a global false, same as fast.yml.
+  enabled: true
+  modelFallback: true
+  fallbackChains:
+    # Exact four-rung order for every GPT entry:
+    # GPT -> DSV4.1 -> free Zen Muse 1.3 -> plan Muse 1.3.
+    # Chain resolution (src/session/retry-fallback-chains.ts
+    # resolveRetryFallbackChainKey) is exact model > `provider/*` > role >
+    # `default`, so this one wildcard key covers every model above and leaves
+    # the global profile's `default`/`anthropic/*` chains unreachable from a
+    # GPT session.
+    openai-codex/*:
+      - commandcode/deepseek/deepseek-v4.1-flash:high
+      - opencode-zen/muse-spark-1.3-contributor-free:xhigh
+      - commandcode/meta/muse-spark-1.3-contributor:xhigh
+    # Resolution re-runs per active model, so the rungs below need their own
+    # keys to stay on this chain: without them a DSV4.1 or free-Muse outage
+    # walks back into the global profile's Claude/Muse chains. Each key
+    # continues the same order and ends at the plan Muse rung, which needs no
+    # further key.
+    commandcode/deepseek/deepseek-v4.1-flash:
+      - opencode-zen/muse-spark-1.3-contributor-free:xhigh
+      - commandcode/meta/muse-spark-1.3-contributor:xhigh
+    opencode-zen/muse-spark-1.3-contributor-free:
+      - commandcode/meta/muse-spark-1.3-contributor:xhigh

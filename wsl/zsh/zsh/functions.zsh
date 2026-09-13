@@ -16,10 +16,19 @@ function omo-fast() {
     --extension "${DOTFILES_DIR:-$HOME/dotfiles}/omo/fast.mjs" "$@"
 }
 
+function omo-gpt() {
+  OMO_PROFILE=gpt-5.6 bash "${DOTFILES_DIR:-$HOME/dotfiles}/omo/launch.sh" "$@"
+}
+
 function omp-fast() {
   bun "${DOTFILES_DIR:-$HOME/dotfiles}/omp/launch.mjs" \
     --config "${DOTFILES_DIR:-$HOME/dotfiles}/omp/fast.yml" \
     --extension "${DOTFILES_DIR:-$HOME/dotfiles}/omp/fast.mjs" "$@"
+}
+
+function omp-gpt() {
+  bun "${DOTFILES_DIR:-$HOME/dotfiles}/omp/launch.mjs" \
+    --config "${DOTFILES_DIR:-$HOME/dotfiles}/omp/gpt.yml" "$@"
 }
 
 function nvimGoToFiles {
