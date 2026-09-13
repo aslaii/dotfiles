@@ -20,6 +20,7 @@ modelRoles:
   verify: opencode-zen/muse-spark-1.3-contributor-free:xhigh
   research: opencode-zen/muse-spark-1.3-contributor-free:xhigh
   free: opencode-zen/muse-spark-1.3-contributor-free:xhigh
+  PREWALK: anthropic/claude-opus-5:high
 defaultThinkingLevel: medium
 task:
   maxConcurrency: 2
@@ -71,5 +72,18 @@ setupVersion: 2
 hideThinkingBlock: true
 statusLine:
   preset: custom
-  leftSegments: [pi, vim, model, mode, collab, path, git, pr, context_pct, cost]
-  rightSegments: [session_name, cache_hit, cache_read]
+  leftSegments:
+    - pi
+    - vim
+    - model
+    - mode
+    - collab
+    - path
+    - git
+    - pr
+    - context_pct
+    - cost
+  rightSegments:
+    - session_name
+    - cache_hit
+    - cache_read
