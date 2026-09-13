@@ -16,6 +16,7 @@ brew "wget"
 
 # ── Shell ─────────────────────────────────────────
 brew "fzf"
+brew "fd"
 brew "ripgrep"
 brew "bat"
 brew "zoxide"

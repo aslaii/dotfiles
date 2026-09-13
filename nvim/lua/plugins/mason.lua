@@ -12,7 +12,6 @@ return {
       "some-sass-language-server",
       "stylua",
       "tree-sitter-cli",
-      "dcm",
     },
   },
 }
