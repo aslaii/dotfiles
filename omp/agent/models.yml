@@ -2,7 +2,6 @@ providers:
   commandcode:
     baseUrl: https://api.commandcode.ai/provider/v1
     api: openai-completions
-    apiKey: "!security find-generic-password -w -s commandcode-api-key"
     authHeader: true
     compat:
       supportsDeveloperRole: false
