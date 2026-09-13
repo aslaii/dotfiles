@@ -1,7 +1,8 @@
 {
-  "omoVersion": "5.0.0-0.beta.53",
+  "omoVersion": "5.0.0-0.beta.62",
   "builtinExtensions": ["tps", "prompt-url-widget", "files", "diff"],
   "resources": [
+    { "source": "agent/models.json", "target": ".omo/agent/models.json" },
     { "source": "agent/extensions/comment-checker.js", "target": ".omo/agent/extensions/comment-checker.js" }
   ]
 }

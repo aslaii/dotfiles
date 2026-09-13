@@ -33,10 +33,60 @@ for var in OMO_CODING_AGENT_DIR SENPI_CODING_AGENT_DIR PI_CODING_AGENT_DIR; do
 done
 [[ -z "$AGENT_DIR" ]] && AGENT_DIR="${HOME:?HOME is required}/.omo/agent"
 
-NPM_ROOT="$(npm root -g 2>/dev/null || true)"
-NPM_PKG="$NPM_ROOT/omo-ai"
-[[ -n "$NPM_ROOT" && -f "$NPM_PKG/bin/omo.js" ]] || { echo "omo/launch.sh: globally npm-installed omo-ai not found; run: npm i -g omo-ai@beta" >&2; exit 127; }
-OMO_BIN="$NPM_PKG/bin/omo.js"
+# Resolve the driving OMO package. The npm-global install is authoritative
+# whenever `npm root -g` points at a complete omo-ai, so layered developer
+# checkouts or stray PATH entries can never override it. Only when that lookup
+# has no package do we scan PATH for an external `omo` (covers FNM multishells,
+# where the shell's npm root can belong to a different node version than the
+# shell's `omo` shim): entries are scanned by hand, never through `command -v`
+# or `which`, so a sourced shell function is never treated as an executable;
+# symlink chains are followed, and a candidate counts only when it resolves to
+# a real `<package>/bin/omo.js` with `<package>/plugin/skills`.
+path_omo_bin() {
+  local IFS=:
+  local entry candidate resolved target hops
+  for entry in ${PATH-}; do
+    [[ -n "$entry" ]] || entry="."
+    candidate="$entry/omo"
+    if [[ ! -x "$candidate" && ! -L "$candidate" ]]; then
+      continue
+    fi
+    resolved="$candidate"
+    hops=0
+    while [[ -L "$resolved" && $hops -lt 32 ]]; do
+      target="$(readlink "$resolved")" || { resolved=""; break; }
+      case "$target" in
+        /*) resolved="$target" ;;
+        *) resolved="${resolved%/*}/$target" ;;
+      esac
+      hops=$((hops + 1))
+    done
+    if [[ -z "$resolved" || ! -f "$resolved" || ! -x "$resolved" ]]; then
+      continue
+    fi
+    if [[ "${resolved##*/}" != "omo.js" || "${resolved%/*}" != */bin ]]; then
+      continue
+    fi
+    if [[ ! -d "${resolved%/bin/omo.js}/plugin/skills" ]]; then
+      continue
+    fi
+    printf '%s\n' "$resolved"
+    return 0
+  done
+  return 1
+}
+
+ NPM_ROOT="$(npm root -g 2>/dev/null || true)"
+ NPM_PKG="$NPM_ROOT/omo-ai"
+if [[ -n "$NPM_ROOT" && -f "$NPM_PKG/bin/omo.js" ]]; then
+  OMO_BIN="$NPM_PKG/bin/omo.js"
+else
+  OMO_BIN="$(path_omo_bin || true)"
+  if [[ -n "$OMO_BIN" ]]; then
+    NPM_PKG="${OMO_BIN%/bin/omo.js}"
+  fi
+fi
+[[ -n "$OMO_BIN" ]] || { echo "omo/launch.sh: globally npm-installed omo-ai not found; run: npm i -g omo-ai@beta" >&2; exit 127; }
 # In-process extensions (omo/fast.mjs) resolve Senpi from OMO_BIN, keeping
 # them on the selected npm package. The omo launcher itself overwrites
 # OMO_BIN for its own children.

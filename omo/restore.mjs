@@ -88,6 +88,16 @@ function retireManagedNativeConfig(config) {
   return config
 }
 
+// Fallback chains merge key by key, so a chain the portable settings no longer
+// ship would survive in the destination forever. Retire exactly the managed
+// keys that were dropped upstream; every other chain, user ones included, stays.
+function retireManagedFallbackChains(settings) {
+  const chains = settings?.retry?.fallbackChains
+  if (!isObject(chains)) return settings
+  for (const name of ["openai-codex/gpt-5.4-mini", "openai-codex/gpt-5.5"]) delete chains[name]
+  return settings
+}
+
 function mergeHooks(destination, source, home) {
   const result = merge(destination, source, "", true)
   for (const [event, entries] of Object.entries(result.hooks ?? {})) {
@@ -617,7 +627,8 @@ async function restore() {
     const hooksTarget = join(home, ".omo", "agent", "hooks.json")
     const existingOmo = retireManagedNativeConfig(await readDestinationObject(omoTarget, "existing omo config", Bun.JSONC.parse))
     const mergedOmo = merge(existingOmo, portableOmo)
-    const mergedSettings = merge(await readDestinationObject(settingsTarget, "existing agent settings"), portableSettings)
+    const existingSettings = retireManagedFallbackChains(await readDestinationObject(settingsTarget, "existing agent settings"))
+    const mergedSettings = merge(existingSettings, portableSettings)
     const mergedHooks = mergeHooks(await readDestinationObject(hooksTarget, "existing agent hooks"), portableHooks, home)
     await writeManagedFile(omoTarget, Buffer.from(`${JSON.stringify(mergedOmo, null, 2)}\n`), state)
     await writeManagedFile(settingsTarget, Buffer.from(`${JSON.stringify(mergedSettings, null, 2)}\n`), state)

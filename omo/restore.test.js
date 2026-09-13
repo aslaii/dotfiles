@@ -85,7 +85,7 @@ async function skillTemps() {
 
 function skillSourceManifest(fixture) {
   return {
-    omoVersion: "5.0.0-0.beta.53",
+    omoVersion: "5.0.0-0.beta.62",
     builtinExtensions: ["tps", "prompt-url-widget", "files", "diff"],
     resources: [{ source: "rules", target: ".omo/agent/rules" }],
     skillSource: {
@@ -469,7 +469,7 @@ test("production restore archives legacy local libraries and installs only the o
   const script = join(snapshot, "restore.mjs")
   await cp(restore, script)
   await write(join(snapshot, "restore.json"), JSON.stringify({
-    omoVersion: "5.0.0-0.beta.53",
+    omoVersion: "5.0.0-0.beta.62",
     builtinExtensions: ["tps", "prompt-url-widget", "files", "diff"],
     resources: [
       { source: "rules", target: ".omo/agent/rules" },
@@ -536,7 +536,7 @@ test("legacy library retirement refuses a symlinked parent and leaves its extern
   const script = join(snapshot, "restore.mjs")
   await cp(restore, script)
   await write(join(snapshot, "restore.json"), JSON.stringify({
-    omoVersion: "5.0.0-0.beta.53",
+    omoVersion: "5.0.0-0.beta.62",
     builtinExtensions: [],
     resources: [],
   }))
@@ -560,7 +560,7 @@ test("restore migrates retired managed native config without removing custom con
   const script = join(snapshot, "restore.mjs")
   await cp(restore, script)
   await write(join(snapshot, "restore.json"), JSON.stringify({
-    omoVersion: "5.0.0-0.beta.53",
+    omoVersion: "5.0.0-0.beta.62",
     builtinExtensions: [],
     resources: [],
   }))
@@ -624,3 +624,47 @@ test("restore migrates retired managed native config without removing custom con
   expect(config["custom-harness-setting"]).toEqual({ kept: true })
   expect(await readFile(join(home, ".omo/agent/auth.json"), "utf8")).toBe("user credential")
 })
+
+test("restore retires the dropped GPT fallback chains and keeps every other chain", async () => {
+  const root = await mkdtemp(join(tmpdir(), "omo restore chains "))
+  cleanup.push(root)
+  const snapshot = join(root, "snapshot")
+  const home = join(root, "home")
+  const script = join(snapshot, "restore.mjs")
+  await cp(restore, script)
+  await write(join(snapshot, "restore.json"), JSON.stringify({
+    omoVersion: "5.0.0-0.beta.62",
+    builtinExtensions: [],
+    resources: [],
+  }))
+  await writePortableConfig(snapshot)
+  await write(join(home, ".omo/agent/settings.json"), JSON.stringify({
+    destinationPreference: true,
+    retry: {
+      enabled: true,
+      modelFallback: true,
+      fallbackChains: {
+        "openai-codex/gpt-5.4-mini": ["openai-codex/gpt-5.6-luna-fast:low"],
+        "openai-codex/gpt-5.5": ["openai-codex/gpt-5.6-terra:high"],
+        "openai-codex/gpt-5.6-terra": ["openai-codex/gpt-5.6-sol:high"],
+        "user/model": ["opencode/muse-spark-1.3-contributor-free:xhigh"],
+      },
+    },
+  }))
+
+  await run(script, home)
+
+  const settings = await json(join(home, ".omo/agent/settings.json"))
+  expect(settings.retry.fallbackChains).not.toHaveProperty("openai-codex/gpt-5.4-mini")
+  expect(settings.retry.fallbackChains).not.toHaveProperty("openai-codex/gpt-5.5")
+  expect(settings.retry.fallbackChains["openai-codex/gpt-5.6-terra"]).toEqual(["openai-codex/gpt-5.6-sol:high"])
+  expect(settings.retry.fallbackChains["user/model"]).toEqual(["opencode/muse-spark-1.3-contributor-free:xhigh"])
+  expect(settings.retry.enabled).toBe(true)
+  expect(settings.retry.modelFallback).toBe(true)
+  expect(settings.destinationPreference).toBe(true)
+
+  await run(script, home)
+  const rerun = await json(join(home, ".omo/agent/settings.json"))
+  expect(rerun.retry.fallbackChains["user/model"]).toEqual(["opencode/muse-spark-1.3-contributor-free:xhigh"])
+})
+

@@ -15,6 +15,7 @@
 !fast.test.js
 !agent/
 !agent/settings.json
+!agent/models.json
 !agent/hooks.json
 !agent/extensions/
 !agent/extensions/herdr-presence.js

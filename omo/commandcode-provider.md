@@ -21,58 +21,70 @@ security add-generic-password -U -a "$USER" -s commandcode-api-key -w
 `-w` with no value makes `security` prompt for the key, so the key does not land in
 the shell history. `-U` updates the entry when it already exists.
 
-Both configs read the key at request time with this command:
+OMP reads the key at request time with this command:
 
 ```bash
 security find-generic-password -w -s commandcode-api-key
 ```
 
-Linux has no `security` command. Replace the read command in the provider block with
+OMO Native authenticates through OMO's own credential store instead (`/login` or
+`omo auth`, kept in `~/.omo/agent/auth.json`); the pinned provider package reads it
+from there, so the Keychain entry is only needed for OMP.
+
+Linux has no `security` command. Replace the read command in the OMP provider block with
 the local secret tool, or start the client with the key in the environment.
 
-## 2. Add the provider to OMO Native
+## 2. Add the DeepSeek V4.1 thinking override to OMO Native
 
-File: `~/.omo/agent/models.json`
+OMO Native gets the provider itself from the pinned `npm:pi-commandcode-provider`
+package listed in `agent/settings.json`. That package derives model metadata from
+its own generated catalog, which still marks `deepseek/deepseek-v4.1-flash` as
+non-reasoning, so OMO would register no thinking levels for it: `:low`/`:high`/
+`:max` selectors fail fallback-chain validation and any selected level is clamped
+back to `off`.
 
-Add this key inside the existing `providers` object:
+The tracked override in `omo/agent/models.json`, restored to
+`~/.omo/agent/models.json`, patches that registration. It is the topmost
+user-config layer and applies after the package registers its models:
 
 ```json
 {
-  "commandcode": {
-    "baseUrl": "https://api.commandcode.ai/provider/v1",
-    "api": "openai-completions",
-    "apiKey": "!security find-generic-password -w -s commandcode-api-key",
-    "authHeader": true,
-    "compat": {
-      "supportsDeveloperRole": false,
-      "supportsReasoningEffort": true,
-      "thinkingFormat": "deepseek",
-      "disableReasoningOnToolChoice": true
-    },
-    "models": [
-      {
-        "id": "deepseek/deepseek-v4.1-flash",
-        "name": "DeepSeek V4.1 Flash via Command Code",
-        "reasoning": true,
-        "input": ["text", "image"],
-        "contextWindow": 1000000,
-        "maxTokens": 384000,
-        "thinkingLevelMap": {
-          "off": null,
-          "minimal": null,
-          "low": "low",
-          "medium": null,
-          "high": "high",
-          "xhigh": null,
-          "max": "max"
+  "providers": {
+    "commandcode": {
+      "modelOverrides": {
+        "deepseek/deepseek-v4.1-flash": {
+          "reasoning": true,
+          "thinkingLevelMapMode": "replace",
+          "thinkingLevelMap": {
+            "off": null,
+            "minimal": null,
+            "low": "low",
+            "medium": null,
+            "high": "high",
+            "xhigh": null,
+            "max": "max"
+          },
+          "compat": {
+            "supportsReasoningEffort": true,
+            "thinkingFormat": "deepseek"
+          }
         }
       }
-    ]
+    }
   }
 }
 ```
 
-`thinkingFormat` is `deepseek` here. OMO accepts that value.
+That yields the supported levels `low`, `high`, `max`; `thinkingFormat` `deepseek`
+sends `thinking: {"type": "enabled"}` plus the mapped `reasoning_effort`, and OMO's
+fallback validation accepts those selectors.
+
+**This override is temporary.** Delete the `modelOverrides` entry (and the file if it
+holds nothing else) once `pi-commandcode-provider` ships a generated catalog that
+lists `deepseek/deepseek-v4.1-flash` in its reasoning models and effort map — the
+condition is a provider sync to Command Code CLI `>= 1.53.0`. Restore backs up and
+replaces any hand-kept `~/.omo/agent/models.json`, so keep provider tuning in the
+tracked file.
 
 ## 3. Add the provider to OMP
 
@@ -145,12 +157,21 @@ Registration alone adds no routing. The fallback order lives in three places:
 
 | Client | File | Keys |
 | --- | --- | --- |
-| OMO Native | `~/.omo/omo.jsonc` | `categories`, `agents`, and the four profiles `fast`, `gpt`, `claude`, `mixed` |
+| OMO Native | `~/.omo/omo.jsonc` | `categories`, `agents`, and the profiles `fast`, `gpt`, `gpt-5.6`, `claude`, `mixed` |
 | OMO session | `~/.omo/agent/settings.json` | `favoriteModels`, `enabledModels`, `recommendedModels`, `retry.fallbackChains` |
 | OMP | `~/.omp/agent/config.yml` | `modelRoles`, `retry.fallbackChains` |
 | OMP budget overlay | `omp/budget.yml` (tracked; `--config` overlay for `omp-budget`) | `modelRoles`, `retry.fallbackChains` |
 
 `~/.omo/agent/models-store.json` is a provider catalog cache. Do not edit it.
+
+OMO loads `commandcode/deepseek/deepseek-v4.1-flash` through the pinned
+`pi-commandcode-provider` package, whose generated catalog still marks that model
+non-reasoning. The tracked `agent/models.json` override (step 2) restores
+`reasoning`, the `low`/`high`/`max` effort map, and the `deepseek` thinking
+format, so every OMO DeepSeek V4.1 chain entry carries `high` and OMO's
+fallback-chain validation accepts it. Drop that override once the provider syncs
+to Command Code CLI `>= 1.53.0`. OMP declares its own efforts in
+`omp/agent/models.yml`, so the OMP `:max` lanes above remain valid.
 
 The default order used in `~/.omp/agent/config.yml`:
 

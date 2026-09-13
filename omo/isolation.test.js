@@ -1,4 +1,4 @@
-import { afterEach, expect, test } from "bun:test"
+import { afterAll, afterEach, expect, test } from "bun:test"
 import { chmod, cp, mkdir, mkdtemp, readFile, readdir, realpath, rm, stat, symlink, writeFile } from "node:fs/promises"
 import { tmpdir } from "node:os"
 import { basename, dirname, join, resolve } from "node:path"
@@ -17,6 +17,13 @@ const ponytailNames = [
 
 afterEach(async () => {
   await Promise.all(cleanup.splice(0).map((path) => rm(path, { recursive: true, force: true })))
+})
+
+// The shared hermetic tool dir is not part of `cleanup`: afterEach empties that
+// list after every test, and deleting the dir there would strip `bash` and the
+// core tools from the PATH of every later hermetic run.
+afterAll(async () => {
+  if (controlledTools) await rm(controlledTools, { recursive: true, force: true })
 })
 
 async function write(path, contents) {
@@ -39,9 +46,37 @@ function cleanEnv() {
 async function makeNpmShim(npmRoot) {
   const dir = await mkdtemp(join(tmpdir(), "omo npmshim "))
   cleanup.push(dir)
-  await write(join(dir, "npm"), '#!/bin/sh\nif [ "$1" = "root" ] && [ "$2" = "-g" ]; then\n  printf \'%s\\n\' "$FAKE_NPM_ROOT"\n  exit 0\nfi\necho "npm shim: unsupported invocation: $*" >&2\nexit 1\n')
+  const quoted = `'${npmRoot.replaceAll("'", "'\\''")}'`
+  await write(join(dir, "npm"), `#!/bin/sh\nif [ "$1" = "root" ] && [ "$2" = "-g" ]; then\n  printf '%s\\n' ${quoted}\n  exit 0\nfi\necho "npm shim: unsupported invocation: $*" >&2\nexit 1\n`)
   await chmod(join(dir, "npm"), 0o755)
   return dir
+}
+
+// Executables the launcher run needs on PATH: `bash` runs the launcher at all
+// and is resolved against the child PATH; `node` runs the launcher's inline
+// checks and any `/usr/bin/env node` fixture; `dirname` computes SCRIPT_DIR,
+// `readlink` follows the PATH `omo` symlink, and `basename`/`find` enumerate
+// skill roots. Each is symlinked as a resolved file - never a whole bin
+// directory, since an FNM multishell bin dir can itself contain an `omo` shim.
+const controlledToolNames = ["bash", "node", "dirname", "readlink", "basename", "find"]
+let controlledTools = null
+// A hermetic PATH for launcher runs that must not see the machine. The dir is
+// created on first use and reused by every hermetic run, so it must outlive
+// individual tests.
+async function controlledToolsDir() {
+  if (controlledTools) {
+    try {
+      if ((await stat(controlledTools)).isDirectory()) return controlledTools
+    } catch {}
+  }
+  const dir = await mkdtemp(join(tmpdir(), "omo tools "))
+  for (const name of controlledToolNames) {
+    const binary = Bun.which(name)
+    if (!binary) throw new Error(`${name} is required to run the launcher under a controlled PATH`)
+    await symlink(binary, join(dir, name))
+  }
+  controlledTools = dir
+  return controlledTools
 }
 
 async function fixtureNpmPackage(npmRoot, skillNames = ["npm-bundled-marker"]) {
@@ -94,13 +129,12 @@ async function realNpmPackage() {
   throw new Error("no complete npm omo-ai install found (npm root -g or ~/.nvm)")
 }
 
-async function dryRun({ home, agentDir, bundled, args = [], cwd, npmRoot, extraPathDirs = [] }) {
+async function dryRun({ home, agentDir, bundled, args = [], cwd, npmRoot, extraPathDirs = [], machinePath = true }) {
   const prefixes = [...extraPathDirs]
-  let fakeRootEnv = {}
   if (npmRoot !== undefined) {
     prefixes.push(await makeNpmShim(npmRoot))
-    fakeRootEnv = { FAKE_NPM_ROOT: npmRoot }
   }
+  const tail = machinePath ? [process.env.PATH ?? ""] : [await controlledToolsDir()]
   const child = Bun.spawn(["bash", launch, ...args], {
     cwd: cwd ?? process.cwd(),
     env: {
@@ -109,8 +143,7 @@ async function dryRun({ home, agentDir, bundled, args = [], cwd, npmRoot, extraP
       OMO_CODING_AGENT_DIR: agentDir,
       ...(bundled === undefined ? {} : { OMO_BUNDLED_SKILLS_DIR: bundled }),
       OMO_LAUNCH_DRY_RUN: "1",
-      PATH: [...prefixes, process.env.PATH ?? ""].filter(Boolean).join(":"),
-      ...fakeRootEnv,
+      PATH: [...prefixes, ...tail].filter(Boolean).join(":"),
     },
     stdout: "pipe",
     stderr: "pipe",
@@ -184,7 +217,7 @@ test("launcher selects npm omo-ai even when Bun bin is earlier on PATH", async (
   await chmod(join(bunDir, "omo"), 0o755)
   await skill(join(bunDir, "skills", "bun-decoy"), "bun-decoy")
 
-  const dry = await dryRun({ home, agentDir, npmRoot, extraPathDirs: [bunDir] })
+  const dry = await dryRun({ home, agentDir, npmRoot, extraPathDirs: [bunDir], machinePath: false })
   expect(dry.exitCode).toBe(0)
   expect(dry.stderr).not.toContain("bun decoy")
   const binary = dry.stdout.split("\n").find((line) => line.startsWith("omo-binary: "))
@@ -201,9 +234,32 @@ test("launcher without an npm omo-ai install instructs npm i -g omo-ai@beta", as
   await mkdir(agentDir, { recursive: true })
   await write(join(agentDir, "settings.json"), JSON.stringify({ packages: [] }))
 
-  const dry = await dryRun({ home, agentDir, npmRoot: join(root, "empty-npm") })
+  const dry = await dryRun({ home, agentDir, npmRoot: join(root, "empty-npm"), machinePath: false })
   expect(dry.exitCode).toBe(127)
   expect(dry.stderr).toContain("npm i -g omo-ai@beta")
+})
+
+test("launcher falls back to a PATH omo symlink when npm root has no omo-ai", async () => {
+  const root = await freshRoot()
+  const home = join(root, "home")
+  const agentDir = join(home, ".omo", "agent")
+  const otherRoot = join(root, "other-node")
+  const shimBin = join(root, "shimbin")
+  await mkdir(agentDir, { recursive: true })
+  await write(join(agentDir, "settings.json"), JSON.stringify({ packages: [] }))
+  // A complete omo-ai in a foreign root, reached only through PATH like an
+  // FNM multishell shim: `<shimbin>/omo` symlinks into the foreign package,
+  // while `npm root -g` resolves to a root without the package.
+  const pkg = await fixtureNpmPackage(otherRoot, ["path-bundled-marker"])
+  await mkdir(shimBin, { recursive: true })
+  await symlink(join(pkg, "bin", "omo.js"), join(shimBin, "omo"))
+
+  const dry = await dryRun({ home, agentDir, npmRoot: join(root, "empty-npm"), extraPathDirs: [shimBin], machinePath: false })
+  expect(dry.exitCode).toBe(0)
+  const binary = dry.stdout.split("\n").find((line) => line.startsWith("omo-binary: "))
+  expect(binary).toBe(`omo-binary: ${join(pkg, "bin", "omo.js")}`)
+  const explicit = explicitSkills(argv(dry.stdout))
+  expect(explicit).toContain(join(pkg, "plugin", "skills", "path-bundled-marker"))
 })
 
 test("installed DefaultResourceLoader resolves native OMO and six Ponytail skills without imported or Caveman skills", async () => {
@@ -369,7 +425,6 @@ test("real launcher executes npm omo --help from a fixture project without a mod
       ...cleanEnv(),
       HOME: home,
       OMO_CODING_AGENT_DIR: agentDir,
-      FAKE_NPM_ROOT: npmRoot,
       PATH: `${shim}:${process.env.PATH ?? ""}`,
     },
     stdout: "pipe",

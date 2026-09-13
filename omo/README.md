@@ -11,7 +11,7 @@ Use macOS or Linux with Node.js 24+, Bun 1.4+, npm, and Git. Install `dcg` and
 
 ```bash
 git clone https://github.com/aslaii/dotfiles.git ~/dotfiles
-npm install -g omo-ai@5.0.0-0.beta.53
+npm install -g omo-ai@5.0.0-0.beta.62
 bun ~/dotfiles/omo/restore.mjs
 bash ~/dotfiles/omo/launch.sh
 ```
@@ -69,6 +69,7 @@ bun ~/dotfiles/omo/restore.mjs --home "/tmp/omo test home" --skip-packages
 |---|---|
 | `omo.jsonc` | `~/.omo/omo.jsonc`: native model routes, profiles, and task/team limits |
 | `agent/settings.json` | `~/.omo/agent/settings.json`: models, fallbacks, package sources, skill exclusions, permission settings, and UI preferences |
+| `agent/models.json` | `~/.omo/agent/models.json`: the temporary Command Code DeepSeek V4.1 thinking override |
 | `agent/hooks.json` | `~/.omo/agent/hooks.json`: `dcg` and `rtk hook claude`, before Bash calls, with 10-second timeouts |
 | Native and bundled skills | Loaded from `~/.omo/agent/skills` and the pinned OMO installation, excluding Caveman names |
 | Ponytail package skills | Six skills loaded from `@dietrichgebert/ponytail@4.9.0`, with package-local Caveman exclusions |
@@ -84,23 +85,27 @@ bun ~/dotfiles/omo/restore.mjs --home "/tmp/omo test home" --skip-packages
 | First subagent fallback | Muse Spark 1.3 Contributor Free | `xhigh` |
 | Final subagent fallback | GPT Luna Fast, Terra, or Sol | Per route |
 
-Every category and named subagent uses Claude, then Muse, then GPT.
+Every category and named subagent uses Claude, then Muse and Command Code
+DeepSeek V4.1, with DeepSeek ahead of Muse in the deep lanes.
 Subagent routes contain no duplicate Muse fallback.
 Claude session fallbacks also put Muse before GPT. Muse falls back to GPT,
 not Claude. The `opencode/` Muse identifier names the Zen provider used by
 native OMO; it is not an OpenCode harness configuration.
 
-The native `[senpi]` block selects `model_profile: "deep-work"` and replaces
-two built-in model profiles:
+Profiles in `omo.jsonc` are opt-in overlays that OMO activates from
+`OMO_PROFILE`; `omo-gpt` launches with `OMO_PROFILE=gpt-5.6`.
 
-| Model profile | Startup model order |
+| Profile | Chain order |
 |---|---|
-| `deep-work` (active) | Sol `xhigh`, then Sol `medium` |
-| `capable` (optional) | Claude SDK OAuth Sonnet 5 `high`, Muse `xhigh`, then Sol `high` |
+| `fast`, `gpt`, `claude`, `mixed` | Claude, then free Muse and Command Code DeepSeek V4.1 (DeepSeek first in `deep`, `ultrabrain`, `oracle`, `plan-reviewer`) |
+| `gpt-5.6` | GPT-5.6 (`sol`, `terra`, or `luna-fast`), then DeepSeek V4.1, then free Muse Contributor, then plan Muse Contributor |
 
-The custom `capable` chain uses the Claude subscription lane rather than
-Fable, Opus, Kimi, or GLM. To use it, set `[senpi].model_profile` to `capable`.
-The upstream `simple-work` profile remains available without a local override.
+`fast` also carries the task/team limits. `gpt-5.6` defines its own
+`model_profiles` entry, so `omo-gpt` starts on GPT-5.6 without editing
+`agent/settings.json`, and falls back through DeepSeek V4.1 and both Muse
+rungs. Every DeepSeek V4.1 entry runs at `high`: the tracked `agent/models.json`
+override restores that model's reasoning levels for the pinned provider package,
+and is removed once the provider syncs to Command Code CLI `>= 1.53.0`.
 
 Model profiles choose only the main model in a fresh session. They do not
 override explicit `--model` selections or resumed sessions, change subagent
@@ -111,7 +116,7 @@ The old `models.sisyphus`, `models.planner`, and related entries were unused
 catalog aliases, not native role assignments. Planning uses the current
 session model; its consultant and reviewer have explicit agent routes.
 `omo-fast` keeps the native configuration and adds its priority extension.
-The unused `omo-gpt`, `omo-claude`, and `omo-mixed` launchers are retired.
+The unused `omo-claude` and `omo-mixed` launchers are retired.
 
 [Artificial Analysis](https://artificialanalysis.ai/articles/muse-spark-1-3)
 reports Muse Spark 1.3 `xhigh` at 61 on its Intelligence Index and 85% on
