@@ -69,3 +69,7 @@ dev:
   autoqaConsent: granted
 setupVersion: 2
 hideThinkingBlock: true
+statusLine:
+  preset: custom
+  leftSegments: [pi, vim, model, mode, collab, path, git, pr, context_pct, cost]
+  rightSegments: [session_name, cache_hit, cache_read]

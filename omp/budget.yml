@@ -92,3 +92,7 @@ retry:
       - commandcode/deepseek/deepseek-v4.1-flash:high
     opencode-zen/*:
       - commandcode/deepseek/deepseek-v4.1-flash:high
+statusLine:
+  preset: custom
+  leftSegments: [pi, vim, model, mode, collab, path, git, pr, context_pct, cost]
+  rightSegments: [session_name, cache_hit, cache_read]
