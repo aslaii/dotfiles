@@ -16,9 +16,24 @@ Plugins are reinstalled from the frozen lockfile by Bun.
 
 | Command | Overlay | Behaviour |
 | --- | --- | --- |
-| `omp` | none | Default routing from `agent/config.yml`. |
+| `omp` | none | Default routing from `agent/config.yml` (the global profile: Claude Opus/Sonnet where `agent/config.yml` names them, no budget guard). |
 | `omp-fast` | `fast.yml` + `fast.mjs` | Priority Claude/GPT requests, 8 parallel agents. |
-| `omp-budget` | `budget.yml` | Claude Sonnet 5 first (the $20 subscription's OAuth login), DeepSeek V4.1 Flash on Claude limits, plan Muse Contributor for grunt work, free Zen Muse as backstop. |
+| `omp-budget` (`ompb`) | `budget.yml` | Claude Sonnet 5 first (the $20 subscription's OAuth login), DeepSeek V4.1 Flash on Claude limits, plan Muse Contributor for grunt work, free Zen Muse as backstop. |
+| `ompd` | `budget.yml` + `no-claude.yml` | Same plan-hosted profile as `ompb`, with every role (not just `default`) pinned off Claude for the run. |
+
+Session lengths are heavily skewed: the median session is ~21 turns, but a
+small tail of marathon sessions (plan mode churning, orchestrate fan-out
+spinning up dozens of `task`-role subagents) runs into the hundreds of turns
+and dominates total turn volume. `omp`'s `--model` CLI flag only overrides
+the `default` role (`main.ts` ~1195-1205 in `@oh-my-pi/pi-coding-agent`), so
+it cannot protect the Claude window during exactly those marathons — plan
+mode (`plan`/`planner`/`review`/`slow`) and fan-out (`task`) keep routing to
+Claude regardless. Use `ompb` for ordinary sessions, where a marathon is
+unlikely and Claude-first is worth it; switch to `ompd` before or during a
+session you expect to run long, so plan mode and orchestrate fan-out stay on
+the DeepSeek/Muse tiers instead of draining the $20/mo subscription window.
+Plain `omp` is for work that specifically wants the global profile (e.g.
+Opus-backed `designer`) instead of either budget-guarded overlay.
 
 The Zsh functions live in `macos/zsh/zsh/functions.zsh`. After restoring, reload
 the shell once:
@@ -63,6 +78,15 @@ The Command Code provider no longer sends a forced ZDR header: it is opt-in
 on Command Code, most models default to it anyway, and forcing it capped a
 model's usable allowance at the plan's default tier.
 
+## ompd
+
+`no-claude.yml` is a second `--config` overlay, layered on top of
+`budget.yml` by the `ompd` alias. It repoints every role `budget.yml` gives
+to `anthropic/claude-sonnet-5` at the same DeepSeek/Muse tiers `budget.yml`
+already uses for its non-Claude roles, so plan mode and orchestrate fan-out
+stop touching Claude for the run. It never applies on its own; `ompb`
+without `ompd` is unaffected.
+
 ## Set up on another machine
 
 1. Restore this repository's OMP files with the installer above, then reload
@@ -94,7 +118,7 @@ model's usable allowance at the plan's default tier.
 | Path | Status |
 | --- | --- |
 | `agent/config.yml`, `agent/models.yml`, `agent/agents/`, `agent/skills/`, `agent/rules/` | Tracked; linked by the installer |
-| `budget.yml`, `fast.yml`, `fast.mjs`, `launch.mjs`, `preload.mjs` | Tracked |
+| `budget.yml`, `no-claude.yml`, `fast.yml`, `fast.mjs`, `launch.mjs`, `preload.mjs` | Tracked |
 | `plugins/package.json`, `plugins/*.lock.json` | Tracked; reinstalled by Bun |
 | `macos/zsh/zsh/functions.zsh` | Tracked; provides the shell functions |
 | Credentials, sessions, caches, databases | Excluded |

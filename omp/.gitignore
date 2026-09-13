@@ -6,6 +6,7 @@
 !fast.test.js
 !fast.yml
 !budget.yml
+!no-claude.yml
 !fast.mjs
 !preload.mjs
 !README.md

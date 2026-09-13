@@ -1,0 +1,43 @@
+# ompd overlay: strip the paid subscription model out of every role for one run.
+#
+# Why this exists: `omp`'s CLI `--model` flag only overrides the `default`
+# role (main.ts ~1195-1205 in @oh-my-pi/pi-coding-agent). `ompd` used to be
+# `ompb --model commandcode/deepseek/...`, which left `plan`/`planner`/
+# `review`/`slow` (plan mode) and `task` (orchestrate fan-out, wired through
+# `omp/agent/config.yml`'s `task.agentModelOverrides`) still pointed at the
+# $20/mo Anthropic subscription model named by `omp/budget.yml`. Marathon
+# sessions (the ones `ompd` is for) burn most of their turns in exactly
+# those two roles, so that subscription window kept draining anyway.
+#
+# Fix: a second `--config` overlay layered on top of `omp/budget.yml`
+# (`omp --help`: "Load an extra config.yml-style overlay for this run
+# (repeatable)"). Merge behaviour, confirmed by reading the source
+# (@oh-my-pi/pi-coding-agent src/config/settings.ts):
+#   - `#readConfigOverlays` (settings.ts:1879-1888) deep-merges multiple
+#     `--config` files into one overlay, in order.
+#   - `#deepMerge` (settings.ts:3005-3027) recurses per-key for plain
+#     objects (3013-3021), so two overlays that both set `modelRoles` merge
+#     key-by-key rather than one replacing the other's map wholesale.
+# In this codebase that means listing only the affected roles here would
+# already work. Every role is still listed below anyway, so this overlay
+# stays correct even if that per-key merge behaviour ever changes to a
+# whole-map replace.
+#
+# Usage: layered by the `ompd` alias, never applied on its own.
+#   omp --config ~/dotfiles/omp/budget.yml --config ~/dotfiles/omp/<this file>
+modelRoles:
+  plan: commandcode/deepseek/deepseek-v4.1-flash:max
+  planner: commandcode/deepseek/deepseek-v4.1-flash:max
+  review: commandcode/deepseek/deepseek-v4.1-flash:max
+  slow: commandcode/deepseek/deepseek-v4.1-flash:max
+  designer: commandcode/deepseek/deepseek-v4.1-flash:max
+  task: commandcode/deepseek/deepseek-v4.1-flash:high
+  default: commandcode/deepseek/deepseek-v4.1-flash:high
+  advisor: commandcode/deepseek/deepseek-v4.1-flash:high
+  vision: commandcode/deepseek/deepseek-v4-flash-vision-exp:high
+  smol: commandcode/meta/muse-spark-1.3-contributor:xhigh
+  verify: commandcode/meta/muse-spark-1.3-contributor:xhigh
+  research: commandcode/meta/muse-spark-1.3-contributor:xhigh
+  free: commandcode/meta/muse-spark-1.3-contributor:xhigh
+  commit: commandcode/meta/muse-spark-1.3-contributor:medium
+  tiny: commandcode/meta/muse-spark-1.3-contributor:medium

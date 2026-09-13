@@ -51,4 +51,4 @@ alias goose='cd ~/work/goose/'
 
 # OMP
 alias ompb="omp-budget"
-alias ompd='ompb --model commandcode/deepseek/deepseek-v4.1-flash:max'
+alias ompd='ompb --config "$HOME/dotfiles/omp/no-claude.yml"'
