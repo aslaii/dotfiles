@@ -19,22 +19,10 @@ alias vim="nvim"
 alias nf='nvimGoToFiles'
 alias ngl='nvimGoToLine'
 
-# Work scripts
-alias rave="~/.local/share/dotfiles-tools/setups/rave_setup.sh"
-alias gondoor="~/.local/share/dotfiles-tools/setups/gondoor_setup.sh"
-alias gondoor-stop="~/.local/share/dotfiles-tools/setups/gondoor_setup.sh --stop"
-alias dotconfig="~/dotfiles/setups/dotconfig_setup.sh"
-alias cpr="~/dotfiles/scripts/create-pr.sh"
-
 # Git
 alias lg="lazygit"
 alias gpod="git pull origin develop"
 alias gsw="gh auth switch"
-
-# PHP
-alias phpop="php artisan optimize"
-alias phprl="php artisan route:list"
-alias phpas="php artisan serve"
 
 alias x86="arch -x86_64 zsh --login"
 alias arm="arch -arm64 zsh --login"
@@ -45,9 +33,6 @@ alias python="python3"
 
 # btop
 alias btop='btop_themed'
-
-# goose
-alias goose='cd ~/work/goose/'
 
 # OMP
 alias ompb="omp-budget"
