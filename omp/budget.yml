@@ -31,7 +31,8 @@ modelRoles:
   # when the caller wants that instead of this budget overlay.
   designer: commandcode/deepseek/deepseek-v4.1-flash:max
   task: anthropic/claude-sonnet-5:medium
-  advisor: anthropic/claude-sonnet-5:medium
+  # Advisor stays off Claude: high turn volume, long-running threads.
+  advisor: commandcode/deepseek/deepseek-v4.1-flash:high
   # Main stays on Claude's mid tier too.
   default: anthropic/claude-sonnet-5:medium
   # Vision reads stay off Claude: the plan's dedicated, image-probe-verified
