@@ -50,7 +50,9 @@ bun ~/dotfiles/omp/launch.mjs --config ~/dotfiles/omp/budget.yml
 
 ## herdr tracking
 
-herdr's own managed OMP integration (`~/.omp/agent/extensions/herdr-omp-agent-state.ts`) reports session identity and full `working`/`blocked`/`idle` transitions correctly, but herdr 0.9.0 silently drops every report whose `source` is the literal `herdr:omp` — the value that integration hardcodes — so it never actually registers a pane. Upstream bug, unfixed as of herdr 0.9.0. The `--omp` installer step patches that one literal to `custom:omp` in the live (herdr-managed) extension file after linking; it is a no-op if herdr isn't installed, idempotent, and re-applied automatically after any `herdr integration reinstall`/update overwrites the file. With the patch applied, plain `omp` reports full fidelity, including `blocked`, for every session. The launcher additionally labels a pane `ompb`/`ompd` (`working` at start, releasing authority at exit) while `omp-budget`/`ompd` runs, independent of the extension.
+herdr's own OMP integration reports nothing on herdr 0.9.0: the server silently drops `source="herdr:omp"`, the literal the integration hardcodes.
+The `--omp` installer step patches that literal to `custom:omp` in the live extension file (no-op without herdr, idempotent, re-applied after reinstall/update).
+With the patch, state (including `blocked`) comes from the integration — no launcher-side reporting needed.
 Track with `herdr agent list`, `herdr agent read w3:pX --lines 40`, `herdr agent attach`, `herdr agent wait <pane> --until blocked --timeout 600000`; manual control with `herdr pane report-agent ...`.
 
 ## omp-budget
