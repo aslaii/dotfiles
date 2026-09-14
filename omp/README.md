@@ -70,8 +70,8 @@ bun ~/dotfiles/omp/launch.mjs --config ~/dotfiles/omp/budget.yml
 ## herdr tracking
 
 herdr's own OMP integration reports nothing on herdr 0.9.0: the server silently drops `source="herdr:omp"`, the literal the integration hardcodes.
-The `--omp` installer step patches that literal to `custom:omp` in the live extension file (no-op without herdr, idempotent, re-applied after reinstall/update).
-With the patch, state (including `blocked`) comes from the integration — no launcher-side reporting needed.
+The shared launcher patches that literal to `custom:omp` in the live extension file before every OMP start, so Herdr reinstalls and updates cannot undo the fix. It is a no-op when the integration is absent, already patched, or no longer contains the broken literal.
+State (including `blocked`) still comes from Herdr's integration; the launcher does not report state itself.
 Track with `herdr agent list`, `herdr agent read w3:pX --lines 40`, `herdr agent attach`, `herdr agent wait <pane> --until blocked --timeout 600000`; manual control with `herdr pane report-agent ...`.
 
 ## omp-budget

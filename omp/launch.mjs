@@ -7,6 +7,7 @@ import { fileURLToPath } from "node:url";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const preload = join(here, "preload.mjs");
+const cavemanStatus = join(here, "..", "caveman-status.mjs");
 const REQUIRED = ["claude", "claude-md", "claude-plugins", "agent-plugins", "mcp-json"];
 
 const ompBin = Bun.which("omp");
@@ -21,8 +22,8 @@ if (!real.endsWith("/dist/cli.js")) {
 }
 const pkgRoot = dirname(dirname(real));
 const srcCli = join(pkgRoot, "src", "cli.ts");
-if (!existsSync(srcCli) || !existsSync(preload)) {
-  console.error("omp/launch: required source entry missing (src/cli.ts or preload.mjs)");
+if (!existsSync(srcCli) || !existsSync(preload) || !existsSync(cavemanStatus)) {
+  console.error("omp/launch: required source entry missing (src/cli.ts, preload.mjs, or caveman-status.mjs)");
   process.exit(127);
 }
 
@@ -32,6 +33,12 @@ function agentDir() {
 }
 
 const dir = agentDir();
+const herdrExtension = join(dir, "extensions", "herdr-omp-agent-state.ts");
+if (existsSync(herdrExtension)) {
+  const source = await Bun.file(herdrExtension).text();
+  const patched = source.replace('const source = "herdr:omp";', 'const source = "custom:omp";');
+  if (patched !== source) await Bun.write(herdrExtension, patched);
+}
 const cfgPath = join(dir, "config.yml");
 if (!existsSync(cfgPath)) {
   console.error(`omp/launch: missing global config: ${cfgPath}`);
@@ -49,14 +56,15 @@ if (missing.length) {
 }
 
 const userArgs = process.argv.slice(2);
+const args = ["--extension", cavemanStatus, ...userArgs];
 if (process.env.OMP_LAUNCH_DRY_RUN === "1") {
   console.log(`omp-binary: ${srcCli}`);
   console.log(`preload: ${preload}`);
-  for (const a of userArgs) console.log(`arg: ${a}`);
+  for (const a of args) console.log(`arg: ${a}`);
   process.exit(0);
 }
 
-const child = spawn(process.execPath, ["--preload", preload, srcCli, ...userArgs], {
+const child = spawn(process.execPath, ["--preload", preload, srcCli, ...args], {
   stdio: "inherit",
   env: { ...process.env },
 });
