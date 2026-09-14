@@ -72,7 +72,9 @@ setupVersion: 2
 hideThinkingBlock: true
 statusLine:
   preset: custom
+  showHookStatus: false
   leftSegments:
+    - status
     - pi
     - vim
     - model
