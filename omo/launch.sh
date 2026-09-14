@@ -15,6 +15,8 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+CAVEMAN_STATUS="$SCRIPT_DIR/../caveman-status.mjs"
+[[ -f "$CAVEMAN_STATUS" ]] || { echo "omo/launch.sh: missing $CAVEMAN_STATUS" >&2; exit 127; }
 
 trim() {
   local v="$1"
@@ -185,7 +187,7 @@ is_forbidden_skill_name() {
   esac
 }
 
-ARGS=(--no-skills)
+ARGS=(--extension "$CAVEMAN_STATUS" --no-skills)
 for root in "${SKILL_ROOTS[@]}"; do
   if [[ -f "$root/SKILL.md" ]] && ! is_forbidden_skill_name "$(basename "$root")"; then
     ARGS+=(--skill "$root")
