@@ -14,6 +14,7 @@ const ponytailNames = [
   "ponytail-help",
   "ponytail-review",
 ]
+const cavemanSource = "git:github.com/JuliusBrussee/caveman@v2.6.0"
 
 afterEach(async () => {
   await Promise.all(cleanup.splice(0).map((path) => rm(path, { recursive: true, force: true })))
@@ -179,7 +180,7 @@ async function loadProductionSettings(home) {
   return JSON.parse(source.replaceAll("__OMO_HOME__", home))
 }
 
-test("production manifest selects only native OMO and filtered Ponytail resources", async () => {
+test("production manifest selects native OMO, Ponytail, and only core Caveman resources", async () => {
   const settings = await loadProductionSettings("/fixture-home")
   expect(settings.skills).toEqual([
     "!/fixture-home/.agents/skills/**",
@@ -191,6 +192,13 @@ test("production manifest selects only native OMO and filtered Ponytail resource
     source: "npm:@dietrichgebert/ponytail@4.9.0",
     skills: ["!caveman-*", "!cavecrew"],
   })
+  expect(settings.packages.filter((entry) => {
+    const source = typeof entry === "string" ? entry : entry.source
+    return source.includes("JuliusBrussee/caveman")
+  })).toEqual([{
+    source: cavemanSource,
+    skills: ["caveman"],
+  }])
   expect(settings.packages).toContainEqual({
     source: "git:github.com/code-yeongyu/pi-comment-checker@0a38dd8ff362be1b6020f2baba7b5723cbc5ea76",
     extensions: [],
@@ -202,6 +210,17 @@ test("production manifest selects only native OMO and filtered Ponytail resource
     source: "agent/extensions/comment-checker.js",
     target: ".omo/agent/extensions/comment-checker.js",
   })
+  expect(manifest.resources).toContainEqual({
+    source: "rules",
+    target: ".omo/rules",
+  })
+  const rule = await readFile(new URL("./rules/caveman.md", import.meta.url), "utf8")
+  expect(rule).toContain("alwaysApply: true")
+  expect(rule).toContain("Ponytail in full mode")
+  expect(rule).toContain("Caveman lite controls every user-facing chat response")
+  expect(rule).toContain("Every new session starts with Caveman lite again")
+  expect(rule).toContain("`/caveman off`, disable Caveman only for the current session")
+  expect(rule).toContain("Write normal prose in code, comments, documentation, commits")
 })
 
 test("launcher selects npm omo-ai even when Bun bin is earlier on PATH", async () => {
@@ -262,7 +281,28 @@ test("launcher falls back to a PATH omo symlink when npm root has no omo-ai", as
   expect(explicit).toContain(join(pkg, "plugin", "skills", "path-bundled-marker"))
 })
 
-test("installed DefaultResourceLoader resolves native OMO and six Ponytail skills without imported or Caveman skills", async () => {
+test("launcher allows exact caveman but rejects caveman-* and cavecrew names", async () => {
+  const root = await freshRoot()
+  const home = join(root, "home")
+  const agentDir = join(home, ".omo", "agent")
+  const npmRoot = join(root, "npm")
+  await mkdir(agentDir, { recursive: true })
+  await write(join(agentDir, "settings.json"), JSON.stringify({ packages: [] }))
+  await fixtureNpmPackage(npmRoot, ["caveman-bundled", "cavecrew"])
+  await skill(join(agentDir, "skills", "caveman"), "caveman")
+  await skill(join(agentDir, "skills", "caveman-helper"), "caveman-helper")
+  await skill(join(agentDir, "skills", "cavecrew"), "cavecrew")
+
+  const dry = await dryRun({ home, agentDir, npmRoot, machinePath: false })
+  expect(dry.exitCode).toBe(0)
+  const names = explicitSkills(argv(dry.stdout)).map((path) => basename(path))
+  expect(names).toContain("caveman")
+  expect(names).not.toContain("caveman-bundled")
+  expect(names).not.toContain("caveman-helper")
+  expect(names).not.toContain("cavecrew")
+})
+
+test("installed DefaultResourceLoader resolves native OMO, six Ponytail skills, and only core Caveman", async () => {
   const root = await freshRoot()
   const home = join(root, "home")
   const agentDir = join(home, ".omo", "agent")
@@ -276,9 +316,14 @@ test("installed DefaultResourceLoader resolves native OMO and six Ponytail skill
   const bundled = join(npmRoot, "omo-ai", "plugin", "skills")
   const installedPonytail = join(process.env.HOME, ".omo", "agent", "npm", "node_modules", "@dietrichgebert", "ponytail")
   const fixturePonytail = join(agentDir, "npm", "node_modules", "@dietrichgebert", "ponytail")
+  const fixtureCaveman = join(agentDir, "git", "github.com", "JuliusBrussee", "caveman")
 
   await mkdir(project, { recursive: true })
   await cp(installedPonytail, fixturePonytail, { recursive: true })
+  await write(join(fixtureCaveman, "package.json"), JSON.stringify({ name: "caveman-installer", version: "2.6.0" }))
+  for (const name of ["caveman", "caveman-commit", "cavecrew", "simple-english", "asd-ste100", "investigate-first"]) {
+    await skill(join(fixtureCaveman, "skills", name), name)
+  }
   await skill(join(agentDir, "skills", "native-omo-fixture"), "native-omo-fixture")
   await skill(join(agentDir, "skills", "caveman-native"), "caveman-native")
   await skill(join(agentDir, "skills", "cavecrew"), "cavecrew")
@@ -292,7 +337,7 @@ test("installed DefaultResourceLoader resolves native OMO and six Ponytail skill
   const settings = await loadProductionSettings(home)
   settings.packages = settings.packages.filter((entry) => {
     const source = typeof entry === "string" ? entry : entry.source
-    return source.startsWith("npm:@dietrichgebert/ponytail@")
+    return source.startsWith("npm:@dietrichgebert/ponytail@") || source === cavemanSource
   })
   await write(join(agentDir, "settings.json"), `${JSON.stringify(settings, null, 2)}\n`)
 
@@ -304,9 +349,14 @@ test("installed DefaultResourceLoader resolves native OMO and six Ponytail skill
   expect(args.slice(-2)).toEqual(["--print", "fixture"])
   const explicit = explicitSkills(args)
   expect(explicit.length).toBeGreaterThan(0)
+  const cavemanSkill = join(fixtureCaveman, "skills", "caveman")
+  expect(explicit).toContain(cavemanSkill)
+  expect(explicit.filter((path) =>
+    resolve(path).startsWith(`${resolve(join(fixtureCaveman, "skills"))}/`)
+  )).toEqual([cavemanSkill])
   for (const path of explicit) {
     expect(path).not.toMatch(/[/\\]skill-library[/\\](?:codex|shared)(?:[/\\]|$)/)
-    expect(basename(path)).not.toMatch(/^(?:caveman(?:-|$)|cavecrew$)/)
+    expect(basename(path)).not.toMatch(/^(?:caveman-|cavecrew$)/)
   }
 
   const realBundled = await realpath(resolve(bundled))
@@ -362,15 +412,23 @@ process.stdout.write("RESULT " + JSON.stringify({
     expect(result.diagnostics).toEqual([])
     const names = result.skills.map((entry) => entry.name)
     expect(names).toContain("native-omo-fixture")
+    expect(names).toContain("caveman")
     for (const forbidden of [
-      "caveman-native", "caveman-package", "cavecrew", "imported-codex", "imported-shared",
-      "external-agents", "external-claude",
+      "caveman-native", "caveman-package", "caveman-commit", "cavecrew", "simple-english", "asd-ste100",
+      "investigate-first", "imported-codex", "imported-shared", "external-agents", "external-claude",
     ]) expect(names).not.toContain(forbidden)
-    const packageNames = result.skills
+    const ponytailPackageNames = result.skills
       .filter((entry) => resolve(entry.filePath).startsWith(`${resolve(join(fixturePonytail, "skills"))}/`))
       .map((entry) => entry.name)
       .sort()
-    expect(packageNames, label).toEqual([...ponytailNames].sort())
+    expect(ponytailPackageNames, label).toEqual([...ponytailNames].sort())
+    const cavemanPackageSkills = result.skills
+      .filter((entry) => resolve(entry.filePath).startsWith(`${resolve(join(fixtureCaveman, "skills"))}/`))
+      .map(({ name, filePath }) => ({ name, filePath: resolve(filePath) }))
+    expect(cavemanPackageSkills, label).toEqual([{
+      name: "caveman",
+      filePath: resolve(join(cavemanSkill, "SKILL.md")),
+    }])
   }
 
   const launchedBundled = []

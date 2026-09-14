@@ -3,8 +3,9 @@
 # Resolves the globally npm-installed omo-ai package (never a Bun-installed
 # `omo` from PATH).
 # Always --no-skills plus one explicit --skill per allowed native agent,
-# bundled omo-ai, and active-package skill. Imported snapshots and skill names
-# matching caveman/caveman-* or cavecrew are never passed to OMO.
+# bundled omo-ai, and active-package skill. Imported snapshots, skills named
+# caveman-* or cavecrew, and package resources outside exact selections are
+# never passed to OMO; the exact core caveman skill is allowed.
 # Fails closed on Claude MCP import (global + project .omo/mcp.json) and on
 # missing settings/bundled skills. Never passes --no-extensions.
 # Residual (honest, out of skills/MCP/plugins scope): context discovery still
@@ -140,6 +141,18 @@ const pkgs = Array.isArray(settings.packages) ? settings.packages : [];
 const out = [];
 const npmBase = path.join(agentDir, "npm", "node_modules");
 const gitBase = path.join(agentDir, "git");
+function addSkillRoots(base, entry) {
+  const patterns = typeof entry === "object" && Array.isArray(entry.skills) ? entry.skills : null;
+  if (patterns?.length === 0) return;
+  const includes = patterns?.filter((pattern) =>
+    typeof pattern === "string" && pattern && !pattern.match(/^[!+-]/)
+  );
+  if (includes?.length && includes.every((name) => name.match(/^[A-Za-z0-9][A-Za-z0-9._-]*$/))) {
+    for (const name of includes) out.push(path.join(base, "skills", name));
+    return;
+  }
+  out.push(path.join(base, "skills"));
+}
 for (const entry of pkgs) {
   const src = typeof entry === "string" ? entry : entry?.source;
   if (typeof src !== "string" || !src) continue;
@@ -147,7 +160,7 @@ for (const entry of pkgs) {
     let spec = src.slice(4);
     const at = spec.lastIndexOf("@");
     if (at > 0) spec = spec.slice(0, at);
-    if (spec) out.push(path.join(npmBase, spec, "skills"));
+    if (spec) addSkillRoots(path.join(npmBase, spec), entry);
   } else if (src.startsWith("git:")) {
     let rest = src.slice(4);
     const at = rest.lastIndexOf("@");
@@ -156,10 +169,10 @@ for (const entry of pkgs) {
       if (!maybeRef.includes("/") || maybeRef.match(/^[v0-9a-f]{4,}/)) rest = rest.slice(0, at);
     }
     rest = rest.replace(/^ssh:\/\//, "").replace(/^https?:\/\//, "").replace(/^git@/, "").replace(/:/, "/");
-    if (rest) out.push(path.join(gitBase, rest, "skills"));
+    if (rest) addSkillRoots(path.join(gitBase, rest), entry);
   } else if (src.startsWith("/") || src.startsWith("./") || src.startsWith("../")) {
     const base = path.resolve(agentDir, src);
-    try { if (fs.statSync(base).isDirectory()) out.push(path.join(base, "skills")); } catch {}
+    try { if (fs.statSync(base).isDirectory()) addSkillRoots(base, entry); } catch {}
   }
 }
 console.log(out.join("\n"));
@@ -167,7 +180,7 @@ console.log(out.join("\n"));
 
 is_forbidden_skill_name() {
   case "$1" in
-    caveman|caveman-*|cavecrew) return 0 ;;
+    caveman-*|cavecrew) return 0 ;;
     *) return 1 ;;
   esac
 }

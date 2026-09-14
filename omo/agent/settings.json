@@ -16,6 +16,12 @@
         "!cavecrew"
       ]
     },
+    {
+      "source": "git:github.com/JuliusBrussee/caveman@v2.6.0",
+      "skills": [
+        "caveman"
+      ]
+    },
     "npm:@code-yeongyu/comment-checker@0.8.0",
     {
       "source": "git:github.com/code-yeongyu/pi-comment-checker@0a38dd8ff362be1b6020f2baba7b5723cbc5ea76",

@@ -11,3 +11,9 @@ Dispatch complete owned slices, acceptance criteria, necessary context, and exac
 Keep the main context to decisions, compact worker results, and relevant evidence anchors. Reuse the same worker via hub for corrections. No routine progress polling, whole-transcript replay, duplicate searches, or continuous advisors. A result should state changed paths, observed verification, unresolved blockers, and relevant artifact references; never hide failures to fit a summary.
 
 Native quota fallbacks are allowed. Do not raise Sol effort, change saved routing, enable prewalk/advisors, or activate paid-overage paths unless the user requests it. Existing tool safety, secret handling, host pressure, plan approval, and diagnostics requirements remain in force.
+
+# Persistent response modes
+
+At every new OMP session start, for every launch and model profile, Ponytail full controls implementation. The core `caveman` skill runs in `lite` mode and controls user-facing chat. Apply Caveman to every response.
+
+If the user says `stop caveman` or `normal mode`, disable Caveman only for the current session. Every new session starts in `lite` mode. Follow Caveman boundaries: use normal prose in code, comments, documentation, commits, and other persisted or third-party text.

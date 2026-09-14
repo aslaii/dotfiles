@@ -19,7 +19,7 @@ bash ~/dotfiles/omo/launch.sh
 In OMO, authenticate OpenAI Codex and Claude with `/login`, then review and
 enable the imported hooks with `/hooks`. Hook trust is deliberately local to
 each computer. Restart OMO after restoring; resumed sessions may retain an
-older model selection.
+older model selection and do not reload the new startup rules.
 
 The required version is recorded in `restore.json`. Update that pin with the
 configuration when upgrading OMO; restore checks the exact installed version.
@@ -28,7 +28,7 @@ The restore command copies resources rather than linking the checkout. It
 merges settings, replaces the managed skill-path list, preserves unrelated
 configuration and credentials, and backs up conflicting originals under
 `~/.omo/backups/`. An unchanged rerun does not create more backups. It installs
-the three pinned packages, the owned comment-checker extension, and the four
+the four pinned packages, the owned comment-checker extension, and the four
 built-in extension loaders using the destination OMO installation. Existing
 directory symlinks are left in place when their files already match. The
 command refuses changed writes through those links rather than modifying
@@ -50,11 +50,11 @@ selected npm package; without a complete install it exits 127 telling you to
 run `npm i -g omo-ai@beta`.
 `OMO_BUNDLED_SKILLS_DIR` still overrides only the bundled-skill directory.
 It retains OMO's own package extensions and loads only individual OMO-native,
-bundled OMO, and active-package skills.
-Imported snapshots, `caveman-*`, and `cavecrew` are excluded at both settings
-and launcher boundaries. The launcher refuses global or project settings that
-enable Claude MCP imports. Project
-context files and native rule discovery remain enabled.
+bundled OMO, and active-package skills. The exact `caveman` skill name is
+allowed. Imported snapshots, `caveman-*`, and `cavecrew` remain excluded at
+both settings and launcher boundaries. The launcher refuses global or project
+settings that enable Claude MCP imports. Project context files and native rule
+discovery remain enabled.
 
 To skip plugin installation, or restore into a separate home directory:
 
@@ -71,10 +71,11 @@ bun ~/dotfiles/omo/restore.mjs --home "/tmp/omo test home" --skip-packages
 | `agent/settings.json` | `~/.omo/agent/settings.json`: models, fallbacks, package sources, skill exclusions, permission settings, and UI preferences |
 | `agent/models.json` | `~/.omo/agent/models.json`: the temporary Command Code DeepSeek V4.1 thinking override |
 | `agent/hooks.json` | `~/.omo/agent/hooks.json`: `dcg` and `rtk hook claude`, before Bash calls, with 10-second timeouts |
-| Native and bundled skills | Loaded from `~/.omo/agent/skills` and the pinned OMO installation, excluding Caveman names |
+| Native and bundled skills | Loaded from `~/.omo/agent/skills` and the pinned OMO installation, excluding imported snapshots and auxiliary Caveman names |
 | Ponytail package skills | Six skills loaded from `@dietrichgebert/ponytail@4.9.0`, with package-local Caveman exclusions |
+| Caveman package skill | Only `caveman`, loaded from `git:github.com/JuliusBrussee/caveman@v2.6.0` |
 | `agent/extensions/comment-checker.js` | `~/.omo/agent/extensions/comment-checker.js`: owned checker integration |
-| `rules/` | `~/.omo/agent/rules/`: OMO-owned workflow rules |
+| `rules/` | Restored to `~/.omo/rules`: OMO-owned workflow rules, including persistent response modes |
 | `restore.json` | OMO version, resource destinations, and `tps`, `prompt-url-widget`, `files`, `diff` extension selection |
 
 | Role | Model | Reasoning |
@@ -145,8 +146,11 @@ included.
 
 ## Plugins and always-on instructions
 
-- `@dietrichgebert/ponytail@4.9.0` injects its instructions before agent turns.
-  Its default is `full`; `/ponytail` changes the session mode.
+- `@dietrichgebert/ponytail@4.9.0` provides Ponytail `full`, which controls
+  implementation in every new session and across all profiles.
+- `git:github.com/JuliusBrussee/caveman@v2.6.0` provides only the upstream core
+  `caveman` skill. A restored native rule activates `lite` for user-facing chat
+  on every response in every new session and across all profiles.
 - `@code-yeongyu/comment-checker@0.8.0` provides the checker binary.
 - `pi-comment-checker` remains pinned to
   `0a38dd8ff362be1b6020f2baba7b5723cbc5ea76` for its parser and runner, while
@@ -155,6 +159,13 @@ included.
   replacing unrelated files such as `herdr-presence.js`.
 - The bundled `unslop` skill says to apply it to all writing. This is an agent
   instruction, not a shell hook. Other skills load when their tasks match.
+
+The Caveman rule keeps Ponytail at `full`. `stop caveman` or `normal mode`
+disables Caveman only for the current session; every new session starts in
+`lite` again. Caveman boundaries preserve normal prose in code, comments,
+documentation, commits, and other persisted or third-party text. Restore does
+not install SimpleEnglish, ASD-STE100, Cavecrew, a Caveman proxy, MCP shrink,
+statusline, hooks, or any `caveman-*` skill.
 
 The owned checker handles native `write`, `edit`, `multiedit`, and `apply_patch`
 results, including nested `tool.*` calls in `eval`. It checks successful files
@@ -167,13 +178,14 @@ remain after review; the checker does not automatically delete them.
 Use those mutation tools for file changes. Direct filesystem helpers, shell
 redirection, and external editors do not emit OMO tool events and are outside
 this hook's coverage. Restart existing OMO sessions after restoring so they
-load the owned extension and the new skill policy.
+load the owned extension, restored response-mode rule, and exact-name skill
+policy.
 
 OMO's bundled skills and theme come with the pinned OMO installation. Additional
-OMO-native skills may be placed in `~/.omo/agent/skills`. Ponytail is supplied
-only by its pinned installed package; restore does not fetch or materialize a
-Codex/shared skill snapshot. `--skip-packages` skips package installation but
-still restores configuration and owned resources.
+OMO-native skills may be placed in `~/.omo/agent/skills`. Ponytail and the core
+Caveman skill come only from their pinned installed packages; restore does not
+fetch or materialize a Codex/shared skill snapshot. `--skip-packages` skips
+package installation but still restores configuration and owned resources.
 
 `__OMO_HOME__` in source resources is replaced with the destination home.
 Project-specific native skills still require their repositories, SSH keys, API

@@ -9,7 +9,7 @@ rtk bash ~/dotfiles/initial-setup-macos.sh --omp
 
 The installer links this directory's `agent/` over `~/.omp/agent`, so
 `config.yml`, `models.yml` (the Command Code plan catalog), the agent
-prompts, and the `omp-prompt` skill load automatically.
+prompts, `APPEND_SYSTEM.md`, and the tracked skills load automatically.
 Plugins are reinstalled from the frozen lockfile by Bun.
 
 ## Launch profiles
@@ -20,6 +20,25 @@ Plugins are reinstalled from the frozen lockfile by Bun.
 | `omp-fast` | `fast.yml` + `fast.mjs` | Priority Claude/GPT requests, 8 parallel agents. |
 | `omp-budget` (`ompb`) | `budget.yml` | Claude Sonnet 5 first (the $20 subscription's OAuth login), DeepSeek V4.1 Flash on Claude limits, plan Muse Contributor for grunt work, free Zen Muse as backstop. |
 | `ompd` | `budget.yml` + `no-claude.yml` | Same plan-hosted profile as `ompb`, with every role (not just `default`) pinned off Claude for the run. |
+
+## Persistent response modes
+
+`agent/skills/caveman/SKILL.md` vendors only the upstream core `caveman` skill
+from release `v2.6.0` (commit
+`b82c0ad42c2bedc1f2cd78e414dadfaffbaaeec3`). No separate SimpleEnglish,
+ASD-STE100, Cavecrew, Caveman proxy, MCP shrink, statusline, `caveman-*` skill,
+or hook is installed.
+
+`agent/APPEND_SYSTEM.md` applies to every new OMP session across all launch and
+model profiles. Ponytail remains `full` and controls implementation. Caveman
+starts in `lite` mode and controls every user-facing response. `stop caveman`
+or `normal mode` disables Caveman only for the current session; the next
+session starts in `lite` mode again. Caveman boundaries keep normal prose in
+code, comments, documentation, commits, and other persisted or third-party
+text.
+
+Restart OMP after restoring. Existing sessions retain their prior startup
+instructions.
 
 Session lengths are heavily skewed: the median session is ~21 turns, but a
 small tail of marathon sessions (plan mode churning, orchestrate fan-out
@@ -124,7 +143,7 @@ without `ompd` is unaffected.
 
 | Path | Status |
 | --- | --- |
-| `agent/config.yml`, `agent/models.yml`, `agent/agents/`, `agent/skills/`, `agent/rules/` | Tracked; linked by the installer |
+| `agent/config.yml`, `agent/models.yml`, `agent/APPEND_SYSTEM.md`, `agent/agents/`, `agent/skills/`, `agent/rules/` | Tracked; linked by the installer |
 | `budget.yml`, `no-claude.yml`, `fast.yml`, `fast.mjs`, `launch.mjs`, `preload.mjs` | Tracked |
 | `plugins/package.json`, `plugins/*.lock.json` | Tracked; reinstalled by Bun |
 | `macos/zsh/zsh/functions.zsh` | Tracked; provides the shell functions |

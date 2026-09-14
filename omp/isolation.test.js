@@ -1,5 +1,6 @@
+import { createHash } from "node:crypto"
 import { afterEach, expect, test } from "bun:test"
-import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises"
+import { mkdir, mkdtemp, readFile, readdir, rm, writeFile } from "node:fs/promises"
 import { realpathSync } from "node:fs"
 import { tmpdir } from "node:os"
 import { dirname, join } from "node:path"
@@ -8,6 +9,9 @@ import { fileURLToPath } from "node:url"
 const launch = fileURLToPath(new URL("./launch.mjs", import.meta.url))
 const preload = fileURLToPath(new URL("./preload.mjs", import.meta.url))
 const trackedConfig = fileURLToPath(new URL("./agent/config.yml", import.meta.url))
+const trackedAgent = fileURLToPath(new URL("./agent", import.meta.url))
+const trackedCaveman = join(trackedAgent, "skills", "caveman", "SKILL.md")
+const trackedSystem = join(trackedAgent, "APPEND_SYSTEM.md")
 const cleanup = []
 
 afterEach(async () => {
@@ -39,6 +43,23 @@ async function readDisabled(path) {
   if (!Array.isArray(data?.disabledProviders)) throw new Error(`disabledProviders missing in ${path}`)
   return data.disabledProviders
 }
+
+test("tracked startup keeps only core Caveman lite with Ponytail full across profiles", async () => {
+  const [skill, startup, skillEntries] = await Promise.all([
+    readFile(trackedCaveman, "utf8"),
+    readFile(trackedSystem, "utf8"),
+    readdir(join(trackedAgent, "skills")),
+  ])
+  expect(createHash("sha256").update(skill).digest("hex")).toBe("c4d7354b4b063d54601fcdd5097a5b1713d1a1a2e386ac39efa438aa1ffef8ce")
+  expect(skillEntries.filter((name) => /^(?:caveman(?:-|$)|cavecrew)$/.test(name))).toEqual(["caveman"])
+  expect(startup).toContain("Ponytail full controls implementation")
+  expect(startup).toContain("core `caveman` skill runs in `lite` mode")
+  expect(startup).toContain("every launch and model profile")
+  expect(startup).toContain("Apply Caveman to every response")
+  expect(startup).toContain("disable Caveman only for the current session")
+  expect(startup).toContain("normal prose in code, comments, documentation, commits")
+  expect(startup).not.toMatch(/\bcaveman-|cavecrew/i)
+})
 
 test("tracked and live configs block claude-md plus claude providers", async () => {
   const live = join(process.env.HOME || "", ".omp/agent/config.yml")
