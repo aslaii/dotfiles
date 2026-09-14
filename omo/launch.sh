@@ -206,4 +206,29 @@ if [[ "${OMO_LAUNCH_DRY_RUN-}" == "1" ]]; then
   exit 0
 fi
 
-exec node "$OMO_BIN" "${ARGS[@]}" "$@"
+herdr_released=0
+
+release_herdr_agent() {
+  [[ "$herdr_released" == "0" ]] || return 0
+  herdr_released=1
+  [[ "${HERDR_ENV-}" == "1" && -n "${HERDR_BIN_PATH-}" && -n "${HERDR_SOCKET_PATH-}" && -n "${HERDR_PANE_ID-}" ]] || return 0
+  "$HERDR_BIN_PATH" pane release-agent "$HERDR_PANE_ID" --source custom:omo-presence --agent omo >/dev/null 2>&1 || true
+}
+
+release_on_signal() {
+  local signal="$1"
+  trap - "$signal"
+  release_herdr_agent
+  kill -s "$signal" "$$"
+}
+
+trap release_herdr_agent EXIT
+trap 'release_on_signal HUP' HUP
+trap 'release_on_signal INT' INT
+trap 'release_on_signal TERM' TERM
+
+set +e
+node "$OMO_BIN" "${ARGS[@]}" "$@"
+status=$?
+set -e
+exit "$status"

@@ -1,5 +1,5 @@
 #!/usr/bin/env bun
-import { spawn } from "node:child_process";
+import { spawn, spawnSync } from "node:child_process";
 import { existsSync } from "node:fs";
 import { realpathSync } from "node:fs";
 import { dirname, join } from "node:path";
@@ -30,6 +30,31 @@ if (!existsSync(srcCli) || !existsSync(preload) || !existsSync(cavemanStatus)) {
 function agentDir() {
   if (process.env.PI_CODING_AGENT_DIR?.trim()) return process.env.PI_CODING_AGENT_DIR.trim();
   return join(process.env.HOME ?? "", ".omp", "agent");
+}
+
+const herdrOwner =
+  process.env.HERDR_ENV === "1" &&
+  process.env.HERDR_BIN_PATH &&
+  process.env.HERDR_SOCKET_PATH &&
+  process.env.HERDR_PANE_ID
+    ? {
+        binPath: process.env.HERDR_BIN_PATH,
+        paneId: process.env.HERDR_PANE_ID,
+        env: { ...process.env },
+      }
+    : undefined;
+let herdrReleased = false;
+
+function releaseHerdrAgent() {
+  if (!herdrOwner || herdrReleased) return;
+  herdrReleased = true;
+  try {
+    spawnSync(
+      herdrOwner.binPath,
+      ["pane", "release-agent", herdrOwner.paneId, "--source", "custom:omp", "--agent", "omp"],
+      { env: herdrOwner.env, stdio: "ignore", timeout: 1000, killSignal: "SIGKILL" },
+    );
+  } catch {}
 }
 
 const dir = agentDir();
@@ -68,7 +93,17 @@ const child = spawn(process.execPath, ["--preload", preload, srcCli, ...args], {
   stdio: "inherit",
   env: { ...process.env },
 });
+const forwardedSignals = new Map();
+for (const [signal, forward] of [["SIGTERM", true], ["SIGHUP", true], ["SIGINT", false]]) {
+  const handler = () => {
+    if (forward && child.exitCode === null && child.signalCode === null) child.kill(signal);
+  };
+  forwardedSignals.set(signal, handler);
+  process.on(signal, handler);
+}
 child.on("exit", (code, signal) => {
+  releaseHerdrAgent();
+  for (const [name, handler] of forwardedSignals) process.off(name, handler);
   if (signal) process.kill(process.pid, signal);
   else process.exit(code ?? 1);
 });

@@ -69,9 +69,9 @@ bun ~/dotfiles/omp/launch.mjs --config ~/dotfiles/omp/budget.yml
 
 ## herdr tracking
 
-herdr's own OMP integration reports nothing on herdr 0.9.0: the server silently drops `source="herdr:omp"`, the literal the integration hardcodes.
+Herdr's own OMP integration reports nothing on Herdr 0.9.0: the server silently drops `source="herdr:omp"`, the literal the integration hardcodes.
 The shared launcher patches that literal to `custom:omp` in the live extension file before every OMP start, so Herdr reinstalls and updates cannot undo the fix. It is a no-op when the integration is absent, already patched, or no longer contains the broken literal.
-State (including `blocked`) still comes from Herdr's integration; the launcher does not report state itself.
+State (including `blocked`) still comes from Herdr's integration. The launcher keeps the pane alive while OMP runs, releases only that pane's `custom:omp`/`omp` entry when the child exits, and handles `SIGINT`, `SIGTERM`, and `SIGHUP` so signal-driven child termination takes the same cleanup path (`SIGTERM` and `SIGHUP` are forwarded; terminal `SIGINT` already reaches the foreground child). `SIGKILL` of the launcher or an unavailable Herdr transport can still leave an entry behind.
 Track with `herdr agent list`, `herdr agent read w3:pX --lines 40`, `herdr agent attach`, `herdr agent wait <pane> --until blocked --timeout 600000`; manual control with `herdr pane report-agent ...`.
 
 ## omp-budget

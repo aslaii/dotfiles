@@ -291,14 +291,13 @@ before you run it.
 
 A native `/reload` or a new session in the same pane keeps reporting the
 same `omo` entry; it does not release and re-add it. Quitting OMO normally
-releases the entry once. The extension also installs a synchronous Node
-`exit` handler with no async work, as a fallback release path for a normal
-process exit that skips OMO's own quit flow. It does not install a signal
-handler of its own and does not change how OMO handles signals or quit, so
-cleanup on a signal-terminated or crashed process is not promised. `SIGKILL`
-never runs it, since `SIGKILL` bypasses all handlers unconditionally.
-Herdr's own state, not this extension, decides what happens to a row left
-behind by a process that died that way.
+releases the entry. The extension also installs a synchronous Node `exit`
+handler as a fallback when OMO's quit flow is skipped. `launch.sh` remains
+alive until that Node process stops and performs one final matching release
+before the Herdr pane can disappear. Its `HUP`, `INT`, and `TERM` traps run
+the same cleanup before preserving signal termination. An unavailable Herdr
+transport or `SIGKILL` of the launcher can still leave an entry behind,
+because neither cleanup path can run successfully.
 
 ### Transport failure recovery
 
@@ -355,9 +354,9 @@ itself.
 
 ### Unsupported
 
-This extension makes no promise around: an identity that ages out on its
-own, cleanup after `SIGKILL`, delivery that survives a Herdr server
-restart, or coverage of every possible way something might embed and
-launch OMO as a child process. It reports presence only. It does not report
+This extension and launcher make no promise around: an identity that ages out
+on its own, cleanup after `SIGKILL` of the launcher, delivery that survives a
+Herdr server restart, or coverage of other programs that embed and launch OMO.
+It reports presence only. It does not report
 task status, session metadata, or completion, and it does not read or send
 model output.
