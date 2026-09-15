@@ -7,6 +7,32 @@ const real = realpathSync(ompBin);
 if (!real.endsWith("/dist/cli.js")) throw new Error(`omp/preload: unexpected omp layout: ${real}`);
 const pkgRoot = dirname(dirname(real));
 const capPath = join(pkgRoot, "src", "capability", "index.ts");
+const segmentsPath = join(pkgRoot, "src", "modes", "components", "status-line", "segments.ts");
+
+Bun.plugin({
+  name: "caveman-status",
+  setup(build) {
+    build.onLoad({ filter: /\/modes\/components\/status-line\/segments\.ts$/ }, async ({ path }) => {
+      const source = await Bun.file(path).text();
+      if (path !== segmentsPath) return { contents: source, loader: "ts" };
+      return {
+        loader: "ts",
+        contents: `${source}
+const cavemanStatusSegment = SEGMENTS.status;
+SEGMENTS.status = {
+  ...cavemanStatusSegment,
+  render(ctx) {
+    const rendered = cavemanStatusSegment.render(ctx);
+    const caveman = \`🪨 \${theme.fg("muted", "caveman: ")}\${theme.fg("text", "LITE")}\`;
+    return rendered.visible && rendered.content
+      ? { ...rendered, content: \`\${rendered.content} · \${caveman}\` }
+      : { ...rendered, content: caveman, visible: true };
+  },
+};`,
+      };
+    });
+  },
+});
 
 const { setDisabledProviders, setEnabledProviders } = await import(`file://${capPath}`);
 

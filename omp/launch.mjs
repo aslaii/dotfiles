@@ -7,7 +7,7 @@ import { fileURLToPath } from "node:url";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const preload = join(here, "preload.mjs");
-const cavemanStatus = join(here, "..", "caveman-status.mjs");
+const bootstrap = join(here, "bootstrap.mjs");
 const REQUIRED = ["claude", "claude-md", "claude-plugins", "agent-plugins", "mcp-json"];
 
 const ompBin = Bun.which("omp");
@@ -22,8 +22,9 @@ if (!real.endsWith("/dist/cli.js")) {
 }
 const pkgRoot = dirname(dirname(real));
 const srcCli = join(pkgRoot, "src", "cli.ts");
-if (!existsSync(srcCli) || !existsSync(preload) || !existsSync(cavemanStatus)) {
-  console.error("omp/launch: required source entry missing (src/cli.ts, preload.mjs, or caveman-status.mjs)");
+const workerHost = join(dirname(pkgRoot), "pi-utils", "src", "worker-host.ts");
+if (![srcCli, workerHost, preload, bootstrap].every(existsSync)) {
+  console.error("omp/launch: required source entry missing");
   process.exit(127);
 }
 
@@ -80,18 +81,23 @@ if (missing.length) {
   process.exit(127);
 }
 
-const userArgs = process.argv.slice(2);
-const args = ["--extension", cavemanStatus, ...userArgs];
+const args = process.argv.slice(2);
 if (process.env.OMP_LAUNCH_DRY_RUN === "1") {
   console.log(`omp-binary: ${srcCli}`);
   console.log(`preload: ${preload}`);
+  console.log(`bootstrap: ${bootstrap}`);
   for (const a of args) console.log(`arg: ${a}`);
   process.exit(0);
 }
 
-const child = spawn(process.execPath, ["--preload", preload, srcCli, ...args], {
+const child = spawn(process.execPath, [bootstrap, ...args], {
   stdio: "inherit",
-  env: { ...process.env },
+  env: {
+    ...process.env,
+    BUN_RUNTIME_TRANSPILER_CACHE_PATH: "0",
+    OMP_SOURCE_CLI: srcCli,
+    OMP_WORKER_HOST: workerHost,
+  },
 });
 const forwardedSignals = new Map();
 for (const [signal, forward] of [["SIGTERM", true], ["SIGHUP", true], ["SIGINT", false]]) {
