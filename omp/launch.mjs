@@ -52,7 +52,7 @@ function releaseHerdrAgent() {
   try {
     spawnSync(
       herdrOwner.binPath,
-      ["pane", "release-agent", herdrOwner.paneId, "--source", "custom:omp", "--agent", "omp"],
+      ["pane", "release-agent", herdrOwner.paneId, "--source", "custom:omp", "--agent", "omp", "--seq", String(Date.now() * 1000)],
       { env: herdrOwner.env, stdio: "ignore", timeout: 1000, killSignal: "SIGKILL" },
     );
   } catch {}
@@ -62,7 +62,16 @@ const dir = agentDir();
 const herdrExtension = join(dir, "extensions", "herdr-omp-agent-state.ts");
 if (existsSync(herdrExtension)) {
   const source = await Bun.file(herdrExtension).text();
-  const patched = source.replace('const source = "herdr:omp";', 'const source = "custom:omp";');
+  const patched = source
+    .replace('const source = "herdr:omp";', 'const source = "custom:omp";')
+    .replace(
+      `function enabled() {
+  return HERDR_ENV === "1" && !!socketPath && !!paneId;
+}`,
+      `function enabled() {
+  return process.env.OMPCODE !== "1" && HERDR_ENV === "1" && !!socketPath && !!paneId;
+}`,
+    );
   if (patched !== source) await Bun.write(herdrExtension, patched);
 }
 const cfgPath = join(dir, "config.yml");
