@@ -133,6 +133,33 @@ ensure_homebrew_packages() {
   fi
 }
 
+ensure_rtk_omp_integration() {
+  command -v rtk >/dev/null 2>&1 || die "rtk installation failed."
+  log "Installing RTK's global OMP integration."
+  rtk init -g --agent omp --no-patch
+}
+
+ensure_resource_guard() {
+  local version="${RCG_VERSION:-v0.1.1}"
+  local install_dir="${RCG_INSTALL_DIR:-${HOME}/.local/bin}"
+  local binary="${install_dir}/rcg"
+  local expected="rcg ${version#v}"
+  local installed=""
+
+  if [[ -x "$binary" ]]; then
+    installed="$("$binary" --version 2>/dev/null || true)"
+  fi
+  if [[ "$installed" != "$expected" ]]; then
+    log "Installing checksummed RCG ${version} release (found ${installed:-nothing})."
+    curl -fsSL "https://raw.githubusercontent.com/aslaii/rcg/${version}/install.sh" |
+      RCG_VERSION="$version" RCG_INSTALL_DIR="$install_dir" /bin/sh
+  fi
+
+  "$binary" --self-check >/dev/null || die "RCG self-check failed at ${binary}."
+  log "Installing RCG's global OMP integration."
+  "$binary" init --agent omp --global
+}
+
 link_file() {
   local source="$1"
   local target="$2"
@@ -425,6 +452,8 @@ main() {
   if [[ "${1:-}" == "--omp" ]]; then
     ensure_dotfiles_dir
     command -v bun >/dev/null 2>&1 || die "Install Bun before restoring OMP plugins."
+    ensure_rtk_omp_integration
+    ensure_resource_guard
 
     local omp_root="${HOME}/.omp" agent skill manifest
     link_file "${DOTFILES_DIR}/omp/agent/config.yml" "${omp_root}/agent/config.yml"
@@ -462,6 +491,11 @@ main() {
   install_homebrew
   ensure_brew_shellenv
   ensure_homebrew_packages
+  ensure_rtk_omp_integration
+  ensure_resource_guard
+  command -v agent-browser >/dev/null 2>&1 || die "agent-browser installation failed."
+  log "Installing agent-browser browser runtime."
+  agent-browser install
   install_oh_my_posh_themes
   install_btop_catppuccin_themes
   ensure_codex_config

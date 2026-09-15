@@ -13,6 +13,8 @@ brew "neovim"
 brew "tmux"
 brew "jq"
 brew "wget"
+brew "agent-browser"
+brew "rtk"
 
 # ── Shell ─────────────────────────────────────────
 brew "fzf"

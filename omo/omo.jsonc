@@ -8,39 +8,35 @@
     "quick": {
       "models": [
         {
-          "model": "claude-sdk-oauth/claude-haiku-4-5",
-          "reasoning": "low"
-        },
-        {
           "model": "opencode/muse-spark-1.3-contributor-free",
           "reasoning": "xhigh"
         },
         {
-          "model": "commandcode/deepseek/deepseek-v4.1-flash",
-          "reasoning": "high"
+          "model": "commandcode/meta/muse-spark-1.3-contributor",
+          "reasoning": "xhigh"
         }
       ]
     },
     "unspecified-low": {
       "models": [
         {
-          "model": "claude-sdk-oauth/claude-sonnet-5",
-          "reasoning": "medium"
-        },
-        {
           "model": "opencode/muse-spark-1.3-contributor-free",
           "reasoning": "xhigh"
         },
         {
-          "model": "commandcode/deepseek/deepseek-v4.1-flash",
-          "reasoning": "high"
+          "model": "commandcode/meta/muse-spark-1.3-contributor",
+          "reasoning": "xhigh"
         }
       ]
     },
     "unspecified-high": {
       "models": [
         {
-          "model": "claude-sdk-oauth/claude-sonnet-5",
+          "model": "openai-codex/gpt-5.6-sol",
+          "reasoning": "high"
+        },
+        {
+          "model": "commandcode/deepseek/deepseek-v4.1-flash",
           "reasoning": "high"
         },
         {
@@ -48,56 +44,44 @@
           "reasoning": "xhigh"
         },
         {
-          "model": "commandcode/deepseek/deepseek-v4.1-flash",
-          "reasoning": "high"
+          "model": "commandcode/meta/muse-spark-1.3-contributor",
+          "reasoning": "xhigh"
         }
       ]
     },
     "artistry": {
       "models": [
         {
-          "model": "claude-sdk-oauth/claude-sonnet-5",
-          "reasoning": "medium"
-        },
-        {
           "model": "opencode/muse-spark-1.3-contributor-free",
           "reasoning": "xhigh"
         },
         {
-          "model": "commandcode/deepseek/deepseek-v4.1-flash",
-          "reasoning": "high"
+          "model": "commandcode/meta/muse-spark-1.3-contributor",
+          "reasoning": "xhigh"
         }
       ]
     },
     "writing": {
       "models": [
         {
-          "model": "claude-sdk-oauth/claude-sonnet-5",
-          "reasoning": "medium"
-        },
-        {
           "model": "opencode/muse-spark-1.3-contributor-free",
           "reasoning": "xhigh"
         },
         {
-          "model": "commandcode/deepseek/deepseek-v4.1-flash",
-          "reasoning": "high"
+          "model": "commandcode/meta/muse-spark-1.3-contributor",
+          "reasoning": "xhigh"
         }
       ]
     },
     "visual-engineering": {
       "models": [
         {
-          "model": "claude-sdk-oauth/claude-sonnet-5",
-          "reasoning": "medium"
-        },
-        {
           "model": "opencode/muse-spark-1.3-contributor-free",
           "reasoning": "xhigh"
         },
         {
-          "model": "commandcode/deepseek/deepseek-v4.1-flash",
-          "reasoning": "high"
+          "model": "commandcode/meta/muse-spark-1.3-contributor",
+          "reasoning": "xhigh"
         }
       ]
     },
@@ -108,19 +92,23 @@
           "reasoning": "high"
         },
         {
+          "model": "commandcode/deepseek/deepseek-v4.1-flash",
+          "reasoning": "high"
+        },
+        {
           "model": "opencode/muse-spark-1.3-contributor-free",
           "reasoning": "xhigh"
         },
         {
-          "model": "commandcode/deepseek/deepseek-v4.1-flash",
-          "reasoning": "high"
+          "model": "commandcode/meta/muse-spark-1.3-contributor",
+          "reasoning": "xhigh"
         }
       ]
     },
     "deep": {
       "models": [
         {
-          "model": "claude-sdk-oauth/claude-sonnet-5",
+          "model": "openai-codex/gpt-5.6-sol",
           "reasoning": "high"
         },
         {
@@ -129,6 +117,10 @@
         },
         {
           "model": "opencode/muse-spark-1.3-contributor-free",
+          "reasoning": "xhigh"
+        },
+        {
+          "model": "commandcode/meta/muse-spark-1.3-contributor",
           "reasoning": "xhigh"
         }
       ]
@@ -146,22 +138,22 @@
         {
           "model": "opencode/muse-spark-1.3-contributor-free",
           "reasoning": "xhigh"
+        },
+        {
+          "model": "commandcode/meta/muse-spark-1.3-contributor",
+          "reasoning": "xhigh"
         }
       ]
     },
     "git": {
       "models": [
         {
-          "model": "claude-sdk-oauth/claude-haiku-4-5",
-          "reasoning": "low"
-        },
-        {
           "model": "opencode/muse-spark-1.3-contributor-free",
           "reasoning": "xhigh"
         },
         {
-          "model": "commandcode/deepseek/deepseek-v4.1-flash",
-          "reasoning": "high"
+          "model": "commandcode/meta/muse-spark-1.3-contributor",
+          "reasoning": "xhigh"
         }
       ]
     }
@@ -170,32 +162,24 @@
     "explore": {
       "models": [
         {
-          "model": "claude-sdk-oauth/claude-haiku-4-5",
-          "reasoning": "low"
-        },
-        {
           "model": "opencode/muse-spark-1.3-contributor-free",
           "reasoning": "xhigh"
         },
         {
-          "model": "commandcode/deepseek/deepseek-v4.1-flash",
-          "reasoning": "high"
+          "model": "commandcode/meta/muse-spark-1.3-contributor",
+          "reasoning": "xhigh"
         }
       ]
     },
     "librarian": {
       "models": [
         {
-          "model": "claude-sdk-oauth/claude-haiku-4-5",
-          "reasoning": "low"
-        },
-        {
           "model": "opencode/muse-spark-1.3-contributor-free",
           "reasoning": "xhigh"
         },
         {
-          "model": "commandcode/deepseek/deepseek-v4.1-flash",
-          "reasoning": "high"
+          "model": "commandcode/meta/muse-spark-1.3-contributor",
+          "reasoning": "xhigh"
         }
       ]
     },
@@ -212,29 +196,33 @@
         {
           "model": "opencode/muse-spark-1.3-contributor-free",
           "reasoning": "xhigh"
+        },
+        {
+          "model": "commandcode/meta/muse-spark-1.3-contributor",
+          "reasoning": "xhigh"
         }
       ]
     },
     "multimodal-looker": {
       "models": [
         {
-          "model": "claude-sdk-oauth/claude-sonnet-5",
-          "reasoning": "medium"
-        },
-        {
           "model": "opencode/muse-spark-1.3-contributor-free",
           "reasoning": "xhigh"
         },
         {
-          "model": "commandcode/deepseek/deepseek-v4.1-flash",
-          "reasoning": "high"
+          "model": "commandcode/meta/muse-spark-1.3-contributor",
+          "reasoning": "xhigh"
         }
       ]
     },
     "plan-consultant": {
       "models": [
         {
-          "model": "claude-sdk-oauth/claude-sonnet-5",
+          "model": "openai-codex/gpt-5.6-sol",
+          "reasoning": "high"
+        },
+        {
+          "model": "commandcode/deepseek/deepseek-v4.1-flash",
           "reasoning": "high"
         },
         {
@@ -242,8 +230,8 @@
           "reasoning": "xhigh"
         },
         {
-          "model": "commandcode/deepseek/deepseek-v4.1-flash",
-          "reasoning": "high"
+          "model": "commandcode/meta/muse-spark-1.3-contributor",
+          "reasoning": "xhigh"
         }
       ]
     },
@@ -259,6 +247,10 @@
         },
         {
           "model": "opencode/muse-spark-1.3-contributor-free",
+          "reasoning": "xhigh"
+        },
+        {
+          "model": "commandcode/meta/muse-spark-1.3-contributor",
           "reasoning": "xhigh"
         }
       ]
@@ -280,39 +272,35 @@
         "quick": {
           "models": [
             {
-              "model": "claude-sdk-oauth/claude-haiku-4-5",
-              "reasoning": "low"
-            },
-            {
               "model": "opencode/muse-spark-1.3-contributor-free",
               "reasoning": "xhigh"
             },
             {
-              "model": "commandcode/deepseek/deepseek-v4.1-flash",
-              "reasoning": "high"
+              "model": "commandcode/meta/muse-spark-1.3-contributor",
+              "reasoning": "xhigh"
             }
           ]
         },
         "unspecified-low": {
           "models": [
             {
-              "model": "claude-sdk-oauth/claude-sonnet-5",
-              "reasoning": "medium"
-            },
-            {
               "model": "opencode/muse-spark-1.3-contributor-free",
               "reasoning": "xhigh"
             },
             {
-              "model": "commandcode/deepseek/deepseek-v4.1-flash",
-              "reasoning": "high"
+              "model": "commandcode/meta/muse-spark-1.3-contributor",
+              "reasoning": "xhigh"
             }
           ]
         },
         "unspecified-high": {
           "models": [
             {
-              "model": "claude-sdk-oauth/claude-sonnet-5",
+              "model": "openai-codex/gpt-5.6-sol",
+              "reasoning": "high"
+            },
+            {
+              "model": "commandcode/deepseek/deepseek-v4.1-flash",
               "reasoning": "high"
             },
             {
@@ -320,56 +308,44 @@
               "reasoning": "xhigh"
             },
             {
-              "model": "commandcode/deepseek/deepseek-v4.1-flash",
-              "reasoning": "high"
+              "model": "commandcode/meta/muse-spark-1.3-contributor",
+              "reasoning": "xhigh"
             }
           ]
         },
         "artistry": {
           "models": [
             {
-              "model": "claude-sdk-oauth/claude-sonnet-5",
-              "reasoning": "medium"
-            },
-            {
               "model": "opencode/muse-spark-1.3-contributor-free",
               "reasoning": "xhigh"
             },
             {
-              "model": "commandcode/deepseek/deepseek-v4.1-flash",
-              "reasoning": "high"
+              "model": "commandcode/meta/muse-spark-1.3-contributor",
+              "reasoning": "xhigh"
             }
           ]
         },
         "writing": {
           "models": [
             {
-              "model": "claude-sdk-oauth/claude-sonnet-5",
-              "reasoning": "medium"
-            },
-            {
               "model": "opencode/muse-spark-1.3-contributor-free",
               "reasoning": "xhigh"
             },
             {
-              "model": "commandcode/deepseek/deepseek-v4.1-flash",
-              "reasoning": "high"
+              "model": "commandcode/meta/muse-spark-1.3-contributor",
+              "reasoning": "xhigh"
             }
           ]
         },
         "visual-engineering": {
           "models": [
             {
-              "model": "claude-sdk-oauth/claude-sonnet-5",
-              "reasoning": "medium"
-            },
-            {
               "model": "opencode/muse-spark-1.3-contributor-free",
               "reasoning": "xhigh"
             },
             {
-              "model": "commandcode/deepseek/deepseek-v4.1-flash",
-              "reasoning": "high"
+              "model": "commandcode/meta/muse-spark-1.3-contributor",
+              "reasoning": "xhigh"
             }
           ]
         },
@@ -380,19 +356,23 @@
               "reasoning": "high"
             },
             {
+              "model": "commandcode/deepseek/deepseek-v4.1-flash",
+              "reasoning": "high"
+            },
+            {
               "model": "opencode/muse-spark-1.3-contributor-free",
               "reasoning": "xhigh"
             },
             {
-              "model": "commandcode/deepseek/deepseek-v4.1-flash",
-              "reasoning": "high"
+              "model": "commandcode/meta/muse-spark-1.3-contributor",
+              "reasoning": "xhigh"
             }
           ]
         },
         "deep": {
           "models": [
             {
-              "model": "claude-sdk-oauth/claude-sonnet-5",
+              "model": "openai-codex/gpt-5.6-sol",
               "reasoning": "high"
             },
             {
@@ -401,6 +381,10 @@
             },
             {
               "model": "opencode/muse-spark-1.3-contributor-free",
+              "reasoning": "xhigh"
+            },
+            {
+              "model": "commandcode/meta/muse-spark-1.3-contributor",
               "reasoning": "xhigh"
             }
           ]
@@ -418,22 +402,22 @@
             {
               "model": "opencode/muse-spark-1.3-contributor-free",
               "reasoning": "xhigh"
+            },
+            {
+              "model": "commandcode/meta/muse-spark-1.3-contributor",
+              "reasoning": "xhigh"
             }
           ]
         },
         "git": {
           "models": [
             {
-              "model": "claude-sdk-oauth/claude-haiku-4-5",
-              "reasoning": "low"
-            },
-            {
               "model": "opencode/muse-spark-1.3-contributor-free",
               "reasoning": "xhigh"
             },
             {
-              "model": "commandcode/deepseek/deepseek-v4.1-flash",
-              "reasoning": "high"
+              "model": "commandcode/meta/muse-spark-1.3-contributor",
+              "reasoning": "xhigh"
             }
           ]
         }
@@ -442,32 +426,24 @@
         "explore": {
           "models": [
             {
-              "model": "claude-sdk-oauth/claude-haiku-4-5",
-              "reasoning": "low"
-            },
-            {
               "model": "opencode/muse-spark-1.3-contributor-free",
               "reasoning": "xhigh"
             },
             {
-              "model": "commandcode/deepseek/deepseek-v4.1-flash",
-              "reasoning": "high"
+              "model": "commandcode/meta/muse-spark-1.3-contributor",
+              "reasoning": "xhigh"
             }
           ]
         },
         "librarian": {
           "models": [
             {
-              "model": "claude-sdk-oauth/claude-haiku-4-5",
-              "reasoning": "low"
-            },
-            {
               "model": "opencode/muse-spark-1.3-contributor-free",
               "reasoning": "xhigh"
             },
             {
-              "model": "commandcode/deepseek/deepseek-v4.1-flash",
-              "reasoning": "high"
+              "model": "commandcode/meta/muse-spark-1.3-contributor",
+              "reasoning": "xhigh"
             }
           ]
         },
@@ -484,29 +460,33 @@
             {
               "model": "opencode/muse-spark-1.3-contributor-free",
               "reasoning": "xhigh"
+            },
+            {
+              "model": "commandcode/meta/muse-spark-1.3-contributor",
+              "reasoning": "xhigh"
             }
           ]
         },
         "multimodal-looker": {
           "models": [
             {
-              "model": "claude-sdk-oauth/claude-sonnet-5",
-              "reasoning": "medium"
-            },
-            {
               "model": "opencode/muse-spark-1.3-contributor-free",
               "reasoning": "xhigh"
             },
             {
-              "model": "commandcode/deepseek/deepseek-v4.1-flash",
-              "reasoning": "high"
+              "model": "commandcode/meta/muse-spark-1.3-contributor",
+              "reasoning": "xhigh"
             }
           ]
         },
         "plan-consultant": {
           "models": [
             {
-              "model": "claude-sdk-oauth/claude-sonnet-5",
+              "model": "openai-codex/gpt-5.6-sol",
+              "reasoning": "high"
+            },
+            {
+              "model": "commandcode/deepseek/deepseek-v4.1-flash",
               "reasoning": "high"
             },
             {
@@ -514,8 +494,8 @@
               "reasoning": "xhigh"
             },
             {
-              "model": "commandcode/deepseek/deepseek-v4.1-flash",
-              "reasoning": "high"
+              "model": "commandcode/meta/muse-spark-1.3-contributor",
+              "reasoning": "xhigh"
             }
           ]
         },
@@ -531,6 +511,10 @@
             },
             {
               "model": "opencode/muse-spark-1.3-contributor-free",
+              "reasoning": "xhigh"
+            },
+            {
+              "model": "commandcode/meta/muse-spark-1.3-contributor",
               "reasoning": "xhigh"
             }
           ]
@@ -552,39 +536,35 @@
         "quick": {
           "models": [
             {
-              "model": "claude-sdk-oauth/claude-haiku-4-5",
-              "reasoning": "low"
-            },
-            {
               "model": "opencode/muse-spark-1.3-contributor-free",
               "reasoning": "xhigh"
             },
             {
-              "model": "commandcode/deepseek/deepseek-v4.1-flash",
-              "reasoning": "high"
+              "model": "commandcode/meta/muse-spark-1.3-contributor",
+              "reasoning": "xhigh"
             }
           ]
         },
         "unspecified-low": {
           "models": [
             {
-              "model": "claude-sdk-oauth/claude-sonnet-5",
-              "reasoning": "medium"
-            },
-            {
               "model": "opencode/muse-spark-1.3-contributor-free",
               "reasoning": "xhigh"
             },
             {
-              "model": "commandcode/deepseek/deepseek-v4.1-flash",
-              "reasoning": "high"
+              "model": "commandcode/meta/muse-spark-1.3-contributor",
+              "reasoning": "xhigh"
             }
           ]
         },
         "unspecified-high": {
           "models": [
             {
-              "model": "claude-sdk-oauth/claude-sonnet-5",
+              "model": "openai-codex/gpt-5.6-sol",
+              "reasoning": "high"
+            },
+            {
+              "model": "commandcode/deepseek/deepseek-v4.1-flash",
               "reasoning": "high"
             },
             {
@@ -592,56 +572,44 @@
               "reasoning": "xhigh"
             },
             {
-              "model": "commandcode/deepseek/deepseek-v4.1-flash",
-              "reasoning": "high"
+              "model": "commandcode/meta/muse-spark-1.3-contributor",
+              "reasoning": "xhigh"
             }
           ]
         },
         "artistry": {
           "models": [
             {
-              "model": "claude-sdk-oauth/claude-sonnet-5",
-              "reasoning": "medium"
-            },
-            {
               "model": "opencode/muse-spark-1.3-contributor-free",
               "reasoning": "xhigh"
             },
             {
-              "model": "commandcode/deepseek/deepseek-v4.1-flash",
-              "reasoning": "high"
+              "model": "commandcode/meta/muse-spark-1.3-contributor",
+              "reasoning": "xhigh"
             }
           ]
         },
         "writing": {
           "models": [
             {
-              "model": "claude-sdk-oauth/claude-sonnet-5",
-              "reasoning": "medium"
-            },
-            {
               "model": "opencode/muse-spark-1.3-contributor-free",
               "reasoning": "xhigh"
             },
             {
-              "model": "commandcode/deepseek/deepseek-v4.1-flash",
-              "reasoning": "high"
+              "model": "commandcode/meta/muse-spark-1.3-contributor",
+              "reasoning": "xhigh"
             }
           ]
         },
         "visual-engineering": {
           "models": [
             {
-              "model": "claude-sdk-oauth/claude-sonnet-5",
-              "reasoning": "medium"
-            },
-            {
               "model": "opencode/muse-spark-1.3-contributor-free",
               "reasoning": "xhigh"
             },
             {
-              "model": "commandcode/deepseek/deepseek-v4.1-flash",
-              "reasoning": "high"
+              "model": "commandcode/meta/muse-spark-1.3-contributor",
+              "reasoning": "xhigh"
             }
           ]
         },
@@ -652,19 +620,23 @@
               "reasoning": "high"
             },
             {
+              "model": "commandcode/deepseek/deepseek-v4.1-flash",
+              "reasoning": "high"
+            },
+            {
               "model": "opencode/muse-spark-1.3-contributor-free",
               "reasoning": "xhigh"
             },
             {
-              "model": "commandcode/deepseek/deepseek-v4.1-flash",
-              "reasoning": "high"
+              "model": "commandcode/meta/muse-spark-1.3-contributor",
+              "reasoning": "xhigh"
             }
           ]
         },
         "deep": {
           "models": [
             {
-              "model": "claude-sdk-oauth/claude-sonnet-5",
+              "model": "openai-codex/gpt-5.6-sol",
               "reasoning": "high"
             },
             {
@@ -673,6 +645,10 @@
             },
             {
               "model": "opencode/muse-spark-1.3-contributor-free",
+              "reasoning": "xhigh"
+            },
+            {
+              "model": "commandcode/meta/muse-spark-1.3-contributor",
               "reasoning": "xhigh"
             }
           ]
@@ -690,22 +666,22 @@
             {
               "model": "opencode/muse-spark-1.3-contributor-free",
               "reasoning": "xhigh"
+            },
+            {
+              "model": "commandcode/meta/muse-spark-1.3-contributor",
+              "reasoning": "xhigh"
             }
           ]
         },
         "git": {
           "models": [
             {
-              "model": "claude-sdk-oauth/claude-haiku-4-5",
-              "reasoning": "low"
-            },
-            {
               "model": "opencode/muse-spark-1.3-contributor-free",
               "reasoning": "xhigh"
             },
             {
-              "model": "commandcode/deepseek/deepseek-v4.1-flash",
-              "reasoning": "high"
+              "model": "commandcode/meta/muse-spark-1.3-contributor",
+              "reasoning": "xhigh"
             }
           ]
         }
@@ -714,32 +690,24 @@
         "explore": {
           "models": [
             {
-              "model": "claude-sdk-oauth/claude-haiku-4-5",
-              "reasoning": "low"
-            },
-            {
               "model": "opencode/muse-spark-1.3-contributor-free",
               "reasoning": "xhigh"
             },
             {
-              "model": "commandcode/deepseek/deepseek-v4.1-flash",
-              "reasoning": "high"
+              "model": "commandcode/meta/muse-spark-1.3-contributor",
+              "reasoning": "xhigh"
             }
           ]
         },
         "librarian": {
           "models": [
             {
-              "model": "claude-sdk-oauth/claude-haiku-4-5",
-              "reasoning": "low"
-            },
-            {
               "model": "opencode/muse-spark-1.3-contributor-free",
               "reasoning": "xhigh"
             },
             {
-              "model": "commandcode/deepseek/deepseek-v4.1-flash",
-              "reasoning": "high"
+              "model": "commandcode/meta/muse-spark-1.3-contributor",
+              "reasoning": "xhigh"
             }
           ]
         },
@@ -756,29 +724,33 @@
             {
               "model": "opencode/muse-spark-1.3-contributor-free",
               "reasoning": "xhigh"
+            },
+            {
+              "model": "commandcode/meta/muse-spark-1.3-contributor",
+              "reasoning": "xhigh"
             }
           ]
         },
         "multimodal-looker": {
           "models": [
             {
-              "model": "claude-sdk-oauth/claude-sonnet-5",
-              "reasoning": "medium"
-            },
-            {
               "model": "opencode/muse-spark-1.3-contributor-free",
               "reasoning": "xhigh"
             },
             {
-              "model": "commandcode/deepseek/deepseek-v4.1-flash",
-              "reasoning": "high"
+              "model": "commandcode/meta/muse-spark-1.3-contributor",
+              "reasoning": "xhigh"
             }
           ]
         },
         "plan-consultant": {
           "models": [
             {
-              "model": "claude-sdk-oauth/claude-sonnet-5",
+              "model": "openai-codex/gpt-5.6-sol",
+              "reasoning": "high"
+            },
+            {
+              "model": "commandcode/deepseek/deepseek-v4.1-flash",
               "reasoning": "high"
             },
             {
@@ -786,8 +758,8 @@
               "reasoning": "xhigh"
             },
             {
-              "model": "commandcode/deepseek/deepseek-v4.1-flash",
-              "reasoning": "high"
+              "model": "commandcode/meta/muse-spark-1.3-contributor",
+              "reasoning": "xhigh"
             }
           ]
         },
@@ -803,6 +775,10 @@
             },
             {
               "model": "opencode/muse-spark-1.3-contributor-free",
+              "reasoning": "xhigh"
+            },
+            {
+              "model": "commandcode/meta/muse-spark-1.3-contributor",
               "reasoning": "xhigh"
             }
           ]
@@ -824,16 +800,12 @@
       "categories": {
         "quick": {
           "models": [
-            { "model": "openai-codex/gpt-5.6-luna-fast", "reasoning": "low" },
-            { "model": "commandcode/deepseek/deepseek-v4.1-flash", "reasoning": "high" },
             { "model": "opencode/muse-spark-1.3-contributor-free", "reasoning": "xhigh" },
             { "model": "commandcode/meta/muse-spark-1.3-contributor", "reasoning": "xhigh" }
           ]
         },
         "unspecified-low": {
           "models": [
-            { "model": "openai-codex/gpt-5.6-terra", "reasoning": "high" },
-            { "model": "commandcode/deepseek/deepseek-v4.1-flash", "reasoning": "high" },
             { "model": "opencode/muse-spark-1.3-contributor-free", "reasoning": "xhigh" },
             { "model": "commandcode/meta/muse-spark-1.3-contributor", "reasoning": "xhigh" }
           ]
@@ -848,24 +820,18 @@
         },
         "artistry": {
           "models": [
-            { "model": "openai-codex/gpt-5.6-sol", "reasoning": "max" },
-            { "model": "commandcode/deepseek/deepseek-v4.1-flash", "reasoning": "high" },
             { "model": "opencode/muse-spark-1.3-contributor-free", "reasoning": "xhigh" },
             { "model": "commandcode/meta/muse-spark-1.3-contributor", "reasoning": "xhigh" }
           ]
         },
         "writing": {
           "models": [
-            { "model": "openai-codex/gpt-5.6-terra", "reasoning": "medium" },
-            { "model": "commandcode/deepseek/deepseek-v4.1-flash", "reasoning": "high" },
             { "model": "opencode/muse-spark-1.3-contributor-free", "reasoning": "xhigh" },
             { "model": "commandcode/meta/muse-spark-1.3-contributor", "reasoning": "xhigh" }
           ]
         },
         "visual-engineering": {
           "models": [
-            { "model": "openai-codex/gpt-5.6-sol", "reasoning": "max" },
-            { "model": "commandcode/deepseek/deepseek-v4.1-flash", "reasoning": "high" },
             { "model": "opencode/muse-spark-1.3-contributor-free", "reasoning": "xhigh" },
             { "model": "commandcode/meta/muse-spark-1.3-contributor", "reasoning": "xhigh" }
           ]
@@ -896,8 +862,6 @@
         },
         "git": {
           "models": [
-            { "model": "openai-codex/gpt-5.6-luna-fast", "reasoning": "low" },
-            { "model": "commandcode/deepseek/deepseek-v4.1-flash", "reasoning": "high" },
             { "model": "opencode/muse-spark-1.3-contributor-free", "reasoning": "xhigh" },
             { "model": "commandcode/meta/muse-spark-1.3-contributor", "reasoning": "xhigh" }
           ]
@@ -906,16 +870,12 @@
       "agents": {
         "explore": {
           "models": [
-            { "model": "openai-codex/gpt-5.6-luna-fast", "reasoning": "low" },
-            { "model": "commandcode/deepseek/deepseek-v4.1-flash", "reasoning": "high" },
             { "model": "opencode/muse-spark-1.3-contributor-free", "reasoning": "xhigh" },
             { "model": "commandcode/meta/muse-spark-1.3-contributor", "reasoning": "xhigh" }
           ]
         },
         "librarian": {
           "models": [
-            { "model": "openai-codex/gpt-5.6-luna-fast", "reasoning": "low" },
-            { "model": "commandcode/deepseek/deepseek-v4.1-flash", "reasoning": "high" },
             { "model": "opencode/muse-spark-1.3-contributor-free", "reasoning": "xhigh" },
             { "model": "commandcode/meta/muse-spark-1.3-contributor", "reasoning": "xhigh" }
           ]
@@ -930,8 +890,6 @@
         },
         "multimodal-looker": {
           "models": [
-            { "model": "openai-codex/gpt-5.6-sol", "reasoning": "medium" },
-            { "model": "commandcode/deepseek/deepseek-v4.1-flash", "reasoning": "high" },
             { "model": "opencode/muse-spark-1.3-contributor-free", "reasoning": "xhigh" },
             { "model": "commandcode/meta/muse-spark-1.3-contributor", "reasoning": "xhigh" }
           ]
@@ -959,39 +917,35 @@
         "quick": {
           "models": [
             {
-              "model": "claude-sdk-oauth/claude-haiku-4-5",
-              "reasoning": "low"
-            },
-            {
               "model": "opencode/muse-spark-1.3-contributor-free",
               "reasoning": "xhigh"
             },
             {
-              "model": "commandcode/deepseek/deepseek-v4.1-flash",
-              "reasoning": "high"
+              "model": "commandcode/meta/muse-spark-1.3-contributor",
+              "reasoning": "xhigh"
             }
           ]
         },
         "unspecified-low": {
           "models": [
             {
-              "model": "claude-sdk-oauth/claude-sonnet-5",
-              "reasoning": "medium"
-            },
-            {
               "model": "opencode/muse-spark-1.3-contributor-free",
               "reasoning": "xhigh"
             },
             {
-              "model": "commandcode/deepseek/deepseek-v4.1-flash",
-              "reasoning": "high"
+              "model": "commandcode/meta/muse-spark-1.3-contributor",
+              "reasoning": "xhigh"
             }
           ]
         },
         "unspecified-high": {
           "models": [
             {
-              "model": "claude-sdk-oauth/claude-sonnet-5",
+              "model": "openai-codex/gpt-5.6-sol",
+              "reasoning": "high"
+            },
+            {
+              "model": "commandcode/deepseek/deepseek-v4.1-flash",
               "reasoning": "high"
             },
             {
@@ -999,56 +953,44 @@
               "reasoning": "xhigh"
             },
             {
-              "model": "commandcode/deepseek/deepseek-v4.1-flash",
-              "reasoning": "high"
+              "model": "commandcode/meta/muse-spark-1.3-contributor",
+              "reasoning": "xhigh"
             }
           ]
         },
         "artistry": {
           "models": [
             {
-              "model": "claude-sdk-oauth/claude-sonnet-5",
-              "reasoning": "medium"
-            },
-            {
               "model": "opencode/muse-spark-1.3-contributor-free",
               "reasoning": "xhigh"
             },
             {
-              "model": "commandcode/deepseek/deepseek-v4.1-flash",
-              "reasoning": "high"
+              "model": "commandcode/meta/muse-spark-1.3-contributor",
+              "reasoning": "xhigh"
             }
           ]
         },
         "writing": {
           "models": [
             {
-              "model": "claude-sdk-oauth/claude-sonnet-5",
-              "reasoning": "medium"
-            },
-            {
               "model": "opencode/muse-spark-1.3-contributor-free",
               "reasoning": "xhigh"
             },
             {
-              "model": "commandcode/deepseek/deepseek-v4.1-flash",
-              "reasoning": "high"
+              "model": "commandcode/meta/muse-spark-1.3-contributor",
+              "reasoning": "xhigh"
             }
           ]
         },
         "visual-engineering": {
           "models": [
             {
-              "model": "claude-sdk-oauth/claude-sonnet-5",
-              "reasoning": "medium"
-            },
-            {
               "model": "opencode/muse-spark-1.3-contributor-free",
               "reasoning": "xhigh"
             },
             {
-              "model": "commandcode/deepseek/deepseek-v4.1-flash",
-              "reasoning": "high"
+              "model": "commandcode/meta/muse-spark-1.3-contributor",
+              "reasoning": "xhigh"
             }
           ]
         },
@@ -1059,19 +1001,23 @@
               "reasoning": "high"
             },
             {
+              "model": "commandcode/deepseek/deepseek-v4.1-flash",
+              "reasoning": "high"
+            },
+            {
               "model": "opencode/muse-spark-1.3-contributor-free",
               "reasoning": "xhigh"
             },
             {
-              "model": "commandcode/deepseek/deepseek-v4.1-flash",
-              "reasoning": "high"
+              "model": "commandcode/meta/muse-spark-1.3-contributor",
+              "reasoning": "xhigh"
             }
           ]
         },
         "deep": {
           "models": [
             {
-              "model": "claude-sdk-oauth/claude-sonnet-5",
+              "model": "openai-codex/gpt-5.6-sol",
               "reasoning": "high"
             },
             {
@@ -1080,6 +1026,10 @@
             },
             {
               "model": "opencode/muse-spark-1.3-contributor-free",
+              "reasoning": "xhigh"
+            },
+            {
+              "model": "commandcode/meta/muse-spark-1.3-contributor",
               "reasoning": "xhigh"
             }
           ]
@@ -1097,22 +1047,22 @@
             {
               "model": "opencode/muse-spark-1.3-contributor-free",
               "reasoning": "xhigh"
+            },
+            {
+              "model": "commandcode/meta/muse-spark-1.3-contributor",
+              "reasoning": "xhigh"
             }
           ]
         },
         "git": {
           "models": [
             {
-              "model": "claude-sdk-oauth/claude-haiku-4-5",
-              "reasoning": "low"
-            },
-            {
               "model": "opencode/muse-spark-1.3-contributor-free",
               "reasoning": "xhigh"
             },
             {
-              "model": "commandcode/deepseek/deepseek-v4.1-flash",
-              "reasoning": "high"
+              "model": "commandcode/meta/muse-spark-1.3-contributor",
+              "reasoning": "xhigh"
             }
           ]
         }
@@ -1121,32 +1071,24 @@
         "explore": {
           "models": [
             {
-              "model": "claude-sdk-oauth/claude-haiku-4-5",
-              "reasoning": "low"
-            },
-            {
               "model": "opencode/muse-spark-1.3-contributor-free",
               "reasoning": "xhigh"
             },
             {
-              "model": "commandcode/deepseek/deepseek-v4.1-flash",
-              "reasoning": "high"
+              "model": "commandcode/meta/muse-spark-1.3-contributor",
+              "reasoning": "xhigh"
             }
           ]
         },
         "librarian": {
           "models": [
             {
-              "model": "claude-sdk-oauth/claude-haiku-4-5",
-              "reasoning": "low"
-            },
-            {
               "model": "opencode/muse-spark-1.3-contributor-free",
               "reasoning": "xhigh"
             },
             {
-              "model": "commandcode/deepseek/deepseek-v4.1-flash",
-              "reasoning": "high"
+              "model": "commandcode/meta/muse-spark-1.3-contributor",
+              "reasoning": "xhigh"
             }
           ]
         },
@@ -1163,29 +1105,33 @@
             {
               "model": "opencode/muse-spark-1.3-contributor-free",
               "reasoning": "xhigh"
+            },
+            {
+              "model": "commandcode/meta/muse-spark-1.3-contributor",
+              "reasoning": "xhigh"
             }
           ]
         },
         "multimodal-looker": {
           "models": [
             {
-              "model": "claude-sdk-oauth/claude-sonnet-5",
-              "reasoning": "medium"
-            },
-            {
               "model": "opencode/muse-spark-1.3-contributor-free",
               "reasoning": "xhigh"
             },
             {
-              "model": "commandcode/deepseek/deepseek-v4.1-flash",
-              "reasoning": "high"
+              "model": "commandcode/meta/muse-spark-1.3-contributor",
+              "reasoning": "xhigh"
             }
           ]
         },
         "plan-consultant": {
           "models": [
             {
-              "model": "claude-sdk-oauth/claude-sonnet-5",
+              "model": "openai-codex/gpt-5.6-sol",
+              "reasoning": "high"
+            },
+            {
+              "model": "commandcode/deepseek/deepseek-v4.1-flash",
               "reasoning": "high"
             },
             {
@@ -1193,8 +1139,8 @@
               "reasoning": "xhigh"
             },
             {
-              "model": "commandcode/deepseek/deepseek-v4.1-flash",
-              "reasoning": "high"
+              "model": "commandcode/meta/muse-spark-1.3-contributor",
+              "reasoning": "xhigh"
             }
           ]
         },
@@ -1210,6 +1156,10 @@
             },
             {
               "model": "opencode/muse-spark-1.3-contributor-free",
+              "reasoning": "xhigh"
+            },
+            {
+              "model": "commandcode/meta/muse-spark-1.3-contributor",
               "reasoning": "xhigh"
             }
           ]
@@ -1221,39 +1171,35 @@
         "quick": {
           "models": [
             {
-              "model": "claude-sdk-oauth/claude-haiku-4-5",
-              "reasoning": "low"
-            },
-            {
               "model": "opencode/muse-spark-1.3-contributor-free",
               "reasoning": "xhigh"
             },
             {
-              "model": "commandcode/deepseek/deepseek-v4.1-flash",
-              "reasoning": "high"
+              "model": "commandcode/meta/muse-spark-1.3-contributor",
+              "reasoning": "xhigh"
             }
           ]
         },
         "unspecified-low": {
           "models": [
             {
-              "model": "claude-sdk-oauth/claude-sonnet-5",
-              "reasoning": "medium"
-            },
-            {
               "model": "opencode/muse-spark-1.3-contributor-free",
               "reasoning": "xhigh"
             },
             {
-              "model": "commandcode/deepseek/deepseek-v4.1-flash",
-              "reasoning": "high"
+              "model": "commandcode/meta/muse-spark-1.3-contributor",
+              "reasoning": "xhigh"
             }
           ]
         },
         "unspecified-high": {
           "models": [
             {
-              "model": "claude-sdk-oauth/claude-sonnet-5",
+              "model": "openai-codex/gpt-5.6-sol",
+              "reasoning": "high"
+            },
+            {
+              "model": "commandcode/deepseek/deepseek-v4.1-flash",
               "reasoning": "high"
             },
             {
@@ -1261,56 +1207,44 @@
               "reasoning": "xhigh"
             },
             {
-              "model": "commandcode/deepseek/deepseek-v4.1-flash",
-              "reasoning": "high"
+              "model": "commandcode/meta/muse-spark-1.3-contributor",
+              "reasoning": "xhigh"
             }
           ]
         },
         "artistry": {
           "models": [
             {
-              "model": "claude-sdk-oauth/claude-sonnet-5",
-              "reasoning": "medium"
-            },
-            {
               "model": "opencode/muse-spark-1.3-contributor-free",
               "reasoning": "xhigh"
             },
             {
-              "model": "commandcode/deepseek/deepseek-v4.1-flash",
-              "reasoning": "high"
+              "model": "commandcode/meta/muse-spark-1.3-contributor",
+              "reasoning": "xhigh"
             }
           ]
         },
         "writing": {
           "models": [
             {
-              "model": "claude-sdk-oauth/claude-sonnet-5",
-              "reasoning": "medium"
-            },
-            {
               "model": "opencode/muse-spark-1.3-contributor-free",
               "reasoning": "xhigh"
             },
             {
-              "model": "commandcode/deepseek/deepseek-v4.1-flash",
-              "reasoning": "high"
+              "model": "commandcode/meta/muse-spark-1.3-contributor",
+              "reasoning": "xhigh"
             }
           ]
         },
         "visual-engineering": {
           "models": [
             {
-              "model": "claude-sdk-oauth/claude-sonnet-5",
-              "reasoning": "medium"
-            },
-            {
               "model": "opencode/muse-spark-1.3-contributor-free",
               "reasoning": "xhigh"
             },
             {
-              "model": "commandcode/deepseek/deepseek-v4.1-flash",
-              "reasoning": "high"
+              "model": "commandcode/meta/muse-spark-1.3-contributor",
+              "reasoning": "xhigh"
             }
           ]
         },
@@ -1321,19 +1255,23 @@
               "reasoning": "high"
             },
             {
+              "model": "commandcode/deepseek/deepseek-v4.1-flash",
+              "reasoning": "high"
+            },
+            {
               "model": "opencode/muse-spark-1.3-contributor-free",
               "reasoning": "xhigh"
             },
             {
-              "model": "commandcode/deepseek/deepseek-v4.1-flash",
-              "reasoning": "high"
+              "model": "commandcode/meta/muse-spark-1.3-contributor",
+              "reasoning": "xhigh"
             }
           ]
         },
         "deep": {
           "models": [
             {
-              "model": "claude-sdk-oauth/claude-sonnet-5",
+              "model": "openai-codex/gpt-5.6-sol",
               "reasoning": "high"
             },
             {
@@ -1342,6 +1280,10 @@
             },
             {
               "model": "opencode/muse-spark-1.3-contributor-free",
+              "reasoning": "xhigh"
+            },
+            {
+              "model": "commandcode/meta/muse-spark-1.3-contributor",
               "reasoning": "xhigh"
             }
           ]
@@ -1359,22 +1301,22 @@
             {
               "model": "opencode/muse-spark-1.3-contributor-free",
               "reasoning": "xhigh"
+            },
+            {
+              "model": "commandcode/meta/muse-spark-1.3-contributor",
+              "reasoning": "xhigh"
             }
           ]
         },
         "git": {
           "models": [
             {
-              "model": "claude-sdk-oauth/claude-haiku-4-5",
-              "reasoning": "low"
-            },
-            {
               "model": "opencode/muse-spark-1.3-contributor-free",
               "reasoning": "xhigh"
             },
             {
-              "model": "commandcode/deepseek/deepseek-v4.1-flash",
-              "reasoning": "high"
+              "model": "commandcode/meta/muse-spark-1.3-contributor",
+              "reasoning": "xhigh"
             }
           ]
         }
@@ -1383,32 +1325,24 @@
         "explore": {
           "models": [
             {
-              "model": "claude-sdk-oauth/claude-haiku-4-5",
-              "reasoning": "low"
-            },
-            {
               "model": "opencode/muse-spark-1.3-contributor-free",
               "reasoning": "xhigh"
             },
             {
-              "model": "commandcode/deepseek/deepseek-v4.1-flash",
-              "reasoning": "high"
+              "model": "commandcode/meta/muse-spark-1.3-contributor",
+              "reasoning": "xhigh"
             }
           ]
         },
         "librarian": {
           "models": [
             {
-              "model": "claude-sdk-oauth/claude-haiku-4-5",
-              "reasoning": "low"
-            },
-            {
               "model": "opencode/muse-spark-1.3-contributor-free",
               "reasoning": "xhigh"
             },
             {
-              "model": "commandcode/deepseek/deepseek-v4.1-flash",
-              "reasoning": "high"
+              "model": "commandcode/meta/muse-spark-1.3-contributor",
+              "reasoning": "xhigh"
             }
           ]
         },
@@ -1425,29 +1359,33 @@
             {
               "model": "opencode/muse-spark-1.3-contributor-free",
               "reasoning": "xhigh"
+            },
+            {
+              "model": "commandcode/meta/muse-spark-1.3-contributor",
+              "reasoning": "xhigh"
             }
           ]
         },
         "multimodal-looker": {
           "models": [
             {
-              "model": "claude-sdk-oauth/claude-sonnet-5",
-              "reasoning": "medium"
-            },
-            {
               "model": "opencode/muse-spark-1.3-contributor-free",
               "reasoning": "xhigh"
             },
             {
-              "model": "commandcode/deepseek/deepseek-v4.1-flash",
-              "reasoning": "high"
+              "model": "commandcode/meta/muse-spark-1.3-contributor",
+              "reasoning": "xhigh"
             }
           ]
         },
         "plan-consultant": {
           "models": [
             {
-              "model": "claude-sdk-oauth/claude-sonnet-5",
+              "model": "openai-codex/gpt-5.6-sol",
+              "reasoning": "high"
+            },
+            {
+              "model": "commandcode/deepseek/deepseek-v4.1-flash",
               "reasoning": "high"
             },
             {
@@ -1455,8 +1393,8 @@
               "reasoning": "xhigh"
             },
             {
-              "model": "commandcode/deepseek/deepseek-v4.1-flash",
-              "reasoning": "high"
+              "model": "commandcode/meta/muse-spark-1.3-contributor",
+              "reasoning": "xhigh"
             }
           ]
         },
@@ -1472,6 +1410,10 @@
             },
             {
               "model": "opencode/muse-spark-1.3-contributor-free",
+              "reasoning": "xhigh"
+            },
+            {
+              "model": "commandcode/meta/muse-spark-1.3-contributor",
               "reasoning": "xhigh"
             }
           ]

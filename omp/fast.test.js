@@ -42,7 +42,7 @@ async function makeBase() {
       "disabledProviders:",
       "  - claude",
       "task:",
-      "  maxConcurrency: 2",
+      "  maxConcurrency: 32",
       "retry:",
       "  fallbackChains:",
       "    default:",
@@ -119,21 +119,18 @@ test("claude fallback starts with GPT Sol, zen preserved, sibling chains untouch
   )
 }, 30000)
 
-test("fast overlay raises child concurrency to 8, normal stays pinned at 2", async () => {
+test("fast overlay preserves the global 32-agent concurrency at every depth", async () => {
   const { agentDir, project } = await makeBase()
   const fast = await loadSettings(agentDir, project, [fastOverlay])
-  expect(fast.get("task.maxConcurrency")).toBe(8)
+  expect(fast.get("task.maxConcurrency")).toBe(32)
   const plain = await loadSettings(agentDir, project)
-  expect(plain.get("task.maxConcurrency")).toBe(2)
+  expect(plain.get("task.maxConcurrency")).toBe(32)
   const root = ompPkgRoot()
   const { buildServiceTierByFamily } = await import("file://" + join(root, "src/config/service-tier.ts"))
   const { createSubagentSettings } = await import("file://" + join(root, "src/task/executor.ts"))
   const live = buildServiceTierByFamily(fast.get("tier.openai"), fast.get("tier.anthropic"), fast.get("tier.google"))
   const child = createSubagentSettings(fast, undefined, live)
-  // Snapshot copies every key the executor does not pin, so the live
-  // workpool/spawn-semaphore ceiling (task/index.ts, workpool.ts) is 8
-  // at every depth of the fast spawn tree.
-  expect(child.get("task.maxConcurrency")).toBe(8)
+  expect(child.get("task.maxConcurrency")).toBe(32)
 }, 30000)
 
 test("tracked live config carries no tier keys (normal omp ships standard)", async () => {
