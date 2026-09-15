@@ -7,7 +7,6 @@ import { fileURLToPath } from "node:url";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const preload = join(here, "preload.mjs");
-const bootstrap = join(here, "bootstrap.mjs");
 const REQUIRED = ["claude", "claude-md", "claude-plugins", "agent-plugins", "mcp-json"];
 
 const ompBin = Bun.which("omp");
@@ -22,8 +21,7 @@ if (!real.endsWith("/dist/cli.js")) {
 }
 const pkgRoot = dirname(dirname(real));
 const srcCli = join(pkgRoot, "src", "cli.ts");
-const workerHost = join(dirname(pkgRoot), "pi-utils", "src", "worker-host.ts");
-if (![srcCli, workerHost, preload, bootstrap].every(existsSync)) {
+if (![srcCli, preload].every(existsSync)) {
   console.error("omp/launch: required source entry missing");
   process.exit(127);
 }
@@ -94,19 +92,13 @@ const args = process.argv.slice(2);
 if (process.env.OMP_LAUNCH_DRY_RUN === "1") {
   console.log(`omp-binary: ${srcCli}`);
   console.log(`preload: ${preload}`);
-  console.log(`bootstrap: ${bootstrap}`);
   for (const a of args) console.log(`arg: ${a}`);
   process.exit(0);
 }
 
-const child = spawn(process.execPath, [bootstrap, ...args], {
+const child = spawn(process.execPath, ["--preload", preload, srcCli, ...args], {
   stdio: "inherit",
-  env: {
-    ...process.env,
-    BUN_RUNTIME_TRANSPILER_CACHE_PATH: "0",
-    OMP_SOURCE_CLI: srcCli,
-    OMP_WORKER_HOST: workerHost,
-  },
+  env: { ...process.env },
 });
 const forwardedSignals = new Map();
 for (const [signal, forward] of [["SIGTERM", true], ["SIGHUP", true], ["SIGINT", false]]) {
