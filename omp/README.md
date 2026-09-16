@@ -104,6 +104,12 @@ bun ~/dotfiles/omp/launch.mjs --config ~/dotfiles/omp/budget.yml
 
 Herdr's own OMP integration reports nothing on Herdr 0.9.0: the server silently drops `source="herdr:omp"`, the literal the integration hardcodes. That version also enables the integration inside nested OMP workers, whose exit can remove the root pane's row.
 The shared launcher patches the live extension before every OMP start: it changes the source to `custom:omp` and adds the v10 `OMPCODE` nested-process guard when the v9 `enabled()` body is present. Both replacements are no-ops when the integration is absent, already patched, or no longer contains the affected v9 text.
+`herdr-title.mjs` is loaded by the same launcher. It reads OMP's stored session
+name through the extension API, follows OMP's session-name change callback, and
+reports that exact value as `custom:omp` pane metadata; Auto Title then prefers
+it over the decorated terminal title. New, resumed, renamed, and generated
+session titles update without a Claude integration, and shutdown clears the
+metadata.
 State (including `blocked`) still comes from Herdr's integration. The launcher keeps the pane alive while OMP runs, releases only that pane's `custom:omp`/`omp` entry with a newer epoch-ms×1000 sequence when the child exits, and handles `SIGINT`, `SIGTERM`, and `SIGHUP` so signal-driven child termination takes the same cleanup path (`SIGTERM` and `SIGHUP` are forwarded; terminal `SIGINT` already reaches the foreground child). `SIGKILL` of the launcher or an unavailable Herdr transport can still leave an entry behind.
 Track with `herdr agent list`, `herdr agent read w3:pX --lines 40`, `herdr agent attach`, `herdr agent wait <pane> --until blocked --timeout 600000`; manual control with `herdr pane report-agent ...`.
 

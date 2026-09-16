@@ -222,6 +222,8 @@ emit_symlink_map() {
   if [[ -d "$zsh_functions_dir" ]]; then
     echo "${zsh_functions_dir}|${HOME}/.zsh"
   fi
+  echo "${DOTFILES_DIR}/git/gitconfig|${HOME}/.gitconfig"
+  echo "${DOTFILES_DIR}/git/gitconfig-jecho-swe|${HOME}/.gitconfig-jecho-swe"
   echo "${DOTFILES_DIR}/tmux/tmux.conf|${HOME}/.tmux.conf"
   echo "${DOTFILES_DIR}/codex/AGENTS.md|${HOME}/AGENTS.md"
   echo "${DOTFILES_DIR}/codex/AGENTS.md|${HOME}/.codex/AGENTS.md"

@@ -1,0 +1,13 @@
+[email]
+	user = jecho.deleon@gmail.com
+[user]
+	name = aslaii
+	email = jecho.deleon@gmail.com
+[credential "https://github.com"]
+	username = aslaii
+[credential "https://gist.github.com"]
+	helper = 
+	helper = !/opt/homebrew/bin/gh auth git-credential
+
+[includeIf "gitdir:~/work/mobii/myuse/"]
+	path = ~/.gitconfig-jecho-swe

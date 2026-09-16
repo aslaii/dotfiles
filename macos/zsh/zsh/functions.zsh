@@ -98,7 +98,7 @@ function omo() {
 }
 
 function omp() {
-  bun "${DOTFILES_DIR:-$HOME/dotfiles}/omp/launch.mjs" "$@"
+  bun "${DOTFILES_DIR:-$HOME/dotfiles}/omp/launch.mjs" --model @default "$@"
 }
 
 function omo-fast() {

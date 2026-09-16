@@ -110,6 +110,8 @@ if [[ "$(uname -s)" == "Darwin" ]]; then
   mkdir -p "$iso/.codex" "$iso/Library/Application Support/com.mitchellh.ghostty" "$iso/.config"
   ln -s "$REPO/macos/zsh/zshrc" "$iso/.zshrc"
   ln -s "$REPO/macos/zsh/zsh" "$iso/.zsh"
+  ln -s "$REPO/git/gitconfig" "$iso/.gitconfig"
+  ln -s "$REPO/git/gitconfig-jecho-swe" "$iso/.gitconfig-jecho-swe"
   ln -s "$REPO/tmux/tmux.conf" "$iso/.tmux.conf"
   ln -s "$REPO/codex/AGENTS.md" "$iso/AGENTS.md"
   ln -s "$REPO/codex/AGENTS.md" "$iso/.codex/AGENTS.md"
@@ -119,7 +121,7 @@ if [[ "$(uname -s)" == "Darwin" ]]; then
   ln -s "$REPO/nvim" "$iso/.config/nvim"
   rc=0
   out="$(run_check "$MACOS_SCRIPT" "$iso" "$stub" 2>&1)" || rc=$?
-  if [[ $rc -eq 0 ]] && [[ "$out" == *"All 9 symlinks OK"* ]]; then
+  if [[ $rc -eq 0 ]] && [[ "$out" == *"All 11 symlinks OK"* ]]; then
     pass "macos --check green on fully linked HOME"
   else
     fail "macos --check green on fully linked HOME (rc=$rc)"
@@ -186,6 +188,8 @@ if [[ -f "$LINUX_SCRIPT" ]]; then
   mkdir -p "$iso/.codex" "$iso/.config/ghostty"
   ln -s "$REPO/wsl/zsh/zshrc" "$iso/.zshrc"
   ln -s "$REPO/wsl/zsh/zsh" "$iso/.zsh"
+  ln -s "$REPO/git/gitconfig" "$iso/.gitconfig"
+  ln -s "$REPO/git/gitconfig-jecho-swe" "$iso/.gitconfig-jecho-swe"
   ln -s "$REPO/wsl/tmux.conf" "$iso/.tmux.conf"
   ln -s "$REPO/codex/AGENTS.md" "$iso/AGENTS.md"
   ln -s "$REPO/codex/AGENTS.md" "$iso/.codex/AGENTS.md"

@@ -6,26 +6,25 @@ disabledProviders:
   - mcp-json
 modelRoles:
   default: openai-codex/gpt-5.6-sol:medium
-  plan: anthropic/claude-sonnet-5:high
-  task: openai-codex/gpt-5.6-sol:high
+  plan: openai-codex/gpt-5.6-sol:high
+  planner: openai-codex/gpt-5.6-sol:high
   slow: openai-codex/gpt-5.6-sol:high
-  smol: opencode-zen/muse-spark-1.3-contributor-free:xhigh
-  vision: opencode-zen/muse-spark-1.3-contributor-free:xhigh
-  designer: anthropic/claude-sonnet-5:high
-  commit: opencode-zen/muse-spark-1.3-contributor-free:medium
-  tiny: opencode-zen/muse-spark-1.3-contributor-free:medium
-  planner: anthropic/claude-sonnet-5:high
-  advisor: openai-codex/gpt-5.6-sol:medium
+  task: commandcode/deepseek/deepseek-v4.1-flash:high
+  smol: commandcode/deepseek/deepseek-v4.1-flash:medium
+  research: commandcode/deepseek/deepseek-v4.1-flash:medium
+  tiny: commandcode/deepseek/deepseek-v4.1-flash:low
+  commit: commandcode/deepseek/deepseek-v4.1-flash:low
   review: anthropic/claude-sonnet-5:high
-  verify: opencode-zen/muse-spark-1.3-contributor-free:xhigh
-  research: opencode-zen/muse-spark-1.3-contributor-free:xhigh
-  free: opencode-zen/muse-spark-1.3-contributor-free:xhigh
-  PREWALK: anthropic/claude-sonnet-5:high
+  verify: anthropic/claude-sonnet-5:medium
+  vision: anthropic/claude-sonnet-5:medium
+  advisor: anthropic/claude-sonnet-5:medium
+  free: opencode-zen/muse-spark-1.3-contributor-free:medium
 defaultThinkingLevel: medium
 task:
-  maxConcurrency: 32
+  maxConcurrency: 16
   maxRecursionDepth: 1
   enableLsp: true
+  enableEffort: false
   agentModelOverrides:
     task: "@task"
     scout: "@smol"
@@ -36,31 +35,81 @@ task:
     planner: "@planner"
     verifier: "@verify"
     researcher: "@research"
+  isolation:
+    commits: ai
 retry:
+  modelFallback: true
   usageAwareFallback: true
+  usageReservePct: 10
   usageReservePolicy: auto
   fallbackRevertPolicy: never
   fallbackChains:
     default:
-      - opencode-zen/muse-spark-1.3-contributor-free:xhigh
-      - commandcode/meta/muse-spark-1.3-contributor:xhigh
-    openai-codex/*:
+      - anthropic/claude-sonnet-5:medium
       - commandcode/deepseek/deepseek-v4.1-flash:high
-      - opencode-zen/muse-spark-1.3-contributor-free:xhigh
+      - opencode-zen/muse-spark-1.3-contributor-free:medium
       - commandcode/meta/muse-spark-1.3-contributor:xhigh
-    anthropic/claude-sonnet-5:
+    plan:
+      - anthropic/claude-sonnet-5:high
       - commandcode/deepseek/deepseek-v4.1-flash:high
-      - opencode-zen/muse-spark-1.3-contributor-free:xhigh
+      - opencode-zen/muse-spark-1.3-contributor-free:high
       - commandcode/meta/muse-spark-1.3-contributor:xhigh
-    anthropic/*:
+    planner:
+      - anthropic/claude-sonnet-5:high
       - commandcode/deepseek/deepseek-v4.1-flash:high
-      - opencode-zen/muse-spark-1.3-contributor-free:xhigh
+      - opencode-zen/muse-spark-1.3-contributor-free:high
       - commandcode/meta/muse-spark-1.3-contributor:xhigh
-    opencode-zen/muse-spark-1.3-contributor-free:
+    slow:
+      - anthropic/claude-sonnet-5:high
+      - commandcode/deepseek/deepseek-v4.1-flash:high
+      - opencode-zen/muse-spark-1.3-contributor-free:high
       - commandcode/meta/muse-spark-1.3-contributor:xhigh
-    commandcode/deepseek/deepseek-v4.1-flash:
-      - opencode-zen/muse-spark-1.3-contributor-free:xhigh
+    task:
+      - opencode-zen/muse-spark-1.3-contributor-free:high
       - commandcode/meta/muse-spark-1.3-contributor:xhigh
+      - anthropic/claude-sonnet-5:medium
+      - openai-codex/gpt-5.6-sol:medium
+    smol:
+      - opencode-zen/muse-spark-1.3-contributor-free:medium
+      - commandcode/meta/muse-spark-1.3-contributor:medium
+      - anthropic/claude-sonnet-5:low
+      - openai-codex/gpt-5.6-sol:low
+    research:
+      - opencode-zen/muse-spark-1.3-contributor-free:medium
+      - commandcode/meta/muse-spark-1.3-contributor:high
+      - anthropic/claude-sonnet-5:low
+      - openai-codex/gpt-5.6-sol:medium
+    tiny:
+      - opencode-zen/muse-spark-1.3-contributor-free:medium
+      - commandcode/meta/muse-spark-1.3-contributor:medium
+      - anthropic/claude-sonnet-5:low
+      - openai-codex/gpt-5.6-sol:low
+    commit:
+      - opencode-zen/muse-spark-1.3-contributor-free:medium
+      - commandcode/meta/muse-spark-1.3-contributor:medium
+      - anthropic/claude-sonnet-5:low
+      - openai-codex/gpt-5.6-sol:low
+    review:
+      - openai-codex/gpt-5.6-sol:high
+      - commandcode/deepseek/deepseek-v4.1-flash:high
+      - opencode-zen/muse-spark-1.3-contributor-free:high
+      - commandcode/meta/muse-spark-1.3-contributor:xhigh
+    verify:
+      - openai-codex/gpt-5.6-sol:medium
+      - commandcode/deepseek/deepseek-v4.1-flash:high
+      - opencode-zen/muse-spark-1.3-contributor-free:medium
+      - commandcode/meta/muse-spark-1.3-contributor:xhigh
+    vision:
+      - openai-codex/gpt-5.6-sol:medium
+      - commandcode/deepseek/deepseek-v4.1-flash:high
+      - opencode-zen/muse-spark-1.3-contributor-free:medium
+      - commandcode/meta/muse-spark-1.3-contributor:xhigh
+    advisor:
+      - openai-codex/gpt-5.6-sol:medium
+      - commandcode/deepseek/deepseek-v4.1-flash:high
+      - opencode-zen/muse-spark-1.3-contributor-free:medium
+      - commandcode/meta/muse-spark-1.3-contributor:xhigh
+    free: []
 symbolPreset: nerd
 theme:
   dark: dark-catppuccin
@@ -88,3 +137,9 @@ statusLine:
     - session_name
     - cache_hit
     - cache_read
+browser:
+  cmux: false
+plan:
+  autosave: true
+lsp:
+  diagnosticsOnEdit: true

@@ -7,6 +7,7 @@ import { fileURLToPath } from "node:url";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const preload = join(here, "preload.mjs");
+const herdrTitle = join(here, "herdr-title.mjs");
 const REQUIRED = ["claude", "claude-md", "claude-plugins", "agent-plugins", "mcp-json"];
 
 const ompBin = Bun.which("omp");
@@ -88,7 +89,8 @@ if (missing.length) {
   process.exit(127);
 }
 
-const args = process.argv.slice(2);
+const userArgs = process.argv.slice(2);
+const args = [...(existsSync(herdrTitle) ? ["--extension", herdrTitle] : []), ...userArgs];
 if (process.env.OMP_LAUNCH_DRY_RUN === "1") {
   console.log(`omp-binary: ${srcCli}`);
   console.log(`preload: ${preload}`);

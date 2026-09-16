@@ -7,6 +7,7 @@
 
 # ── Core development ──────────────────────────────
 brew "git"
+brew "go"
 brew "gh"
 brew "lazygit"
 brew "neovim"

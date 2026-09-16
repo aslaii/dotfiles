@@ -17,7 +17,15 @@ herdr config check
 herdr server reload-config
 ```
 
-The existing Auto Title plugin remains installed and enabled locally:
-`kryptamine/herdr-auto-title`, version `0.4.0`, commit
-`a34f22d1fc8a6037d171789cfda17289088527e0`. Reinstall it separately on another
-machine; its registry contains machine-specific paths and is not portable.
+Auto Title is installed and enabled locally from `kryptamine/herdr-auto-title`,
+version `0.6.0`, commit `270076954c4c9e17dbfaeca278f62e9075c83bee`.
+Its registry contains machine-specific paths and is not portable. On another
+machine, install the tracked `go` formula from `Brewfile`, then run:
+
+```bash
+herdr plugin install kryptamine/herdr-auto-title --yes
+herdr server stop # required once so the server starts the new plugin
+```
+
+The OMP launcher supplies OMP's stored session title through Herdr's
+`pane.report_metadata` API. Auto Title therefore needs no Claude integration.
