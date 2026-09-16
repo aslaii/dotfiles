@@ -160,6 +160,82 @@ ensure_resource_guard() {
   "$binary" init --agent omp --global
 }
 
+sha256_file() {
+  if command -v sha256sum >/dev/null 2>&1; then
+    sha256sum "$1" | cut -d' ' -f1
+  else
+    shasum -a 256 "$1" | cut -d' ' -f1
+  fi
+}
+
+ensure_comment_checker() {
+  local version="${COMMENT_CHECKER_VERSION:-v0.8.0}"
+  local install_dir="${COMMENT_CHECKER_INSTALL_DIR:-${HOME}/.local/bin}"
+  local binary="${install_dir}/comment-checker"
+  local platform tarball_sha binary_sha url tmp archive actual
+  local -r release="https://github.com/code-yeongyu/go-claude-code-comment-checker/releases/download"
+
+  case "$(uname -s)/$(uname -m)" in
+    Darwin/arm64 | Darwin/aarch64) platform="darwin_arm64" ;;
+    Darwin/x86_64) platform="darwin_amd64" ;;
+    Linux/arm64 | Linux/aarch64) platform="linux_arm64" ;;
+    Linux/x86_64) platform="linux_amd64" ;;
+    *) die "comment-checker ${version} has no build for $(uname -s)/$(uname -m)." ;;
+  esac
+
+  case "$platform" in
+    darwin_arm64)
+      tarball_sha="ac73b76f1ecf9615e859a0a7a00e76f25305563f87a7ee168cdd2e76c8e3855a"
+      binary_sha="e0af0bbfc88880fa3466c36a9cd308fb523db06ffacbabdd5cbecb003abaca5e"
+      ;;
+    darwin_amd64)
+      tarball_sha="7408f026ece59fcc90fb7e598364e3c947e1cab277e59c639bf59096822ee4dc"
+      binary_sha="19110ef8339e820d8d4ffce34183f15172b6d7ab28d9a75a082d255571fcaa4e"
+      ;;
+    linux_arm64)
+      tarball_sha="213e6d06c3d93c0614cc81ff52d542ad0fb59bc66af9d93c532981e098f18ae6"
+      binary_sha="79c4e022563d1ea6d7dd928ec4a5c8c2246300d21c85c27c110f5d2f9770634e"
+      ;;
+    linux_amd64)
+      tarball_sha="0ff026fe244aa0af9567d53b0461c97abf5a50f86ce1ceb5531fd5419497dd4f"
+      binary_sha="9c56f9aba193bb16f7cde6a91872661b52388f71a8d8a47623260c3ed4a6c805"
+      ;;
+  esac
+
+  if [[ -x "$binary" ]] && [[ "$(sha256_file "$binary")" == "$binary_sha" ]]; then
+    log "comment-checker ${version} already installed."
+    return
+  fi
+
+  url="${release}/${version}/comment-checker_${version}_${platform}.tar.gz"
+  log "Installing checksummed comment-checker ${version} release (${platform})."
+  tmp="$(mktemp -d)"
+  if ! curl -fsSL -o "${tmp}/comment-checker.tar.gz" "$url"; then
+    rm -rf "$tmp"
+    die "Failed to download ${url}."
+  fi
+  archive="${tmp}/comment-checker.tar.gz"
+  actual="$(sha256_file "$archive")"
+  if [[ "$actual" != "$tarball_sha" ]]; then
+    rm -rf "$tmp"
+    die "comment-checker ${version} archive sha256 mismatch for ${platform}: expected ${tarball_sha}, got ${actual}."
+  fi
+
+  tar -xzf "$archive" -C "$tmp" comment-checker
+  actual="$(sha256_file "${tmp}/comment-checker")"
+  if [[ "$actual" != "$binary_sha" ]]; then
+    rm -rf "$tmp"
+    die "comment-checker ${version} binary sha256 mismatch for ${platform}: expected ${binary_sha}, got ${actual}."
+  fi
+
+  mkdir -p "$install_dir"
+  install -m 755 "${tmp}/comment-checker" "$binary"
+  rm -rf "$tmp"
+
+  "$binary" --help >/dev/null || die "comment-checker failed to run at ${binary}."
+  log "comment-checker ${version} installed at ${binary}."
+}
+
 link_file() {
   local source="$1"
   local target="$2"
@@ -456,6 +532,7 @@ main() {
     command -v bun >/dev/null 2>&1 || die "Install Bun before restoring OMP plugins."
     ensure_rtk_omp_integration
     ensure_resource_guard
+    ensure_comment_checker
 
     local omp_root="${HOME}/.omp" agent skill manifest
     link_file "${DOTFILES_DIR}/omp/agent/config.yml" "${omp_root}/agent/config.yml"
@@ -495,6 +572,7 @@ main() {
   ensure_homebrew_packages
   ensure_rtk_omp_integration
   ensure_resource_guard
+  ensure_comment_checker
   command -v agent-browser >/dev/null 2>&1 || die "agent-browser installation failed."
   log "Installing agent-browser browser runtime."
   agent-browser install
