@@ -5,7 +5,7 @@ disabledProviders:
   - claude-plugins
   - mcp-json
 modelRoles:
-  default: openai-codex/gpt-5.6-sol:medium
+  default: openrouter/stealth/union-alpha
   plan: openai-codex/gpt-5.6-sol:high
   planner: openai-codex/gpt-5.6-sol:high
   slow: openai-codex/gpt-5.6-sol:high
