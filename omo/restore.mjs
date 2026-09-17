@@ -106,10 +106,16 @@ function mergeHooks(destination, source, home) {
       const key = stableJson(selector)
       const normalized = hooks.map((hook) => {
         const prefix = `${home}/.local/bin/`
-        if (hook.command?.startsWith(prefix) && /^(dcg|rtk)( |$)/.test(hook.command.slice(prefix.length))) {
+        if (hook.command?.startsWith(prefix) && /^rtk( |$)/.test(hook.command.slice(prefix.length))) {
           return { ...hook, command: hook.command.slice(prefix.length) }
         }
         return hook
+      }).filter((hook) => {
+        if (typeof hook.command !== "string") return true
+        const bare = hook.command.startsWith(`${home}/.local/bin/`)
+          ? hook.command.slice(`${home}/.local/bin/`.length)
+          : hook.command
+        return !/^dcg( |$)/.test(bare)
       })
       grouped.set(key, {
         ...selector,

@@ -68,7 +68,7 @@ async function makeSkillRepo(root) {
   await write(join(repo, "omo/skills/codex/envcaller/helper.sh"), "#!/bin/sh\necho envcaller-helper-ok\n")
   await write(join(repo, "omo/skills/shared/echoer/run.sh"), "#!/bin/sh\nHELPER=\"~/.agents/skills/echoer/helper.sh\"\nexec \"$HELPER\"\n")
   await write(join(repo, "omo/skills/shared/echoer/helper.sh"), "#!/bin/sh\necho echoer-helper-ok\n")
-  await write(join(repo, "omo/skills/codex/caller/paths.txt"), "bin: ~/.local/bin/dcg\nrule: __OMO_HOME__/.omo/agent/rules/RULE.md\nwork: __OMO_HOME__/work/mobii/gondoor-mono\nclaude: $HOME/.claude/settings.json\n")
+  await write(join(repo, "omo/skills/codex/caller/paths.txt"), "bin: ~/.local/bin/rtk\nrule: __OMO_HOME__/.omo/agent/rules/RULE.md\nwork: __OMO_HOME__/work/mobii/gondoor-mono\nclaude: $HOME/.claude/settings.json\n")
   for (const script of ["omo/skills/codex/caller/run.sh", "omo/skills/codex/caller/helper.sh", "omo/skills/codex/envcaller/run.sh", "omo/skills/codex/envcaller/helper.sh", "omo/skills/shared/echoer/run.sh", "omo/skills/shared/echoer/helper.sh"]) {
     await chmod(join(repo, script), 0o755)
   }
@@ -117,7 +117,7 @@ async function writePortableConfig(snapshot) {
     skills: ["__OMO_HOME__/.omo/agent/skill-library/codex"],
   }))
   await write(join(snapshot, "agent/hooks.json"), JSON.stringify({
-    hooks: { PreToolUse: [{ matcher: "bash", hooks: [{ type: "command", command: "dcg", timeout: 10 }] }] },
+    hooks: { PreToolUse: [{ matcher: "bash", hooks: [{ type: "command", command: "rtk hook claude", timeout: 10 }] }] },
   }))
   await write(join(snapshot, "agent/auth.json"), "source credential")
   await write(join(snapshot, "agent/sessions/session.json"), "source session")
@@ -142,7 +142,7 @@ async function writeDestinationConfig(home) {
   await write(join(home, ".omo/agent/hooks.json"), JSON.stringify({
     hooks: {
       PreToolUse: [{ matcher: "bash", hooks: [
-        { type: "command", command: `${home}/.local/bin/dcg`, timeout: 10 },
+        { type: "command", command: `${home}/.local/bin/rtk hook claude`, timeout: 10 },
         { type: "command", command: "keep" },
       ] }],
     },
@@ -202,7 +202,7 @@ test("restore merges portable configuration, safely installs resources, and is i
   const hooks = await json(join(home, ".omo/agent/hooks.json"))
   expect(hooks.hooks).toEqual({
     PreToolUse: [{ matcher: "bash", hooks: [
-      { type: "command", command: "dcg", timeout: 10 },
+      { type: "command", command: "rtk hook claude", timeout: 10 },
       { type: "command", command: "keep" },
     ] }],
   })
@@ -277,7 +277,7 @@ test("restored skill scripts are self-contained within the skill library", async
   expect(await readFile(join(codexLib, "envcaller/run.sh"), "utf8")).toBe(`#!/bin/sh\nexec "${join(codexLib, "envcaller/helper.sh")}"\n`)
   expect(await readFile(join(sharedLib, "echoer/run.sh"), "utf8")).toBe(`#!/bin/sh\nHELPER="${join(sharedLib, "echoer/helper.sh")}"\nexec "$HELPER"\n`)
   expect(await readFile(join(codexLib, "caller/paths.txt"), "utf8")).toBe(
-    `bin: ~/.local/bin/dcg\nrule: ${join(home, ".omo/agent/rules/RULE.md")}\nwork: ${join(home, "work/mobii/gondoor-mono")}\nclaude: $HOME/.claude/settings.json\n`,
+    `bin: ~/.local/bin/rtk\nrule: ${join(home, ".omo/agent/rules/RULE.md")}\nwork: ${join(home, "work/mobii/gondoor-mono")}\nclaude: $HOME/.claude/settings.json\n`,
   )
 
   for (const [runner, expected] of [

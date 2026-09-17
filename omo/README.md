@@ -5,9 +5,9 @@ loading. OMO is separate from Claude Code/OMC and OMP.
 
 ## Restore on another computer
 
-Use macOS or Linux with Node.js 24+, Bun 1.4+, npm, and Git. Install `dcg` and
-`rtk` on `PATH` for the configured Bash hooks. The source machine used DCG
-0.6.7 and RTK 0.42.4. Their platform-specific binaries are not copied.
+Use macOS or Linux with Node.js 24+, Bun 1.4+, npm, and Git. Install
+`rtk` on `PATH` for the configured Bash hook. The source machine used
+RTK 0.42.4. Its platform-specific binary is not copied.
 
 ```bash
 git clone https://github.com/aslaii/dotfiles.git ~/dotfiles
@@ -70,7 +70,7 @@ bun ~/dotfiles/omo/restore.mjs --home "/tmp/omo test home" --skip-packages
 | `omo.jsonc` | `~/.omo/omo.jsonc`: native model routes, profiles, and task/team limits |
 | `agent/settings.json` | `~/.omo/agent/settings.json`: models, fallbacks, package sources, skill exclusions, permission settings, and UI preferences |
 | `agent/models.json` | `~/.omo/agent/models.json`: the temporary Command Code DeepSeek V4.1 thinking override |
-| `agent/hooks.json` | `~/.omo/agent/hooks.json`: `dcg` and `rtk hook claude`, before Bash calls, with 10-second timeouts |
+| `agent/hooks.json` | `~/.omo/agent/hooks.json`: `rtk hook claude`, before Bash calls, with 10-second timeout |
 | Native and bundled skills | Loaded from `~/.omo/agent/skills` and the pinned OMO installation, excluding imported snapshots and auxiliary Caveman names |
 | Ponytail package skills | Six skills loaded from `@dietrichgebert/ponytail@4.9.0`, with package-local Caveman exclusions |
 | Caveman package skill | Only `caveman`, loaded from `git:github.com/JuliusBrussee/caveman@v2.6.0` |

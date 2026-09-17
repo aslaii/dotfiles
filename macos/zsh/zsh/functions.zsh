@@ -86,13 +86,6 @@ function btop_themed() {
   command btop "$@"
 }
 
-function opencode() {
-  OPENCODE_DISABLE_EXTERNAL_SKILLS=1 \
-    OPENCODE_DISABLE_CLAUDE_CODE_SKILLS=1 \
-    CODEGRAPH_NODE_BIN="$HOME/.omo/codegraph/node" \
-    command opencode "$@"
-}
-
 function omo() {
   bash "${DOTFILES_DIR:-$HOME/dotfiles}/omo/launch.sh" "$@"
 }

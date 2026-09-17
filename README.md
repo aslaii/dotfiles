@@ -43,7 +43,7 @@ The [`omo/`](omo/README.md) directory contains the portable native OMO setup:
 model routes, UI preferences, pinned plugins, and Bash hooks. OMO loads only
 native, bundled, and active-package skills; Xcode work is covered separately
 by xcodebuildmcp (installed via Homebrew). With Node.js 24+, Bun 1.4+, Git,
-DCG, and RTK installed:
+and RTK installed:
 
 ```bash
 npm install -g omo-ai@5.0.0-0.beta.48
@@ -133,7 +133,6 @@ skills from other harnesses are not part of this OMP-only snapshot.
 | `codex/AGENTS.md` | `~/AGENTS.md` | Codex CLI |
 | `ghostty/config` | `~/Library/Application Support/com.mitchellh.ghostty/config` | Ghostty |
 | `codex/` | `~/.config/codex` | Codex CLI |
-| `opencode/` | `~/.config/opencode` | OpenCode |
 | `claude/` | `~/.claude` | Claude Code |
 | `nvim/` | `~/.config/nvim` | Neovim / LazyVim |
 
