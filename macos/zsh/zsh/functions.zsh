@@ -90,6 +90,26 @@ function omo() {
   bash "${DOTFILES_DIR:-$HOME/dotfiles}/omo/launch.sh" "$@"
 }
 
+function opencode() {
+  local has_yolo=0 a
+  for a in "$@"; do
+    case "$a" in
+      --auto|--yolo|--dangerously-skip-permissions) has_yolo=1; break ;;
+    esac
+  done
+  if (( ! has_yolo )); then
+    if (( $# == 0 )); then
+      set -- --yolo
+    elif [[ "$1" == "run" ]]; then
+      shift
+      set -- run --yolo "$@"
+    elif [[ "$1" == -* || "$1" == "." || "$1" == /* || "$1" == ~* || -e "$1" ]]; then
+      set -- --yolo "$@"
+    fi
+  fi
+  command opencode "$@"
+}
+
 function omp() {
   bun "${DOTFILES_DIR:-$HOME/dotfiles}/omp/launch.mjs" --model @default "$@"
 }

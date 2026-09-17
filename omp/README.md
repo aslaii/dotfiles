@@ -12,6 +12,23 @@ official global OMP extension, and ensures the pinned public
 [`aslaii/rcg`](https://github.com/aslaii/rcg) release plus its stock extension
 in the default and existing named profiles.
 
+## Comment checker (hashline gap fill)
+
+`~/.omp/plugins/package.json` already installs `pi-comment-checker`
+(djdembeck's), which blocks `write` and detects `edit`/`apply_patch` results
+via `EditToolDetails.oldText`/`newText`. Two gaps remained even with that
+package installed: `oldText`/`newText` are dropped (`snapshotsPruned: true`)
+once a file crosses the snapshot size threshold, and the installed package's
+fallback has no path back to the change once that happens.
+
+`agent/extensions/comment-checker-hashline.ts` closes both by falling back to
+parsing `EditToolDetails.diff` (` N|`/`-N|`/`+N|` line-tagged format) into
+added/removed text when the full snapshot is pruned, then running the same
+pinned `comment-checker` binary (`~/.local/bin/comment-checker`, override via
+`OMP_COMMENT_CHECKER_BIN`) against just the changed lines. It only listens for
+`edit`/`apply_patch`/`multiedit`; `write` already works through the installed
+package.
+
 ## Launch profiles
 
 | Command | Overlay | Behaviour |
