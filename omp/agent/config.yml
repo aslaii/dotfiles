@@ -42,7 +42,7 @@ retry:
   usageAwareFallback: true
   usageReservePct: 10
   usageReservePolicy: auto
-  fallbackRevertPolicy: never
+  fallbackRevertPolicy: cooldown-expiry
   fallbackChains:
     default:
       - anthropic/claude-sonnet-5:medium
