@@ -144,3 +144,8 @@ function omp-gpt() {
   bun "${DOTFILES_DIR:-$HOME/dotfiles}/omp/launch.mjs" \
     --config "${DOTFILES_DIR:-$HOME/dotfiles}/omp/gpt.yml" "$@"
 }
+
+function omp-union() {
+  bun "${DOTFILES_DIR:-$HOME/dotfiles}/omp/launch.mjs" \
+    --config "${DOTFILES_DIR:-$HOME/dotfiles}/omp/union-only.yml" "$@"
+}

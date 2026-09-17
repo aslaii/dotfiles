@@ -17,6 +17,9 @@ brew "wget"
 brew "agent-browser"
 brew "rtk"
 
+# ── iOS Simulator automation ──────────────────────
+brew "cameroncooke/axe/axe"
+
 # ── Shell ─────────────────────────────────────────
 brew "fzf"
 brew "fd"

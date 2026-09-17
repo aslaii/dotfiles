@@ -42,7 +42,7 @@ The first restore needs network access if the pinned Git objects are absent.
 The [`omo/`](omo/README.md) directory contains the portable native OMO setup:
 model routes, UI preferences, pinned plugins, and Bash hooks. OMO loads only
 native, bundled, and active-package skills; Xcode work is covered separately
-by xcodebuildmcp (installed via Homebrew). With Node.js 24+, Bun 1.4+, Git,
+by axe (installed via Homebrew). With Node.js 24+, Bun 1.4+, Git,
 and RTK installed:
 
 ```bash
@@ -92,7 +92,7 @@ not overwritten; move any conflicting files to your own backup before rerunning
 if you want the repository versions instead. Bun restores plugins with the
 active frozen lockfile. Keep the dotfiles checkout available because the
 configuration and custom skill are linked. Xcode and simulator work goes
-through `xcodebuildmcp` (installed via Homebrew). The normal macOS bootstrap
+through `axe` (installed via Homebrew). The normal macOS bootstrap
 and its `--check` option remain unchanged.
 
 Authenticate separately with `/login` inside OMP on each computer. Model access
@@ -120,7 +120,7 @@ loading the updated shell functions.
 Ponytail's skills are supplied by its locked plugin, not duplicated in `agent/skills`.
 Credentials, sessions, caches, databases, onboarding/consent state, and machine-local
 MCP, LSP, and Herdr/Moshi integrations are intentionally excluded. Xcode and
-simulator work goes through `xcodebuildmcp` (installed via Homebrew). Shared
+simulator work goes through `axe` (installed via Homebrew). Shared
 skills from other harnesses are not part of this OMP-only snapshot.
 
 ## Symlink Map
@@ -209,7 +209,7 @@ before their prerequisites finish. Provider access and rate limits still apply.
 
 OMO loads only its owned skill library, native skills, bundled skills, and
 active package skill paths. Xcode and simulator work goes through
-`xcodebuildmcp` (installed via Homebrew). OMO still refuses configured Claude
+`axe` (installed via Homebrew). OMO still refuses configured Claude
 MCP imports, and its own Ponytail extension remains enabled. Project
 AGENTS/CLAUDE context files and the native rules engine retain their normal
 behavior.
@@ -261,6 +261,7 @@ claude/skills/       # Claude Code-specific skills
 | `fullstack-bridge` | `skills/fullstack-bridge/` | NestJS + React/RN synchronization |
 | `react-native` | `claude/skills/react-native/` | Expo Router, TanStack Query, Zustand patterns |
 | `pr-standards` | `claude/skills/pr-standards/` | PR size limits, branch naming, review rules |
+| `axe` | `omp/agent/skills/axe/` | iOS Simulator UI automation (tap, swipe, type, describe-ui) via the AXe CLI |
 
 ### Invoking Skills
 

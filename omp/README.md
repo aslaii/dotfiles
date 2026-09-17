@@ -37,6 +37,8 @@ package.
 | `omp-fast` | `fast.yml` + `fast.mjs` | Priority Claude/GPT requests, 32 parallel agents. |
 | `omp-budget` (`ompb`) | `budget.yml` | Claude Sonnet 5 first (the $20 subscription's OAuth login), DeepSeek V4.1 Flash on Claude limits, plan Muse Contributor for grunt work, free Zen Muse as backstop. |
 | `ompd` | `budget.yml` + `no-claude.yml` | Same plan-hosted profile as `ompb`, with every role (not just `default`) pinned off Claude for the run. |
+| `omp-gpt` | `gpt.yml` | Every role on `openai-codex/gpt-5.6-*`, no non-GPT primary anywhere. |
+| `omp-union` | `union-only.yml` | Every role on the free `openrouter/stealth/union-alpha` model, free-only fallback chain. |
 
 ## Resource guard
 
