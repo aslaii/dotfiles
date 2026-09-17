@@ -5,7 +5,7 @@ disabledProviders:
   - claude-plugins
   - mcp-json
 modelRoles:
-  default: openai-codex/gpt-5.6-sol:medium
+  default: openrouter/stealth/union-alpha
   plan: openai-codex/gpt-5.6-sol:high
   planner: openai-codex/gpt-5.6-sol:high
   slow: openai-codex/gpt-5.6-sol:high
@@ -109,7 +109,8 @@ retry:
       - commandcode/deepseek/deepseek-v4.1-flash:high
       - opencode-zen/muse-spark-1.3-contributor-free:medium
       - commandcode/meta/muse-spark-1.3-contributor:xhigh
-    free: []
+    free:
+      []
 symbolPreset: nerd
 theme:
   dark: dark-catppuccin

@@ -74,7 +74,9 @@ Setup, launch profiles, and cross-machine transfer are documented in
 On another macOS computer, install Bun, OMP, and RTK first. The bootstrap then
 installs pinned public [`aslaii/rcg`](https://github.com/aslaii/rcg) v0.1.1
 through its SHA-256-verifying installer and runs
-`rcg init --agent omp --global`. The earlier plugin snapshot was verified with
+`rcg init --agent omp --global`. The same bootstrap installs the pinned,
+checksummed upstream `comment-checker` v0.8.0 binary into `~/.local/bin` for the
+`pi-comment-checker` plugin. The earlier plugin snapshot was verified with
 Bun 1.4.0 and OMP 18.1.10; plugins were not reinstalled during this task.
 Runtime routing was verified against the currently installed OMP 18.1.22.
 
