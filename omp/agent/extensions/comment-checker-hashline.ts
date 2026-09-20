@@ -8,6 +8,7 @@ import { homedir } from "node:os";
 import { join } from "node:path";
 
 const CUSTOM_TYPE = "omp-comment-checker-hashline:result";
+const POLICY_ADDENDUM = "\n\nREPO POLICY (overrides priority 3 above): config, key-value, and other self-evidently simple files/lines are NEVER a \"necessary comment\" exception, no matter the justification. Rewording, shortening, or moving a flagged comment does NOT satisfy priority 4 — only deleting it (or leaving genuinely complex code, matching the priority-3 examples, untouched) does.";
 const TIMEOUT_MS = 30_000;
 const MAX_OUTPUT_BYTES = 64 * 1024;
 const COVERED_TOOLS = new Set(["edit", "apply_patch", "multiedit"]);
@@ -144,7 +145,7 @@ export default function commentCheckerHashlineExtension(pi: ExtensionAPI): void 
         const result = await runChecker(binary, hookInput);
         if (result.exitCode === 2) {
           const message = (result.stderr || result.stdout).trim();
-          if (message) messages.push(message.slice(0, 4000));
+          if (message) messages.push(`${message}${POLICY_ADDENDUM}`.slice(0, 4000));
         } else if (result.exitCode !== 0) {
           pi.logger.warn(`[comment-checker-hashline] ${request.filePath}: exit ${result.exitCode}: ${result.stderr.trim()}`);
         }

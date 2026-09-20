@@ -37,3 +37,4 @@ alias btop='btop_themed'
 # OMP
 alias ompb="omp-budget"
 alias ompd='ompb --config "$HOME/dotfiles/omp/no-claude.yml"'
+alias ompp="omp-personal"

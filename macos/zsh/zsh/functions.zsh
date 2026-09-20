@@ -149,3 +149,17 @@ function omp-union() {
   bun "${DOTFILES_DIR:-$HOME/dotfiles}/omp/launch.mjs" \
     --config "${DOTFILES_DIR:-$HOME/dotfiles}/omp/union-only.yml" "$@"
 }
+
+function omp-personal() {
+  # Plain by default (no prewalk). Passing --prewalk explicitly maps it to
+  # Opus 5 High as the start/plan model, handing off to Sonnet 5 (`default`
+  # role) at the first edit/write. Explicit --model/--prewalk-into after
+  # --prewalk still win (CLI takes the last occurrence).
+  local extra=()
+  for a in "$@"; do
+    [[ "$a" == "--prewalk" ]] && extra=(--model @plan --prewalk-into @default)
+  done
+  bun "${DOTFILES_DIR:-$HOME/dotfiles}/omp/launch.mjs" \
+    --config "${DOTFILES_DIR:-$HOME/dotfiles}/omp/personal.yml" \
+    "${extra[@]}" "$@"
+}

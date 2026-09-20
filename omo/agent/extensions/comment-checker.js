@@ -5,6 +5,7 @@ import { pathToFileURL } from "node:url";
 
 const CHECKER_SOURCE = "git/github.com/code-yeongyu/pi-comment-checker/src";
 const CUSTOM_TYPE = "omo-comment-checker:result";
+const POLICY_ADDENDUM = "\n\nREPO POLICY (overrides priority 3 above): config, key-value, and other self-evidently simple files/lines are NEVER a \"necessary comment\" exception, no matter the justification. Rewording, shortening, or moving a flagged comment does NOT satisfy priority 4 — only deleting it (or leaving genuinely complex code, matching the priority-3 examples, untouched) does.";
 const MAX_OUTPUT_BYTES = 64 * 1024;
 const TIMEOUT_MS = 30_000;
 const SUPPORTED_TOOLS = new Set(["write", "edit", "multiedit", "multi_edit", "apply_patch"]);
@@ -164,7 +165,7 @@ export function createCommentCheckerHandler(deps) {
         });
         const result = await deps.run(input, { executor: deps.executor ?? spawnCheckerProcess });
         const skipped = result.status === "pass" && /^\[check-comments\] Skipping:/m.test(result.stderr ?? "");
-        if (result.status === "warning" && result.message.trim()) messages.push(result.message.trim().slice(0, 4000));
+        if (result.status === "warning" && result.message.trim()) messages.push(`${result.message.trim()}${POLICY_ADDENDUM}`.slice(0, 4000));
         else if (skipped) messages.push(diagnostic(result.stderr));
         else if (result.status === "missing" || result.status === "error") messages.push(diagnostic(result.message));
       } catch (error) {

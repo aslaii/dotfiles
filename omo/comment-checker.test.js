@@ -144,7 +144,10 @@ test("warning is appended to tool_result and injected as a visible custom messag
   const result = await fixture.handle(writeEvent("// explain value\nconst value = 1;\n"), context);
 
   expect(text(result)).toContain("COMMENT/DOCSTRING DETECTED");
-  expect(fixture.sent).toEqual([{ message: "COMMENT/DOCSTRING DETECTED", toolName: "write" }]);
+  expect(text(result)).toContain("REPO POLICY (overrides priority 3 above)");
+  expect(fixture.sent[0].message).toContain("COMMENT/DOCSTRING DETECTED");
+  expect(fixture.sent[0].message).toContain("REPO POLICY (overrides priority 3 above)");
+  expect(fixture.sent[0].toolName).toBe("write");
 });
 
 test("clean checker result leaves tool output and context unchanged", async () => {

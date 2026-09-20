@@ -39,6 +39,7 @@ package.
 | `ompd` | `budget.yml` + `no-claude.yml` | Same plan-hosted profile as `ompb`, with every role (not just `default`) pinned off Claude for the run. |
 | `omp-gpt` | `gpt.yml` | Every role on `openai-codex/gpt-5.6-*`, no non-GPT primary anywhere. |
 | `omp-union` | `union-only.yml` | Every role on the free `openrouter/stealth/union-alpha` model, free-only fallback chain. |
+| `omp-personal` (`ompp`) | `personal.yml` | Claude Sonnet 5 (default) + Opus 5 (plan/planner only) on the $20 subscription; every other role on Command Code's DeepSeek V4.1 Flash / GLM-5.3-Flash / Muse Spark 1.3 Contributor. No GPT, no OpenRouter. Free Zen Muse is a last-resort backstop only. Plain `ompp` passes no prewalk flags. `ompp --prewalk` maps to `--model @plan --prewalk-into @default`: session starts on Opus 5 High, prewalk arms a handoff to Sonnet 5 at Main's own first `edit`/`write` call. Under `APPEND_SYSTEM.md`'s Main-orchestration policy Main itself never calls `edit`/`write` (it delegates to `task`/`terra`, which run on the `task` role, not whatever Main is on), so that handoff never actually fires — `--prewalk` here only changes Main's starting model, not the delegated implementer's model. |
 
 ## Resource guard
 
