@@ -86,10 +86,6 @@ function btop_themed() {
   command btop "$@"
 }
 
-function omo() {
-  bash "${DOTFILES_DIR:-$HOME/dotfiles}/omo/launch.sh" "$@"
-}
-
 function opencode() {
   local has_yolo=0 a
   for a in "$@"; do
@@ -112,21 +108,6 @@ function opencode() {
 
 function omp() {
   bun "${DOTFILES_DIR:-$HOME/dotfiles}/omp/launch.mjs" --model @default "$@"
-}
-
-function omo-fast() {
-  bash "${DOTFILES_DIR:-$HOME/dotfiles}/omo/launch.sh" \
-    --extension "${DOTFILES_DIR:-$HOME/dotfiles}/omo/fast.mjs" "$@"
-}
-
-function omo-gpt() {
-  OMO_PROFILE=gpt-5.6 bash "${DOTFILES_DIR:-$HOME/dotfiles}/omo/launch.sh" "$@"
-}
-
-function omob() {
-  bash "${DOTFILES_DIR:-$HOME/dotfiles}/omo/launch.sh" \
-    --model claude-sdk-oauth/claude-sonnet-5:medium \
-    --append-system-prompt "${DOTFILES_DIR:-$HOME/dotfiles}/omo/orchestrator-only.md" "$@"
 }
 
 function omp-fast() {
