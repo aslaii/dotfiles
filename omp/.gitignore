@@ -14,7 +14,6 @@
 !agent/
 !agent/config.yml
 !agent/models.yml
-!agent/APPEND_SYSTEM.md
 !agent/extensions/
 !agent/extensions/comment-checker-hashline.ts
 !agent/agents/
