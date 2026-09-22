@@ -61,7 +61,7 @@ The `omp/` directory mirrors the portable parts of `~/.omp`:
 |------|----------|
 | `omp/agent/config.yml` | Model roles, thinking levels, prewalk, fallbacks, two-worker limit, and UI preferences |
 | `omp/fast.yml`, `omp/budget.yml` | Opt-in `--config` overlays: fast (priority Claude/GPT, 8-wide) and budget (Claude Sonnet 5 via the $20 subscription first, Command Code $10 plan DeepSeek on Claude limits, free Muse as backstop) |
-| `omp/agent/APPEND_SYSTEM.md` | Main-only orchestration and dispatch/verification policy |
+| `omp/agent/APPEND_SYSTEM.md` | Persistent response modes (Ponytail full, Caveman lite) for every session |
 | `omp/agent/agents/*.md` | Portable planner, Terra, verifier, and researcher prompts |
 | `omp/agent/skills/omp-prompt/` | OMP-only prompt refinement skill |
 | `omp/plugins/package.json` | Installed plugin sources: Ponytail and pi-comment-checker |
