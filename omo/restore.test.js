@@ -85,7 +85,7 @@ async function skillTemps() {
 
 function skillSourceManifest(fixture) {
   return {
-    omoVersion: "5.0.0-0.beta.62",
+    omoVersion: "5.0.0-0.beta.82",
     builtinExtensions: ["tps", "prompt-url-widget", "files", "diff"],
     resources: [{ source: "rules", target: ".omo/agent/rules" }],
     skillSource: {
@@ -469,7 +469,7 @@ test("production restore archives legacy local libraries and installs only the o
   const script = join(snapshot, "restore.mjs")
   await cp(restore, script)
   await write(join(snapshot, "restore.json"), JSON.stringify({
-    omoVersion: "5.0.0-0.beta.62",
+    omoVersion: "5.0.0-0.beta.82",
     builtinExtensions: ["tps", "prompt-url-widget", "files", "diff"],
     resources: [
       { source: "rules", target: ".omo/agent/rules" },
@@ -536,7 +536,7 @@ test("legacy library retirement refuses a symlinked parent and leaves its extern
   const script = join(snapshot, "restore.mjs")
   await cp(restore, script)
   await write(join(snapshot, "restore.json"), JSON.stringify({
-    omoVersion: "5.0.0-0.beta.62",
+    omoVersion: "5.0.0-0.beta.82",
     builtinExtensions: [],
     resources: [],
   }))
@@ -560,7 +560,7 @@ test("restore migrates retired managed native config without removing custom con
   const script = join(snapshot, "restore.mjs")
   await cp(restore, script)
   await write(join(snapshot, "restore.json"), JSON.stringify({
-    omoVersion: "5.0.0-0.beta.62",
+    omoVersion: "5.0.0-0.beta.82",
     builtinExtensions: [],
     resources: [],
   }))
@@ -633,7 +633,7 @@ test("restore retires the dropped GPT fallback chains and keeps every other chai
   const script = join(snapshot, "restore.mjs")
   await cp(restore, script)
   await write(join(snapshot, "restore.json"), JSON.stringify({
-    omoVersion: "5.0.0-0.beta.62",
+    omoVersion: "5.0.0-0.beta.82",
     builtinExtensions: [],
     resources: [],
   }))

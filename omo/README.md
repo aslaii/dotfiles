@@ -11,7 +11,7 @@ RTK 0.42.4. Its platform-specific binary is not copied.
 
 ```bash
 git clone https://github.com/aslaii/dotfiles.git ~/dotfiles
-npm install -g omo-ai@5.0.0-0.beta.62
+npm install -g omo-ai@5.0.0-0.beta.82
 bun ~/dotfiles/omo/restore.mjs
 bash ~/dotfiles/omo/launch.sh
 ```
@@ -28,8 +28,9 @@ The restore command copies resources rather than linking the checkout. It
 merges settings, replaces the managed skill-path list, preserves unrelated
 configuration and credentials, and backs up conflicting originals under
 `~/.omo/backups/`. An unchanged rerun does not create more backups. It installs
-the four pinned packages, the owned comment-checker extension, and the four
-built-in extension loaders using the destination OMO installation. Existing
+the four pinned packages, the owned comment-checker and Herdr presence
+extensions, and the four built-in extension loaders using the destination OMO
+installation. Existing
 directory symlinks are left in place when their files already match. The
 command refuses changed writes through those links rather than modifying
 another checkout or moving unrelated application state.
@@ -75,6 +76,7 @@ bun ~/dotfiles/omo/restore.mjs --home "/tmp/omo test home" --skip-packages
 | Ponytail package skills | Six skills loaded from `@dietrichgebert/ponytail@4.9.0`, with package-local Caveman exclusions |
 | Caveman package skill | Only `caveman`, loaded from `git:github.com/JuliusBrussee/caveman@v2.6.0` |
 | `agent/extensions/comment-checker.js` | `~/.omo/agent/extensions/comment-checker.js`: owned checker integration |
+| `agent/extensions/herdr-presence.js` | `~/.omo/agent/extensions/herdr-presence.js`: OMO presence in Herdr |
 | `agent/extensions/mode-status.js` | `~/.omo/agent/extensions/mode-status.js`: Caveman, Ponytail, and cumulative token TUI status |
 | `rules/` | Restored to `~/.omo/rules`: OMO-owned workflow rules, including persistent response modes |
 | `restore.json` | OMO version, resource destinations, and `tps`, `prompt-url-widget`, `files`, `diff` extension selection |
@@ -222,9 +224,9 @@ state `unknown`, so you can click that row in Herdr and land back on the
 right OMO pane. It reports once at session start and again on reload, new
 session, resume, or fork; it releases the entry on normal quit or process
 exit. A file pane opened with `less`, or any non-TUI OMO invocation such as
-`--mode rpc`, never appears. This extension is not part of `restore.mjs`;
-restore does not install, remove, or otherwise touch it, and running restore
-is unaffected either way.
+`--mode rpc`, never appears. Restore installs the extension with the other
+portable resources. The extension itself does not inspect or gate on the OMO
+version.
 
 ### Prerequisites
 
@@ -233,7 +235,7 @@ You need a Herdr pane: `HERDR_ENV=1` and nonempty `HERDR_BIN_PATH`,
 Herdr sets these for panes it manages. Outside a Herdr pane, or in a non-TUI
 OMO mode, the extension loads but does nothing.
 
-### Install
+### Standalone install
 
 OMO loads `.js`/`.ts` extensions from `<agentDir>/extensions`, where
 `agentDir` is the first nonblank value among `OMO_CODING_AGENT_DIR`,

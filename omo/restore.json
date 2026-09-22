@@ -1,10 +1,11 @@
 {
-  "omoVersion": "5.0.0-0.beta.62",
+  "omoVersion": "5.0.0-0.beta.82",
   "builtinExtensions": ["tps", "prompt-url-widget", "files", "diff"],
   "resources": [
     { "source": "rules", "target": ".omo/rules" },
     { "source": "agent/models.json", "target": ".omo/agent/models.json" },
     { "source": "agent/extensions/comment-checker.js", "target": ".omo/agent/extensions/comment-checker.js" },
+    { "source": "agent/extensions/herdr-presence.js", "target": ".omo/agent/extensions/herdr-presence.js" },
     { "source": "agent/extensions/mode-status.js", "target": ".omo/agent/extensions/mode-status.js" }
   ]
 }

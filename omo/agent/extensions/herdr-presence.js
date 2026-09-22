@@ -3,7 +3,7 @@ import { resolve } from "node:path";
 import process from "node:process";
 
 const nativeRuntime = { env: process.env, process, spawnSync };
-const ownerTag = Symbol.for("dotfiles.omo.herdr-presence.v1");
+const ownerTag = Symbol.for("dotfiles.omo.herdr-presence");
 const source = "custom:omo-presence";
 
 function errorDetail(error) {

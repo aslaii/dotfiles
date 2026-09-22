@@ -7,7 +7,7 @@ import { join, resolve } from "node:path";
 import herdrPresence from "./agent/extensions/herdr-presence.js";
 
 const source = new URL("./agent/extensions/herdr-presence.js", import.meta.url);
-const tag = Symbol.for("dotfiles.omo.herdr-presence.v1");
+const tag = Symbol.for("dotfiles.omo.herdr-presence");
 const env = {
   HERDR_ENV: "1",
   HERDR_BIN_PATH: "/fake binary/herdr ; $(not-a-shell)",
@@ -111,6 +111,14 @@ test("identity fixture enforces matching socket, pane, source and agent on relea
   expect(shared.rows.size).toBe(1);
   shared.spawnSync(env.HERDR_BIN_PATH, argv("release"), options);
   expect(shared.rows.size).toBe(0);
+});
+
+test("portable restore installs the OMO presence extension", () => {
+  const manifest = JSON.parse(readFileSync(new URL("./restore.json", import.meta.url), "utf8"));
+  expect(manifest.resources).toContainEqual({
+    source: "agent/extensions/herdr-presence.js",
+    target: ".omo/agent/extensions/herdr-presence.js",
+  });
 });
 
 test("construction is inert; eligible root TUI reports exact bounded transport despite parent metadata", () => {
@@ -474,7 +482,7 @@ herdrPresence({on: (name, handler) => handlers.set(name, handler)});
 process.on('message', message => {
   if (message === 'start') {
     handlers.get('session_start')({type: 'session_start', reason: 'startup'}, {mode: 'tui', hasUI: true, agentDir: ${JSON.stringify(directory)}, ui: {notify: text => { throw new Error(text); }}});
-    process.send({type: 'started', tagged: process.listeners('exit').filter(fn => fn[Symbol.for('dotfiles.omo.herdr-presence.v1')]).length});
+    process.send({type: 'started', tagged: process.listeners('exit').filter(fn => fn[Symbol.for('dotfiles.omo.herdr-presence')]).length});
   } else if (message === 'exit') process.exit(0);
 });
 process.send({type: 'ready', node: process.versions.node, bun: Boolean(process.versions.bun)});
