@@ -75,6 +75,7 @@ bun ~/dotfiles/omo/restore.mjs --home "/tmp/omo test home" --skip-packages
 | Ponytail package skills | Six skills loaded from `@dietrichgebert/ponytail@4.9.0`, with package-local Caveman exclusions |
 | Caveman package skill | Only `caveman`, loaded from `git:github.com/JuliusBrussee/caveman@v2.6.0` |
 | `agent/extensions/comment-checker.js` | `~/.omo/agent/extensions/comment-checker.js`: owned checker integration |
+| `agent/extensions/mode-status.js` | `~/.omo/agent/extensions/mode-status.js`: Caveman, Ponytail, and cumulative token TUI status |
 | `rules/` | Restored to `~/.omo/rules`: OMO-owned workflow rules, including persistent response modes |
 | `restore.json` | OMO version, resource destinations, and `tps`, `prompt-url-widget`, `files`, `diff` extension selection |
 
@@ -160,12 +161,12 @@ included.
 - The bundled `unslop` skill says to apply it to all writing. This is an agent
   instruction, not a shell hook. Other skills load when their tasks match.
 
-The Caveman rule keeps Ponytail at `full`. `stop caveman` or `normal mode`
-disables Caveman only for the current session; every new session starts in
-`lite` again. Caveman boundaries preserve normal prose in code, comments,
+The session modes rule keeps Ponytail at `full`. `/caveman`, `/ponytail`, and the
+TUI status extension manage per-session levels; `normal mode` disables both.
+Every new session starts with Caveman `lite` and Ponytail `full`. Caveman boundaries preserve normal prose in code, comments,
 documentation, commits, and other persisted or third-party text. Restore does
 not install SimpleEnglish, ASD-STE100, Cavecrew, a Caveman proxy, MCP shrink,
-statusline, hooks, or any `caveman-*` skill.
+hooks, or any `caveman-*` skill.
 
 The owned checker handles native `write`, `edit`, `multiedit`, and `apply_patch`
 results, including nested `tool.*` calls in `eval`. It checks successful files
@@ -206,7 +207,7 @@ The tracked `omo/` directory is configuration. Hidden `.omo/`, `.omc/`, and
 
 ```bash
 bun test omo/isolation.test.js omo/restore.test.js
-bun test omo/config.test.js omo/native-config.test.js omo/fast.test.js omo/herdr-presence.test.js omo/comment-checker.test.js
+bun test omo/config.test.js omo/native-config.test.js omo/fast.test.js omo/herdr-presence.test.js omo/comment-checker.test.js omo/mode-status.test.js
 bun omo/comment-checker-qa.mjs
 gitleaks dir omo --redact --no-banner
 ```

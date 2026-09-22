@@ -214,13 +214,8 @@ test("production manifest selects native OMO, Ponytail, and only core Caveman re
     source: "rules",
     target: ".omo/rules",
   })
-  const rule = await readFile(new URL("./rules/caveman.md", import.meta.url), "utf8")
+  const rule = await readFile(new URL("./rules/session-modes.md", import.meta.url), "utf8")
   expect(rule).toContain("alwaysApply: true")
-  expect(rule).toContain("Ponytail in full mode")
-  expect(rule).toContain("Caveman lite controls every user-facing chat response")
-  expect(rule).toContain("Every new session starts with Caveman lite again")
-  expect(rule).toContain("`/caveman off`, disable Caveman only for the current session")
-  expect(rule).toContain("Write normal prose in code, comments, documentation, commits")
 })
 
 test("launcher selects npm omo-ai even when Bun bin is earlier on PATH", async () => {

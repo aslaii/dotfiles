@@ -4,6 +4,7 @@
   "resources": [
     { "source": "rules", "target": ".omo/rules" },
     { "source": "agent/models.json", "target": ".omo/agent/models.json" },
-    { "source": "agent/extensions/comment-checker.js", "target": ".omo/agent/extensions/comment-checker.js" }
+    { "source": "agent/extensions/comment-checker.js", "target": ".omo/agent/extensions/comment-checker.js" },
+    { "source": "agent/extensions/mode-status.js", "target": ".omo/agent/extensions/mode-status.js" }
   ]
 }

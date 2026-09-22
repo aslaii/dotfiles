@@ -66,6 +66,8 @@ if command -v fnm >/dev/null 2>&1; then
   eval "$(fnm env --use-on-cd)"
 fi
 
+export OMO_HERDR_DAG_NODE="$HOME/.local/share/fnm/aliases/lts-latest/bin/node"
+
 # --- pnpm ---
 export PNPM_HOME="$HOME/.local/share/pnpm"
 case ":$PATH:" in
