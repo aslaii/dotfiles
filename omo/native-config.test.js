@@ -11,18 +11,18 @@ test("native RPC startup applies the approved profile but preserves an explicit 
   const binary = await realpath(process.env.OMO_BIN || Bun.which("omo"));
   const portable = Bun.JSONC.parse(await readFile(new URL("./omo.jsonc", import.meta.url), "utf8"));
   for (const [profile, args, provider, model, thinking] of [
-    [undefined, [], "chatgpt-subscription", "gpt-6-sol", "medium"],
-    ["pro100", [], "chatgpt-subscription", "gpt-6-sol", "medium"],
+    [undefined, [], "anthropic-subscription", "claude-sonnet-5", "medium"],
+    ["opus-main", [], "anthropic-subscription", "claude-opus-5-5", "medium"],
     [undefined, ["--model", "chatgpt-subscription/gpt-6-luna:low"], "chatgpt-subscription", "gpt-6-luna", "low"],
   ]) {
     const home = await mkdtemp(join(tmpdir(), "omo native config "));
     const agentDir = join(home, ".omo", "agent");
     await mkdir(agentDir, { recursive: true });
     const settings = {
-      defaultProvider: "chatgpt-subscription",
-      defaultModel: "gpt-6-luna",
+      defaultProvider: "anthropic-subscription",
+      defaultModel: "claude-sonnet-5",
       defaultThinkingLevel: "low",
-      recommendedModels: ["gpt-6-luna"],
+      recommendedModels: ["claude-sonnet-5"],
       packages: [],
       skills: [],
     };

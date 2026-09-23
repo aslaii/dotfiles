@@ -1,6 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/code-yeongyu/oh-my-openagent/dev/assets/omo.schema.json",
-  "model_profile": "chatgpt-subscription/gpt-6-sol:medium",
+  "model_profile": "anthropic-subscription/claude-sonnet-5:medium",
   "git_master": {
     "commit_footer": false,
     "include_co_authored_by": false
@@ -14,14 +14,16 @@
     },
     "ultrabrain": {
       "models": [
+        { "model": "anthropic-subscription/claude-opus-5-5", "reasoning": "high" },
         { "model": "chatgpt-subscription/gpt-6-astra", "reasoning": "high" },
         { "model": "chatgpt-subscription/gpt-6-sol", "reasoning": "max" }
       ]
     },
     "deep-high": {
       "models": [
+        { "model": "anthropic-subscription/claude-opus-5-5", "reasoning": "high" },
         { "model": "chatgpt-subscription/gpt-6-sol", "reasoning": "high" },
-        { "model": "anthropic-subscription/claude-opus-5-5", "reasoning": "high" }
+        { "model": "commandcode/deepseek/deepseek-v4.1-flash", "reasoning": "high" }
       ]
     },
     "deep-low": {
@@ -34,7 +36,7 @@
       "models": [
         { "model": "anthropic-subscription/claude-opus-5-5", "reasoning": "medium" },
         { "model": "commandcode/z-ai/glm-5.3-flash", "reasoning": "high" },
-        { "model": "commandcode/deepseek/deepseek-v4.1-flash", "reasoning": "high" }
+        { "model": "chatgpt-subscription/gpt-6-sol", "reasoning": "high" }
       ]
     },
     "visual-engineering": {
@@ -45,20 +47,20 @@
     },
     "artistry": {
       "models": [
-        { "model": "commandcode/z-ai/glm-5.3-flash", "reasoning": "max" },
-        { "model": "anthropic-subscription/claude-opus-5-5", "reasoning": "medium" }
+        { "model": "anthropic-subscription/claude-opus-5-5", "reasoning": "medium" },
+        { "model": "commandcode/z-ai/glm-5.3-flash", "reasoning": "max" }
       ]
     },
     "writing": {
       "models": [
-        { "model": "commandcode/z-ai/glm-5.3-flash", "reasoning": "medium" },
-        { "model": "anthropic-subscription/claude-opus-5-5", "reasoning": "low" }
+        { "model": "anthropic-subscription/claude-sonnet-5", "reasoning": "medium" },
+        { "model": "commandcode/z-ai/glm-5.3-flash", "reasoning": "medium" }
       ]
     },
     "quick": {
       "models": [
-        { "model": "chatgpt-subscription/gpt-6-luna", "reasoning": "low" },
         { "model": "commandcode/deepseek/deepseek-v4.1-flash", "reasoning": "low" },
+        { "model": "chatgpt-subscription/gpt-6-luna", "reasoning": "low" },
         { "model": "commandcode/meta/muse-spark-1.3-contributor", "reasoning": "xhigh" }
       ]
     },
@@ -86,12 +88,12 @@
     "plan-consultant": {
       "models": [
         { "model": "anthropic-subscription/claude-opus-5-5", "reasoning": "high" },
-        { "model": "commandcode/z-ai/glm-5.3-flash", "reasoning": "high" }
+        { "model": "chatgpt-subscription/gpt-6-sol", "reasoning": "high" }
       ]
     },
     "plan-reviewer": {
       "models": [
-        { "model": "chatgpt-subscription/gpt-6-astra", "reasoning": "high" },
+        { "model": "anthropic-subscription/claude-opus-5-5", "reasoning": "high" },
         { "model": "chatgpt-subscription/gpt-6-sol", "reasoning": "high" }
       ]
     }
@@ -107,30 +109,8 @@
     }
   },
   "profiles": {
-    "pro100": {
-      "categories": {
-        "ultrabrain": {
-          "models": [
-            { "model": "chatgpt-subscription/gpt-6-sol", "reasoning": "max" },
-            { "model": "anthropic-subscription/claude-opus-5-5", "reasoning": "high" }
-          ]
-        },
-        "quick": {
-          "models": [
-            { "model": "commandcode/deepseek/deepseek-v4.1-flash", "reasoning": "low" },
-            { "model": "chatgpt-subscription/gpt-6-luna", "reasoning": "low" },
-            { "model": "commandcode/meta/muse-spark-1.3-contributor", "reasoning": "xhigh" }
-          ]
-        }
-      },
-      "agents": {
-        "plan-reviewer": {
-          "models": [
-            { "model": "chatgpt-subscription/gpt-6-sol", "reasoning": "high" },
-            { "model": "anthropic-subscription/claude-opus-5-5", "reasoning": "high" }
-          ]
-        }
-      }
+    "opus-main": {
+      "model_profile": "anthropic-subscription/claude-opus-5-5:medium"
     }
   }
 }

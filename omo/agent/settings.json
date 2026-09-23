@@ -5,8 +5,8 @@
       "settings": false
     }
   },
-  "defaultProvider": "chatgpt-subscription",
-  "defaultModel": "gpt-6-sol",
+  "defaultProvider": "anthropic-subscription",
+  "defaultModel": "claude-sonnet-5",
   "defaultThinkingLevel": "medium",
   "packages": [
     {
@@ -34,15 +34,17 @@
   "quietStartup": true,
   "hideThinkingBlock": false,
   "favoriteModels": [
+    "anthropic-subscription/claude-sonnet-5",
+    "anthropic-subscription/claude-opus-5-5",
     "chatgpt-subscription/gpt-6-sol",
     "chatgpt-subscription/gpt-6-luna",
     "chatgpt-subscription/gpt-6-astra",
-    "anthropic-subscription/claude-opus-5-5",
     "commandcode/deepseek/deepseek-v4.1-flash",
     "commandcode/z-ai/glm-5.3-flash",
     "commandcode/meta/muse-spark-1.3-contributor"
   ],
   "modelThinkingLevels": {
+    "anthropic-subscription/claude-sonnet-5": "medium",
     "chatgpt-subscription/gpt-6-sol": "medium",
     "chatgpt-subscription/gpt-6-luna": "low",
     "chatgpt-subscription/gpt-6-astra": "high",
@@ -61,6 +63,7 @@
     "*": "allow"
   },
   "enabledModels": [
+    "anthropic-subscription/claude-sonnet-5",
     "chatgpt-subscription/gpt-6-sol",
     "chatgpt-subscription/gpt-6-luna",
     "chatgpt-subscription/gpt-6-astra",
@@ -79,14 +82,14 @@
     "chatgpt-subscription/gpt-6-astra": "auto"
   },
   "recommendedModels": [
-    "gpt-6-sol"
+    "claude-sonnet-5"
   ],
   "retry": {
     "enabled": true,
     "modelFallback": true,
     "fallbackRevertPolicy": "cooldown-expiry",
     "fallbackChains": {
-      "chatgpt-subscription/gpt-6-sol": [
+      "anthropic-subscription/claude-sonnet-5": [
         "anthropic-subscription/claude-opus-5-5:medium"
       ],
       "anthropic-subscription/claude-opus-5-5": []

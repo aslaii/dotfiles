@@ -1,5 +1,5 @@
 {
-  "omoVersion": "5.0.0-0.beta.85",
+  "omoVersion": "5.0.0-0.beta.86",
   "builtinExtensions": ["tps", "prompt-url-widget", "files", "diff"],
   "resources": [
     { "source": "rules", "target": ".omo/rules" },

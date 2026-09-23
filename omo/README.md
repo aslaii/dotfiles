@@ -1,7 +1,9 @@
-# OMO
+# OMO on JR
 
 Portable native OMO configuration, plugins, hooks, rules, and isolated skill
-loading. OMO is separate from Claude Code/OMC and OMP.
+loading. This `jr-omo` branch uses Claude first for JR's company policy;
+`develop` keeps the separate GPT-first personal profile. OMO is separate
+from Claude Code/OMC and OMP.
 
 ## Restore on another computer
 
@@ -11,7 +13,8 @@ RTK 0.42.4. Its platform-specific binary is not copied.
 
 ```bash
 git clone https://github.com/aslaii/dotfiles.git ~/dotfiles
-npm install -g omo-ai@5.0.0-0.beta.85
+cd ~/dotfiles && git switch --track origin/jr-omo
+npm install -g omo-ai@5.0.0-0.beta.86
 bun ~/dotfiles/omo/restore.mjs
 bash ~/dotfiles/omo/launch.sh
 ```
@@ -83,32 +86,30 @@ bun ~/dotfiles/omo/restore.mjs --home "/tmp/omo test home" --skip-packages
 
 | Role | Model | Reasoning |
 |---|---|---|
-| Main session, including native planning | GPT-6 Sol | `medium` |
-| Quick | GPT-6 Luna at Standard speed | `low` |
+| Main session, including native planning | Claude Sonnet 5 | `medium` |
+| Quick | Command Code DeepSeek V4.1 Flash | `low` |
 | Explore, Librarian, Deep-low, Unspecified-low | Command Code DeepSeek V4.1 Flash | `low`, `medium`, or `high` |
 | Architect, Visual-engineering, Unspecified-high, Plan-consultant | Claude Opus 5.5 | `medium` or `high` |
-| Deep-high | GPT-6 Sol | `high` |
-| Ultrabrain and Plan-reviewer | GPT-6 Astra | `high` |
-| Artistry and Writing | Command Code GLM-5.3 Flash | `max` or `medium` |
+| Deep-high, Ultrabrain, Plan-reviewer, Artistry | Claude Opus 5.5 | `medium` or `high` |
+| Writing | Claude Sonnet 5 | `medium` |
 
 The only Command Code routes are DeepSeek V4.1 Flash, GLM-5.3 Flash, and
 Muse Spark 1.3 Contributor. Routine delegated work starts on Command Code;
-high-impact work uses GPT or Claude. No automatic route uses a GPT Fast tier.
+high-impact work starts on Claude and can fall back to GPT. No automatic
+route uses a GPT Fast tier.
 The tracked `agent/models.json` override restores DeepSeek V4.1's reasoning
 levels for the pinned provider package.
 
-The `pro100` overlay moves `ultrabrain` and `plan-reviewer` off Astra and
-starts `quick` on DeepSeek. Launch with `OMO_PROFILE=pro100` when using the
-$100 ChatGPT Pro 5x allowance. The default routes target the $200 Pro 20x
-allowance. A profile changes routes, not the authenticated ChatGPT account.
-The main model stays GPT-6 Sol at `medium` in both profiles.
+The optional `opus-main` overlay sets the main model to Claude Opus 5.5
+at `medium`; launch with `OMO_PROFILE=opus-main` when Sonnet is not enough.
+It does not change the delegated routes.
 
-The main-session retry chain switches from GPT-6 Sol to Claude Opus 5.5
-at `medium` on an eligible failure. Opus has no automatic fallback to older
-Claude models. Native retry reacts to failures; it does not reserve subscription
-usage in advance. Check usage before a long run and switch models manually when
-needed. Restore removes the previous managed fallback chains while retaining
-unrelated user-defined chains.
+The main-session retry chain switches from Sonnet 5 to Opus 5.5 at `medium`
+on an eligible failure. Opus has no automatic fallback: exhausting Claude
+cannot automatically switch the main session to GPT or Command Code. GPT
+remains a fallback for selected delegated routes. Native retry reacts to
+failures; it does not reserve subscription usage in advance. Restore removes
+previous managed fallback chains while retaining unrelated user-defined chains.
 
 `model_profile` chooses only the main model in a fresh session. It does not
 override explicit `--model` selections or resumed sessions, change subagent
@@ -128,7 +129,7 @@ Restart existing OMO sessions after changing routes; a running session can
 retain its previous category model mapping.
 
 The Grok Night dark theme, fullscreen mode, quiet startup, visible thinking
-blocks, standard Sol service tier, and existing permission preferences are
+blocks, standard GPT service tier, and existing permission preferences are
 included.
 
 ## Plugins and always-on instructions

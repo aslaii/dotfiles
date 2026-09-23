@@ -85,7 +85,7 @@ async function skillTemps() {
 
 function skillSourceManifest(fixture) {
   return {
-    omoVersion: "5.0.0-0.beta.85",
+    omoVersion: "5.0.0-0.beta.86",
     builtinExtensions: ["tps", "prompt-url-widget", "files", "diff"],
     resources: [{ source: "rules", target: ".omo/agent/rules" }],
     skillSource: {
@@ -470,7 +470,7 @@ test("production restore archives legacy local libraries and installs only the o
   const script = join(snapshot, "restore.mjs")
   await cp(restore, script)
   await write(join(snapshot, "restore.json"), JSON.stringify({
-    omoVersion: "5.0.0-0.beta.85",
+    omoVersion: "5.0.0-0.beta.86",
     builtinExtensions: ["tps", "prompt-url-widget", "files", "diff"],
     resources: [
       { source: "rules", target: ".omo/agent/rules" },
@@ -537,7 +537,7 @@ test("legacy library retirement refuses a symlinked parent and leaves its extern
   const script = join(snapshot, "restore.mjs")
   await cp(restore, script)
   await write(join(snapshot, "restore.json"), JSON.stringify({
-    omoVersion: "5.0.0-0.beta.85",
+    omoVersion: "5.0.0-0.beta.86",
     builtinExtensions: [],
     resources: [],
   }))
@@ -561,7 +561,7 @@ test("restore migrates retired managed native config without removing custom con
   const script = join(snapshot, "restore.mjs")
   await cp(restore, script)
   await write(join(snapshot, "restore.json"), JSON.stringify({
-    omoVersion: "5.0.0-0.beta.85",
+    omoVersion: "5.0.0-0.beta.86",
     builtinExtensions: [],
     resources: [],
   }))
@@ -635,7 +635,7 @@ test("restore retires previous managed fallback chains and keeps user chains", a
   const script = join(snapshot, "restore.mjs")
   await cp(restore, script)
   await write(join(snapshot, "restore.json"), JSON.stringify({
-    omoVersion: "5.0.0-0.beta.85",
+    omoVersion: "5.0.0-0.beta.86",
     builtinExtensions: [],
     resources: [],
   }))
@@ -697,12 +697,14 @@ test("portable restore installs the current Native profile and fallback", async 
 
   const native = await json(join(home, ".omo/omo.jsonc"))
   const engine = await json(join(home, ".omo/agent/settings.json"))
-  expect(native.model_profile).toBe("chatgpt-subscription/gpt-6-sol:medium")
-  expect(native.profiles.pro100.categories.quick.models[0].model).toBe(
-    "commandcode/deepseek/deepseek-v4.1-flash",
+  expect(native.model_profile).toBe("anthropic-subscription/claude-sonnet-5:medium")
+  expect(native.profiles["opus-main"].model_profile).toBe(
+    "anthropic-subscription/claude-opus-5-5:medium",
   )
-  expect(engine.retry.fallbackChains["chatgpt-subscription/gpt-6-sol"]).toEqual([
+  expect(native.categories.quick.models[0].model).toBe("commandcode/deepseek/deepseek-v4.1-flash")
+  expect(engine.retry.fallbackChains["anthropic-subscription/claude-sonnet-5"]).toEqual([
     "anthropic-subscription/claude-opus-5-5:medium",
   ])
+  expect(engine.retry.fallbackChains["anthropic-subscription/claude-opus-5-5"]).toEqual([])
 });
 
