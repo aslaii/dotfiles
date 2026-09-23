@@ -1,5 +1,5 @@
 import { afterEach, expect, test } from "bun:test"
-import { chmod, cp, lstat, mkdir, mkdtemp, readFile, readdir, rm, symlink, writeFile } from "node:fs/promises"
+import { chmod, cp, lstat, mkdir, mkdtemp, readFile, readdir, rm, stat, symlink, writeFile } from "node:fs/promises"
 import { tmpdir } from "node:os"
 import { dirname, join, resolve } from "node:path"
 
@@ -85,7 +85,7 @@ async function skillTemps() {
 
 function skillSourceManifest(fixture) {
   return {
-    omoVersion: "5.0.0-0.beta.82",
+    omoVersion: "5.0.0-0.beta.85",
     builtinExtensions: ["tps", "prompt-url-widget", "files", "diff"],
     resources: [{ source: "rules", target: ".omo/agent/rules" }],
     skillSource: {
@@ -227,10 +227,11 @@ test("restore merges portable configuration, safely installs resources, and is i
   expect((await lstat(join(home, ".claude"))).isSymbolicLink()).toBe(true)
   expect(await readFile(join(home, ".claude/settings.json"), "utf8")).toBe("unrelated Claude settings\n")
 
-  const npmRoot = (await new Response(Bun.spawn(["npm", "root", "-g"], { stdout: "pipe" }).stdout).text()).trim()
-  const builtinRoot = resolve(npmRoot, "omo-ai/node_modules/@code-yeongyu/senpi/dist/core/extensions/builtin")
   for (const extension of ["tps", "prompt-url-widget", "files", "diff"]) {
-    expect(await readFile(join(home, ".omo/agent/extensions", `${extension}.js`), "utf8")).toContain(`file://${builtinRoot}/${extension}.js`)
+    const loader = await readFile(join(home, ".omo/agent/extensions", `${extension}.js`), "utf8")
+    const target = loader.match(/file:\/\/[^"]+/)?.[0]
+    expect(target?.endsWith(`/@code-yeongyu/senpi/dist/core/extensions/builtin/${extension}.js`)).toBe(true)
+    expect((await stat(new URL(target))).isFile()).toBe(true)
   }
 
   const backups = join(home, ".omo/backups")
@@ -469,7 +470,7 @@ test("production restore archives legacy local libraries and installs only the o
   const script = join(snapshot, "restore.mjs")
   await cp(restore, script)
   await write(join(snapshot, "restore.json"), JSON.stringify({
-    omoVersion: "5.0.0-0.beta.82",
+    omoVersion: "5.0.0-0.beta.85",
     builtinExtensions: ["tps", "prompt-url-widget", "files", "diff"],
     resources: [
       { source: "rules", target: ".omo/agent/rules" },
@@ -536,7 +537,7 @@ test("legacy library retirement refuses a symlinked parent and leaves its extern
   const script = join(snapshot, "restore.mjs")
   await cp(restore, script)
   await write(join(snapshot, "restore.json"), JSON.stringify({
-    omoVersion: "5.0.0-0.beta.82",
+    omoVersion: "5.0.0-0.beta.85",
     builtinExtensions: [],
     resources: [],
   }))
@@ -560,7 +561,7 @@ test("restore migrates retired managed native config without removing custom con
   const script = join(snapshot, "restore.mjs")
   await cp(restore, script)
   await write(join(snapshot, "restore.json"), JSON.stringify({
-    omoVersion: "5.0.0-0.beta.82",
+    omoVersion: "5.0.0-0.beta.85",
     builtinExtensions: [],
     resources: [],
   }))
@@ -600,6 +601,7 @@ test("restore migrates retired managed native config without removing custom con
       gpt: { managed: true },
       claude: { managed: true },
       mixed: { managed: true },
+      "gpt-5.6": { managed: true },
       "custom-profile": { kept: true },
     },
     "custom-harness-setting": { kept: true },
@@ -616,7 +618,7 @@ test("restore migrates retired managed native config without removing custom con
     expect(config["[senpi]"].models).not.toHaveProperty(name)
   }
   expect(config["[senpi]"].models["custom-model"]).toEqual({ kept: true })
-  for (const name of ["fast", "gpt", "claude", "mixed"]) {
+  for (const name of ["fast", "gpt", "claude", "mixed", "gpt-5.6"]) {
     expect(config.profiles).not.toHaveProperty(name)
   }
   expect(config.profiles["custom-profile"]).toEqual({ kept: true })
@@ -625,7 +627,7 @@ test("restore migrates retired managed native config without removing custom con
   expect(await readFile(join(home, ".omo/agent/auth.json"), "utf8")).toBe("user credential")
 })
 
-test("restore retires the dropped GPT fallback chains and keeps every other chain", async () => {
+test("restore retires previous managed fallback chains and keeps user chains", async () => {
   const root = await mkdtemp(join(tmpdir(), "omo restore chains "))
   cleanup.push(root)
   const snapshot = join(root, "snapshot")
@@ -633,7 +635,7 @@ test("restore retires the dropped GPT fallback chains and keeps every other chai
   const script = join(snapshot, "restore.mjs")
   await cp(restore, script)
   await write(join(snapshot, "restore.json"), JSON.stringify({
-    omoVersion: "5.0.0-0.beta.82",
+    omoVersion: "5.0.0-0.beta.85",
     builtinExtensions: [],
     resources: [],
   }))
@@ -646,6 +648,10 @@ test("restore retires the dropped GPT fallback chains and keeps every other chai
       fallbackChains: {
         "openai-codex/gpt-5.4-mini": ["openai-codex/gpt-5.6-luna-fast:low"],
         "openai-codex/gpt-5.5": ["openai-codex/gpt-5.6-terra:high"],
+        "openai-codex/gpt-5.6-sol": ["commandcode/deepseek/deepseek-v4.1-flash:high"],
+        "claude-sdk-oauth/claude-sonnet-5": ["commandcode/deepseek/deepseek-v4.1-flash:high"],
+        "opencode/muse-spark-1.3-contributor-free": ["commandcode/meta/muse-spark-1.3-contributor:xhigh"],
+        "commandcode/deepseek/deepseek-v4.1-flash": ["opencode/muse-spark-1.3-contributor-free:xhigh"],
         "openai-codex/gpt-5.6-terra": ["openai-codex/gpt-5.6-sol:high"],
         "user/model": ["opencode/muse-spark-1.3-contributor-free:xhigh"],
       },
@@ -657,6 +663,10 @@ test("restore retires the dropped GPT fallback chains and keeps every other chai
   const settings = await json(join(home, ".omo/agent/settings.json"))
   expect(settings.retry.fallbackChains).not.toHaveProperty("openai-codex/gpt-5.4-mini")
   expect(settings.retry.fallbackChains).not.toHaveProperty("openai-codex/gpt-5.5")
+  expect(settings.retry.fallbackChains).not.toHaveProperty("openai-codex/gpt-5.6-sol")
+  expect(settings.retry.fallbackChains).not.toHaveProperty("claude-sdk-oauth/claude-sonnet-5")
+  expect(settings.retry.fallbackChains).not.toHaveProperty("opencode/muse-spark-1.3-contributor-free")
+  expect(settings.retry.fallbackChains).not.toHaveProperty("commandcode/deepseek/deepseek-v4.1-flash")
   expect(settings.retry.fallbackChains["openai-codex/gpt-5.6-terra"]).toEqual(["openai-codex/gpt-5.6-sol:high"])
   expect(settings.retry.fallbackChains["user/model"]).toEqual(["opencode/muse-spark-1.3-contributor-free:xhigh"])
   expect(settings.retry.enabled).toBe(true)
@@ -667,4 +677,32 @@ test("restore retires the dropped GPT fallback chains and keeps every other chai
   const rerun = await json(join(home, ".omo/agent/settings.json"))
   expect(rerun.retry.fallbackChains["user/model"]).toEqual(["opencode/muse-spark-1.3-contributor-free:xhigh"])
 })
+
+test("portable restore installs the current Native profile and fallback", async () => {
+  const root = await mkdtemp(join(tmpdir(), "omo profile restore "))
+  cleanup.push(root)
+  const snapshot = join(root, "snapshot")
+  const home = join(root, "home")
+  await mkdir(join(snapshot, "agent"), { recursive: true })
+  await cp(restore, join(snapshot, "restore.mjs"))
+  await cp(new URL("./restore.json", import.meta.url), join(snapshot, "restore.json"))
+  await cp(new URL("./omo.jsonc", import.meta.url), join(snapshot, "omo.jsonc"))
+  await cp(new URL("./agent/settings.json", import.meta.url), join(snapshot, "agent/settings.json"))
+  await write(join(snapshot, "agent/hooks.json"), "{}")
+
+  const manifest = await json(join(snapshot, "restore.json"))
+  manifest.resources = []
+  await write(join(snapshot, "restore.json"), JSON.stringify(manifest))
+  await run(join(snapshot, "restore.mjs"), home)
+
+  const native = await json(join(home, ".omo/omo.jsonc"))
+  const engine = await json(join(home, ".omo/agent/settings.json"))
+  expect(native.model_profile).toBe("chatgpt-subscription/gpt-6-sol:medium")
+  expect(native.profiles.pro100.categories.quick.models[0].model).toBe(
+    "commandcode/deepseek/deepseek-v4.1-flash",
+  )
+  expect(engine.retry.fallbackChains["chatgpt-subscription/gpt-6-sol"]).toEqual([
+    "anthropic-subscription/claude-opus-5-5:medium",
+  ])
+});
 

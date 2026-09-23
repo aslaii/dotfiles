@@ -80,7 +80,7 @@ function retireManagedNativeConfig(config) {
   for (const [section, names] of [
     [config["[senpi]"]?.agents, ["metis", "momus"]],
     [config["[senpi]"]?.models, ["sisyphus", "prometheus", "atlas", "hephaestus", "planner"]],
-    [config.profiles, ["fast", "gpt", "claude", "mixed"]],
+    [config.profiles, ["fast", "gpt", "claude", "mixed", "gpt-5.6"]],
   ]) {
     if (!isObject(section)) continue
     for (const name of names) delete section[name]
@@ -94,7 +94,14 @@ function retireManagedNativeConfig(config) {
 function retireManagedFallbackChains(settings) {
   const chains = settings?.retry?.fallbackChains
   if (!isObject(chains)) return settings
-  for (const name of ["openai-codex/gpt-5.4-mini", "openai-codex/gpt-5.5"]) delete chains[name]
+  for (const name of [
+    "openai-codex/gpt-5.4-mini",
+    "openai-codex/gpt-5.5",
+    "openai-codex/gpt-5.6-sol",
+    "claude-sdk-oauth/claude-sonnet-5",
+    "opencode/muse-spark-1.3-contributor-free",
+    "commandcode/deepseek/deepseek-v4.1-flash",
+  ]) delete chains[name]
   return settings
 }
 

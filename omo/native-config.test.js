@@ -7,35 +7,31 @@ import { join } from "node:path";
 import { createInterface } from "node:readline";
 import { fileURLToPath } from "node:url";
 
-test("native RPC startup applies profiles but preserves an explicit model", async () => {
+test("native RPC startup applies the approved profile but preserves an explicit model", async () => {
   const binary = await realpath(process.env.OMO_BIN || Bun.which("omo"));
   const portable = Bun.JSONC.parse(await readFile(new URL("./omo.jsonc", import.meta.url), "utf8"));
   for (const [profile, args, provider, model, thinking] of [
-    ["deep-work", [], "openai-codex", "gpt-5.6-sol", "xhigh"],
-    ["capable", [], "claude-sdk-oauth", "claude-sonnet-5", "high"],
-    ["deep-work", ["--model", "openai-codex/gpt-5.6-luna-fast:low"], "openai-codex", "gpt-5.6-luna", "low"],
+    [undefined, [], "chatgpt-subscription", "gpt-6-sol", "medium"],
+    ["pro100", [], "chatgpt-subscription", "gpt-6-sol", "medium"],
+    [undefined, ["--model", "chatgpt-subscription/gpt-6-luna:low"], "chatgpt-subscription", "gpt-6-luna", "low"],
   ]) {
     const home = await mkdtemp(join(tmpdir(), "omo native config "));
     const agentDir = join(home, ".omo", "agent");
     await mkdir(agentDir, { recursive: true });
-    const config = structuredClone(portable);
-    config["[senpi]"].model_profile = profile;
     const settings = {
-      defaultProvider: "openai-codex",
-      defaultModel: "gpt-5.6-luna-fast",
+      defaultProvider: "chatgpt-subscription",
+      defaultModel: "gpt-6-luna",
       defaultThinkingLevel: "low",
-      recommendedModels: ["gpt-5.6-luna-fast"],
-      claudeSdkOauthProvider: { enabled: true },
+      recommendedModels: ["gpt-6-luna"],
       packages: [],
       skills: [],
     };
-    await writeFile(join(home, ".omo", "omo.jsonc"), JSON.stringify(config));
+    await writeFile(join(home, ".omo", "omo.jsonc"), JSON.stringify(portable));
     await writeFile(join(agentDir, "settings.json"), JSON.stringify(settings));
     const oauth = { type: "oauth", access: "fixture-unused", refresh: "fixture-unused", expires: 4102444800000 };
     await writeFile(join(agentDir, "auth.json"), JSON.stringify({
-      "openai-codex": oauth,
-      "claude-sdk-oauth": oauth,
-      opencode: { type: "api_key", key: "fixture-no-model-requests" },
+      "chatgpt-subscription": oauth,
+      "anthropic-subscription": oauth,
     }));
     const env = { ...process.env };
     for (const key of Object.keys(env)) {
@@ -49,6 +45,7 @@ test("native RPC startup applies profiles but preserves an explicit model", asyn
       OMO_CONFIG_DIR: join(home, ".omo"),
       OMO_CODING_AGENT_DIR: agentDir,
       SENPI_CODING_AGENT_DIR: agentDir,
+      OMO_PROFILE: profile ?? "",
     });
     const child = spawn("node", [
       binary, "--mode", "rpc", "--no-session", "--no-skills",

@@ -11,7 +11,7 @@ RTK 0.42.4. Its platform-specific binary is not copied.
 
 ```bash
 git clone https://github.com/aslaii/dotfiles.git ~/dotfiles
-npm install -g omo-ai@5.0.0-0.beta.82
+npm install -g omo-ai@5.0.0-0.beta.85
 bun ~/dotfiles/omo/restore.mjs
 bash ~/dotfiles/omo/launch.sh
 ```
@@ -36,7 +36,7 @@ command refuses changed writes through those links rather than modifying
 another checkout or moving unrelated application state.
 
 Restore retires the managed native `metis`/`momus` keys, unused role catalog
-aliases, and old `fast`/`gpt`/`claude`/`mixed` configuration overlays. Unrelated
+aliases, and old `fast`/`gpt`/`claude`/`mixed`/`gpt-5.6` configuration overlays. Unrelated
 custom agents, catalog entries, profiles, and other harness settings are preserved.
 
 A restore archives obsolete OMO-local `skill-library/codex` and
@@ -83,35 +83,34 @@ bun ~/dotfiles/omo/restore.mjs --home "/tmp/omo test home" --skip-packages
 
 | Role | Model | Reasoning |
 |---|---|---|
-| Main session, including native planning | GPT-5.6 Sol | `xhigh` |
-| Quick, Git, Explore, Librarian | Claude Haiku 4.5 | `low` |
-| Other subagents, including `plan-consultant` and `plan-reviewer` | Claude Sonnet 5 | `medium` or `high` |
-| First subagent fallback | Muse Spark 1.3 Contributor Free | `xhigh` |
-| Final subagent fallback | GPT Luna Fast, Terra, or Sol | Per route |
+| Main session, including native planning | GPT-6 Sol | `medium` |
+| Quick | GPT-6 Luna at Standard speed | `low` |
+| Explore, Librarian, Deep-low, Unspecified-low | Command Code DeepSeek V4.1 Flash | `low`, `medium`, or `high` |
+| Architect, Visual-engineering, Unspecified-high, Plan-consultant | Claude Opus 5.5 | `medium` or `high` |
+| Deep-high | GPT-6 Sol | `high` |
+| Ultrabrain and Plan-reviewer | GPT-6 Astra | `high` |
+| Artistry and Writing | Command Code GLM-5.3 Flash | `max` or `medium` |
 
-Every category and named subagent uses Claude, then Muse and Command Code
-DeepSeek V4.1, with DeepSeek ahead of Muse in the deep lanes.
-Subagent routes contain no duplicate Muse fallback.
-Claude session fallbacks also put Muse before GPT. Muse falls back to GPT,
-not Claude. The `opencode/` Muse identifier names the Zen provider used by
-native OMO; it is not an OpenCode harness configuration.
+The only Command Code routes are DeepSeek V4.1 Flash, GLM-5.3 Flash, and
+Muse Spark 1.3 Contributor. Routine delegated work starts on Command Code;
+high-impact work uses GPT or Claude. No automatic route uses a GPT Fast tier.
+The tracked `agent/models.json` override restores DeepSeek V4.1's reasoning
+levels for the pinned provider package.
 
-Profiles in `omo.jsonc` are opt-in overlays that OMO activates from
-`OMO_PROFILE`; `omo-gpt` launches with `OMO_PROFILE=gpt-5.6`.
+The `pro100` overlay moves `ultrabrain` and `plan-reviewer` off Astra and
+starts `quick` on DeepSeek. Launch with `OMO_PROFILE=pro100` when using the
+$100 ChatGPT Pro 5x allowance. The default routes target the $200 Pro 20x
+allowance. A profile changes routes, not the authenticated ChatGPT account.
+The main model stays GPT-6 Sol at `medium` in both profiles.
 
-| Profile | Chain order |
-|---|---|
-| `fast`, `gpt`, `claude`, `mixed` | Claude, then free Muse and Command Code DeepSeek V4.1 (DeepSeek first in `deep`, `ultrabrain`, `oracle`, `plan-reviewer`) |
-| `gpt-5.6` | GPT-5.6 (`sol`, `terra`, or `luna-fast`), then DeepSeek V4.1, then free Muse Contributor, then plan Muse Contributor |
+The main-session retry chain switches from GPT-6 Sol to Claude Opus 5.5
+at `medium` on an eligible failure. Opus has no automatic fallback to older
+Claude models. Native retry reacts to failures; it does not reserve subscription
+usage in advance. Check usage before a long run and switch models manually when
+needed. Restore removes the previous managed fallback chains while retaining
+unrelated user-defined chains.
 
-`fast` also carries the task/team limits. `gpt-5.6` defines its own
-`model_profiles` entry, so `omo-gpt` starts on GPT-5.6 without editing
-`agent/settings.json`, and falls back through DeepSeek V4.1 and both Muse
-rungs. Every DeepSeek V4.1 entry runs at `high`: the tracked `agent/models.json`
-override restores that model's reasoning levels for the pinned provider package,
-and is removed once the provider syncs to Command Code CLI `>= 1.53.0`.
-
-Model profiles choose only the main model in a fresh session. They do not
+`model_profile` chooses only the main model in a fresh session. It does not
 override explicit `--model` selections or resumed sessions, change subagent
 routes, or replace `agent/settings.json` retry chains. Availability is a
 registry/auth check, not a guarantee of remaining quota.
@@ -122,29 +121,14 @@ session model; its consultant and reviewer have explicit agent routes.
 `omo-fast` keeps the native configuration and adds its priority extension.
 The unused `omo-claude` and `omo-mixed` launchers are retired.
 
-[Artificial Analysis](https://artificialanalysis.ai/articles/muse-spark-1-3)
-reports Muse Spark 1.3 `xhigh` at 61 on its Intelligence Index and 85% on
-Terminal-Bench 2.1, with GLM-5.3 `max` at 60 on the same Intelligence Index.
-Those aggregate results do not prove Muse wins every coding workload.
-Muse's higher-scoring `max` variant is limited-preview and is not supported by
-the free Contributor endpoint, whose highest supported level is `xhigh`.
-
-The free model ID is `opencode/muse-spark-1.3-contributor-free`, on
-[OpenCode Zen](https://opencode.ai/docs/zen/). Its offer is temporary and
-permits training on prompts and completions. Authenticate the `opencode`
-provider separately if only `opencode-go` is connected.
-
 Saved manual favorites are separate from these automatic routes.
 
 [OMO's documentation](https://omo.dev/docs) describes custom model overrides.
-The installed native runtime lists Muse explicitly, and a real OMO child
-using the free Muse model successfully executed a read tool. This confirms
-runtime/tool compatibility, not comprehensive upstream evaluation of every
-OMO workflow. Restart existing OMO sessions after changing routes; a running
-session can retain its previous category model mapping.
+Restart existing OMO sessions after changing routes; a running session can
+retain its previous category model mapping.
 
 The Grok Night dark theme, fullscreen mode, quiet startup, visible thinking
-blocks, Sol priority service tier, and existing permission preferences are
+blocks, standard Sol service tier, and existing permission preferences are
 included.
 
 ## Plugins and always-on instructions
