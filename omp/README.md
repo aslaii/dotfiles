@@ -35,11 +35,11 @@ package.
 | --- | --- | --- |
 | `omp` | none | Default routing from `agent/config.yml` (the global profile: Claude Opus/Sonnet where `agent/config.yml` names them, no budget guard). |
 | `omp-fast` | `fast.yml` + `fast.mjs` | Priority Claude/GPT requests, 32 parallel agents. |
-| `omp-budget` (`ompb`) | `budget.yml` | Claude Sonnet 5 first (the $20 subscription's OAuth login), DeepSeek V4.1 Flash on Claude limits, plan Muse Contributor for grunt work, free Zen Muse as backstop. |
+| `omp-budget` (`ompb`) | `budget.yml` | Claude Sonnet 5 first (the $20 subscription's OAuth login), OpenCode Go DeepSeek V4.1 Flash on Claude limits, Go Muse Contributor for grunt work. |
 | `ompd` | `budget.yml` + `no-claude.yml` | Same plan-hosted profile as `ompb`, with every role (not just `default`) pinned off Claude for the run. |
 | `omp-gpt` | `gpt.yml` | Every role on `openai-codex/gpt-5.6-*`, no non-GPT primary anywhere. |
 | `omp-union` | `union-only.yml` | Every role on the free `openrouter/stealth/union-alpha` model, free-only fallback chain. |
-| `omp-personal` (`ompp`) | `personal.yml` | Claude Sonnet 5 (default) + Opus 5 (plan/planner only) on the $20 subscription; every other role on Command Code's DeepSeek V4.1 Flash / GLM-5.3-Flash / Muse Spark 1.3 Contributor. No GPT, no OpenRouter. Free Zen Muse is a last-resort backstop only. Plain `ompp` passes no prewalk flags. `ompp --prewalk` maps to `--model @plan --prewalk-into @default`: session starts on Opus 5 High, prewalk arms a handoff to Sonnet 5 at Main's own first `edit`/`write` call. Under the tracked setup Main delegates the first implementation edit to `task`/`terra`, which run on the `task` role, not whatever Main is on, so that handoff fires only when Main edits directly — `--prewalk` otherwise only changes Main's starting model, not the delegated implementer's model. |
+| `omp-personal` (`ompp`) | `personal.yml` | Claude Sonnet 5 (default) + Opus 5 (plan/planner only) on the $20 subscription; routine work on OpenCode Go DeepSeek V4.1 Flash, advisor and research on GLM-5.3-Flash, and grunt work on Muse Spark 1.3 Contributor. No GPT or OpenRouter. Plain `ompp` passes no prewalk flags. `ompp --prewalk` maps to `--model @plan --prewalk-into @default`: session starts on Opus 5 High, prewalk arms a handoff to Sonnet 5 at Main's own first `edit`/`write` call. Under the tracked setup Main delegates the first implementation edit to `task`/`terra`, which run on the `task` role, not whatever Main is on, so that handoff fires only when Main edits directly — `--prewalk` otherwise only changes Main's starting model, not the delegated implementer's model. |
 
 ## Resource guard
 
@@ -150,27 +150,20 @@ inherits the rest from `agent/config.yml`. The driving roles
 through the $20/mo Claude subscription's OAuth login (`claude-sdk-oauth`,
 provider `anthropic` — not Command Code credits). Once that credential's
 usage-aware preflight (`retry.usageAwareFallback`) reports it inside its 10%
-reserve, those roles fall back automatically to the Command Code $10 plan's
-DeepSeek V4.1 Flash tier (`commandcode/deepseek/deepseek-v4.1-flash`, `high`),
-then to the plan-hosted `commandcode/meta/muse-spark-1.3-contributor`.
+reserve, those roles fall back automatically to OpenCode Go DeepSeek V4.1 Flash
+(`opencode-go/deepseek-v4.1-flash`, `high`), then to
+`opencode-go/muse-spark-1.3-contributor`.
 
-- `designer` stays on `commandcode/deepseek/deepseek-v4.1-flash:max`: it's
+- `designer` stays on `opencode-go/deepseek-v4.1-flash:max`: it's
   the highest-volume iterative role here and has no concrete need for
   subscription quota.
-- `vision` stays on `commandcode/deepseek/deepseek-v4-flash-vision-exp` (the
-  plan's dedicated, image-native, image-probe-verified vision model) at
-  `high`, falling back to free Muse first, then `deepseek-v4.1-flash:medium`.
-- `commandcode/meta/muse-spark-1.3-contributor` also serves
+- `vision` stays on image-capable `opencode-go/deepseek-v4.1-flash` at `high`.
+- `opencode-go/muse-spark-1.3-contributor` also serves
   small/commit/tiny/verify/research/free, falling back to the plan's
-  DeepSeek tier and then to the free `opencode-zen` Muse endpoint.
-- `opencode-zen/muse-spark-1.3-contributor-free` stays wired only as a
-  last-resort backstop across every chain, since the free endpoint
-  rate-limits under load.
+  DeepSeek tier. OpenCode Zen's free endpoint rejects non-OpenCode clients,
+  so it is not a fallback.
 
-No budget role or fallback edge reaches OpenAI, GPT, or a paid Zen model.
-The Command Code provider no longer sends a forced ZDR header: it is opt-in
-on Command Code, most models default to it anyway, and forcing it capped a
-model's usable allowance at the plan's default tier.
+No budget role or fallback edge reaches OpenAI, GPT, Command Code, or a paid Zen model.
 
 ## ompd
 
@@ -187,17 +180,10 @@ without `ompd` is unaffected.
    the shell, so the `omp-budget` function exists.
 2. Sign in to Claude with the $20 subscription's OAuth login: run `/login`
    inside OMP and choose Claude (`claude-sdk-oauth`, provider `anthropic`).
-3. Register the Command Code provider's Keychain key (the provider block and
-   discovery config in `agent/models.yml` are already tracked and linked by
-   the installer):
+3. Sign in to OpenCode Go inside OMP with `/login`, or import an existing
+   Go API key. The Go model registry is built into OMP.
 
-   ```bash
-   security add-generic-password -U -a "$USER" -s commandcode-api-key -w
-   ```
-
-4. Sign in to OpenCode Zen for the free Muse endpoint: run `/login` inside OMP
-   and choose the OpenCode Zen account.
-5. Verify the routing:
+4. Verify the routing:
 
    ```bash
    omp-budget --print "Reply with OK and the model id you are running as."
@@ -205,7 +191,7 @@ without `ompd` is unaffected.
 
    It must answer with `anthropic/claude-sonnet-5`. Without the Claude OAuth
    login, or once its usage reserve is hit, the run falls back to
-   `commandcode/deepseek/deepseek-v4.1-flash` instead.
+   `opencode-go/deepseek-v4.1-flash` instead.
 
 ## What restores, what does not
 

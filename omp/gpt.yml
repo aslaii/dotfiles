@@ -46,23 +46,19 @@ retry:
   modelFallback: true
   fallbackChains:
     # Exact four-rung order for every GPT entry:
-    # GPT -> DSV4.1 -> free Zen Muse 1.3 -> plan Muse 1.3.
+    # GPT -> Go DeepSeek Flash -> Go Muse 1.3.
     # Chain resolution (src/session/retry-fallback-chains.ts
     # resolveRetryFallbackChainKey) is exact model > `provider/*` > role >
     # `default`, so this one wildcard key covers every model above and leaves
     # the global profile's `default`/`anthropic/*` chains unreachable from a
     # GPT session.
     openai-codex/*:
-      - commandcode/deepseek/deepseek-v4.1-flash:high
-      - opencode-zen/muse-spark-1.3-contributor-free:xhigh
-      - commandcode/meta/muse-spark-1.3-contributor:xhigh
+      - opencode-go/deepseek-v4.1-flash:high
+      - opencode-go/muse-spark-1.3-contributor:xhigh
     # Resolution re-runs per active model, so the rungs below need their own
-    # keys to stay on this chain: without them a DSV4.1 or free-Muse outage
+    # keys to stay on this chain: without them a DeepSeek outage
     # walks back into the global profile's Claude/Muse chains. Each key
     # continues the same order and ends at the plan Muse rung, which needs no
     # further key.
-    commandcode/deepseek/deepseek-v4.1-flash:
-      - opencode-zen/muse-spark-1.3-contributor-free:xhigh
-      - commandcode/meta/muse-spark-1.3-contributor:xhigh
-    opencode-zen/muse-spark-1.3-contributor-free:
-      - commandcode/meta/muse-spark-1.3-contributor:xhigh
+    opencode-go/deepseek-v4.1-flash:
+      - opencode-go/muse-spark-1.3-contributor:xhigh
