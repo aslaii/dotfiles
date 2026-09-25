@@ -6,13 +6,13 @@ const settingsFile = new URL("./agent/settings.json", import.meta.url);
 const config = async () => Bun.JSONC.parse(await readFile(configFile, "utf8"));
 const settings = async () => JSON.parse(await readFile(settingsFile, "utf8"));
 
-test("portable Native routing starts on GPT-6 Sol and saves GPT quota on bulk work", async () => {
+test("portable Native routing starts on GPT-6 Sol for main and deep work", async () => {
   const native = await config();
   const engine = await settings();
   expect(native.model_profile).toBe("chatgpt-subscription/gpt-6-sol:medium");
   expect(native.categories["deep-low"].models[0]).toEqual({
-    model: "opencode-go/deepseek-v4.1-flash",
-    reasoning: "high",
+    model: "chatgpt-subscription/gpt-6-sol",
+    reasoning: "medium",
   });
   expect(native.categories.quick.models[0]).toEqual({
     model: "chatgpt-subscription/gpt-6-luna",
@@ -48,7 +48,7 @@ test("premium models stay on high-impact categories and plan agents", async () =
   }
 });
 
-test("100-dollar profile conserves Astra and quick-task allowance", async () => {
+test("100-dollar profile conserves Astra and routes quick tasks to Luna", async () => {
   const native = await config();
   const pro100 = native.profiles.pro100;
   expect(pro100.model_profile).toBeUndefined();
@@ -57,7 +57,7 @@ test("100-dollar profile conserves Astra and quick-task allowance", async () => 
     reasoning: "max",
   });
   expect(pro100.categories.quick.models[0].model).toBe(
-    "opencode-go/deepseek-v4.1-flash",
+    "chatgpt-subscription/gpt-6-luna",
   );
   expect(pro100.agents["plan-reviewer"].models[0].model).toBe(
     "chatgpt-subscription/gpt-6-sol",

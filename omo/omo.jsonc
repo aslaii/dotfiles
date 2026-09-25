@@ -26,8 +26,8 @@
     },
     "deep-low": {
       "models": [
-        { "model": "opencode-go/deepseek-v4.1-flash", "reasoning": "high" },
-        { "model": "chatgpt-subscription/gpt-6-sol", "reasoning": "medium" }
+        { "model": "chatgpt-subscription/gpt-6-sol", "reasoning": "medium" },
+        { "model": "opencode-go/deepseek-v4.1-flash", "reasoning": "high" }
       ]
     },
     "unspecified-high": {
@@ -117,8 +117,8 @@
         },
         "quick": {
           "models": [
-            { "model": "opencode-go/deepseek-v4.1-flash", "reasoning": "low" },
             { "model": "chatgpt-subscription/gpt-6-luna", "reasoning": "low" },
+            { "model": "opencode-go/deepseek-v4.1-flash", "reasoning": "low" },
             { "model": "opencode-go/muse-spark-1.3-contributor", "reasoning": "xhigh" }
           ]
         }
