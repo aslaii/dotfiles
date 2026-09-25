@@ -11,7 +11,7 @@ test("portable Native routing starts on GPT-6 Sol and saves GPT quota on bulk wo
   const engine = await settings();
   expect(native.model_profile).toBe("chatgpt-subscription/gpt-6-sol:medium");
   expect(native.categories["deep-low"].models[0]).toEqual({
-    model: "commandcode/deepseek/deepseek-v4.1-flash",
+    model: "opencode-go/deepseek-v4.1-flash",
     reasoning: "high",
   });
   expect(native.categories.quick.models[0]).toEqual({
@@ -44,7 +44,7 @@ test("premium models stay on high-impact categories and plan agents", async () =
   expect(primary(native.agents["plan-consultant"])).toBe("anthropic-subscription/claude-opus-5-5");
   expect(primary(native.agents["plan-reviewer"])).toBe("chatgpt-subscription/gpt-6-astra");
   for (const name of ["explore", "librarian"]) {
-    expect(primary(native.agents[name])).toBe("commandcode/deepseek/deepseek-v4.1-flash");
+    expect(primary(native.agents[name])).toBe("opencode-go/deepseek-v4.1-flash");
   }
 });
 
@@ -57,32 +57,37 @@ test("100-dollar profile conserves Astra and quick-task allowance", async () => 
     reasoning: "max",
   });
   expect(pro100.categories.quick.models[0].model).toBe(
-    "commandcode/deepseek/deepseek-v4.1-flash",
+    "opencode-go/deepseek-v4.1-flash",
   );
   expect(pro100.agents["plan-reviewer"].models[0].model).toBe(
     "chatgpt-subscription/gpt-6-sol",
   );
 });
 
-test("all configured Command Code models belong to the three-model allowlist", async () => {
+test("all configured Go models belong to the three-model allowlist", async () => {
   const native = await config();
   const engine = await settings();
   const allowed = new Set([
-    "commandcode/deepseek/deepseek-v4.1-flash",
-    "commandcode/z-ai/glm-5.3-flash",
-    "commandcode/meta/muse-spark-1.3-contributor",
+    "opencode-go/glm-5.3-flash",
+    "opencode-go/deepseek-v4.1-flash",
+    "opencode-go/muse-spark-1.3-contributor",
   ]);
   for (const section of [native, native.profiles.pro100]) {
     for (const group of ["categories", "agents"]) {
       for (const route of Object.values(section[group] ?? {})) {
-        for (const { model } of route.models) {
-          if (model.startsWith("commandcode/")) expect(allowed.has(model)).toBe(true);
+        for (const { model, reasoning } of route.models) {
+          if (model.startsWith("opencode-go/")) expect(allowed.has(model)).toBe(true);
+          if (model === "opencode-go/glm-5.3-flash") expect(reasoning).toBe("off");
+          expect(model.startsWith("commandcode/")).toBe(false);
           expect(model.endsWith("-fast")).toBe(false);
           expect(engine.enabledModels).toContain(model);
         }
       }
     }
   }
+  expect(engine.enabledModels.filter((model) => model.startsWith("opencode-go/")).sort())
+    .toEqual([...allowed].sort());
+  expect(engine.modelThinkingLevels["opencode-go/glm-5.3-flash"]).toBe("off");
   expect(engine.modelServiceTiers["chatgpt-subscription/gpt-6-sol"]).toBe("auto");
   expect(engine.modelServiceTiers["chatgpt-subscription/gpt-6-luna"]).toBe("auto");
 });

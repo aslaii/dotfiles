@@ -70,7 +70,6 @@ bun ~/dotfiles/omo/restore.mjs --home "/tmp/omo test home" --skip-packages
 |---|---|
 | `omo.jsonc` | `~/.omo/omo.jsonc`: native model routes, profiles, and task/team limits |
 | `agent/settings.json` | `~/.omo/agent/settings.json`: models, fallbacks, package sources, skill exclusions, permission settings, and UI preferences |
-| `agent/models.json` | `~/.omo/agent/models.json`: the temporary Command Code DeepSeek V4.1 thinking override |
 | `agent/hooks.json` | `~/.omo/agent/hooks.json`: `rtk hook claude`, before Bash calls, with 10-second timeout |
 | Native and bundled skills | Loaded from `~/.omo/agent/skills` and the pinned OMO installation, excluding imported snapshots and auxiliary Caveman names |
 | Ponytail package skills | Six skills loaded from `@dietrichgebert/ponytail@4.9.0`, with package-local Caveman exclusions |
@@ -85,17 +84,16 @@ bun ~/dotfiles/omo/restore.mjs --home "/tmp/omo test home" --skip-packages
 |---|---|---|
 | Main session, including native planning | GPT-6 Sol | `medium` |
 | Quick | GPT-6 Luna at Standard speed | `low` |
-| Explore, Librarian, Deep-low, Unspecified-low | Command Code DeepSeek V4.1 Flash | `low`, `medium`, or `high` |
+| Explore, Librarian, Deep-low, Unspecified-low | OpenCode Go DeepSeek V4.1 Flash | `low` or `high` |
 | Architect, Visual-engineering, Unspecified-high, Plan-consultant | Claude Opus 5.5 | `medium` or `high` |
 | Deep-high | GPT-6 Sol | `high` |
 | Ultrabrain and Plan-reviewer | GPT-6 Astra | `high` |
-| Artistry and Writing | Command Code GLM-5.3 Flash | `max` or `medium` |
+| Artistry and Writing | OpenCode Go GLM-5.3 Flash | `off` |
 
-The only Command Code routes are DeepSeek V4.1 Flash, GLM-5.3 Flash, and
-Muse Spark 1.3 Contributor. Routine delegated work starts on Command Code;
+The only OpenCode Go routes are GLM-5.3 Flash, DeepSeek V4.1 Flash, and
+Muse Spark 1.3 Contributor. Routine delegated work starts on DeepSeek Flash;
 high-impact work uses GPT or Claude. No automatic route uses a GPT Fast tier.
-The tracked `agent/models.json` override restores DeepSeek V4.1's reasoning
-levels for the pinned provider package.
+The selected Go models are native to the installed OMO model registry.
 
 The `pro100` overlay moves `ultrabrain` and `plan-reviewer` off Astra and
 starts `quick` on DeepSeek. Launch with `OMO_PROFILE=pro100` when using the

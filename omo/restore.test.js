@@ -699,7 +699,7 @@ test("portable restore installs the current Native profile and fallback", async 
   const engine = await json(join(home, ".omo/agent/settings.json"))
   expect(native.model_profile).toBe("chatgpt-subscription/gpt-6-sol:medium")
   expect(native.profiles.pro100.categories.quick.models[0].model).toBe(
-    "commandcode/deepseek/deepseek-v4.1-flash",
+    "opencode-go/deepseek-v4.1-flash",
   )
   expect(engine.retry.fallbackChains["chatgpt-subscription/gpt-6-sol"]).toEqual([
     "anthropic-subscription/claude-opus-5-5:medium",
