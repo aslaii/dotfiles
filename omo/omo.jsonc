@@ -8,85 +8,87 @@
   "categories": {
     "architect": {
       "models": [
-        { "model": "anthropic-subscription/claude-opus-5-5", "reasoning": "high" },
-        { "model": "chatgpt-subscription/gpt-6-sol", "reasoning": "high" }
+        { "model": "chatgpt-subscription/gpt-6-sol", "reasoning": "high" },
+        { "model": "chatgpt-subscription/gpt-6-astra", "reasoning": "high" }
       ]
     },
     "ultrabrain": {
       "models": [
-        { "model": "chatgpt-subscription/gpt-6-astra", "reasoning": "high" },
-        { "model": "chatgpt-subscription/gpt-6-sol", "reasoning": "max" }
+        { "model": "anthropic-subscription/claude-opus-5-5", "reasoning": "high" },
+        { "model": "chatgpt-subscription/gpt-6-astra", "reasoning": "high" }
       ]
     },
     "deep-high": {
       "models": [
         { "model": "chatgpt-subscription/gpt-6-sol", "reasoning": "high" },
-        { "model": "anthropic-subscription/claude-opus-5-5", "reasoning": "high" }
+        { "model": "chatgpt-subscription/gpt-6-astra", "reasoning": "high" }
       ]
     },
     "deep-low": {
       "models": [
         { "model": "chatgpt-subscription/gpt-6-sol", "reasoning": "medium" },
-        { "model": "opencode-go/deepseek-v4.1-flash", "reasoning": "high" }
+        { "model": "chatgpt-subscription/gpt-6-luna", "reasoning": "high" }
       ]
     },
     "unspecified-high": {
       "models": [
-        { "model": "anthropic-subscription/claude-opus-5-5", "reasoning": "medium" },
-        { "model": "opencode-go/glm-5.3-flash", "reasoning": "off" },
-        { "model": "opencode-go/deepseek-v4.1-flash", "reasoning": "high" }
+        { "model": "chatgpt-subscription/gpt-6-sol", "reasoning": "high" },
+        { "model": "chatgpt-subscription/gpt-6-astra", "reasoning": "high" }
       ]
     },
     "visual-engineering": {
       "models": [
         { "model": "anthropic-subscription/claude-opus-5-5", "reasoning": "high" },
-        { "model": "opencode-go/glm-5.3-flash", "reasoning": "off" }
+        { "model": "chatgpt-subscription/gpt-6-sol", "reasoning": "high" }
       ]
     },
     "artistry": {
       "models": [
-        { "model": "opencode-go/glm-5.3-flash", "reasoning": "off" },
-        { "model": "anthropic-subscription/claude-opus-5-5", "reasoning": "medium" }
+        { "model": "chatgpt-subscription/gpt-6-sol", "reasoning": "high" },
+        { "model": "chatgpt-subscription/gpt-6-astra", "reasoning": "high" }
       ]
     },
     "writing": {
       "models": [
-        { "model": "opencode-go/glm-5.3-flash", "reasoning": "off" },
-        { "model": "anthropic-subscription/claude-opus-5-5", "reasoning": "low" }
+        { "model": "chatgpt-subscription/gpt-6-sol", "reasoning": "low" },
+        { "model": "chatgpt-subscription/gpt-6-luna", "reasoning": "medium" }
       ]
     },
     "quick": {
       "models": [
         { "model": "chatgpt-subscription/gpt-6-luna", "reasoning": "low" },
-        { "model": "opencode-go/deepseek-v4.1-flash", "reasoning": "low" },
-        { "model": "opencode-go/muse-spark-1.3-contributor", "reasoning": "xhigh" }
+        { "model": "chatgpt-subscription/gpt-6-sol", "reasoning": "low" }
       ]
     },
     "unspecified-low": {
       "models": [
-        { "model": "opencode-go/deepseek-v4.1-flash", "reasoning": "high" },
-        { "model": "opencode-go/muse-spark-1.3-contributor", "reasoning": "xhigh" },
-        { "model": "chatgpt-subscription/gpt-6-luna", "reasoning": "low" }
+        { "model": "chatgpt-subscription/gpt-6-luna", "reasoning": "medium" },
+        { "model": "chatgpt-subscription/gpt-6-sol", "reasoning": "medium" }
       ]
     }
   },
   "agents": {
     "explore": {
       "models": [
-        { "model": "opencode-go/deepseek-v4.1-flash", "reasoning": "low" },
-        { "model": "chatgpt-subscription/gpt-6-luna", "reasoning": "low" }
+        { "model": "chatgpt-subscription/gpt-6-luna", "reasoning": "low" },
+        { "model": "chatgpt-subscription/gpt-6-sol", "reasoning": "low" }
       ]
     },
     "librarian": {
       "models": [
-        { "model": "opencode-go/deepseek-v4.1-flash", "reasoning": "low" },
-        { "model": "opencode-go/glm-5.3-flash", "reasoning": "off" }
+        { "model": "chatgpt-subscription/gpt-6-luna", "reasoning": "low" },
+        { "model": "chatgpt-subscription/gpt-6-sol", "reasoning": "low" }
+      ]
+    },
+    "omo-bonsai": {
+      "models": [
+        { "model": "bonsai-local/model" }
       ]
     },
     "plan-consultant": {
       "models": [
-        { "model": "anthropic-subscription/claude-opus-5-5", "reasoning": "high" },
-        { "model": "opencode-go/glm-5.3-flash", "reasoning": "off" }
+        { "model": "chatgpt-subscription/gpt-6-sol", "reasoning": "high" },
+        { "model": "chatgpt-subscription/gpt-6-astra", "reasoning": "high" }
       ]
     },
     "plan-reviewer": {
@@ -104,33 +106,6 @@
       "max_members": 8,
       "max_parallel_members": 8,
       "max_wall_clock_minutes": 120
-    }
-  },
-  "profiles": {
-    "pro100": {
-      "categories": {
-        "ultrabrain": {
-          "models": [
-            { "model": "chatgpt-subscription/gpt-6-sol", "reasoning": "max" },
-            { "model": "anthropic-subscription/claude-opus-5-5", "reasoning": "high" }
-          ]
-        },
-        "quick": {
-          "models": [
-            { "model": "chatgpt-subscription/gpt-6-luna", "reasoning": "low" },
-            { "model": "opencode-go/deepseek-v4.1-flash", "reasoning": "low" },
-            { "model": "opencode-go/muse-spark-1.3-contributor", "reasoning": "xhigh" }
-          ]
-        }
-      },
-      "agents": {
-        "plan-reviewer": {
-          "models": [
-            { "model": "chatgpt-subscription/gpt-6-sol", "reasoning": "high" },
-            { "model": "anthropic-subscription/claude-opus-5-5", "reasoning": "high" }
-          ]
-        }
-      }
     }
   }
 }
