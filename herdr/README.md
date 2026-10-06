@@ -29,3 +29,36 @@ herdr server stop # required once so the server starts the new plugin
 
 The OMP launcher supplies OMP's stored session title through Herdr's
 `pane.report_metadata` API. Auto Title therefore needs no Claude integration.
+
+## OmO Native
+
+Install the SDK process-group extension outside the generated OmO runtime:
+
+```bash
+mkdir -p "$HOME/.omo/agent/extensions"
+cp "$HOME/dotfiles/herdr/sdk-process-group.js" \
+  "$HOME/.omo/agent/extensions/sdk-process-group.js"
+```
+
+Also install the shell hook that identifies the Bun foreground process:
+
+```bash
+cp "$HOME/dotfiles/herdr/omo.zsh" "$HOME/.config/herdr/omo.zsh"
+```
+
+Add this line once to `~/.zshrc`:
+
+```zsh
+[[ -r "$HOME/.config/herdr/omo.zsh" ]] && source "$HOME/.config/herdr/omo.zsh"
+```
+
+Open a new shell, then restart OmO. The hook sets `HERDR_AGENT=pi` only for
+`omo` commands inside Herdr; it does not export a global agent hint.
+OmO updates preserve both the hook and the user extension.
+It puts Claude SDK stream helpers in a separate process group inside Herdr,
+so Herdr follows OmO's native `pi` working, blocked, and idle reports.
+Ordinary commands and standalone Claude Code keep their normal process groups.
+The SDK still owns each helper's pipes and termination.
+
+Run `bun test herdr/*.test.mjs` to check process groups, scoped hints, and
+replacement of the package command during an update.

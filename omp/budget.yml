@@ -3,7 +3,7 @@
 # Stack: Claude Sonnet 5 through the $20/mo Claude subscription's OAuth
 # credential (`claude-sdk-oauth`, provider `anthropic`) first for the
 # driving roles, OpenCode Go DeepSeek V4.1 Flash once Claude's usage-aware
-# preflight reports the account inside its reserve margin, and Go's
+# preflight reports the account exhausted, and Go's
 # Muse Spark 1.3 Contributor for grunt lanes.
 # No OpenAI/GPT model or paid Zen model in this file.
 #
@@ -45,11 +45,11 @@ retry:
   modelFallback: true
   # Usage-aware preflight, same keys/values as agent/config.yml's global
   # profile (settings-schema.ts #1912-1970): before a call on a coding-plan
-  # model, check the active credential's remaining usage; below the 10%
-  # reserve margin count as low, and with policy "auto" silently advance to
+  # model, check the active credential's remaining usage; only at 0%
+  # remaining, with policy "auto", silently advance to
   # the next `fallbackChains` entry instead of erroring or prompting.
   usageAwareFallback: true
-  usageReservePct: 10
+  usageReservePct: 0
   usageReservePolicy: auto
   fallbackChains:
     default:

@@ -1,3 +1,7 @@
+import { readFileSync } from "node:fs";
+import { homedir } from "node:os";
+import { join } from "node:path";
+
 const ENTRY_TYPE = "omo.mode-status";
 const CAVEMAN_LEVELS = ["lite", "full", "ultra", "wenyan-lite", "wenyan-full", "wenyan-ultra", "off"];
 const PONYTAIL_LEVELS = ["lite", "full", "ultra", "off"];
@@ -30,7 +34,16 @@ function totalTokens(ctx) {
 }
 
 function modeDirective(systemPrompt, modes) {
+  const skills = ["ponytail", "caveman"]
+    .filter((name) => modes[name] !== "off")
+    .map((name) => `<skill name="${name}">
+${readFileSync(join(process.env.HOME || homedir(), ".agents", "skills", name, "SKILL.md"), "utf8")}
+</skill>`)
+    .join("\n\n");
+
   return `${systemPrompt}
+
+${skills}
 
 <omo-session-modes>
 Current session modes override their startup defaults:

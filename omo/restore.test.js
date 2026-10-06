@@ -119,6 +119,7 @@ async function writePortableConfig(snapshot) {
   await write(join(snapshot, "agent/hooks.json"), JSON.stringify({
     hooks: { PreToolUse: [{ matcher: "bash", hooks: [{ type: "command", command: "rtk hook claude", timeout: 10 }] }] },
   }))
+  await write(join(snapshot, "agent/models.json"), await readFile(new URL("./agent/models.json", import.meta.url)))
   await write(join(snapshot, "agent/auth.json"), "source credential")
   await write(join(snapshot, "agent/sessions/session.json"), "source session")
   await write(join(snapshot, "rules/RULE.md"), "rule\n")
@@ -146,6 +147,9 @@ async function writeDestinationConfig(home) {
         { type: "command", command: "keep" },
       ] }],
     },
+  }))
+  await write(join(home, ".omo/agent/models.json"), JSON.stringify({
+    providers: { "bonsai-local": { models: [{ id: "model" }] } },
   }))
   await write(join(home, ".omo/agent/auth.json"), "destination credential")
   await write(join(home, ".omo/agent/trust.json"), "destination trust")
@@ -199,6 +203,10 @@ test("restore merges portable configuration, safely installs resources, and is i
     join(home, ".omo/agent/skill-library/codex"),
   ])
 
+  const models = await json(join(home, ".omo/agent/models.json"))
+  expect(models.providers["bonsai-local"].models).toEqual([{ id: "model" }])
+  expect(models.providers["chatgpt-subscription"].models[0].id).toBe("gpt-6.1-sol")
+
   const hooks = await json(join(home, ".omo/agent/hooks.json"))
   expect(hooks.hooks).toEqual({
     PreToolUse: [{ matcher: "bash", hooks: [
@@ -245,6 +253,31 @@ test("restore merges portable configuration, safely installs resources, and is i
   await run(script, home)
   expect(await readdir(backups)).toEqual(firstBackups)
   expect(await skillTemps()).toEqual(tempsBefore)
+})
+
+test("restore registers GPT-6.1 Sol without replacing an existing provider", async () => {
+  const root = await mkdtemp(join(tmpdir(), "omo restore models "))
+  cleanup.push(root)
+  const snapshot = join(root, "snapshot")
+  const home = join(root, "home")
+  const script = join(snapshot, "restore.mjs")
+  await cp(restore, script)
+  const child = Bun.spawn(["omo", "--version"], { stdout: "pipe" })
+  const version = (await new Response(child.stdout).text()).match(/omo ([^\s]+)/)?.[1]
+  expect(await child.exited).toBe(0)
+  expect(version).toBeTruthy()
+  await write(join(snapshot, "restore.json"), JSON.stringify({
+    omoVersion: version, builtinExtensions: [], resources: [],
+  }))
+  await writePortableConfig(snapshot)
+  await writeDestinationConfig(home)
+
+  await run(script, home)
+  const models = await json(join(home, ".omo/agent/models.json"))
+  expect(models.providers["bonsai-local"].models).toEqual([{ id: "model" }])
+  expect(models.providers["chatgpt-subscription"].models[0].id).toBe("gpt-6.1-sol")
+  await run(script, home)
+  expect(await json(join(home, ".omo/agent/models.json"))).toEqual(models)
 })
 
 async function runScript(path) {

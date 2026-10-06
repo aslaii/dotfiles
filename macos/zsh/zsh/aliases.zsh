@@ -38,3 +38,9 @@ alias btop='btop_themed'
 alias ompb="omp-budget"
 alias ompd='ompb --config "$HOME/dotfiles/omp/no-claude.yml"'
 alias ompp="omp-personal"
+
+# Vanilla Pi with the aslaii-pi package (plain `pi` is OmO's Senpi)
+alias aslaii-pi="$HOME/.local/pi-vanilla/node_modules/.bin/pi"
+
+# Vanilla Pi with the aslaii-pi package (plain `pi` is OmO's Senpi)
+alias aslaii-pi="$HOME/.local/pi-vanilla/node_modules/.bin/pi"

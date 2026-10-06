@@ -29,17 +29,102 @@ pinned `comment-checker` binary (`~/.local/bin/comment-checker`, override via
 `edit`/`apply_patch`/`multiedit`; `write` already works through the installed
 package.
 
+The extension must also be present in the live `~/.omp/agent/extensions/`
+directory, and `extension-module:comment-checker-hashline` must not appear
+under `disabledExtensions` in the live `config.yml`. Restart OMP or run
+`/reload` after installing or enabling it.
+
+Hashline checking runs **after** the edit: it appends the checker warning
+and repository policy to the tool result and sends a steering message.
+It does not block or roll back the mutation. The agent must remove the
+unnecessary comment. This is separate from the installed plugin's
+pre-execution blocking of `write`.
+
+Verified on the personal machine and SSH JR using OMP's SDK, normal extension
+discovery, production headless initialization, and real wrapped tools:
+an unnecessary-comment write was rejected without creating a file; a clean
+write succeeded; a hashline edit on a 3,000-line file with
+`snapshotsPruned: true` returned the comment warning and repository policy;
+clean edits and removal of the flagged comment returned no comment warning.
+The smoke runs used temporary files and a session-only hashline mode override,
+not model-generated tool calls.
+
 ## Launch profiles
 
 | Command | Overlay | Behaviour |
 | --- | --- | --- |
-| `omp` | none | Default routing from `agent/config.yml` (the global profile: Claude Opus/Sonnet where `agent/config.yml` names them, no budget guard). |
+| `omp` | none | GPT-6.1 Sol medium by default. `omp --prewalk` starts Main on Claude Opus 5.5 high and targets Sol medium. No personal overlay; subagents retain the machine's global routing. |
 | `omp-fast` | `fast.yml` + `fast.mjs` | Priority Claude/GPT requests, 32 parallel agents. |
 | `omp-budget` (`ompb`) | `budget.yml` | Claude Sonnet 5 first (the $20 subscription's OAuth login), OpenCode Go DeepSeek V4.1 Flash on Claude limits, Go Muse Contributor for grunt work. |
 | `ompd` | `budget.yml` + `no-claude.yml` | Same plan-hosted profile as `ompb`, with every role (not just `default`) pinned off Claude for the run. |
 | `omp-gpt` | `gpt.yml` | Every role on `openai-codex/gpt-5.6-*`, no non-GPT primary anywhere. |
 | `omp-union` | `union-only.yml` | Every role on the free `openrouter/stealth/union-alpha` model, free-only fallback chain. |
-| `omp-personal` (`ompp`) | `personal.yml` | Claude Sonnet 5 (default) + Opus 5 (plan/planner only) on the $20 subscription; routine work on OpenCode Go DeepSeek V4.1 Flash, advisor and research on GLM-5.3-Flash, and grunt work on Muse Spark 1.3 Contributor. No GPT or OpenRouter. Plain `ompp` passes no prewalk flags. `ompp --prewalk` maps to `--model @plan --prewalk-into @default`: session starts on Opus 5 High, prewalk arms a handoff to Sonnet 5 at Main's own first `edit`/`write` call. Under the tracked setup Main delegates the first implementation edit to `task`/`terra`, which run on the `task` role, not whatever Main is on, so that handoff fires only when Main edits directly — `--prewalk` otherwise only changes Main's starting model, not the delegated implementer's model. |
+| `omp-personal` (`ompp`) | `personal.yml` | GPT-6.1 Sol medium by default; `ompp --prewalk` starts Main on Claude Opus 5.5 high and targets Sol medium. The overlay's existing subagent roles stay unchanged. |
+
+On both the personal machine and JR, explicit `--prewalk` adds
+`--model @plan --prewalk-into @default` before user arguments, so explicit
+model/target overrides still win. Plain launches keep prewalk off.
+The native handoff happens after Main's first `edit`/`write` following its todo
+list, not after a delegated worker's edit. If Main only delegates, it stays on
+Opus; subagents use their own configured roles before and after the handoff.
+Enabling `prewalk.enabled` globally does not activate the shell's starting-model
+and target overrides; pass `--prewalk` explicitly for the Opus-to-Sol route.
+Credentials remain machine-local; changing JR's Claude login does not change
+this routing. Claude and Codex accounts must have access to the selected models;
+existing fallbacks can select another model when access is denied or usage is
+exhausted.
+
+### Default model routing
+
+The personal machine and JR use the same roles and agent overrides:
+
+- Main: Codex GPT-6.1 Sol, medium.
+- Small tasks (`smol`, `research`, `tiny`, `commit`; scout and sonic):
+  Codex GPT-6 Luna, low, with `tier.openai: priority`.
+- Implementation and review: Anthropic Claude Sonnet 5.5.
+- Planning and heavy reasoning: Anthropic Claude Opus 5.5, high.
+
+OMP registers `gpt-6-luna`, not `gpt-6-luna-fast`. Fast mode is the
+priority service tier, inherited by subagents. This family-level setting
+also makes Sol requests priority; Claude keeps its standard tier.
+
+Claude roles fall back to Codex GPT-6.1 Sol before one OpenCode Go model:
+
+| Roles | GPT fallback | Terminal Go fallback |
+| --- | --- | --- |
+| `task` | Sol high | DeepSeek V4.1 Flash high |
+| `review` | Sol high | GLM 5.3 Flash high |
+| `plan`, `planner`, `slow` | Sol high | GLM 5.3 Flash max |
+| `verify`, `vision` | Sol medium | DeepSeek V4.1 Flash high |
+| `advisor` | Sol medium | GLM 5.3 Flash high |
+
+Main still falls back directly to DeepSeek high. Small roles retain GLM low;
+commit retains Muse Spark 1.3 Contributor medium. The `free` role uses Go Muse
+directly with no fallback. No chain retries another model on the same provider,
+and Space Bunny is not selected. The opt-in overlays above retain their own routing.
+
+The task fit is a conservative judgment, not a measured OMP quality ranking.
+On October 5, 2026, [Artificial Analysis measured DeepSeek V4.1 Flash at max](https://artificialanalysis.ai/models/deepseek-v4-1-flash)
+at Intelligence Index 39 and about 213 output tokens/s; [GLM 5.3 Flash](https://artificialanalysis.ai/models/glm-5-3-flash)
+scored 42 at about 51 tokens/s. That favors DeepSeek for execution latency and
+GLM for review and reasoning; these are not OpenCode Go endpoint measurements,
+and DeepSeek's max scores do not establish its high-effort performance.
+
+Recent OMP Go-model checks establish connectivity, not coding quality. The
+September 25 OMO comparison session reports useful DeepSeek repository mapping
+and implementation, but also defects corrected after independent review.
+Comparable completed GLM/Muse work is sparse in the inspected transcripts.
+Keep independent verification when using these terminal fallbacks.
+
+No exact Contributor-tier quality benchmark was found. Standard Muse max
+scores are not transferable: [Contributor does not support max reasoning](https://dev.meta.ai/docs/reasoning.md).
+[Meta's direct Contributor tier permits training on prompts and completions](https://dev.meta.ai/docs/pricing-rate-limits.md);
+whether OpenCode Go overrides that policy is unverified. Muse is therefore
+not promoted to critical planning or review roles.
+
+JR keeps its machine-specific skills, display settings, and concurrency.
+Restart existing sessions to load the new routing; configuration changes do
+not forcibly switch an already running session or worker.
 
 ## Resource guard
 
@@ -131,8 +216,26 @@ bun ~/dotfiles/omp/launch.mjs --config ~/dotfiles/omp/budget.yml
 
 ## herdr tracking
 
-Herdr's own OMP integration reports nothing on Herdr 0.9.0: the server silently drops `source="herdr:omp"`, the literal the integration hardcodes. That version also enables the integration inside nested OMP workers, whose exit can remove the root pane's row.
-The shared launcher patches the live extension before every OMP start: it changes the source to `custom:omp` and adds the v10 `OMPCODE` nested-process guard when the v9 `enabled()` body is present. Both replacements are no-ops when the integration is absent, already patched, or no longer contains the affected v9 text.
+Install the official OMP integration on each machine:
+
+```bash
+herdr integration install omp
+herdr integration status
+```
+
+The installed v10 extension owns lifecycle reporting; OMP does not supply a
+built-in reporter. Keep `extension-module:herdr-omp-agent-state` out of
+`disabledExtensions`. Plain `omp` explicitly loads only that extension while
+retaining `--no-extensions` for unrelated extensions. The shared launcher also
+loads the installed reporter explicitly, alongside the title extension.
+Reload the shell after changing its wrapper; restart OMP or run `/reload` to
+load an enabled extension in an existing session.
+
+The shared launcher retains the `custom:omp` source compatibility patch for
+source-entry launches. Native binary launches can report with the official
+`herdr:omp` source on Herdr 0.9.3.
+The v10 integration already has the `OMPCODE` guard against nested workers;
+the launcher no longer patches that guard.
 `herdr-title.mjs` is loaded by the same launcher. It reads OMP's stored session
 name through the extension API, follows OMP's session-name change callback, and
 reports that exact value as `custom:omp` pane metadata; Auto Title then prefers
@@ -149,8 +252,8 @@ inherits the rest from `agent/config.yml`. The driving roles
 (plan/planner/slow/review/task/advisor/default) run on `anthropic/claude-sonnet-5`
 through the $20/mo Claude subscription's OAuth login (`claude-sdk-oauth`,
 provider `anthropic` — not Command Code credits). Once that credential's
-usage-aware preflight (`retry.usageAwareFallback`) reports it inside its 10%
-reserve, those roles fall back automatically to OpenCode Go DeepSeek V4.1 Flash
+usage-aware preflight (`retry.usageAwareFallback`) reports it exhausted,
+those roles fall back automatically to OpenCode Go DeepSeek V4.1 Flash
 (`opencode-go/deepseek-v4.1-flash`, `high`), then to
 `opencode-go/muse-spark-1.3-contributor`.
 
@@ -190,7 +293,7 @@ without `ompd` is unaffected.
    ```
 
    It must answer with `anthropic/claude-sonnet-5`. Without the Claude OAuth
-   login, or once its usage reserve is hit, the run falls back to
+   login, or once its quota is exhausted, the run falls back to
    `opencode-go/deepseek-v4.1-flash` instead.
 
 ## What restores, what does not

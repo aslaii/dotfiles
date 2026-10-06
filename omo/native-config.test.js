@@ -11,8 +11,8 @@ test("native RPC startup applies the approved profile but preserves an explicit 
   const binary = await realpath(process.env.OMO_BIN || Bun.which("omo"));
   const portable = Bun.JSONC.parse(await readFile(new URL("./omo.jsonc", import.meta.url), "utf8"));
   for (const [profile, args, provider, model, thinking] of [
-    [undefined, [], "chatgpt-subscription", "gpt-6-sol", "medium"],
-    ["pro100", [], "chatgpt-subscription", "gpt-6-sol", "medium"],
+    [undefined, [], "chatgpt-subscription", "gpt-6.1-sol-fast", "medium"],
+    ["pro100", [], "chatgpt-subscription", "gpt-6.1-sol-fast", "medium"],
     [undefined, ["--model", "chatgpt-subscription/gpt-6-luna:low"], "chatgpt-subscription", "gpt-6-luna", "low"],
   ]) {
     const home = await mkdtemp(join(tmpdir(), "omo native config "));
@@ -27,6 +27,7 @@ test("native RPC startup applies the approved profile but preserves an explicit 
       skills: [],
     };
     await writeFile(join(home, ".omo", "omo.jsonc"), JSON.stringify(portable));
+    await writeFile(join(agentDir, "models.json"), await readFile(new URL("./agent/models.json", import.meta.url)));
     await writeFile(join(agentDir, "settings.json"), JSON.stringify(settings));
     const oauth = { type: "oauth", access: "fixture-unused", refresh: "fixture-unused", expires: 4102444800000 };
     await writeFile(join(agentDir, "auth.json"), JSON.stringify({

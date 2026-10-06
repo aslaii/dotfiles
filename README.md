@@ -97,11 +97,11 @@ and its `--check` option remain unchanged.
 Authenticate separately with `/login` inside OMP on each computer. Model access
 depends on that computer's authenticated accounts; the config contains no credentials.
 
-Deployed routing keeps Main on Sol-medium (`@default`) for orchestration,
-bounded workers on Sonnet-high (`@task`), difficult workers and planning on
-Sol-max (`@slow`/`@planner`), review on Opus-xhigh (`@review`), and verification,
-research, or free fallback on Muse Contributor Free-xhigh (`@verify`/`@research`/`@free`). Advisor and
-prewalk are off by default; dispatch allows at most two workers and no nested workers.
+Main uses GPT-6.1 Sol medium (`@default`) for normal launches. On the personal
+machine and JR, `omp --prewalk` or `ompp --prewalk` starts Main on Claude Opus 5.5
+high (`@plan`) and targets Sol medium after Main's first edit/write following
+todos. Delegated edits do not trigger the handoff; existing subagent roles remain
+machine/profile-specific. Prewalk is off without the explicit flag.
 The free endpoint is promotional; Contributor inputs and history may be used for
 training. There is no automatic paid Zen fallback.
 
@@ -174,7 +174,7 @@ For a spend-capped session, use `omp-budget`. It is a `--config` overlay
 (`omp/budget.yml`, the same mechanism as `omp-fast`) that runs the driving
 roles on `anthropic/claude-sonnet-5` through the $20/mo Claude subscription's
 OAuth login first, falling back — once that credential's usage-aware
-preflight reports it inside its reserve margin — to the Command Code $10
+preflight reports it exhausted — to the Command Code $10
 plan's DeepSeek V4.1 Flash tier, then to the plan-hosted Muse Spark 1.3
 Contributor. Vision reads stay on the plan's dedicated image-native vision
 model (confirmed with a real image probe), designer and small/verify/research/free

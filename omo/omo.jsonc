@@ -1,6 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/code-yeongyu/oh-my-openagent/dev/assets/omo.schema.json",
-  "model_profile": "chatgpt-subscription/gpt-6-sol:medium",
+  "model_profile": "geeky-normal",
   "git_master": {
     "commit_footer": false,
     "include_co_authored_by": false
@@ -8,76 +8,88 @@
   "categories": {
     "architect": {
       "models": [
-        { "model": "chatgpt-subscription/gpt-6-sol", "reasoning": "high" },
-        { "model": "chatgpt-subscription/gpt-6-astra", "reasoning": "high" }
+        { "model": "anthropic-subscription/claude-opus-5-5", "reasoning": "high" },
+        { "model": "chatgpt-subscription/gpt-6.1-sol", "reasoning": "high" },
+        { "model": "opencode-go/deepseek-v4.1-flash", "reasoning": "high" }
       ]
     },
     "ultrabrain": {
       "models": [
-        { "model": "anthropic-subscription/claude-opus-5-5", "reasoning": "high" },
-        { "model": "chatgpt-subscription/gpt-6-astra", "reasoning": "high" }
+        { "model": "chatgpt-subscription/gpt-6-astra", "reasoning": "high" },
+        { "model": "opencode-go/deepseek-v4.1-flash", "reasoning": "high" }
       ]
     },
     "deep-high": {
       "models": [
-        { "model": "chatgpt-subscription/gpt-6-sol", "reasoning": "high" },
-        { "model": "chatgpt-subscription/gpt-6-astra", "reasoning": "high" }
+        { "model": "chatgpt-subscription/gpt-6.1-sol", "reasoning": "high" },
+        { "model": "opencode-go/deepseek-v4.1-flash", "reasoning": "high" }
       ]
     },
     "deep-low": {
       "models": [
-        { "model": "chatgpt-subscription/gpt-6-sol", "reasoning": "medium" },
-        { "model": "chatgpt-subscription/gpt-6-luna", "reasoning": "high" }
+        { "model": "chatgpt-subscription/gpt-6.1-sol", "reasoning": "medium" },
+        { "model": "opencode-go/deepseek-v4.1-flash", "reasoning": "high" }
       ]
     },
     "unspecified-high": {
       "models": [
-        { "model": "chatgpt-subscription/gpt-6-sol", "reasoning": "high" },
-        { "model": "chatgpt-subscription/gpt-6-astra", "reasoning": "high" }
+        { "model": "anthropic-subscription/claude-opus-5-5", "reasoning": "high" },
+        { "model": "chatgpt-subscription/gpt-6.1-sol", "reasoning": "high" },
+        { "model": "opencode-go/deepseek-v4.1-flash", "reasoning": "high" }
       ]
     },
     "visual-engineering": {
       "models": [
         { "model": "anthropic-subscription/claude-opus-5-5", "reasoning": "high" },
-        { "model": "chatgpt-subscription/gpt-6-sol", "reasoning": "high" }
+        { "model": "chatgpt-subscription/gpt-6.1-sol", "reasoning": "high" },
+        { "model": "opencode-go/deepseek-v4.1-flash", "reasoning": "high" }
       ]
     },
     "artistry": {
       "models": [
-        { "model": "chatgpt-subscription/gpt-6-sol", "reasoning": "high" },
-        { "model": "chatgpt-subscription/gpt-6-astra", "reasoning": "high" }
+        { "model": "anthropic-subscription/claude-opus-5-5", "reasoning": "high" },
+        { "model": "chatgpt-subscription/gpt-6.1-sol", "reasoning": "high" },
+        { "model": "opencode-go/deepseek-v4.1-flash", "reasoning": "high" }
       ]
     },
     "writing": {
       "models": [
-        { "model": "chatgpt-subscription/gpt-6-sol", "reasoning": "low" },
-        { "model": "chatgpt-subscription/gpt-6-luna", "reasoning": "medium" }
+        { "model": "anthropic-subscription/claude-sonnet-5-5", "reasoning": "medium" },
+        { "model": "chatgpt-subscription/gpt-6-luna-fast", "reasoning": "medium" },
+        { "model": "opencode-go/glm-5.3-flash", "reasoning": "low" }
       ]
     },
     "quick": {
       "models": [
-        { "model": "chatgpt-subscription/gpt-6-luna", "reasoning": "low" },
-        { "model": "chatgpt-subscription/gpt-6-sol", "reasoning": "low" }
+        { "model": "chatgpt-subscription/gpt-6-luna-fast", "reasoning": "low" },
+        { "model": "opencode-go/glm-5.3-flash", "reasoning": "low" }
       ]
     },
     "unspecified-low": {
       "models": [
-        { "model": "chatgpt-subscription/gpt-6-luna", "reasoning": "medium" },
-        { "model": "chatgpt-subscription/gpt-6-sol", "reasoning": "medium" }
+        { "model": "anthropic-subscription/claude-sonnet-5-5", "reasoning": "medium" },
+        { "model": "chatgpt-subscription/gpt-6-luna-fast", "reasoning": "medium" },
+        { "model": "opencode-go/glm-5.3-flash", "reasoning": "low" }
       ]
     }
   },
   "agents": {
+    "omo-native-qa-executor": {
+      "models": [
+        { "model": "chatgpt-subscription/gpt-6.1-sol", "reasoning": "medium" },
+        { "model": "opencode-go/deepseek-v4.1-flash", "reasoning": "high" }
+      ]
+    },
     "explore": {
       "models": [
-        { "model": "chatgpt-subscription/gpt-6-luna", "reasoning": "low" },
-        { "model": "chatgpt-subscription/gpt-6-sol", "reasoning": "low" }
+        { "model": "chatgpt-subscription/gpt-6-luna-fast", "reasoning": "low" },
+        { "model": "opencode-go/glm-5.3-flash", "reasoning": "low" }
       ]
     },
     "librarian": {
       "models": [
-        { "model": "chatgpt-subscription/gpt-6-luna", "reasoning": "low" },
-        { "model": "chatgpt-subscription/gpt-6-sol", "reasoning": "low" }
+        { "model": "chatgpt-subscription/gpt-6-luna-fast", "reasoning": "low" },
+        { "model": "opencode-go/glm-5.3-flash", "reasoning": "low" }
       ]
     },
     "omo-bonsai": {
@@ -87,14 +99,15 @@
     },
     "plan-consultant": {
       "models": [
-        { "model": "chatgpt-subscription/gpt-6-sol", "reasoning": "high" },
-        { "model": "chatgpt-subscription/gpt-6-astra", "reasoning": "high" }
+        { "model": "anthropic-subscription/claude-opus-5-5", "reasoning": "high" },
+        { "model": "chatgpt-subscription/gpt-6.1-sol", "reasoning": "high" },
+        { "model": "opencode-go/deepseek-v4.1-flash", "reasoning": "high" }
       ]
     },
     "plan-reviewer": {
       "models": [
         { "model": "chatgpt-subscription/gpt-6-astra", "reasoning": "high" },
-        { "model": "chatgpt-subscription/gpt-6-sol", "reasoning": "high" }
+        { "model": "opencode-go/deepseek-v4.1-flash", "reasoning": "high" }
       ]
     }
   },

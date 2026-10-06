@@ -107,7 +107,13 @@ function opencode() {
 }
 
 function omp() {
-  bun "${DOTFILES_DIR:-$HOME/dotfiles}/omp/launch.mjs" --model @default "$@"
+  local extra=()
+  for a in "$@"; do
+    [[ "$a" == "--prewalk" ]] && extra=(--model @plan --prewalk-into @default)
+  done
+  command omp --no-extensions \
+    --extension "${PI_CODING_AGENT_DIR:-$HOME/.omp/agent}/extensions/herdr-omp-agent-state.ts" \
+    "${extra[@]}" "$@"
 }
 
 function omp-fast() {
@@ -132,10 +138,6 @@ function omp-union() {
 }
 
 function omp-personal() {
-  # Plain by default (no prewalk). Passing --prewalk explicitly maps it to
-  # Opus 5 High as the start/plan model, handing off to Sonnet 5 (`default`
-  # role) at the first edit/write. Explicit --model/--prewalk-into after
-  # --prewalk still win (CLI takes the last occurrence).
   local extra=()
   for a in "$@"; do
     [[ "$a" == "--prewalk" ]] && extra=(--model @plan --prewalk-into @default)

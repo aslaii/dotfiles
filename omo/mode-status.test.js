@@ -1,5 +1,7 @@
 import { expect, test } from "bun:test";
-import { readFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import modeStatus, { formatTokens } from "./agent/extensions/mode-status.js";
 
 function fixture({ totals = {}, entries = [] } = {}) {
@@ -36,6 +38,24 @@ function fixture({ totals = {}, entries = [] } = {}) {
   return { handlers, commands, statuses, notices, appended, ctx };
 }
 
+async function withSkillHome(run) {
+  const home = await mkdtemp(join(tmpdir(), "omo-mode-skills-"));
+  const previousHome = process.env.HOME;
+  try {
+    for (const name of ["ponytail", "caveman"]) {
+      const directory = join(home, ".agents", "skills", name);
+      await mkdir(directory, { recursive: true });
+      await writeFile(join(directory, "SKILL.md"), `skill-body-${name}`);
+    }
+    process.env.HOME = home;
+    await run();
+  } finally {
+    if (previousHome === undefined) delete process.env.HOME;
+    else process.env.HOME = previousHome;
+    await rm(home, { recursive: true, force: true });
+  }
+}
+
 test("session start shows default modes and cumulative tokens", async () => {
   const f = fixture({
     totals: { input: 40_000, output: 4_000, cacheRead: 70_000, cacheWrite: 0 },
@@ -50,7 +70,7 @@ test("session start shows default modes and cumulative tokens", async () => {
   ]);
 });
 
-test("commands update modes, persist state, and change the next prompt", async () => {
+test("commands update modes, persist state, and change the next prompt", () => withSkillHome(async () => {
   const f = fixture();
   await f.handlers.get("session_start")({ reason: "startup" }, f.ctx);
 
@@ -69,7 +89,29 @@ test("commands update modes, persist state, and change the next prompt", async (
   });
   expect(result.systemPrompt).toContain("Caveman: ultra");
   expect(result.systemPrompt).toContain("Ponytail: off");
-});
+}));
+
+test("fresh sessions load both skills and off modes omit their bodies", () => withSkillHome(async () => {
+  const f = fixture();
+  await f.handlers.get("session_start")({ reason: "startup" }, f.ctx);
+  const first = f.handlers.get("before_agent_start")({ systemPrompt: "base" }).systemPrompt;
+  expect(first).toContain("skill-body-ponytail");
+  expect(first).toContain("skill-body-caveman");
+  expect(first).toContain("Ponytail: full");
+  expect(first).toContain("Caveman: lite");
+
+  await f.commands.get("caveman").handler("off", f.ctx);
+  const changed = f.handlers.get("before_agent_start")({ systemPrompt: "base" }).systemPrompt;
+  expect(changed).toContain("skill-body-ponytail");
+  expect(changed).not.toContain("skill-body-caveman");
+  expect(changed).toContain("Caveman: off");
+
+  await f.handlers.get("session_start")({ reason: "new" }, f.ctx);
+  const fresh = f.handlers.get("before_agent_start")({ systemPrompt: "base" }).systemPrompt;
+  expect(fresh).toContain("skill-body-ponytail");
+  expect(fresh).toContain("skill-body-caveman");
+  expect(fresh).toContain("Caveman: lite");
+}));
 
 test("resumed sessions restore the latest saved modes", async () => {
   const f = fixture({

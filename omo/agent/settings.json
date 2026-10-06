@@ -6,7 +6,7 @@
     }
   },
   "defaultProvider": "chatgpt-subscription",
-  "defaultModel": "gpt-6-sol",
+  "defaultModel": "gpt-6.1-sol-fast",
   "defaultThinkingLevel": "medium",
   "packages": [
     {
@@ -34,16 +34,20 @@
   "quietStartup": true,
   "hideThinkingBlock": false,
   "favoriteModels": [
-    "chatgpt-subscription/gpt-6-sol",
+    "chatgpt-subscription/gpt-6.1-sol-fast",
+    "chatgpt-subscription/gpt-6-luna-fast",
+    "chatgpt-subscription/gpt-6.1-sol",
     "chatgpt-subscription/gpt-6-luna",
     "chatgpt-subscription/gpt-6-astra",
     "anthropic-subscription/claude-opus-5-5"
   ],
   "modelThinkingLevels": {
-    "chatgpt-subscription/gpt-6-sol": "medium",
+    "chatgpt-subscription/gpt-6.1-sol": "medium",
     "chatgpt-subscription/gpt-6-luna": "low",
     "chatgpt-subscription/gpt-6-astra": "high",
-    "anthropic-subscription/claude-opus-5-5": "medium"
+    "anthropic-subscription/claude-opus-5-5": "medium",
+    "chatgpt-subscription/gpt-6.1-sol-fast": "medium",
+    "chatgpt-subscription/gpt-6-luna-fast": "low"
   },
   "skills": [
     "!__OMO_HOME__/.agents/skills/**",
@@ -55,18 +59,26 @@
     "*": "allow"
   },
   "enabledModels": [
-    "chatgpt-subscription/gpt-6-sol",
+    "chatgpt-subscription/gpt-6.1-sol",
     "chatgpt-subscription/gpt-6-luna",
     "chatgpt-subscription/gpt-6-astra",
-    "anthropic-subscription/claude-opus-5-5"
+    "anthropic-subscription/claude-opus-5-5",
+    "opencode/space-bunny-free",
+    "opencode-go/deepseek-v4.1-flash",
+    "opencode-go/glm-5.3-flash",
+    "nvidia/z-ai/glm-5.3-flash",
+    "command-code/stealth/space-bunny-alpha",
+    "chatgpt-subscription/gpt-6.1-sol-fast",
+    "chatgpt-subscription/gpt-6-luna-fast",
+    "anthropic-subscription/claude-sonnet-5-5"
   ],
   "terminal": {
     "showTerminalProgress": false
   },
   "uiMode": "fullscreen",
   "modelServiceTiers": {
-    "chatgpt-subscription/gpt-6-sol": "auto",
-    "chatgpt-subscription/gpt-6-luna": "auto",
+    "chatgpt-subscription/gpt-6.1-sol": "priority",
+    "chatgpt-subscription/gpt-6-luna": "priority",
     "chatgpt-subscription/gpt-6-astra": "auto"
   },
   "compaction": {
@@ -78,25 +90,35 @@
     }
   },
   "recommendedModels": [
-    "gpt-6-sol"
+    "gpt-6.1-sol-fast"
   ],
   "retry": {
     "enabled": true,
     "modelFallback": true,
     "fallbackRevertPolicy": "cooldown-expiry",
     "fallbackChains": {
-      "chatgpt-subscription/gpt-6-sol": [
+      "chatgpt-subscription/gpt-6.1-sol": [
+        "anthropic-subscription/claude-opus-5-5:medium"
+      ],
+      "chatgpt-subscription/gpt-6.1-sol-fast": [
         "anthropic-subscription/claude-opus-5-5:medium"
       ],
       "chatgpt-subscription/gpt-6-astra": [
-        "anthropic-subscription/claude-opus-5-5:high"
+        "opencode-go/deepseek-v4.1-flash:high"
       ],
       "chatgpt-subscription/gpt-6-luna": [
-        "chatgpt-subscription/gpt-6-sol:low"
+        "opencode-go/glm-5.3-flash:low"
+      ],
+      "chatgpt-subscription/gpt-6-luna-fast": [
+        "opencode-go/glm-5.3-flash:low"
       ],
       "anthropic-subscription/claude-opus-5-5": [
-        "chatgpt-subscription/gpt-6-astra:high",
-        "chatgpt-subscription/gpt-6-sol:medium"
+        "chatgpt-subscription/gpt-6.1-sol:high",
+        "opencode-go/deepseek-v4.1-flash:high"
+      ],
+      "anthropic-subscription/claude-sonnet-5-5": [
+        "chatgpt-subscription/gpt-6-luna-fast:medium",
+        "opencode-go/glm-5.3-flash:low"
       ]
     }
   },

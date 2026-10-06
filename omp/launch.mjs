@@ -58,21 +58,6 @@ function releaseHerdrAgent() {
 }
 
 const dir = agentDir();
-const herdrExtension = join(dir, "extensions", "herdr-omp-agent-state.ts");
-if (existsSync(herdrExtension)) {
-  const source = await Bun.file(herdrExtension).text();
-  const patched = source
-    .replace('const source = "herdr:omp";', 'const source = "custom:omp";')
-    .replace(
-      `function enabled() {
-  return HERDR_ENV === "1" && !!socketPath && !!paneId;
-}`,
-      `function enabled() {
-  return process.env.OMPCODE !== "1" && HERDR_ENV === "1" && !!socketPath && !!paneId;
-}`,
-    );
-  if (patched !== source) await Bun.write(herdrExtension, patched);
-}
 const cfgPath = join(dir, "config.yml");
 if (!existsSync(cfgPath)) {
   console.error(`omp/launch: missing global config: ${cfgPath}`);
@@ -90,7 +75,17 @@ if (missing.length) {
 }
 
 const userArgs = process.argv.slice(2);
-const args = [...(existsSync(herdrTitle) ? ["--extension", herdrTitle] : []), ...userArgs];
+const herdrExtension = join(dir, "extensions", "herdr-omp-agent-state.ts");
+if (existsSync(herdrExtension)) {
+  const source = await Bun.file(herdrExtension).text();
+  const patched = source.replace('const source = "herdr:omp";', 'const source = "custom:omp";');
+  if (patched !== source) await Bun.write(herdrExtension, patched);
+}
+const args = [
+  ...(existsSync(herdrExtension) ? ["--extension", herdrExtension] : []),
+  ...(existsSync(herdrTitle) ? ["--extension", herdrTitle] : []),
+  ...userArgs,
+];
 if (process.env.OMP_LAUNCH_DRY_RUN === "1") {
   console.log(`omp-binary: ${srcCli}`);
   console.log(`preload: ${preload}`);
