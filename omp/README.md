@@ -78,21 +78,26 @@ exhausted.
 
 The personal machine and JR use the same roles and agent overrides:
 
-- Main: Codex GPT-6.1 Sol, medium.
+- Main: Anthropic Claude Opus 5.5, medium.
 - Small tasks (`smol`, `research`, `tiny`, `commit`; scout and sonic):
   Codex GPT-6 Luna, low, with `tier.openai: priority`.
-- Implementation and review: Anthropic Claude Sonnet 5.5.
+- Implementation subagents (`task`): Codex GPT-6.1 Sol, high. Subagents run
+  in parallel, so keeping them off Claude stops them from draining the Claude
+  quota that the main session needs.
+- Review, verify, vision and advisor: Anthropic Claude Sonnet 5.5.
 - Planning and heavy reasoning: Anthropic Claude Opus 5.5, high.
+- At most eight subagents run concurrently.
 
 OMP registers `gpt-6-luna`, not `gpt-6-luna-fast`. Fast mode is the
 priority service tier, inherited by subagents. This family-level setting
 also makes Sol requests priority; Claude keeps its standard tier.
 
-Claude roles fall back to Codex GPT-6.1 Sol before one OpenCode Go model:
+Claude roles fall back to Codex GPT-6.1 Sol before one OpenCode Go model.
+`task` instead falls back to Claude Sonnet 5.5:
 
 | Roles | GPT fallback | Terminal Go fallback |
 | --- | --- | --- |
-| `task` | Sol high | DeepSeek V4.1 Flash high |
+| `task` | Sonnet 5.5 high (Claude) | DeepSeek V4.1 Flash high |
 | `review` | Sol high | GLM 5.3 Flash high |
 | `plan`, `planner`, `slow` | Sol high | GLM 5.3 Flash max |
 | `verify`, `vision` | Sol medium | DeepSeek V4.1 Flash high |
