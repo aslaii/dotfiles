@@ -50,10 +50,7 @@ tier:
   subagent: inherit
 task:
   disabledAgents:
-    - terra
-    - verifier
-    - researcher
-    - planner
+    []
   maxConcurrency: 8
   maxRecursionDepth: 1
   enableLsp: true
@@ -78,7 +75,7 @@ retry:
   fallbackRevertPolicy: cooldown-expiry
   fallbackChains:
     default:
-      - opencode-go/deepseek-v4.1-flash:high
+      - openai-codex/gpt-6.1-sol:medium
     plan:
       - openai-codex/gpt-6.1-sol:high
       - opencode-go/glm-5.3-flash:max
