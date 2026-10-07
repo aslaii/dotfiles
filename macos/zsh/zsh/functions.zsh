@@ -113,6 +113,8 @@ function omp() {
   done
   command omp --no-extensions \
     --extension "${PI_CODING_AGENT_DIR:-$HOME/.omp/agent}/extensions/herdr-omp-agent-state.ts" \
+    --extension "${PI_CODING_AGENT_DIR:-$HOME/.omp/agent}/extensions/comment-checker-hashline.ts" \
+    --extension "$HOME/.omp/plugins/node_modules/pi-comment-checker/extensions/index.ts" \
     "${extra[@]}" "$@"
 }
 

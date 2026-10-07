@@ -230,8 +230,10 @@ herdr integration status
 
 The installed v10 extension owns lifecycle reporting; OMP does not supply a
 built-in reporter. Keep `extension-module:herdr-omp-agent-state` out of
-`disabledExtensions`. Plain `omp` explicitly loads only that extension while
-retaining `--no-extensions` for unrelated extensions. The shared launcher also
+`disabledExtensions`. Plain `omp` explicitly loads only that extension and the
+two comment-checker extensions (`comment-checker-hashline.ts` and the
+`pi-comment-checker` plugin entry) while retaining `--no-extensions` for
+unrelated extensions. The shared launcher also
 loads the installed reporter explicitly, alongside the title extension.
 Reload the shell after changing its wrapper; restart OMP or run `/reload` to
 load an enabled extension in an existing session.
