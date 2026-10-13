@@ -8,6 +8,10 @@ IS_WSL=false
 # Codex opens one pipe set per MCP server; macOS defaults to only 256 files.
 ulimit -n 61440 2>/dev/null
 
+# Agent shells export LC_ALL=C; anything they launch (e.g. a herdr server)
+# passes it to every pane, forcing TUIs like lazygit into ASCII-only output.
+[[ ${LC_ALL:-} == C ]] && unset LC_ALL
+
 # --- Path Setup ---
 export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
 export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
