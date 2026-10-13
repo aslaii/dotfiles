@@ -261,6 +261,11 @@ by name without deleting shared files used by other agents.
 - **Gemini CLI** -- AI assistant config
 - **OpenCode** -- AI assistant config
 - **Codex CLI** -- AI assistant config
+- **Connecteam autopilot** -- `connecteam/punch.zsh` clocks in, breaks, and
+  clocks out on the Connecteam web Time Clock via agent-browser and launchd
+  (Mon-Fri 08:00 / 12:00-13:00 / 17:00). Run `punch.zsh login` once, then
+  `punch.zsh install`; `punch.zsh off [YYYY-MM-DD]` skips a day. Log:
+  `~/Library/Logs/connecteam.log`.
 
 ## Drift Check
 
