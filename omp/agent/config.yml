@@ -48,6 +48,7 @@ defaultThinkingLevel: medium
 tier:
   openai: priority
   subagent: inherit
+  anthropic: none
 task:
   disabledAgents:
     []
@@ -150,3 +151,6 @@ display:
   subagentLivePreview: true
 codexResets:
   autoRedeem: "no"
+providers:
+  anthropic:
+    slowMode: auto
