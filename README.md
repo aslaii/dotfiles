@@ -265,8 +265,9 @@ by name without deleting shared files used by other agents.
   clocks out on the Connecteam web Time Clock via agent-browser and launchd
   (Mon-Fri 08:00 / 12:00-13:00 / 17:00). Run `punch.zsh login` once, then
   `punch.zsh install`; `punch.zsh off [YYYY-MM-DD]` skips a day. Every punch
-  reports the location in `PIN` and refuses to punch if the page does not see
-  it (needs bun). Log: `~/Library/Logs/connecteam.log`.
+  reports the location in `PIN` and a regular Google Chrome user agent, and
+  refuses to punch if the page does not see both (needs bun and
+  `brew install --cask google-chrome`). Log: `~/Library/Logs/connecteam.log`.
 
 ## Drift Check
 

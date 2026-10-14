@@ -22,6 +22,7 @@ LOG_DIR=$HOME/Library/Logs
 SKIP_FILE=$HOME/.config/connecteam/skip-days
 MAX_LATE_MIN=20 # launchd replays missed slots on wake; older than this is skipped
 PIN=(14.961239 120.759291) # punch location (home, Apalit); every punch reports exactly this
+CHROME='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' # brew install --cask google-chrome
 typeset -A SCHEDULE=(in 08:00 break 12:00 back 13:00 out 17:00)
 
 STATE_JS='(() => {
@@ -31,16 +32,25 @@ STATE_JS='(() => {
   if (document.querySelector("[class*=clock-in-section-module__clockIn] button")) return "idle";
   return "loading";
 })()'
-# Over CDP: allow geolocation for the Connecteam tab's browser context and pin
-# it to PIN, then read it back from the page. Prints "pinned <lat>,<lng>" and
-# stays connected, because Chrome drops the override when the session detaches.
-# (agent-browser's own `set geo` targets a different context and gets denied.)
+# Over CDP, on the Connecteam tab: send the User-Agent of normal (headed)
+# Chrome, since headless Chrome reports "HeadlessChrome" while its brands and
+# client hints are already the real Google Chrome ones; allow geolocation for
+# the tab's browser context and pin it to PIN; reload so every request uses
+# both; read both back from the page. Prints "pinned <lat>,<lng> <ua>" and stays
+# connected, because Chrome drops overrides when the session detaches.
+# (agent-browser's `set geo` targets a different context and gets denied, and
+# its --user-agent flag empties the brands and Sec-CH-UA headers.)
 PIN_JS='const [url, lat, lng] = process.argv.slice(1), w = new WebSocket(url), pending = {};
-let id = 0;
+let id = 0, loaded;
 const call = (method, params = {}, sessionId) => new Promise(r => {
   pending[++id] = r; w.send(JSON.stringify({id, method, params, sessionId})); });
 const die = msg => { console.log("error " + msg); process.exit(1); };
-w.onmessage = e => { const m = JSON.parse(e.data); pending[m.id]?.(m); };
+const evaluate = async (s, expression) =>
+  (await call("Runtime.evaluate", {expression, awaitPromise: true, returnByValue: true}, s)).result?.result?.value;
+w.onmessage = e => {
+  const m = JSON.parse(e.data);
+  if (m.method === "Page.loadEventFired") loaded?.(); else pending[m.id]?.(m);
+};
 w.onerror = () => die("cdp connect");
 w.onclose = () => process.exit(0); // browser closed at script exit
 w.onopen = async () => {
@@ -48,20 +58,34 @@ w.onopen = async () => {
     .find(t => t.type === "page" && t.url.startsWith("https://app.connecteam.com/"));
   if (!t) die("no connecteam tab");
   const s = (await call("Target.attachToTarget", {targetId: t.targetId, flatten: true})).result.sessionId;
+  const ua = await evaluate(s, `navigator.userAgentData.getHighEntropyValues(
+    ["architecture", "bitness", "model", "platformVersion", "fullVersionList", "wow64"])
+    .then(h => ({...h, userAgent: navigator.userAgent.replace("HeadlessChrome/", "Chrome/")}))`);
+  if (!ua?.brands?.some(b => b.brand === "Google Chrome")) die("not Google Chrome: " + JSON.stringify(ua?.brands));
+  const {userAgent, ...metadata} = ua;
   for (const [method, params, sid] of [
+    ["Emulation.setUserAgentOverride", {userAgent, platform: "MacIntel", userAgentMetadata: metadata}, s],
     ["Browser.grantPermissions", {origin: "https://app.connecteam.com", permissions: ["geolocation"], browserContextId: t.browserContextId}],
     ["Emulation.setGeolocationOverride", {latitude: +lat, longitude: +lng, accuracy: 10}, s],
+    ["Page.enable", {}, s],
   ]) if ((await call(method, params, sid)).error) die(method);
-  const got = (await call("Runtime.evaluate", {awaitPromise: true, sessionId: s, expression:
-    `new Promise(r => navigator.geolocation.getCurrentPosition(p => r(p.coords.latitude + "," + p.coords.longitude),
-      e => r("error " + e.message), {timeout: 15000, maximumAge: 0}))`}, s)).result?.result?.value;
+  const reloaded = new Promise(r => loaded = r);
+  await call("Page.reload", {}, s);
+  await reloaded;
+  const pageUa = await evaluate(s, "navigator.userAgent");
+  if (pageUa !== userAgent) die("page UA " + pageUa);
+  const got = await evaluate(s, `new Promise(r => navigator.geolocation.getCurrentPosition(
+    p => r(p.coords.latitude + "," + p.coords.longitude), e => r("error " + e.message), {timeout: 15000, maximumAge: 0}))`);
   if (got !== `${+lat},${+lng}`) die("page sees " + got);
-  console.log("pinned " + got);
+  console.log("pinned " + got + " " + pageUa);
 };'
 
 log() { print -r -- "$(date '+%F %T') $*"; }
 notify() { log "$1"; osascript -e "display notification \"$1\" with title \"Connecteam\"" 2>/dev/null; }
-ab() { agent-browser --session $SESSION --restore --restore-save auto "$@"; }
+ab() {
+  agent-browser --session $SESSION --restore --restore-save auto --executable-path "$CHROME" \
+    --args --disable-blink-features=AutomationControlled "$@"
+}
 
 state() { ab eval "$STATE_JS" 2>/dev/null | tr -d '"'; }
 wait_state() { ab wait --fn "$STATE_JS === \"$1\"" >/dev/null; }
@@ -92,11 +116,11 @@ fail() {
 punch() {
   local action=$1 s
   ab open "$URL" >/dev/null || fail "$action: cannot open Connecteam"
+  pin_geo || fail "$action: location/user agent not set (${PIN_LINE:-no reply})"
+  log "$action: $PIN_LINE"
   ab wait --fn "$STATE_JS !== \"loading\"" >/dev/null || fail "$action: time clock did not load"
   s=$(state)
   [[ $s == login ]] && fail "$action: logged out, run: punch.zsh login"
-  pin_geo || fail "$action: location not set (${PIN_LINE:-no reply})"
-  log "$action: location $PIN_LINE"
 
   case $action:$s in
     in:shift | break:break | back:shift | out:idle) log "$action: already $s" ;;
