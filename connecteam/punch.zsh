@@ -21,6 +21,7 @@ PLIST=$HOME/Library/LaunchAgents/$LABEL.plist
 LOG_DIR=$HOME/Library/Logs
 SKIP_FILE=$HOME/.config/connecteam/skip-days
 MAX_LATE_MIN=20 # launchd replays missed slots on wake; older than this is skipped
+PIN=(14.961239 120.759291) # punch location (home, Apalit); every punch reports exactly this
 typeset -A SCHEDULE=(in 08:00 break 12:00 back 13:00 out 17:00)
 
 STATE_JS='(() => {
@@ -30,6 +31,33 @@ STATE_JS='(() => {
   if (document.querySelector("[class*=clock-in-section-module__clockIn] button")) return "idle";
   return "loading";
 })()'
+# Over CDP: allow geolocation for the Connecteam tab's browser context and pin
+# it to PIN, then read it back from the page. Prints "pinned <lat>,<lng>" and
+# stays connected, because Chrome drops the override when the session detaches.
+# (agent-browser's own `set geo` targets a different context and gets denied.)
+PIN_JS='const [url, lat, lng] = process.argv.slice(1), w = new WebSocket(url), pending = {};
+let id = 0;
+const call = (method, params = {}, sessionId) => new Promise(r => {
+  pending[++id] = r; w.send(JSON.stringify({id, method, params, sessionId})); });
+const die = msg => { console.log("error " + msg); process.exit(1); };
+w.onmessage = e => { const m = JSON.parse(e.data); pending[m.id]?.(m); };
+w.onerror = () => die("cdp connect");
+w.onclose = () => process.exit(0); // browser closed at script exit
+w.onopen = async () => {
+  const t = (await call("Target.getTargets")).result.targetInfos
+    .find(t => t.type === "page" && t.url.startsWith("https://app.connecteam.com/"));
+  if (!t) die("no connecteam tab");
+  const s = (await call("Target.attachToTarget", {targetId: t.targetId, flatten: true})).result.sessionId;
+  for (const [method, params, sid] of [
+    ["Browser.grantPermissions", {origin: "https://app.connecteam.com", permissions: ["geolocation"], browserContextId: t.browserContextId}],
+    ["Emulation.setGeolocationOverride", {latitude: +lat, longitude: +lng, accuracy: 10}, s],
+  ]) if ((await call(method, params, sid)).error) die(method);
+  const got = (await call("Runtime.evaluate", {awaitPromise: true, sessionId: s, expression:
+    `new Promise(r => navigator.geolocation.getCurrentPosition(p => r(p.coords.latitude + "," + p.coords.longitude),
+      e => r("error " + e.message), {timeout: 15000, maximumAge: 0}))`}, s)).result?.result?.value;
+  if (got !== `${+lat},${+lng}`) die("page sees " + got);
+  console.log("pinned " + got);
+};'
 
 log() { print -r -- "$(date '+%F %T') $*"; }
 notify() { log "$1"; osascript -e "display notification \"$1\" with title \"Connecteam\"" 2>/dev/null; }
@@ -37,6 +65,13 @@ ab() { agent-browser --session $SESSION --restore --restore-save auto "$@"; }
 
 state() { ab eval "$STATE_JS" 2>/dev/null | tr -d '"'; }
 wait_state() { ab wait --fn "$STATE_JS === \"$1\"" >/dev/null; }
+# Starts the pin holder as a coprocess; it exits when the browser closes.
+# Must run in the main shell (not $(...)) so the holder outlives the call.
+pin_geo() {
+  coproc $HOME/.bun/bin/bun -e "$PIN_JS" "$(ab get cdp-url 2>/dev/null | grep '^ws')" $PIN
+  read -p -t 30 PIN_LINE
+  [[ $PIN_LINE == pinned* ]]
+}
 
 end_current() { ab click '.clock-out-button' >/dev/null && wait_state idle; }
 start_shift() { ab click '[class*=clock-in-section-module__clockIn] button' >/dev/null && wait_state shift; }
@@ -60,6 +95,8 @@ punch() {
   ab wait --fn "$STATE_JS !== \"loading\"" >/dev/null || fail "$action: time clock did not load"
   s=$(state)
   [[ $s == login ]] && fail "$action: logged out, run: punch.zsh login"
+  pin_geo || fail "$action: location not set (${PIN_LINE:-no reply})"
+  log "$action: location $PIN_LINE"
 
   case $action:$s in
     in:shift | break:break | back:shift | out:idle) log "$action: already $s" ;;
