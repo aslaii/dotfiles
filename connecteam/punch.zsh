@@ -27,8 +27,15 @@ typeset -A SCHEDULE=(in 08:00 break 12:00 back 13:00 out 17:00)
 
 STATE_JS='(() => {
   if (location.hash.includes("Login")) return "login";
-  if (document.querySelector("[data-testid=automation-clock-out-button]")) return "shift";
-  if (document.querySelector(".clock-out-button")) return "break";
+  // Shift and break share the "End" button; the label above it differs:
+  // "Work time on Shift" vs "<break name> - Unpaid".
+  const end = document.querySelector("[data-testid=automation-clock-out-button]");
+  if (end) {
+    let card = end;
+    while (card && !card.innerText.includes("Today\u0027s clock")) card = card.parentElement;
+    const label = (card?.innerText ?? "").split("Today\u0027s clock")[1]?.split("\nEnd")[0] ?? "";
+    return /break/i.test(label) ? "break" : "shift";
+  }
   if (document.querySelector("[class*=clock-in-section-module__clockIn] button")) return "idle";
   return "loading";
 })()'
@@ -97,12 +104,22 @@ pin_geo() {
   [[ $PIN_LINE == pinned* ]]
 }
 
-end_current() { ab click '.clock-out-button' >/dev/null && wait_state idle; }
-start_shift() { ab click '[class*=clock-in-section-module__clockIn] button' >/dev/null && wait_state shift; }
+# Clicks go through the DOM: right after a punch, a mid-animation container or
+# the "Break summary" dialog overlaps the buttons and swallows pointer clicks.
+press() { ab wait "$1" >/dev/null && ab eval "document.querySelector('$1').click()" >/dev/null; }
+# Ending a break opens a "Break summary" dialog that must be approved.
+APPROVE_JS='[...document.querySelectorAll("button")].find(b => b.innerText.trim() === "Approve break")'
+approve_pending() { ab eval "$APPROVE_JS?.click()" >/dev/null; }
+# The dialog animates in and can close on its own; click it if present, then
+# require it to be gone.
+approve_break() { ab wait 3000 >/dev/null; approve_pending; ab wait --fn "!$APPROVE_JS" >/dev/null; }
+
+end_current() { press '.clock-out-button' && wait_state idle; }
+end_break() { end_current && approve_break; }
+start_shift() { press '[class*=clock-in-section-module__clockIn] button' && wait_state shift; }
 start_break() {
-  ab click '[data-testid=automation-start-manual-break-button]' >/dev/null &&
-    ab wait '.select-manual-break-inline-sidebar .tag-item' >/dev/null &&
-    ab find first '.select-manual-break-inline-sidebar .tag-item' click >/dev/null &&
+  press '[data-testid=automation-start-manual-break-button]' &&
+    press '.select-manual-break-inline-sidebar .tag-item' &&
     wait_state break
 }
 
@@ -121,13 +138,17 @@ punch() {
   ab wait --fn "$STATE_JS !== \"loading\"" >/dev/null || fail "$action: time clock did not load"
   s=$(state)
   [[ $s == login ]] && fail "$action: logged out, run: punch.zsh login"
+  approve_pending # a break summary left open by a manual or failed punch
 
   case $action:$s in
     in:shift | break:break | back:shift | out:idle) log "$action: already $s" ;;
     in:idle) start_shift || fail "in: start shift" ;;
     break:shift) { end_current && start_break; } || fail "break: end shift / start break" ;;
-    back:break) { end_current && start_shift; } || fail "back: end break / start shift" ;;
-    out:shift | out:break) end_current || fail "out: end $s" ;;
+    break:idle) start_break || fail "break: start break" ;; # shift already ended, e.g. a failed earlier run
+    back:idle) start_shift || fail "back: start shift" ;; # break already ended, e.g. a failed earlier run
+    back:break) { end_break && start_shift; } || fail "back: end break / start shift" ;;
+    out:shift) end_current || fail "out: end shift" ;;
+    out:break) end_break || fail "out: end break" ;;
     *) fail "$action: unexpected state '$s'" ;;
   esac
   log "$action: now $(state)"
