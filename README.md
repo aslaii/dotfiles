@@ -3,6 +3,8 @@
 Personal configuration for macOS and Debian/Ubuntu-based Linux or WSL.
 Application state, installed dependencies, and project tooling stay outside Git.
 
+**Windows:** [Set up SSH over Tailscale](#windows-ssh-over-tailscale).
+
 ## Quick Start
 
 ```bash
@@ -24,10 +26,11 @@ essentials, not project databases or application stacks.
 
 ## Windows SSH over Tailscale
 
-Open **Windows PowerShell as Administrator** and run:
+Open **Windows PowerShell as Administrator**. Use the copy button on this code
+block, then paste it into PowerShell:
 
 ```powershell
-irm https://raw.githubusercontent.com/aslaii/dotfiles/feat/windows-ssh-bootstrap/scripts/install-windows-ssh.ps1 | iex
+irm https://raw.githubusercontent.com/aslaii/dotfiles/develop/scripts/install-windows-ssh.ps1 | iex
 ```
 
 This standalone installer requires Tailscale already installed and connected.
