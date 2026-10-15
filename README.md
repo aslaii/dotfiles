@@ -22,6 +22,30 @@ bash ~/dotfiles/initial-setup.sh --check
 Existing valid files and links are preserved. The Linux installer installs shell
 essentials, not project databases or application stacks.
 
+## Windows SSH over Tailscale
+
+Open **Windows PowerShell as Administrator** and run:
+
+```powershell
+irm https://raw.githubusercontent.com/aslaii/dotfiles/feat/windows-ssh-bootstrap/scripts/install-windows-ssh.ps1 | iex
+```
+
+This standalone installer requires Tailscale already installed and connected.
+It installs Windows OpenSSH Server, enables automatic startup, and authorizes
+the public key for `aslaii@dev-1` for Windows administrator accounts. Its firewall
+rule permits TCP 22 only from the Mac's Tailscale address `100.81.77.115` to the
+Windows machine's current Tailscale address. It disables the broad default SSH
+firewall rule only when that rule was absent before installation; pre-existing
+rules and authorized keys are preserved. Review any warning about broader
+existing access.
+
+Rerunning updates the dedicated firewall rule without duplicating the key.
+The final output includes the Windows username, SSH host-key fingerprint, and
+connection command. Share the username and fingerprint, never a password.
+This does not install the rest of the dotfiles or any Kelno build tools.
+The installer has been parsed with PowerShell and its non-Windows guard exercised;
+native Windows installation must be verified on the destination machine.
+
 ## Project tools
 
 Project launchers are restored from the immutable commit in
