@@ -12,7 +12,7 @@
       "tier": "normal",
       "models": [
         { "model": "anthropic-subscription/claude-opus-5-5", "reasoning": "medium" },
-        { "model": "chatgpt-subscription/gpt-6.1-sol", "reasoning": "medium" }
+        { "model": "chatgpt-subscription/gpt-6.1-sol-fast", "reasoning": "high" }
       ]
     }
   },
@@ -25,71 +25,77 @@
     "include_co_authored_by": false
   },
 
+  // Only Claude and GPT lead a chain; the single cheap tail is DeepSeek V4.1 Flash, GLM 5.3 Flash or Muse 1.3 Contributor.
   "categories": {
-    // Rare, high-value design consults: Opus (no Fable on Claude Pro).
+    // Planner: Opus high, then Astra xhigh. Reviewer-style lanes invert the order.
     "architect": {
       "models": [
-        { "model": "anthropic-subscription/claude-opus-5-5", "reasoning": "xhigh" },
-        { "model": "chatgpt-subscription/gpt-6-astra", "reasoning": "high" }
+        { "model": "anthropic-subscription/claude-opus-5-5", "reasoning": "high" },
+        { "model": "chatgpt-subscription/gpt-6-astra", "reasoning": "xhigh" }
       ]
     },
-    // Deep reasoning lanes: Codex.
     "ultrabrain": {
       "models": [
         { "model": "chatgpt-subscription/gpt-6-astra", "reasoning": "xhigh" },
-        { "model": "chatgpt-subscription/gpt-6.1-sol", "reasoning": "xhigh" }
+        { "model": "anthropic-subscription/claude-opus-5-5", "reasoning": "high" }
       ]
     },
+    // Executor: Sol leads code lanes to spare Claude quota for Opus; Sonnet leads Claude-shaped lanes.
     "deep-high": {
       "models": [
-        { "model": "chatgpt-subscription/gpt-6-astra", "reasoning": "high" },
-        { "model": "chatgpt-subscription/gpt-6.1-sol", "reasoning": "high" }
+        { "model": "chatgpt-subscription/gpt-6.1-sol", "reasoning": "high" },
+        { "model": "anthropic-subscription/claude-sonnet-5-5", "reasoning": "high" },
+        { "model": "opencode-go/deepseek-v4.1-flash", "reasoning": "high" }
       ]
     },
     "deep-low": {
       "models": [
         { "model": "chatgpt-subscription/gpt-6.1-sol", "reasoning": "medium" },
+        { "model": "anthropic-subscription/claude-sonnet-5-5", "reasoning": "medium" },
         { "model": "opencode-go/deepseek-v4.1-flash", "reasoning": "high" }
       ]
     },
     "unspecified-high": {
       "models": [
-        { "model": "chatgpt-subscription/gpt-6.1-sol", "reasoning": "high" },
-        { "model": "opencode-go/glm-5.3", "reasoning": "max" }
+        { "model": "chatgpt-subscription/gpt-6.1-sol", "reasoning": "medium" },
+        { "model": "anthropic-subscription/claude-sonnet-5-5", "reasoning": "medium" },
+        { "model": "opencode-go/deepseek-v4.1-flash", "reasoning": "high" }
       ]
     },
-    // Claude-shaped work off the Claude quota: Kimi K3 on Go (~490 requests/month cap), then GPT.
     "visual-engineering": {
       "models": [
-        { "model": "opencode-go/kimi-k3", "reasoning": "max" },
-        { "model": "chatgpt-subscription/gpt-6.1-sol", "reasoning": "high" }
+        { "model": "anthropic-subscription/claude-sonnet-5-5", "reasoning": "medium" },
+        { "model": "chatgpt-subscription/gpt-6.1-sol", "reasoning": "medium" },
+        { "model": "command-code/meta/muse-spark-1.3-contributor" }
       ]
     },
     "artistry": {
       "models": [
-        { "model": "opencode-go/kimi-k3", "reasoning": "max" },
-        { "model": "chatgpt-subscription/gpt-6.1-sol", "reasoning": "high" }
+        { "model": "anthropic-subscription/claude-sonnet-5-5", "reasoning": "medium" },
+        { "model": "chatgpt-subscription/gpt-6.1-sol", "reasoning": "medium" },
+        { "model": "command-code/meta/muse-spark-1.3-contributor" }
       ]
     },
     "writing": {
       "models": [
-        { "model": "anthropic-subscription/claude-opus-5-5", "reasoning": "low" },
-        { "model": "chatgpt-subscription/gpt-6.1-sol", "reasoning": "medium" }
+        { "model": "anthropic-subscription/claude-sonnet-5-5", "reasoning": "medium" },
+        { "model": "chatgpt-subscription/gpt-6.1-sol", "reasoning": "medium" },
+        { "model": "command-code/meta/muse-spark-1.3-contributor" }
       ]
     },
-    // High-volume cheap lanes: OpenCode Go first, Codex last.
+    // Low: Luna first, then Haiku, then the cheap tail.
     "unspecified-low": {
       "models": [
-        { "model": "opencode-go/mimo-v2.6-pro", "reasoning": "max" },
-        { "model": "opencode-go/deepseek-v4.1-flash", "reasoning": "high" },
-        { "model": "chatgpt-subscription/gpt-6-luna-fast", "reasoning": "medium" }
+        { "model": "chatgpt-subscription/gpt-6-luna", "reasoning": "medium" },
+        { "model": "anthropic-subscription/claude-haiku-5-5", "reasoning": "medium" },
+        { "model": "opencode-go/deepseek-v4.1-flash", "reasoning": "high" }
       ]
     },
     "quick": {
       "models": [
-        { "model": "opencode-go/deepseek-v4.1-flash", "reasoning": "low" },
-        { "model": "opencode-go/glm-5.3-flash", "reasoning": "low" },
-        { "model": "chatgpt-subscription/gpt-6-luna-fast", "reasoning": "low" }
+        { "model": "chatgpt-subscription/gpt-6-luna-fast", "reasoning": "low" },
+        { "model": "anthropic-subscription/claude-haiku-5-5", "reasoning": "low" },
+        { "model": "opencode-go/glm-5.3-flash", "reasoning": "low" }
       ]
     }
   },
@@ -97,33 +103,34 @@
   "agents": {
     "explore": {
       "models": [
-        { "model": "opencode-go/deepseek-v4.1-flash", "reasoning": "low" },
-        { "model": "opencode-go/glm-5.3-flash", "reasoning": "low" },
-        { "model": "chatgpt-subscription/gpt-6-luna-fast", "reasoning": "low" }
+        { "model": "chatgpt-subscription/gpt-6-luna-fast", "reasoning": "low" },
+        { "model": "anthropic-subscription/claude-haiku-5-5", "reasoning": "low" },
+        { "model": "opencode-go/deepseek-v4.1-flash", "reasoning": "low" }
       ]
     },
     "librarian": {
       "models": [
-        { "model": "opencode-go/deepseek-v4.1-flash", "reasoning": "low" },
-        { "model": "opencode-go/glm-5.3-flash", "reasoning": "low" },
-        { "model": "chatgpt-subscription/gpt-6-luna-fast", "reasoning": "low" }
+        { "model": "chatgpt-subscription/gpt-6-luna-fast", "reasoning": "low" },
+        { "model": "anthropic-subscription/claude-haiku-5-5", "reasoning": "low" },
+        { "model": "opencode-go/glm-5.3-flash", "reasoning": "low" }
       ]
     },
     "plan-consultant": {
       "models": [
         { "model": "anthropic-subscription/claude-opus-5-5", "reasoning": "high" },
-        { "model": "chatgpt-subscription/gpt-6.1-sol", "reasoning": "high" }
+        { "model": "chatgpt-subscription/gpt-6-astra", "reasoning": "xhigh" }
       ]
     },
     "plan-reviewer": {
       "models": [
         { "model": "chatgpt-subscription/gpt-6-astra", "reasoning": "xhigh" },
-        { "model": "chatgpt-subscription/gpt-6.1-sol", "reasoning": "xhigh" }
+        { "model": "anthropic-subscription/claude-opus-5-5", "reasoning": "high" }
       ]
     },
     "omo-native-qa-executor": {
       "models": [
         { "model": "chatgpt-subscription/gpt-6.1-sol", "reasoning": "medium" },
+        { "model": "anthropic-subscription/claude-sonnet-5-5", "reasoning": "medium" },
         { "model": "opencode-go/deepseek-v4.1-flash", "reasoning": "high" }
       ]
     }
