@@ -26,6 +26,12 @@
     "include_co_authored_by": false
   },
 
+  // Memory reflection and recall run on their own chain so they keep working when the worker providers are logged out or capped.
+  "memory": {
+    "reflection": { "category": "memory" },
+    "recall": { "category": "memory" }
+  },
+
   "categories": {
     "architect": {
       "models": [
@@ -93,6 +99,12 @@
       "models": [
         { "model": "chatgpt-subscription/gpt-6-luna-fast", "reasoning": "low" },
         { "model": "opencode-go/deepseek-v4.1-flash", "reasoning": "low" }
+      ]
+    },
+    "memory": {
+      "models": [
+        { "model": "nvidia/deepseek-ai/deepseek-v4.1-flash", "reasoning": "low" },
+        { "model": "anthropic-subscription/claude-haiku-5-5", "reasoning": "low" }
       ]
     }
   },
