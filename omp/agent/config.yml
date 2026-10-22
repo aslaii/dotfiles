@@ -27,6 +27,7 @@ skills:
     - mobii-ship
     - mobii-update
     - agent-browser
+    - git-flow
 edit:
   mode: apply_patch
 modelRoles:
@@ -154,3 +155,10 @@ codexResets:
 providers:
   anthropic:
     slowMode: auto
+auth:
+  accountPolicies:
+    - provider: openai-codex
+      account:
+        email: vince6598@gmail.com
+        orgId: 53f457a9-192d-46cb-a863-6417ef9e51e9
+      priority: 100
