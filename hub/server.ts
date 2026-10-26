@@ -6,7 +6,7 @@ const PORT = 8700;
 const UID = process.getuid!();
 const HOME = homedir();
 const AGENTS = `${HOME}/Library/LaunchAgents`;
-const PUNCH = `${import.meta.dir}/../connecteam/punch.zsh`;
+const PUNCH = `${HOME}/personal/punch/punch.zsh`;
 const SKIP_FILE = `${HOME}/.config/connecteam/skip-days`;
 // Blocks drive-by POSTs from other sites; only this page may toggle.
 const ORIGINS = new Set([`http://hub.localhost:${PORT}`, `http://127.0.0.1:${PORT}`, `http://localhost:${PORT}`]);

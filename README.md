@@ -261,29 +261,9 @@ by name without deleting shared files used by other agents.
 - **Gemini CLI** -- AI assistant config
 - **OpenCode** -- AI assistant config
 - **Codex CLI** -- AI assistant config
-- **Connecteam autopilot** -- `connecteam/punch.zsh` clocks in, breaks, and
-  clocks out on the Connecteam web Time Clock via agent-browser and launchd
-  (Mon-Fri 08:00 / 12:00-13:00 / 17:00). Run `punch.zsh login` once, then
-  `punch.zsh install`; `punch.zsh off [YYYY-MM-DD]` skips a day. Every punch
-  reports the location in `PIN` and verifies the native Google Chrome user agent
-  (needs bun and `brew install --cask google-chrome`).
-  Log: `~/Library/Logs/connecteam.log`.
-  Chrome launches separately, headed, with a persistent profile at
-  `~/.local/share/connecteam/chrome/` and local CDP port 19337. Agent-browser
-  attaches with `--cdp`; it does not launch Chrome. No headless, automation, or
-  user-agent spoofing flags are used. Chrome stays open between punches;
-  closing it is safe, and the next action reopens the same profile. Log in once
-  with `punch.zsh login` after switching from the old restored session.
-  Navigation retries three times with fresh CDP connections (5s / 10s delays).
-  Launchd also checks every minute and retries failed punches for 20 minutes
-  after their scheduled time, including after sleep. Successful slots are saved
-  in `~/.local/state/connecteam/` so periodic checks do not repeat punches or
-  override subsequent manual changes. Re-run `punch.zsh install` after updating
-  to enable the periodic checks. Longer outages require a manual timesheet
-  correction; recovery punches use the actual time, never a backdated time.
-  A `denied` status means Connecteam returned HTTP 401/403 for the user API;
-  run `punch.zsh login` to refresh the saved session and check status again.
-  Run `zsh connecteam/punch.test.zsh` to check recovery without real punches.
+- **Connecteam autopilot** -- maintained in the separate local Git repository
+  `~/personal/punch`. See its README for setup, custom GPS pin, retries, and
+  commands. The Automation Hub uses that repository's `punch.zsh`.
 
 ## Drift Check
 
