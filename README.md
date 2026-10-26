@@ -268,6 +268,16 @@ by name without deleting shared files used by other agents.
   reports the location in `PIN` and a regular Google Chrome user agent, and
   refuses to punch if the page does not see both (needs bun and
   `brew install --cask google-chrome`). Log: `~/Library/Logs/connecteam.log`.
+  Navigation retries three times with fresh browser sessions (5s / 10s delays).
+  Launchd also checks every minute and retries failed punches for 20 minutes
+  after their scheduled time, including after sleep. Successful slots are saved
+  in `~/.local/state/connecteam/` so periodic checks do not repeat punches or
+  override subsequent manual changes. Re-run `punch.zsh install` after updating
+  to enable the periodic checks. Longer outages require a manual timesheet
+  correction; recovery punches use the actual time, never a backdated time.
+  A `denied` status means Connecteam returned HTTP 401/403 for the user API;
+  run `punch.zsh login` to refresh the saved session and check status again.
+  Run `zsh connecteam/punch.test.zsh` to check recovery without real punches.
 
 ## Drift Check
 

@@ -6,7 +6,7 @@
 #   punch.zsh login          one-time headed login (OTP); session is persisted
 #   punch.zsh install        load the launchd agent (Mon-Fri at SCHEDULE times)
 #   punch.zsh uninstall      unload it
-#   punch.zsh status         print current state: idle | shift | break
+#   punch.zsh status         print current state: idle | shift | break | login | denied
 #   punch.zsh in|break|back|out   perform one transition now
 #   punch.zsh off [DATE]     skip a day (YYYY-MM-DD, default today)
 #   punch.zsh auto           what launchd runs: picks the slot due right now
@@ -20,6 +20,7 @@ LABEL=com.aslaii.connecteam
 PLIST=$HOME/Library/LaunchAgents/$LABEL.plist
 LOG_DIR=$HOME/Library/Logs
 SKIP_FILE=$HOME/.config/connecteam/skip-days
+STATE_DIR=$HOME/.local/state/connecteam
 MAX_LATE_MIN=20 # launchd replays missed slots on wake; older than this is skipped
 PIN=(14.961239 120.759291) # punch location (home, Apalit); every punch reports exactly this
 CHROME='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' # brew install --cask google-chrome
@@ -37,6 +38,8 @@ STATE_JS='(() => {
     return /break/i.test(label) ? "break" : "shift";
   }
   if (document.querySelector("[class*=clock-in-section-module__clockIn] button")) return "idle";
+  if (performance.getEntriesByType("resource").some(r =>
+    r.name.includes("/api/Creator/User/Current/") && [401, 403].includes(r.responseStatus))) return "denied";
   return "loading";
 })()'
 # Over CDP, on the Connecteam tab: send the User-Agent of normal (headed)
@@ -130,14 +133,27 @@ fail() {
   exit 1
 }
 
+open_clock() {
+  local attempt
+  for attempt in 1 2 3; do
+    ab open "$URL" >/dev/null && return 0
+    log "navigation: attempt $attempt/3 failed"
+    ab close >/dev/null 2>&1
+    (( attempt < 3 )) && sleep $(( attempt * 5 ))
+  done
+  return 1
+}
+
 punch() {
+  trap 'ab close >/dev/null 2>&1' EXIT
   local action=$1 s
-  ab open "$URL" >/dev/null || fail "$action: cannot open Connecteam"
+  open_clock || fail "$action: cannot open Connecteam after 3 attempts"
   pin_geo || fail "$action: location/user agent not set (${PIN_LINE:-no reply})"
   log "$action: $PIN_LINE"
   ab wait --fn "$STATE_JS !== \"loading\"" >/dev/null || fail "$action: time clock did not load"
   s=$(state)
   [[ $s == login ]] && fail "$action: logged out, run: punch.zsh login"
+  [[ $s == denied ]] && fail "$action: Connecteam denied API access (401/403); run: punch.zsh login"
   approve_pending # a break summary left open by a manual or failed punch
 
   case $action:$s in
@@ -151,7 +167,12 @@ punch() {
     out:break) end_break || fail "out: end break" ;;
     *) fail "$action: unexpected state '$s'" ;;
   esac
-  log "$action: now $(state)"
+  s=$(state)
+  local expected=shift
+  [[ $action == break ]] && expected=break
+  [[ $action == out ]] && expected=idle
+  [[ $s == $expected ]] || fail "$action: expected $expected, got '$s'"
+  log "$action: now $s"
 }
 
 auto() {
@@ -162,11 +183,14 @@ auto() {
   for action hm in ${(kv)SCHEDULE}; do
     local due=$(( ${hm%:*} * 60 + ${hm#*:} ))
     if (( now >= due && now - due < MAX_LATE_MIN )); then
-      punch $action
-      return
+      [[ -f $STATE_DIR/$today-$action ]] && return 0
+      mkdir -p "$STATE_DIR" || return 1
+      punch $action || return $?
+      touch "$STATE_DIR/$today-$action"
+      return $?
     fi
   done
-  notify "auto: no slot due at $(date +%H:%M) (Mac asleep at punch time?), skipped"
+  return 0
 }
 
 install() {
@@ -184,6 +208,7 @@ install() {
 <key>Label</key><string>$LABEL</string>
 <key>ProgramArguments</key><array><string>/bin/zsh</string><string>$SCRIPT</string><string>auto</string></array>
 <key>StartCalendarInterval</key><array>$intervals</array>
+<key>StartInterval</key><integer>60</integer>
 <key>StandardOutPath</key><string>$LOG_DIR/connecteam.log</string>
 <key>StandardErrorPath</key><string>$LOG_DIR/connecteam.log</string>
 </dict></plist>
@@ -192,10 +217,12 @@ EOF
   launchctl bootstrap gui/$UID "$PLIST" && log "installed $PLIST, log: $LOG_DIR/connecteam.log"
 }
 
+[[ $ZSH_EVAL_CONTEXT == toplevel ]] || return 0
+
 case ${1:-} in
-  in | break | back | out) trap 'ab close >/dev/null 2>&1' EXIT; punch $1 ;;
-  auto) trap 'ab close >/dev/null 2>&1' EXIT; auto ;;
-  status) trap 'ab close >/dev/null 2>&1' EXIT; ab open "$URL" >/dev/null && ab wait --fn "$STATE_JS !== \"loading\"" >/dev/null; state ;;
+  in | break | back | out) punch $1 ;;
+  auto) auto ;;
+  status) trap 'ab close >/dev/null 2>&1' EXIT; open_clock && ab wait --fn "$STATE_JS !== \"loading\"" >/dev/null && state ;;
   login)
     agent-browser --session $SESSION close >/dev/null 2>&1
     ab --headed open "$URL" >/dev/null
