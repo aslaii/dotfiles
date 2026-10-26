@@ -2,6 +2,11 @@
 # No real browser, punches, notifications, or launchd changes.
 set -eu
 source "${0:A:h}/punch.zsh"
+typeset -a agent_args
+agent-browser() { agent_args=("$@"); }
+ab get url
+[[ ${(j: :)agent_args} == "--session connecteam --cdp http://127.0.0.1:19337 get url" ]]
+print 'PASS: agent-browser only attaches through the fixed CDP endpoint'
 scratch=$(mktemp -d)
 trap 'rm -rf "$scratch"' EXIT
 STATE_DIR=$scratch/state
@@ -10,6 +15,7 @@ LOG_DIR=$scratch
 log() { print -r -- "$*"; }
 notify() { log "$*"; }
 sleep() { :; }
+ensure_browser() { return 0; }
 
 typeset -i opens=0 failures=2
 ab() {

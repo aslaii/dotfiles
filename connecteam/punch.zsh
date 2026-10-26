@@ -16,6 +16,8 @@ export PATH=/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin
 SCRIPT=${0:A} # resolve here: inside functions $0 is the function name
 URL='https://app.connecteam.com/#/punchclock/punchclock/16733037/17553390/19822940'
 SESSION=connecteam
+CDP_PORT=19337
+PROFILE_DIR=$HOME/.local/share/connecteam/chrome
 LABEL=com.aslaii.connecteam
 PLIST=$HOME/Library/LaunchAgents/$LABEL.plist
 LOG_DIR=$HOME/Library/Logs
@@ -42,14 +44,8 @@ STATE_JS='(() => {
     r.name.includes("/api/Creator/User/Current/") && [401, 403].includes(r.responseStatus))) return "denied";
   return "loading";
 })()'
-# Over CDP, on the Connecteam tab: send the User-Agent of normal (headed)
-# Chrome, since headless Chrome reports "HeadlessChrome" while its brands and
-# client hints are already the real Google Chrome ones; allow geolocation for
-# the tab's browser context and pin it to PIN; reload so every request uses
-# both; read both back from the page. Prints "pinned <lat>,<lng> <ua>" and stays
-# connected, because Chrome drops overrides when the session detaches.
-# (agent-browser's `set geo` targets a different context and gets denied, and
-# its --user-agent flag empties the brands and Sec-CH-UA headers.)
+# Attach to the separately launched Chrome, verify its native identity, and
+# hold the location override until cleanup. No user-agent or webdriver spoofing.
 PIN_JS='const [url, lat, lng] = process.argv.slice(1), w = new WebSocket(url), pending = {};
 let id = 0, loaded;
 const call = (method, params = {}, sessionId) => new Promise(r => {
@@ -68,13 +64,10 @@ w.onopen = async () => {
     .find(t => t.type === "page" && t.url.startsWith("https://app.connecteam.com/"));
   if (!t) die("no connecteam tab");
   const s = (await call("Target.attachToTarget", {targetId: t.targetId, flatten: true})).result.sessionId;
-  const ua = await evaluate(s, `navigator.userAgentData.getHighEntropyValues(
-    ["architecture", "bitness", "model", "platformVersion", "fullVersionList", "wow64"])
-    .then(h => ({...h, userAgent: navigator.userAgent.replace("HeadlessChrome/", "Chrome/")}))`);
-  if (!ua?.brands?.some(b => b.brand === "Google Chrome")) die("not Google Chrome: " + JSON.stringify(ua?.brands));
-  const {userAgent, ...metadata} = ua;
+  const userAgent = await evaluate(s, "navigator.userAgent");
+  if (!userAgent?.includes("Chrome/") || userAgent.includes("HeadlessChrome")) die("not headed Chrome");
+  if (await evaluate(s, "navigator.webdriver")) die("Chrome was launched with automation enabled");
   for (const [method, params, sid] of [
-    ["Emulation.setUserAgentOverride", {userAgent, platform: "MacIntel", userAgentMetadata: metadata}, s],
     ["Browser.grantPermissions", {origin: "https://app.connecteam.com", permissions: ["geolocation"], browserContextId: t.browserContextId}],
     ["Emulation.setGeolocationOverride", {latitude: +lat, longitude: +lng, accuracy: 10}, s],
     ["Page.enable", {}, s],
@@ -93,16 +86,42 @@ w.onopen = async () => {
 log() { print -r -- "$(date '+%F %T') $*"; }
 notify() { log "$1"; osascript -e "display notification \"$1\" with title \"Connecteam\"" 2>/dev/null; }
 ab() {
-  agent-browser --session $SESSION --restore --restore-save auto --executable-path "$CHROME" \
-    --args --disable-blink-features=AutomationControlled "$@"
+  agent-browser --session $SESSION --cdp "http://127.0.0.1:$CDP_PORT" "$@"
+}
+
+browser_ready() {
+  /usr/bin/curl --noproxy '*' -fsS --connect-timeout 1 --max-time 2 \
+    "http://127.0.0.1:$CDP_PORT/json/version" >/dev/null 2>&1
+}
+
+ensure_browser() {
+  browser_ready && return 0
+  mkdir -p "$PROFILE_DIR" "$LOG_DIR" || return 1
+  /usr/bin/open -g -n -a "${CHROME%/Contents/MacOS/*}" --args \
+    --remote-debugging-address=127.0.0.1 --remote-debugging-port=$CDP_PORT \
+    --user-data-dir="$PROFILE_DIR" --no-first-run --no-default-browser-check \
+    about:blank >>"$LOG_DIR/connecteam-chrome.log" 2>&1 || return 1
+  local attempt
+  for attempt in {1..30}; do
+    browser_ready && return 0
+    sleep 0.5
+  done
+  log "Chrome: CDP port $CDP_PORT did not become ready"
+  return 1
+}
+
+cleanup() {
+  [[ -n ${PIN_PID:-} ]] && kill "$PIN_PID" 2>/dev/null
+  ab close >/dev/null 2>&1
 }
 
 state() { ab eval "$STATE_JS" 2>/dev/null | tr -d '"'; }
 wait_state() { ab wait --fn "$STATE_JS === \"$1\"" >/dev/null; }
-# Starts the pin holder as a coprocess; it exits when the browser closes.
+# Starts the pin holder as a coprocess; cleanup stops it after the punch.
 # Must run in the main shell (not $(...)) so the holder outlives the call.
 pin_geo() {
   coproc $HOME/.bun/bin/bun -e "$PIN_JS" "$(ab get cdp-url 2>/dev/null | grep '^ws')" $PIN
+  PIN_PID=$!
   read -p -t 30 PIN_LINE
   [[ $PIN_LINE == pinned* ]]
 }
@@ -136,7 +155,7 @@ fail() {
 open_clock() {
   local attempt
   for attempt in 1 2 3; do
-    ab open "$URL" >/dev/null && return 0
+    ensure_browser && ab open "$URL" >/dev/null && return 0
     log "navigation: attempt $attempt/3 failed"
     ab close >/dev/null 2>&1
     (( attempt < 3 )) && sleep $(( attempt * 5 ))
@@ -145,7 +164,7 @@ open_clock() {
 }
 
 punch() {
-  trap 'ab close >/dev/null 2>&1' EXIT
+  trap cleanup EXIT
   local action=$1 s
   open_clock || fail "$action: cannot open Connecteam after 3 attempts"
   pin_geo || fail "$action: location/user agent not set (${PIN_LINE:-no reply})"
@@ -222,10 +241,11 @@ EOF
 case ${1:-} in
   in | break | back | out) punch $1 ;;
   auto) auto ;;
-  status) trap 'ab close >/dev/null 2>&1' EXIT; open_clock && ab wait --fn "$STATE_JS !== \"loading\"" >/dev/null && state ;;
+  status) trap cleanup EXIT; open_clock && ab wait --fn "$STATE_JS !== \"loading\"" >/dev/null && state ;;
   login)
     agent-browser --session $SESSION close >/dev/null 2>&1
-    ab --headed open "$URL" >/dev/null
+    ensure_browser || exit 1
+    ab open 'https://app.connecteam.com/' >/dev/null || exit 1
     read '?Log in in the browser window, then press Enter... '
     ab close >/dev/null ;;
   off) mkdir -p "${SKIP_FILE:h}" && print -r -- "${2:-$(date +%F)}" >>"$SKIP_FILE" && log "off: ${2:-$(date +%F)}" ;;

@@ -265,10 +265,16 @@ by name without deleting shared files used by other agents.
   clocks out on the Connecteam web Time Clock via agent-browser and launchd
   (Mon-Fri 08:00 / 12:00-13:00 / 17:00). Run `punch.zsh login` once, then
   `punch.zsh install`; `punch.zsh off [YYYY-MM-DD]` skips a day. Every punch
-  reports the location in `PIN` and a regular Google Chrome user agent, and
-  refuses to punch if the page does not see both (needs bun and
-  `brew install --cask google-chrome`). Log: `~/Library/Logs/connecteam.log`.
-  Navigation retries three times with fresh browser sessions (5s / 10s delays).
+  reports the location in `PIN` and verifies the native Google Chrome user agent
+  (needs bun and `brew install --cask google-chrome`).
+  Log: `~/Library/Logs/connecteam.log`.
+  Chrome launches separately, headed, with a persistent profile at
+  `~/.local/share/connecteam/chrome/` and local CDP port 19337. Agent-browser
+  attaches with `--cdp`; it does not launch Chrome. No headless, automation, or
+  user-agent spoofing flags are used. Chrome stays open between punches;
+  closing it is safe, and the next action reopens the same profile. Log in once
+  with `punch.zsh login` after switching from the old restored session.
+  Navigation retries three times with fresh CDP connections (5s / 10s delays).
   Launchd also checks every minute and retries failed punches for 20 minutes
   after their scheduled time, including after sleep. Successful slots are saved
   in `~/.local/state/connecteam/` so periodic checks do not repeat punches or
