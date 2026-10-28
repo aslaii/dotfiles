@@ -30,6 +30,11 @@ grep -rlF "$CURSOR_RULE" "$DEST" | while IFS= read -r file; do
   perl -pi -e "s{\Q$CURSOR_RULE\E}{$OPENCODE_RULE}g" "$file"
 done
 
+OVERRIDES="$DOTFILES/opencode/pstack-overrides"
+if [ -d "$OVERRIDES" ]; then
+  rsync -a "$OVERRIDES/" "$DEST/"
+fi
+
 for dir in "$DEST"/*/; do
   id="$(basename "$dir")"
   ln -sfn "${dir%/}" "$LINK_ROOT/$id"

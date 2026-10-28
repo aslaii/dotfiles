@@ -7,9 +7,11 @@ restore can rebuild the setup.
 | --- | --- |
 | `config/*` | `~/.config/opencode/` |
 | `agents/*.md` | `~/.config/opencode/agents/` (symlinked) |
-| `pstack-overrides/<skill>/` | `~/.config/opencode/pstack-overrides/` (symlinked, registered as a `skills` source) |
+| `pstack-overrides/<skill>/` | applied over `omp/agent/skills/pstack` by `scripts/sync-pstack.sh` |
 
-`omp/agent/skills/pstack` holds the vendored upstream pstack tree and is linked
-into `~/.config/opencode/skills` by `scripts/sync-pstack.sh`. That script pulls
-`cursor/plugins`, re-copies the skills, relinks them, and rewrites the
-`pstack-models` rule path. Run it after pulling upstream changes.
+`omp/agent/skills/pstack` holds the vendored upstream pstack tree with the
+opencode ports applied, and is linked into `~/.config/opencode/skills` by
+`scripts/sync-pstack.sh`. That script pulls `cursor/plugins`, re-copies the
+skills, rewrites the `pstack-models` rule path, then re-applies every override.
+Run it after pulling upstream changes. Ports live in `pstack-overrides` so an
+upstream sync cannot erase them.

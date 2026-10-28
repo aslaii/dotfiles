@@ -53,11 +53,11 @@ Other tools can read the skills, because they use the Agent Skills format. But m
 
 Whether `/poteto-mode` stays on depends on how the user starts it:
 
-- Enter on `/poteto-mode` attaches the skill to one message. It fades as the chat moves on.
-- Option+Enter on Mac or Alt+Enter on Windows, or Use as Mode from the skill entry, makes it a Custom Mode. It stays in context every turn until the user exits the mode, and it stays out of casual turns.
-- Cursor's docs list Custom Modes in the Agents Window and the CLI. Elsewhere, start each new task with `/poteto-mode`.
+- The always-on instruction files keep Ponytail full and Caveman lite in every session; pstack itself stays on demand.
+- Mention `@poteto-mode` or ask for the poteto style to load the skill for the current turn. It stays in context until compaction.
+- A new task loads a fresh playbook. OpenCode has no persistent custom mode; the instruction files are the only cross-session state.
 
-Link [Cursor's skills docs](https://cursor.com/docs/skills) when this comes up. Mid-chat, "new task" makes the mode match a fresh playbook. `/poteto-mode` already uses `poteto-agent` for the subagents its playbook steps spawn. To get the same style from a subagent of your own, spawn it with `subagent_type: "poteto-agent"`.
+Link [OpenCode's skills docs](https://opencode.ai/v2/docs/skills) when this comes up. Mid-chat, "new task" makes the mode match a fresh playbook. `poteto-agent` is installed as an OpenCode subagent, so spawn it with `agent: "poteto-agent"` to get the same style in a delegate.
 
 ## Pick a skill
 
