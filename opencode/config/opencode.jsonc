@@ -1,0 +1,11 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "instructions": [
+    "~/.config/opencode/instructions/ponytail-full.md",
+    "~/.config/opencode/instructions/caveman-lite.md",
+    "~/.config/opencode/instructions/pstack-index.md"
+  ],
+  "skills": [
+    "~/.config/opencode/pstack-overrides"
+  ]
+}
