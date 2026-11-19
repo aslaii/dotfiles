@@ -1,21 +1,9 @@
 # Only portable configuration, authored skills, and plugin manifests belong here.
 *
 !.gitignore
-!launch.mjs
-!isolation.test.js
-!fast.test.js
-!fast.yml
-!budget.yml
-!no-claude.yml
-!gpt.yml
-!fast.mjs
-!preload.mjs
 !README.md
 !agent/
 !agent/config.yml
-!agent/models.yml
-!agent/extensions/
-!agent/extensions/comment-checker-hashline.ts
 !agent/agents/
 !agent/agents/*.md
 !agent/skills/

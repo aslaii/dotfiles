@@ -3,26 +3,6 @@ function displayFZFFiles {
   fzf --preview 'batcat --theme=gruvbox-dark --color=always --style=header,grid --line-range :400 {}'
 }
 
-function omp() {
-  bun "${DOTFILES_DIR:-$HOME/dotfiles}/omp/launch.mjs" "$@"
-}
-
-function omp-fast() {
-  bun "${DOTFILES_DIR:-$HOME/dotfiles}/omp/launch.mjs" \
-    --config "${DOTFILES_DIR:-$HOME/dotfiles}/omp/fast.yml" \
-    --extension "${DOTFILES_DIR:-$HOME/dotfiles}/omp/fast.mjs" "$@"
-}
-
-function omp-gpt() {
-  bun "${DOTFILES_DIR:-$HOME/dotfiles}/omp/launch.mjs" \
-    --config "${DOTFILES_DIR:-$HOME/dotfiles}/omp/gpt.yml" "$@"
-}
-
-function omp-union() {
-  bun "${DOTFILES_DIR:-$HOME/dotfiles}/omp/launch.mjs" \
-    --config "${DOTFILES_DIR:-$HOME/dotfiles}/omp/union-only.yml" "$@"
-}
-
 function nvimGoToFiles {
   nvimExists=$(which nvim)
   if [ -z "$nvimExists" ]; then

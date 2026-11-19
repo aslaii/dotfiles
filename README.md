@@ -86,8 +86,7 @@ The `omp/` directory mirrors the portable parts of `~/.omp`:
 
 | Path | Contents |
 |------|----------|
-| `omp/agent/config.yml` | Model roles, thinking levels, prewalk, fallbacks, eight-worker limit, and UI preferences |
-| `omp/fast.yml`, `omp/budget.yml` | Opt-in `--config` overlays: fast (priority Claude/GPT, 8-wide) and budget (Claude Sonnet 5 via the $20 subscription first, Command Code $10 plan DeepSeek on Claude limits, free Muse as backstop) |
+| `omp/agent/config.yml` | Model roles across Claude, Codex, OpenCode Go, and Antigravity; fallbacks, isolation, eight-worker limit, and UI preferences |
 | `omp/agent/agents/*.md` | Portable planner, Terra, verifier, and researcher prompts |
 | `omp/agent/skills/omp-prompt/` | OMP-only prompt refinement skill |
 | `omp/plugins/package.json` | Installed plugin sources: Ponytail and pi-comment-checker |
@@ -108,8 +107,7 @@ Runtime routing was verified against the currently installed OMP 18.1.22.
 
 ```bash
 rtk bash ~/dotfiles/initial-setup-macos.sh --omp
-bun ~/dotfiles/omp/launch.mjs plugin list
-bun ~/dotfiles/omp/launch.mjs --model @default --no-prewalk
+omp plugin list
 ```
 
 The OMP-only option uses the default `~/.omp` layout and the existing
@@ -124,18 +122,9 @@ and its `--check` option remain unchanged.
 Authenticate separately with `/login` inside OMP on each computer. Model access
 depends on that computer's authenticated accounts; the config contains no credentials.
 
-Main uses GPT-6.1 Sol medium (`@default`) for normal launches. On the personal
-machine and JR, `omp --prewalk` or `ompp --prewalk` starts Main on Claude Opus 5.5
-high (`@plan`) and targets Sol medium after Main's first edit/write following
-todos. Delegated edits do not trigger the handoff; existing subagent roles remain
-machine/profile-specific. Prewalk is off without the explicit flag.
-The free endpoint is promotional; Contributor inputs and history may be used for
-training. There is no automatic paid Zen fallback.
-
-Existing sessions keep their old state and rendered prompts. For reliable adoption of
-the new policy, run `/advisor off`, select `@default` in `/model`, and start a fresh
-continuation; fresh launches use `omp --model @default --no-prewalk` after
-loading the updated shell functions.
+OMP runs vanilla: plain `omp` with no shell wrapper, launcher, overlay, or custom
+extension. Role routing is documented in [`omp/README.md`](omp/README.md).
+Existing sessions keep their old models; start a fresh session after changing roles.
 
 ```text
 /skill:omp-prompt feature add CSV export without changing existing filters
@@ -181,46 +170,22 @@ CONFIG_VARIANT=linux bash ~/dotfiles/initial-setup-linux.sh
 
 ## Agent isolation
 
-New Zsh sessions route `omo` and `omp` through the repository launchers.
-For other shells or automation, invoke them explicitly:
+New Zsh sessions route `omo` through the repository launcher. `omp` runs
+unwrapped. For other shells or automation, invoke OMO explicitly:
 
 ```bash
 bash ~/dotfiles/omo/launch.sh
-bun ~/dotfiles/omp/launch.mjs
 ```
 
-For time-critical work, use `omo-fast` or `omp-fast`. Native OMO requests
-priority GPT while retaining its Claude SDK OAuth and Muse routing.
-OMP requests fast Claude and priority GPT with GPT fallback when Claude is
-unavailable. Both allow eight parallel agents; Muse and OpenCode Go models
-retain their existing settings, including reasoning.
-Normal `omo` and `omp` keep their defaults. Reload an existing shell with
+For time-critical work, use `omo-fast`. Native OMO requests
+priority GPT while retaining its Claude SDK OAuth and Muse routing, and allows
+eight parallel agents. Normal `omo` keeps its defaults. Reload an existing shell with
 `source ~/.zsh/functions.zsh` before using the new commands.
-
-For a spend-capped session, use `omp-budget`. It is a `--config` overlay
-(`omp/budget.yml`, the same mechanism as `omp-fast`) that runs the driving
-roles on `anthropic/claude-sonnet-5` through the $20/mo Claude subscription's
-OAuth login first, falling back — once that credential's usage-aware
-preflight reports it exhausted — to the Command Code $10
-plan's DeepSeek V4.1 Flash tier, then to the plan-hosted Muse Spark 1.3
-Contributor. Vision reads stay on the plan's dedicated image-native vision
-model (confirmed with a real image probe), designer and small/verify/research/free
-work stay on the plan-hosted Muse Contributor and DeepSeek tier, and the free
-OpenCode Zen Muse Contributor endpoint remains wired only as a last-resort
-backstop. No budget role can reach OpenAI, GPT, or a paid Zen model, and no
-request forces the Command Code ZDR header (opt-in there, and forcing it
-caps a model's usable allowance at the plan default).
-From other shells:
-
-```bash
-bun ~/dotfiles/omp/launch.mjs --config ~/dotfiles/omp/budget.yml
-```
 
 For other shells:
 
 ```bash
 bash ~/dotfiles/omo/launch.sh --extension ~/dotfiles/omo/fast.mjs
-bun ~/dotfiles/omp/launch.mjs --config ~/dotfiles/omp/fast.yml --extension ~/dotfiles/omp/fast.mjs
 ```
 
 OMO uses its native model configuration in both launch modes. Its fast extension
@@ -229,8 +194,7 @@ GPT fallback also carries native priority metadata for session status and
 usage accounting. OMO's task row may still omit tier/thinking suffixes after
 fallback (upstream issues #6795 and #7934); the row alone does not establish
 the serving tier. Restart the OMO process after updating the fast extension.
-OMP's guard prevents its native retry from silently dropping Claude fast
-mode. Eight is a concurrency limit, not a requirement to run dependent tasks
+Eight is a concurrency limit, not a requirement to run dependent tasks
 before their prerequisites finish. Provider access and rate limits still apply.
 
 OMO loads only its owned skill library, native skills, bundled skills, and
