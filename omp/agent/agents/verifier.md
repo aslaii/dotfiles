@@ -1,7 +1,7 @@
 ---
 name: verifier
 description: Verify assigned real CLI, browser, device, or HTTP behavior and report criterion-level evidence without application edits.
-model: "@verify"
+tools: read, grep, glob, bash, browser, computer, eval
 spawns: []
 prewalk: false
 advisor: false

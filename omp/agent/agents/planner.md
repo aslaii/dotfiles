@@ -1,7 +1,6 @@
 ---
 name: planner
 description: Provide a read-only implementation-ready plan grounded in exact symbols, callers, contracts, risks, and verification inputs.
-model: "@planner"
 tools: read, grep, glob, web_search
 spawns: []
 prewalk: false

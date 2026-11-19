@@ -3,9 +3,7 @@ disabledProviders:
   - claude
   - claude-md
   - claude-plugins
-  - commandcode
   - mcp-json
-  - opencode-zen
 disabledExtensions:
   - extension-module:pi-extension
   - extension-module:extensions
@@ -31,32 +29,47 @@ skills:
 edit:
   mode: apply_patch
 modelRoles:
-  plan: anthropic/claude-opus-5-5:high
-  planner: anthropic/claude-opus-5-5:high
-  slow: anthropic/claude-opus-5-5:high
-  task: openai-codex/gpt-6.1-sol:high
-  smol: openai-codex/gpt-6-luna:low
-  research: openai-codex/gpt-6-luna:low
-  tiny: openai-codex/gpt-6-luna:low
-  commit: openai-codex/gpt-6-luna:low
-  review: anthropic/claude-sonnet-5-5:high
-  verify: anthropic/claude-sonnet-5-5:medium
-  vision: anthropic/claude-sonnet-5-5:medium
-  advisor: anthropic/claude-sonnet-5-5:medium
-  free: opencode-go/muse-spark-1.3-contributor:medium
   default: anthropic/claude-opus-5-5:medium
+  plan: anthropic/claude-fable-5-2:high
+  planner: anthropic/claude-fable-5-2:high
+  slow: openai-codex/gpt-6.2-sol:high
+  task: opencode-go/glm-5.3:high
+  review: anthropic/claude-sonnet-5-5:high
+  verify: openai-codex/gpt-6.1-terra:medium
+  vision: antigravity-cli/gemini-4-hydrogen:medium
+  advisor: antigravity-cli/gemini-4-hydrogen:medium
+  research: antigravity-cli/gemini-4-hydrogen:medium
+  smol: opencode-go/deepseek-v4.1-flash:low
+  tiny: opencode-go/glm-5.3-flash:low
+  commit: opencode-go/glm-5.3-flash:low
+  memory: opencode-go/glm-5.3-flash:low
 defaultThinkingLevel: medium
 tier:
   openai: priority
   subagent: inherit
   anthropic: none
+  advisor: inherit
+advisor:
+  enabled: true
+astGrep:
+  enabled: true
+computer:
+  enabled: true
+title:
+  refreshAfterPrompts: 10
 task:
   disabledAgents:
     []
   maxConcurrency: 8
   maxRecursionDepth: 1
   enableLsp: true
-  enableEffort: false
+  enableEffort: true
+  maxEffort: high
+  eager: preferred
+  autoParallel: "on"
+  perCallModel: "on"
+  crossInstance: true
+  prewalk: false
   agentModelOverrides:
     task: "@task"
     scout: "@smol"
@@ -68,6 +81,7 @@ task:
     verifier: "@verify"
     researcher: "@research"
   isolation:
+    enabled: true
     commits: ai
 retry:
   modelFallback: true
@@ -77,37 +91,41 @@ retry:
   fallbackRevertPolicy: cooldown-expiry
   fallbackChains:
     default:
-      - openai-codex/gpt-6.1-sol:medium
+      - antigravity-cli/claude-opus-5-5:high
+      - opencode-go/glm-5.3:high
     plan:
-      - openai-codex/gpt-6.1-sol:high
-      - opencode-go/glm-5.3-flash:max
+      - anthropic/claude-opus-5-5:high
+      - openai-codex/gpt-6.2-sol:high
     planner:
-      - openai-codex/gpt-6.1-sol:high
-      - opencode-go/glm-5.3-flash:max
-    slow:
-      - openai-codex/gpt-6.1-sol:high
-      - opencode-go/glm-5.3-flash:max
+      - anthropic/claude-opus-5-5:high
+      - openai-codex/gpt-6.2-sol:high
     review:
-      - openai-codex/gpt-6.1-sol:high
-      - opencode-go/glm-5.3-flash:high
+      - antigravity-cli/claude-sonnet-5-5:high
+      - opencode-go/glm-5.3:high
+    slow:
+      - anthropic/claude-opus-5-5:high
+      - antigravity-cli/gemini-4-hydrogen:high
     verify:
-      - openai-codex/gpt-6.1-sol:medium
+      - antigravity-cli/gemini-4-argon:medium
       - opencode-go/deepseek-v4.1-flash:high
-    vision:
-      - openai-codex/gpt-6.1-sol:medium
-      - opencode-go/deepseek-v4.1-flash:high
-    advisor:
-      - openai-codex/gpt-6.1-sol:medium
-      - opencode-go/glm-5.3-flash:high
     task:
-      - anthropic/claude-sonnet-5-5:high
+      - openai-codex/gpt-6.1-terra:medium
+      - antigravity-cli/gemini-4-argon:medium
+    vision:
       - opencode-go/deepseek-v4.1-flash:high
-    smol:
-      - opencode-go/glm-5.3-flash:low
+      - openai-codex/gpt-6.2-sol:medium
+    advisor:
+      - opencode-go/glm-5.3:high
+      - anthropic/claude-sonnet-5-5:medium
     research:
-      - opencode-go/glm-5.3-flash:low
+      - opencode-go/glm-5.3:high
+      - openai-codex/gpt-6-luna:medium
+    smol:
+      - antigravity-cli/gemini-4-argon:low
+      - openai-codex/gpt-6-luna:low
     tiny:
-      - opencode-go/glm-5.3-flash:low
+      - opencode-go/deepseek-v4.1-flash:low
+      - openai-codex/gpt-6-luna:low
     commit:
       - opencode-go/muse-spark-1.3-contributor:medium
     free:
@@ -139,7 +157,7 @@ statusLine:
     - cache_hit
     - cache_read
   preset: full
-  transparent: false
+  transparent: true
 browser:
   cmux: false
 plan:
@@ -150,6 +168,15 @@ composer:
   tokenRate: true
 display:
   subagentLivePreview: true
+  cacheMissMarker: true
+tui:
+  maxFps: 30
+compaction:
+  idleEnabled: true
+snapcompact:
+  systemPrompt: all
+memory:
+  backend: mnemopiagent
 codexResets:
   autoRedeem: "no"
 providers:

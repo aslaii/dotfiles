@@ -1,7 +1,6 @@
 ---
 name: researcher
 description: Return concise cited external documentation, news, and library findings with dates and matched benchmark methodology.
-model: "@research"
 tools: read, grep, glob, web_search
 spawns: []
 prewalk: false
