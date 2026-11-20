@@ -34,7 +34,8 @@ file does not, import it once: keep its role values that are real detected
 slugs, map anything unavailable to its family's closest detected slug or to
 `inherit-parent`, and carry the budget over. Say what you migrated.
 
-A line whose role is not listed in step 5 is from a retired role. Drop it.
+A line whose role is not listed in step 5, such as `hardest tasks`, `architect runners`,
+`reflect tooling`, or `why investigators`, is from a retired role. Drop it.
 
 ### 3. Budget, map, and confirm
 
@@ -43,7 +44,6 @@ otherwise in plain chat. Offer these four labels and name the current budget
 when the file records one. With no file, say that `large` matches the pstack
 defaults.
 
-- `unlimited — max reasoning`
 - `large — xhigh reasoning`
 - `medium — high reasoning`
 - `small — medium reasoning`
@@ -62,7 +62,7 @@ line step 2 dropped. Offer the detected models plus `inherit-parent` and `auto`
 
 For panel roles the value is a comma-separated list and one subagent runs per
 entry, alias entries included, so the list length sets the fan-out:
-`arena runners`, `architect runners`, `interrogate reviewers`. `arena
+`arena runners` and `interrogate reviewers`. `arena
 cross-judge pool` is a list too, but Arena runs one judge and only tries values
 from a family other than the parent's, in list order, so order it by preference;
 an `inherit-parent` value never judges. `swarm workers` is the default model for
@@ -89,17 +89,9 @@ bug-fix: inherit-parent
 perf-issue: inherit-parent
 hillclimb: inherit-parent
 judgment and prose: inherit-parent
-hardest tasks: inherit-parent
-how explorer: inherit-parent
-how explainer: inherit-parent
-why investigators: inherit-parent
-why synthesizer: inherit-parent
-reflect tooling: inherit-parent
-reflect judgment, divergent, synthesizer: inherit-parent
 arena runners: inherit-parent, inherit-parent
 arena cross-judge pool: inherit-parent
 swarm workers: inherit-parent
-architect runners: inherit-parent, inherit-parent
 interrogate reviewers: inherit-parent, inherit-parent
 ```
 

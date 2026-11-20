@@ -1,0 +1,556 @@
+diff -ruN a/agents/comment-sicko.md b/agents/comment-sicko.md
+--- a/agents/comment-sicko.md	2026-11-20 16:48:13
++++ b/agents/comment-sicko.md	2026-11-20 16:48:13
+@@ -1,6 +1,13 @@
+ ---
+-name: comment-sicko
+-description: A deranged comment-hater that savors deletion and condemns workaround code.
++description: A deranged comment-hater that savors deletion and condemns workaround code. Read-only: it reports, it never edits. Use for comment slop audits and "no comments" passes.
++mode: subagent
++permissions:
++  - action: edit
++    resource: "*"
++    effect: deny
++  - action: subagent
++    resource: "*"
++    effect: deny
+ ---
+ 
+ # Comment Sicko
+@@ -23,7 +30,7 @@
+ 
+ `eslint-disable`, `@ts-ignore`, `@ts-expect-error`, and similar suppressions stink. Look up the rule. If it catches real bugs or protects correctness or safety, kill the suppression and mark the exact guilty symbol `MUST KILL`.
+ 
+-`IMPORTANT`, `do not remove`, `too risky`, `fine for now`, and long justifications are scent, not conviction. Before judging, I read nearby code. If its claim is not obvious there, I trace the named symbol or call, run `/why` from the **why** skill on it, or both. Only a foreign keep-list gotcha proven true today on a live path crawls away. Our-code surprises die with the reshape flag above. Doubt after the hunt is meat.
++`IMPORTANT`, `do not remove`, `too risky`, `fine for now`, and long justifications are scent, not conviction. Before judging, I read nearby code. If its claim is not obvious there, I trace the named symbol or call, load the `why` skill with the skill tool on it, or both. Only a foreign keep-list gotcha proven true today on a live path crawls away. Our-code surprises die with the reshape flag above. Doubt after the hunt is meat.
+ 
+ A long justification without a proven keep-list exception is a confession. Kill it. Never polish meat into a shorter alibi. Mark the exact guilty symbol `MUST KILL`. My kill ends there. I do not touch the code.
+ 
+diff -ruN a/agents/poteto-agent.md b/agents/poteto-agent.md
+--- a/agents/poteto-agent.md	2026-11-20 16:48:13
++++ b/agents/poteto-agent.md	2026-11-20 16:48:13
+@@ -1,10 +1,8 @@
+ ---
+-name: poteto-agent
+-description: Delegate subagent for code-writing and helper tasks spawned during a `/poteto-mode` run. Use for delegates, not as the runner for `/poteto-mode` itself. Spawn a fresh `poteto-agent` for each new task, and resume one only in the strict cases that poteto-mode's Subagents section names. Reads the `poteto-mode` skill's `SKILL.md` in full before any work, including its inline Principles index. Substituting `generalPurpose` skips that read and drifts.
+-is_background: true
+-model: claude-opus-5-5-xhigh-fast
++description: Delegate subagent for code-writing and helper tasks spawned during a poteto-mode run. Use for delegates, not as the runner for poteto-mode itself. Spawn a fresh poteto-agent for each new task, and resume one only in the strict cases that poteto-mode's Subagents section names. Reads the poteto-mode skill's SKILL.md in full before any work, including its inline Principles index. Substituting the general agent skips that read and drifts.
++mode: subagent
+ ---
+ 
+ # Poteto subagent
+ 
+-You are operating as poteto-mode's full agent style. The chat that receives `/poteto-mode` owns the playbook, the todo list, and every Task spawn. You are one of its delegates. Read the `poteto-mode` skill's `SKILL.md` in full before doing any work, including its inline Principles index. Use the absolute path your parent gave you. With no path, before any other work, search `~/.cursor/plugins/` for a file whose path ends in `skills/poteto-mode/SKILL.md`. If more than one file matches, use the copy whose `.cursor-plugin/plugin.json` has the highest `version`. Your skill catalog hides this skill, so a missing catalog entry does not mean pstack is absent. If no such file exists, stop and tell your parent. Navigate to a leaf `principle-*` skill whenever you apply that principle.
++You are operating as poteto-mode's full agent style. The chat that receives poteto-mode owns the playbook, the todo list, and every subagent spawn. You are one of its delegates. Read `~/.config/opencode/skills/poteto-mode/SKILL.md` in full before doing any work, including its inline Principles index. Use the absolute path your parent gave you; if none was given, read that default path. Your skill catalog hides this skill, so a missing catalog entry does not mean pstack is absent. If the file is missing, stop and tell your parent. Navigate to a leaf `principle-*` skill with the skill tool whenever you apply that principle.
+diff -ruN a/skills/automate-me/SKILL.md b/skills/automate-me/SKILL.md
+--- a/skills/automate-me/SKILL.md	2026-11-20 16:39:01
++++ b/skills/automate-me/SKILL.md	2026-11-20 16:48:12
+@@ -14,7 +14,7 @@
+ 
+ ### 0. Check for an existing skill
+ 
+-Look recursively for `.cursor/skills/**/*-mode/SKILL.md` and `~/.cursor/skills/*-mode/SKILL.md` matching the user's handle. Mode skills can live in a personal category directory (`.cursor/skills/<handle>/`), not only at the top level. If one exists, confirm intent with `AskQuestion` (unless they already said "update my skill" or similar):
++Look recursively for `.opencode/skills/**/*-mode/SKILL.md` and `~/.config/opencode/skills/*-mode/SKILL.md` matching the user's handle. Mode skills can live in a personal category directory (`.opencode/skills/<handle>/`), not only at the top level. If one exists, confirm intent with the `question` tool (unless they already said "update my skill" or similar):
+ 
+ - Update the existing skill (default for repeat runs)
+ - Start fresh (rare, ask why before doing it)
+@@ -26,7 +26,7 @@
+ 
+ ### 1. Mine their history
+ 
+-Locate the active workspace's transcripts before fanning out. The system prompt names the workspace's `agent-transcripts/` directory. Use only that path. Don't glob across `~/.cursor/projects/*/`. That crosses workspace boundaries and reads private chats from unrelated projects.
++Locate the active workspace's sessions before fanning out. Use `opencode session list --format json` for the project and `opencode session export <session-id>` for each conversation. Never export a session that belongs to another project; that crosses workspace boundaries and reads private chats from unrelated projects.
+ 
+ Survey recent agent conversations within that scope for recurring patterns. Run multiple parallel subagents across slices of history (e.g. last 2-4 weeks, split into 3 slices so each has enough material). Pick each subagent's reasoning level for the job, per the Subagents section of the **poteto-mode** skill. Each slice mining subagent reads transcripts from the workspace-scoped path the parent provides, looks for the signals below, and returns a short structured list of patterns it saw with evidence pointers. Default signals worth hunting:
+ 
+@@ -41,9 +41,9 @@
+ 
+ ### 2. Ask the user directly
+ 
+-Mining misses intent that hasn't come up yet. Use the `AskQuestion` tool (structured multi-choice) rather than asking the user to type from scratch.
++Mining misses intent that hasn't come up yet. Use the `question` tool (structured multi-choice) rather than asking the user to type from scratch.
+ 
+-Shape: one or two questions with 4-6 options each, `allow_multiple: true` for category questions. Start broad ("Which areas matter most?"), then follow up on selected areas with specific options. After the structured rounds, one free-form chat question catches anything the options missed.
++Shape: one or two questions with 4-6 options each, `multiple: true` for category questions. Start broad ("Which areas matter most?"), then follow up on selected areas with specific options. After the structured rounds, one free-form chat question catches anything the options missed.
+ 
+ Don't dump 20 questions.
+ 
+@@ -64,12 +64,12 @@
+ 
+ ### 4. Draft the skill
+ 
+-Use Cursor's built-in `create-skill` skill to author the skill. Placement:
++Author the skill in the OpenCode format: a directory named for the skill containing `SKILL.md` with `name` and `description` frontmatter. Placement:
+ 
+-- Path: preserve an existing mode skill's category. For a new mode, use `.cursor/skills/<handle>/<handle>-mode/SKILL.md` when the repo has an established personal category for that handle. Otherwise default to `.cursor/skills/<handle>-mode/SKILL.md` in the project (or `~/.cursor/skills/<handle>-mode/` if the user prefers a personal skill).
++- Path: preserve an existing mode skill's category. For a new mode, use `.opencode/skills/<handle>/<handle>-mode/SKILL.md` when the repo has an established personal category for that handle. Otherwise default to `.opencode/skills/<handle>-mode/SKILL.md` in the project (or `~/.config/opencode/skills/<handle>-mode/` if the user prefers a personal skill).
+ - Handle: the user's first name or chosen identifier.
+ - Frontmatter `description`: trigger on their name + `/<handle>-mode` + "work in their style", not on generic keywords like "write code" or "review PR".
+-- Frontmatter formatting: follow `create-skill`'s YAML rules. Keep `description` as one YAML scalar. Quote it or use `description: >-` with indented continuation lines when punctuation or wrapping requires it.
++- Frontmatter formatting: keep `description` as one YAML scalar. Quote it or use `description: >-` with indented continuation lines when punctuation or wrapping requires it.
+ - Frontmatter `disable-model-invocation: true` by default. Opt out only if the user explicitly wants their mode to apply on every turn.
+ 
+ ### 5. Iterate on prose
+diff -ruN a/skills/create-verification-skill/SKILL.md b/skills/create-verification-skill/SKILL.md
+--- a/skills/create-verification-skill/SKILL.md	2026-11-20 16:39:01
++++ b/skills/create-verification-skill/SKILL.md	2026-11-20 16:48:12
+@@ -6,7 +6,7 @@
+ 
+ # Create a verification skill
+ 
+-Every serious project needs a scripted way to drive the real app and prove behavior: launch it, exercise a feature the way a user would, and capture evidence. This skill generates that as a project-local skill (`.cursor/skills/verify-<app>/`) tailored to the repo. You write the generator's output for the next agent, not for a human: it will be read cold, mid-task, by an agent that has never seen the app.
++Every serious project needs a scripted way to drive the real app and prove behavior: launch it, exercise a feature the way a user would, and capture evidence. This skill generates that as a project-local skill (`.opencode/skills/verify-<app>/`) tailored to the repo. You write the generator's output for the next agent, not for a human: it will be read cold, mid-task, by an agent that has never seen the app.
+ 
+ ## 1. Interview the repo, not the user
+ 
+@@ -22,7 +22,7 @@
+ 
+ ## 2. Generate the skill
+ 
+-Write `.cursor/skills/verify-<app>/SKILL.md` with YAML frontmatter (`name: verify-<app>` and a `description` that names the app, the surface, and when to reach for it — without frontmatter the skill never registers) and these sections, each grounded in what the interview actually found (no placeholders left):
++Write `.opencode/skills/verify-<app>/SKILL.md` with YAML frontmatter (`name: verify-<app>` and a `description` that names the app, the surface, and when to reach for it — without frontmatter the skill never registers) and these sections, each grounded in what the interview actually found (no placeholders left):
+ 
+ - **Launch:** the exact command that starts the app for verification, and how to tell it's ready (a log line, a prompt). Launch must reach a usable state from an empty data dir, including any migrations and seed data. Ready means usable, not just that a process answers. A database health check can pass while its init scripts are still running. Include teardown. For a short-lived CLI or TUI there is no server to keep alive: launch means build the binary (or install deps) once, then start each drive in its own isolated PTY or tmux session.
+ - **Doctor:** one read-only check that answers "is this instance worth driving?" — process up, right version/build, port owned by us, auth valid. An agent runs this first whenever anything looks off.
+@@ -33,7 +33,7 @@
+ 
+ ## 3. Seed the feature map
+ 
+-Create `.cursor/skills/verify-<app>/features/README.md` plus one file per user-facing feature you can identify (aim for the top 3-5 to start, from routes, commands, menus, or docs). Follow the shape in [`references/feature-map-example/`](references/feature-map-example/), with a README index and one file per feature. Each file answers, from the user's point of view: what the feature is, how to reach it, how to drive it with the harness, and what observable end state proves it works. The four H2s are `Sub-features`, `How to get to it (user POV)`, `Driving it with <harness>`, and `Gotchas`. If the seed data lacks a precondition that a journey needs, the journey reports a failure and the reason goes in that feature's `Gotchas`. Never weaken the journey to make it pass. The map is the repo's maintained verification source; a proof that drives one convenient entry point is incomplete when the map lists others.
++Create `.opencode/skills/verify-<app>/features/README.md` plus one file per user-facing feature you can identify (aim for the top 3-5 to start, from routes, commands, menus, or docs). Follow the shape in [`references/feature-map-example/`](references/feature-map-example/), with a README index and one file per feature. Each file answers, from the user's point of view: what the feature is, how to reach it, how to drive it with the harness, and what observable end state proves it works. The four H2s are `Sub-features`, `How to get to it (user POV)`, `Driving it with <harness>`, and `Gotchas`. If the seed data lacks a precondition that a journey needs, the journey reports a failure and the reason goes in that feature's `Gotchas`. Never weaken the journey to make it pass. The map is the repo's maintained verification source; a proof that drives one convenient entry point is incomplete when the map lists others.
+ 
+ ## 4. Prove the generated skill before handing it over
+ 
+diff -ruN a/skills/how/SKILL.md b/skills/how/SKILL.md
+--- a/skills/how/SKILL.md	2026-11-20 16:39:01
++++ b/skills/how/SKILL.md	2026-11-20 16:48:12
+@@ -12,7 +12,7 @@
+ 
+ ## 1. Explain
+ 
+-Spawn one Task subagent with `subagent_type: generalPurpose` and `readonly: true` that explores and explains in one pass. Give it the user's question and this brief:
++Spawn one `subagent` call with `agent: "explore"`, which is read-only, that explores and explains in one pass. Give it the user's question and this brief:
+ 
+ > You are writing an architectural explanation for a senior engineer. Explore the codebase and write an explanation that a senior engineer unfamiliar with this area could read and walk away with a solid mental model. They should understand the architecture well enough to start working in it confidently. You have read-only access to the codebase.
+ 
+diff -ruN a/skills/maintain-verification-skill/SKILL.md b/skills/maintain-verification-skill/SKILL.md
+--- a/skills/maintain-verification-skill/SKILL.md	2026-11-20 16:39:01
++++ b/skills/maintain-verification-skill/SKILL.md	2026-11-20 16:48:12
+@@ -22,7 +22,7 @@
+ 
+ ## Pass
+ 
+-0. **Locate the target.** Find the verification skill to maintain: the project-local skill whose body has launch/drive sections and a feature map (usually `.cursor/skills/verify-*/`). Several candidates → ask which one; none → stop and point at `/create-verification-skill` instead of inventing a target.
++0. **Locate the target.** Find the verification skill to maintain: the project-local skill whose body has launch/drive sections and a feature map (usually `.opencode/skills/verify-*/`). Several candidates → ask which one; none → stop and point at `/create-verification-skill` instead of inventing a target.
+ 
+ 1. **Index hygiene.** Read the feature map README and glob its sibling files. Fix missing, extra, duplicate, or dead entries. Lightweight; no generated inventory.
+ 
+diff -ruN a/skills/no-comments/SKILL.md b/skills/no-comments/SKILL.md
+--- a/skills/no-comments/SKILL.md	2026-11-20 16:39:01
++++ b/skills/no-comments/SKILL.md	2026-11-20 16:48:12
+@@ -16,7 +16,7 @@
+ 
+ ## Steps
+ 
+-1. Spawn `Task` with `subagent_type: "comment-sicko"`. Pass the scope. Pick each subagent's reasoning level for the job, per the Subagents section of the **poteto-mode** skill. Do not restate its rules.
++1. Spawn the `comment-sicko` agent with the `subagent` tool. Pass the scope. Pick each subagent's reasoning level for the job, per the Subagents section of the **poteto-mode** skill. Do not restate its rules.
+ 2. Inspect its report and diff. Reject application-code edits, scope escapes, exception-protected deletions, misstated `MUST KILL` reasons, and flags that treat kept intentional code as guilty. Reshape flags on our-code surprises stay actionable. Do not restore those comments. A keep survives only with proof it is about something we cannot change. Audit missed scoped lint and TypeScript suppressions. Correctness or safety suppressions stay actionable `MUST KILL`s. Restore deletions only with exact exceptions and scoped proof. Before accepting thin `IMPORTANT` or `do not remove` kills or keeps, trace their symbol or run `/why` on it. If a kill is ambiguous, do not restore. If a keep is refuted or still ambiguous, delete it. Revert and rerun one rejected report with the failure named. Reject a second, report it open, and fail `/no-comments`.
+ 3. Fix trivial accepted flags directly by deleting a dead path, dropping a parameter, or using the real API. If any fix needs a shape, run `/architect` once for the accepted set and surrounding code. Stop at the sketch. Architect shapes. Step 4 implements.
+ 4. Implement the smallest root-cause fix in scope. Remove every named workaround. If the root cause is out of scope, land the smallest in-scope fix and report the rest open. The **principle-fix-root-causes** and **principle-redesign-from-first-principles** skills guide intent only. Neither authorizes widening the fence nor fixing instances outside it. Never bolt on symptom guards.
+diff -ruN a/skills/poteto-help/SKILL.md b/skills/poteto-help/SKILL.md
+--- a/skills/poteto-help/SKILL.md	2026-11-20 16:48:13
++++ b/skills/poteto-help/SKILL.md	2026-11-20 16:48:12
+@@ -53,11 +53,11 @@
+ 
+ Whether `/poteto-mode` stays on depends on how the user starts it:
+ 
+-- Enter on `/poteto-mode` attaches the skill to one message. It fades as the chat moves on.
+-- Option+Enter on Mac or Alt+Enter on Windows, or Use as Mode from the skill entry, makes it a Custom Mode. It stays in context every turn until the user exits the mode, and it stays out of casual turns.
+-- Cursor's docs list Custom Modes in the Agents Window and the CLI. Elsewhere, start each new task with `/poteto-mode`.
++- The always-on instruction files keep Ponytail full and Caveman lite in every session; pstack itself stays on demand.
++- Mention `@poteto-mode` or ask for the poteto style to load the skill for the current turn. It stays in context until compaction.
++- A new task loads a fresh playbook. OpenCode has no persistent custom mode; the instruction files are the only cross-session state.
+ 
+-Link [Cursor's skills docs](https://cursor.com/docs/skills) when this comes up. Mid-chat, "new task" makes the mode match a fresh playbook. `/poteto-mode` already uses `poteto-agent` for the subagents its playbook steps spawn. To get the same style from a subagent of your own, spawn it with `subagent_type: "poteto-agent"`.
++Link [OpenCode's skills docs](https://opencode.ai/v2/docs/skills) when this comes up. Mid-chat, "new task" makes the mode match a fresh playbook. `poteto-agent` is installed as an OpenCode subagent, so spawn it with `agent: "poteto-agent"` to get the same style in a delegate.
+ 
+ ## Pick a skill
+ 
+diff -ruN a/skills/poteto-mode/SKILL.md b/skills/poteto-mode/SKILL.md
+--- a/skills/poteto-mode/SKILL.md	2026-11-20 16:48:13
++++ b/skills/poteto-mode/SKILL.md	2026-11-20 16:48:12
+@@ -17,7 +17,7 @@
+ The remaining triggers live only here:
+ 
+ - First message → restate the user's goal and the smallest change that meets it, then proceed. Open each subagent brief, PR `## Why`, and final report with the goal.
+-- Starting any agent, whether a Task subagent or a Project worker → the first line of its kickoff is `Read <path>/worker.md before anything else.`, with `<path>` the absolute path of this skill's folder. The operator's rules live in skills that only load from a slash command, so they reach another agent no other way. Keep the rest of the kickoff to the goal and the task, plus this file's absolute path for a `poteto-agent`.
++- Starting any agent, whether a `subagent` call or a Project worker → the first line of its kickoff is `Read <path>/worker.md before anything else.`, with `<path>` the absolute path of this skill's folder. The operator's rules live in skills that only load from a slash command, so they reach another agent no other way. Keep the rest of the kickoff to the goal and the task, plus this file's absolute path for a `poteto-agent`.
+ - A fork you could settle by running something → prototype it per `playbooks/prototype.md` instead of asking.
+ - Code → name the data shape first. Across a function boundary → **architect**. Fan-out → **swarm**. Bakeoff → **arena**. Contested design → **interrogate**.
+ - Prose, your reply included → **unslop**. Docs, PR descriptions, commit messages → **technical-writing**.
+@@ -83,9 +83,9 @@
+ 
+ ## Subagents
+ 
+-**Use `subagent_type: "poteto-agent"` for any subagent you spawn directly inside a playbook step.** The chat that receives `/poteto-mode` runs the playbook itself. Routed workflow skills (`interrogate`, `swarm`) set their own `subagent_type`. Respect it.
++**Use `agent: "poteto-agent"` for any subagent you spawn directly inside a playbook step.** The chat that receives `/poteto-mode` runs the playbook itself. Routed workflow skills (`interrogate`, `swarm`) set their own `agent`. Respect it.
+ 
+-**Defaults for every `Task` call.** `run_in_background: true`, agent mode (readonly strips MCP), file pointers not inlined context, and an explicit model per role, Project workers included. `/setup-pstack` writes `~/.config/opencode/instructions/pstack-models.md`, whose per-role lines override the defaults below and the role models in the routed skills (`arena`, `swarm`, `interrogate`). A role with no line keeps its default. A line of `inherit-parent` or `auto` runs the role on the parent model, so omit `model` and spawn `generalPurpose`, because `poteto-agent` defaults to Opus 5.5. Each code playbook reads its own line (`feature, refactoring`, `bug-fix`, `perf-issue`, or `hillclimb`), prose and judgment read `judgment and prose`, and trivial mechanical edits read `swarm workers`. If the rule has no `# defaults: 3` line, an older setup wrote it. Keep honoring its lines, and tell the user once per session to rerun `/setup-pstack`.
++**Defaults for every `subagent` call.** `background: true`, an agent with edit access whenever the work needs MCP lookups (`explore` is read-only and strips MCPs), file pointers not inlined context, and an explicit model per role, Project workers included. `/setup-pstack` writes `~/.config/opencode/instructions/pstack-models.md`, whose per-role lines override the defaults below and the role models in the routed skills (`arena`, `swarm`, `interrogate`). A role with no line keeps its default. A line of `inherit-parent` or `auto` runs the role on the parent model, so omit `model` and spawn `general`, because `poteto-agent` defaults to Opus 5.5. Each code playbook reads its own line (`feature, refactoring`, `bug-fix`, `perf-issue`, or `hillclimb`), prose and judgment read `judgment and prose`, and trivial mechanical edits read `swarm workers`. If the rule has no `# defaults: 3` line, an older setup wrote it. Keep honoring its lines, and tell the user once per session to rerun `/setup-pstack`.
+ 
+ - Code, prose, and judgment: `claude-opus-5-5-xhigh-fast`.
+ - Trivial mechanical edits: `claude-opus-5-5-high-fast`.
+@@ -93,7 +93,7 @@
+ 
+ **Fable 5.2 is an exception.** It runs outside a panel only when the user named it for this task or two Opus 5.5 xhigh runs of the same brief failed its check. Say which. Difficulty alone never qualifies.
+ 
+-**Match the model to the job.** Start from the role's line or default, keep its family, and set the level the job needs. The `/setup-pstack` budget sets each role's starting level. Panel seats keep their listed level. Raise any other role one step, up to xhigh, for the hardest or subtlest work, lower it one step for judgment, and two or more steps for routine work. No role runs above xhigh. Opus 5.5 always runs its `-fast` slug. Verification always runs on the `swarm workers` model, `claude-opus-5-5-high-fast` by default. A Gemini seat runs at `gemini-4-neon-xhigh` unless its line names another level. If the Task tool rejects a slug, never pass it again. Fall back to the role's line or default, then the calling skill's fallback, then the closest valid slug of the same family, then omit `model`. Say so.
++**Match the model to the job.** Start from the role's line or default, keep its family, and set the level the job needs. The `/setup-pstack` budget sets each role's starting level. Panel seats keep their listed level. Raise any other role one step, up to xhigh, for the hardest or subtlest work, lower it one step for judgment, and two or more steps for routine work. No role runs above xhigh. Opus 5.5 always runs its `-fast` slug. Verification always runs on the `swarm workers` model, `claude-opus-5-5-high-fast` by default. A Gemini seat runs at `gemini-4-neon-xhigh` unless its line names another level. If the subagent tool rejects a slug, never pass it again. Fall back to the role's line or default, then the calling skill's fallback, then the closest valid slug of the same family, then omit `model`. Say so.
+ 
+ You own every subagent's work. Review the diff and write your own summary. A second opinion is the same prompt on another vendor's model.
+ 
+diff -ruN a/skills/poteto-mode/playbooks/autonomous-run.md b/skills/poteto-mode/playbooks/autonomous-run.md
+--- a/skills/poteto-mode/playbooks/autonomous-run.md	2026-11-20 16:39:01
++++ b/skills/poteto-mode/playbooks/autonomous-run.md	2026-11-20 16:48:12
+@@ -6,7 +6,7 @@
+ 2. Pick the wake mechanism using Cursor's `/loop` command (a built-in, not a pstack skill). An event to watch (CI, a merge, a ref advancing) gets a watcher subagent that wakes you on the event, with a long time-based heartbeat as fallback. No event gets a fixed-interval heartbeat sized to when the result is worth re-checking. Pick each subagent's reasoning level for the job, per the Subagents section.
+ 3. Each iteration makes the smallest change the evidence justifies, verifies it against the predicate, commits if it advanced, discards changes that didn't help. Belt-and-suspenders that "might help" gets reverted, not left to ride.
+    Sequence the work via the **sequence-verifiable-units** principle skill, verifying each unit before the next instead of batching checks at the end.
+-4. Mid-run discoveries that support the goal are yours. Address broken skills, related bugs, flaky verifiers, review noise, tooling failures, orphaned follow-ups, and fixable drift yourself via poteto-mode. Put out-of-band fixes in their own PR. Do not park reversible work for the human or use `AskQuestion`. Surface only irreversible actions, genuine product or preference calls no experiment can settle, or a real dead end. Keep the predicate as the main drive, and return to it after each side fix.
++4. Mid-run discoveries that support the goal are yours. Address broken skills, related bugs, flaky verifiers, review noise, tooling failures, orphaned follow-ups, and fixable drift yourself via poteto-mode. Put out-of-band fixes in their own PR. Do not park reversible work for the human or use the `question` tool. Surface only irreversible actions, genuine product or preference calls no experiment can settle, or a real dead end. Keep the predicate as the main drive, and return to it after each side fix.
+ 5. Checkpoint every iteration via the **show-me-your-work** skill, a row for what changed and whether the predicate moved.
+ 6. Stop when the predicate is met. A plateau is not a stop, so keep going and pivot your approach to push past it. Surface a genuine dead end rather than spinning, and never relax the predicate to declare victory.
+ 
+diff -ruN a/skills/poteto-mode/playbooks/eval.md b/skills/poteto-mode/playbooks/eval.md
+--- a/skills/poteto-mode/playbooks/eval.md	2026-11-20 16:39:01
++++ b/skills/poteto-mode/playbooks/eval.md	2026-11-20 16:48:12
+@@ -19,7 +19,7 @@
+ 3. **Author one organic prompt.** What a user would type. No leakage of what's being measured.
+ 4. **Spawn N parallel candidates** on different models per the **arena** skill's Phase B. Each works in its own sanitized dir. Same prompt to each. Pick each subagent's reasoning level for the job, per the Subagents section. An agent that only dispatches, polls, or packs results runs on `claude-opus-5-5-medium-fast`.
+ 5. **Spawn one blinded judge** on a different model family per the **arena** skill's Phase C. Judge sees outputs by sanitized label and the rubric, never a model name.
+-6. **Verify the chain from transcripts, not self-report.** Read each candidate's local transcript under the active workspace's `agent-transcripts/` directory (the system prompt names this path). Do not glob across `~/.cursor/projects/*/`. That crosses workspace boundaries and reads private chats from unrelated projects. Look at which files each candidate actually opened. Grade chain-following from the files it really read plus the shape of the code, never from the candidate's own claims.
++6. **Verify the chain from transcripts, not self-report.** Export each candidate's OpenCode session with `opencode session export <session-id>`; the session list names the IDs. Never export another project's session; that crosses workspace boundaries. Look at which files each candidate actually opened. Grade chain-following from the files it really read plus the shape of the code, never from the candidate's own claims.
+ 7. **Read every candidate output yourself** end to end. Compare to the judge's verdict. Disagreement means a model is biased or the rubric is ambiguous. Synthesize.
+ 
+ **Reply:** variant under test, rubric, per-candidate notes, judge's verdict, your synthesis, and a recommendation for whether to promote the variant.
+diff -ruN a/skills/poteto-mode/playbooks/session-pickup.md b/skills/poteto-mode/playbooks/session-pickup.md
+--- a/skills/poteto-mode/playbooks/session-pickup.md	2026-11-20 16:39:01
++++ b/skills/poteto-mode/playbooks/session-pickup.md	2026-11-20 16:48:12
+@@ -2,7 +2,7 @@
+ 
+ **You own the resume point. Read the prior trail, don't redo it.**
+ 
+-1. Locate the prior trail. A local transcript under the active workspace's `agent-transcripts/` directory (the system prompt names the path. Do not glob across `~/.cursor/projects/*/`, that crosses workspace boundaries and reads private chats from unrelated projects), a cloud-agent URL, or a pushed branch. Read the metadata overview and last messages first, then scan back for the decision points. Parse a long transcript in a subagent and keep the reduced timeline in the main thread (the **principle-guard-the-context-window** skill). Pick each subagent's reasoning level for the job, per the Subagents section.
++1. Locate the prior trail. A prior OpenCode session, found with `opencode session list --format json` and read with `opencode session export <session-id>` (never export another project's session; that crosses workspace boundaries and reads private chats from unrelated projects), a shared session link, or a pushed branch. Read the metadata overview and last messages first, then scan back for the decision points. Parse a long transcript in a subagent and keep the reduced timeline in the main thread (the **principle-guard-the-context-window** skill). Pick each subagent's reasoning level for the job, per the Subagents section.
+ 2. Reconstruct operational state. The branch and worktree, what already landed (`git log`, `git diff` against the base), the open todos, the decisions made. The prior trail is authoritative input. Resist the bias to re-derive it.
+ 3. Diff done vs pending. Compare what shipped against what was planned, name the resume point, do not re-run the prior repro or redo completed work. A "let me verify from scratch" pass means you're treating the trail as untrustworthy when it's authoritative.
+ 4. Route the remaining work to the matching playbook and pick the verdict: continue the execution, ship a finished recommendation, ratify or override a prior conclusion, or postmortem a failed run. The pickup playbook ends here. The routed playbook owns the rest.
+diff -ruN a/skills/poteto-mode/playbooks/worktree-cleanup.md b/skills/poteto-mode/playbooks/worktree-cleanup.md
+--- a/skills/poteto-mode/playbooks/worktree-cleanup.md	2026-11-20 16:39:01
++++ b/skills/poteto-mode/playbooks/worktree-cleanup.md	2026-11-20 16:48:12
+@@ -1,11 +1,11 @@
+ ### Worktree and simulator cleanup
+ 
+-1. Snapshot and audit. Record `df -h /`, then run `scripts/worktree-audit.sh [-b <pr-base-ref>] [repo-path]` (principle-build-the-lever). Without `-b` it checks `MERGED` against `origin/HEAD`, so pass `-b origin/<branch>` when PRs target another branch. It reads paths from `git worktree list`, never hand-typed, since a hand-typed `myrepo-worktrees/x` misses one that lives at `.cursor/worktrees/myrepo/x` (principle-encode-lessons-in-structure). It classifies each worktree by size, age, merge state, uncommitted work, PR state, and the newest chat that touched it, then suggests a bucket. The transcript scan is slow, so background it.
++1. Snapshot and audit. Record `df -h /`, then run `scripts/worktree-audit.sh [-b <pr-base-ref>] [repo-path]` (principle-build-the-lever). Without `-b` it checks `MERGED` against `origin/HEAD`, so pass `-b origin/<branch>` when PRs target another branch. It reads paths from `git worktree list`, never hand-typed, since a hand-typed `myrepo-worktrees/x` misses one that lives at a configured root such as `../worktrees/myrepo/x` (principle-encode-lessons-in-structure). It classifies each worktree by size, age, merge state, uncommitted work, PR state, and the newest chat that touched it, then suggests a bucket. The transcript scan is slow, so background it.
+ 2. The bucket is advice, not permission. The pinned and active chats are the real artifact (principle-prove-it-works). Get that set from the user or sidebar and cross-check every candidate. The lever has marked `safe` a worktree the user had pinned, so the pinned set wins.
+ 3. Verify usage before deleting. For every `verify-recent-chat` row, or anything you doubt, fan subagents out to read the transcripts and report whether the chat is pinned or ongoing and which worktrees it touches (principle-guard-the-context-window, transcripts are bulk). A pinned chat spawns arena and repro trees into sibling worktrees via background subagents, and those are in use even when their names never hit the sidebar. Pick each subagent's reasoning level for the job, per the Subagents section.
+ 4. Pause on irreversible loss. `wip:N` is N tracked uncommitted edits. Show the diff and get a decision first, since removing a clean worktree is recoverable from its branch but uncommitted work is gone. `scratch:N` is untracked throwaway, safe to drop, but name the files. Per Autonomy, clean and merged and not-in-use proceeds. `wip` and in-use pause.
+ 5. Prune the confirmed set. Per path, `git worktree remove --force <path>`. If the dir survives on ignored build artifacts, `rm -rf` it, then `git worktree prune`. Branch refs survive, so no commits are lost. Confirm with `df -h /` and re-list.
+-6. Simulators and other reclaimers. Simulators are usually the next-biggest win. `xcrun simctl --set testing delete all` (XCTestDevices clones), `xcrun simctl delete unavailable`, and `xcrun simctl runtime list` then `runtime delete <id>` for old runtimes. More when needed: Xcode `DerivedData` and `iOS DeviceSupport`, `~/Library/Application Support/Cursor` (`state.vscdb.backup`, and `snapshots/roots/<root>` where a `<root>` named for a folder you opened as a workspace balloons), package caches (pnpm, uv, brew, yarn). Clear only caches the user has not said to keep.
++6. Simulators and other reclaimers. Simulators are usually the next-biggest win. `xcrun simctl --set testing delete all` (XCTestDevices clones), `xcrun simctl delete unavailable`, and `xcrun simctl runtime list` then `runtime delete <id>` for old runtimes. More when needed: Xcode `DerivedData` and `iOS DeviceSupport`, `~/Library/Application Support/opencode` and `~/.local/share/opencode` (session databases and snapshots), package caches (pnpm, uv, brew, yarn). Clear only caches the user has not said to keep.
+ 
+ This is the one playbook that deletes user state with no code review to catch a slip, so the gates above are the review.
+ 
+diff -ruN a/skills/poteto-mode/scripts/worktree-audit.sh b/skills/poteto-mode/scripts/worktree-audit.sh
+--- a/skills/poteto-mode/scripts/worktree-audit.sh	2026-11-20 16:39:01
++++ b/skills/poteto-mode/scripts/worktree-audit.sh	2026-11-20 16:48:12
+@@ -47,12 +47,10 @@
+ esac
+ git rev-parse --verify --quiet "$base^{commit}" >/dev/null 2>&1 || { echo "error: base ref not found: $base" >&2; exit 1; }
+ 
+-# GNU coreutils (Linux, Homebrew gnubin) reads `stat -f` as file system status
+-# and `date -r` as a file, so pick the stat and date flags once.
+-if stat -c %Y / >/dev/null 2>&1; then
+-	stat_fmt=(-c '%Y %n'); fmt_day() { date -d "@$1" '+%Y-%m-%d'; }
++if date -d "@0" '+%Y' >/dev/null 2>&1; then
++	fmt_day() { date -d "@$1" '+%Y-%m-%d'; }
+ else
+-	stat_fmt=(-f '%m %N'); fmt_day() { date -r "$1" '+%Y-%m-%d'; }
++	fmt_day() { date -r "$1" '+%Y-%m-%d'; }
+ fi
+ 
+ # PR state by branch, fetched once as [{number, state, head}] with a lowercase
+@@ -69,9 +67,8 @@
+ fi
+ [ -s "$prs" ] || echo "[]" > "$prs"
+ 
+-# Transcripts dir: ~/.cursor/projects/<slugified-repo-path>/agent-transcripts.
+-slug=$(printf '%s' "$main_wt" | sed 's#^/##; s#/#-#g')
+-transcripts="$HOME/.cursor/projects/$slug/agent-transcripts"
++sessions=$(mktemp)
++opencode session list --format json -n 1000 2>/dev/null > "$sessions" || echo "[]" > "$sessions"
+ now=$(date +%s)
+ 
+ echo "# base: $base"
+@@ -108,14 +105,11 @@
+ 		'.[] | select(.head==$b) | "#\(.number)/\(.state)"' "$prs" 2>/dev/null | head -1)
+ 	[ -z "$pr" ] && pr="-"
+ 
+-	# Most recent chat whose transcript operated in this worktree. Match path
+-	# followed by "/" or a quote so glint-482 does not match glint-482-r37.
+ 	last="-"; last_ts=0
+-	if [ -d "$transcripts" ]; then
+-		f=$(rg -l -e "${wt}/" -e "${wt}\"" "$transcripts" 2>/dev/null \
+-			| xargs stat "${stat_fmt[@]}" 2>/dev/null | sort -rn | head -1)
+-		if [ -n "$f" ]; then last_ts=$(echo "$f" | awk '{print $1}')
+-			last=$(fmt_day "$last_ts" 2>/dev/null); fi
++	session_ts=$(jq -r --arg wt "$wt" '[.[] | select(.directory | startswith($wt)) | .updated] | max // 0' "$sessions" 2>/dev/null)
++	if [ -n "$session_ts" ] && [ "$session_ts" -gt 0 ] 2>/dev/null; then
++		last_ts=$(( session_ts / 1000 ))
++		last=$(fmt_day "$last_ts" 2>/dev/null)
+ 	fi
+ 	recent=$([ "$last_ts" -gt 0 ] 2>/dev/null && [ $(( (now - last_ts) / 86400 )) -le 4 ] && echo yes || echo no)
+ 
+@@ -131,4 +125,4 @@
+ 		"$size" "$age" "$merged" "$dirty" "$remote" "$pr" "$last" "$bucket" "$wt"
+ done | sort -t$'\t' -k1,1 -rh
+ 
+-rm -f "$prs"
++rm -f "$prs" "$sessions"
+diff -ruN a/skills/recall/SKILL.md b/skills/recall/SKILL.md
+--- a/skills/recall/SKILL.md	2026-11-20 16:39:01
++++ b/skills/recall/SKILL.md	2026-11-20 16:48:12
+@@ -12,12 +12,12 @@
+ 
+ Your context lives in two records. Your own chat history holds what you did and decided. The shared record holds everything that happened around the same code under other names: the symptoms users keep reporting, the fixes that shipped and got reverted, the errors still firing in prod. That second record lives in source control, the issue tracker, chat and issue channels, long-form docs, and error tracking. A feature with a long bug tail keeps most of its story there, so don't reconstruct it from your transcripts alone.
+ 
+-Transcripts live at `~/.cursor/projects/<slug>/agent-transcripts/<uuid>/<uuid>.jsonl`, where `<slug>` is the workspace path with the leading slash dropped and each "/" turned into "-" (so `/Users/you/proj` becomes `Users-you-proj`). Every line is one chat message.
++Transcripts come from OpenCode's session store. `opencode session list --format json -n 50` lists recent sessions with their IDs, and `opencode session export <session-id>` prints one conversation as JSON. Work only inside the active project; do not export sessions that belong to another project.
+ 
+ 1. Classify, then route. One specific prior chat to resume is the `session-pickup` playbook, not this. Turning habits into a durable skill is `automate-me`. A human-readable summary of your work is a different task. Recall loads working context across recent chats before you act. If the user already gave you a full state capsule (paths, branch, the change), use it and skip the mining.
+ 2. Lock the scope before searching. Pin the window ("recent" is a real range, default the last 7 days), the topic if named, and the workspace (default the active one. Never read another project's transcripts without being asked). State the scope back. Never quietly turn "all" into "recent N".
+-3. Fan out across your chat history. Spawn parallel subagents on a fast, cheap model, each taking a slice of the corpus. Tell every subagent to order candidates by real modification time (`ls -t`) and never by UUID name, grep the topic first and then read only the matching chats and only their relevant regions, and skip the current chat plus obvious noise (subagent, eval, and test chats). Each returns the same schema, one block per chat: topic, the user's goal, decisions, open threads, struggles and corrections, and artifacts (PRs, tickets, branches), each citing the chat UUID. For one or two chats, skip the fan-out and search directly. The raw transcripts stay in the subagents. The main thread gets only their findings. Pick each subagent's reasoning level for the job, per the Subagents section of the **poteto-mode** skill.
+-4. Sweep the shared record whenever the topic names a feature, file, subsystem, area, or bug. This is the default, not a judgment call, and "my work on X" does not exempt it. Spawn one investigator subagent per source, in agent mode because readonly strips MCP access, and ask each "what's the current state, what's been tried and didn't hold, and what are users still reporting". Run them in parallel with the chat-history mining. Null results are findings. Skip an unavailable MCP and say so. Fold what comes back into the brief. Skip this step only for pure activity recall with no named target ("what did I do this week"), where your own history and live state are the entire answer.
++3. Fan out across your chat history. Spawn parallel subagents on a fast, cheap model, each taking a slice of the corpus. Tell every subagent to order candidates by the session list's recency (`opencode session list --format json`, newest first) and never by session ID, grep the topic first and then read only the matching sessions and only their relevant regions, and skip the current session plus obvious noise (subagent, eval, and test sessions). Each returns the same schema, one block per session: topic, the user's goal, decisions, open threads, struggles and corrections, and artifacts (PRs, tickets, branches), each citing the session ID. For one or two sessions, skip the fan-out and search directly. The raw exports stay in the subagents. The main thread gets only their findings. Pick each subagent's reasoning level for the job, per the Subagents section of the **poteto-mode** skill.
++4. Sweep the shared record whenever the topic names a feature, file, subsystem, area, or bug. This is the default, not a judgment call, and "my work on X" does not exempt it. Spawn one investigator subagent per source, with `agent: "general"`, because `explore` is read-only and strips MCP access, and ask each "what's the current state, what's been tried and didn't hold, and what are users still reporting". Run them in parallel with the chat-history mining. Null results are findings. Skip an unavailable MCP and say so. Fold what comes back into the brief. Skip this step only for pure activity recall with no named target ("what did I do this week"), where your own history and live state are the entire answer.
+ 5. Verify against live state. Take the PRs, branches, and tickets that the mining and the sweep surfaced and check them with `git` and `gh`. When the answer hinges on what an agent actually did (the tools it ran, files it read, errors it hit), read the full transcript, not just a trimmed local copy.
+ 6. Write the brief to the contract below. Group by thread. Stay on the named topic.
+ 
+diff -ruN a/skills/reflect/SKILL.md b/skills/reflect/SKILL.md
+--- a/skills/reflect/SKILL.md	2026-11-20 16:39:01
++++ b/skills/reflect/SKILL.md	2026-11-20 16:48:12
+@@ -14,4 +14,4 @@
+ 
+ Present Accepted (problem, proposal, skill), Rejected (reason) and Backlog, and wait for approval before editing any skill.
+ 
+-Never edit a skill under `plugins/cache/`. Before approval, show its destination, `.cursor/skills/<skill>/` or `~/.cursor/skills/<skill>/`. After approval, copy the skill folder there and edit the copy. Never open a PR or push.
++Never edit a skill through the symlinked tree in `~/.config/opencode/skills/`. Before approval, show its destination: `.opencode/skills/<skill>/` for a project copy, or, for a personal change to a pstack skill, `~/dotfiles/omp/agent/skills/pstack/<skill>/`. After approval, copy a project skill there and edit the copy. A personal change is edited in place and then saved with `~/dotfiles/scripts/sync-pstack.sh --save-ports`, so upstream syncs keep it. Never open a PR or push.
+diff -ruN a/skills/setup-pstack/SKILL.md b/skills/setup-pstack/SKILL.md
+--- a/skills/setup-pstack/SKILL.md	2026-11-20 16:48:13
++++ b/skills/setup-pstack/SKILL.md	2026-11-20 16:48:12
+@@ -1,80 +1,130 @@
+ ---
+ name: setup-pstack
+-description: Configure which models pstack uses per role and at what reasoning budget. Detects your available models and writes an always-applied rule that overrides the skill defaults. Use for /setup-pstack, "configure pstack models", "pstack budget", or changing pstack's model choices.
++description: Configure which models pstack uses per role and at what reasoning budget under OpenCode. Detects your available OpenCode models and writes an always-applied instruction file that overrides the skill defaults. Use for /setup-pstack, "configure pstack models", "pstack budget", or changing pstack's model choices.
+ ---
+ 
+-# Setup pstack
++# Setup pstack (OpenCode)
+ 
+-Write `~/.config/opencode/instructions/pstack-models.md`, an always-applied rule that sets pstack's model per role.
++Write `~/.config/opencode/instructions/pstack-models.md`, an always-applied
++instruction file that sets pstack's model per role, then make sure the global
++config loads it.
+ 
+ ## Steps
+ 
+ ### 1. Detect available models
+ 
+-Enumerate the model slugs you can pass to a `Task` subagent in this session. That is the dependable source. If Cursor also exposes a models API or CLI that lists the user's entitled models, prefer it for completeness. If you cannot detect any, ask the user to paste the slugs they have access to. Never write a real slug you have not confirmed is available. The aliases `inherit-parent` and `auto` are always valid even though they are not detected slugs.
++Run `opencode models`. Each line is a `provider/model` slug accepted by the
++`model` field of the `subagent` tool and of agent definitions. That list is the
++dependable source. If the command fails, ask the user to paste their slugs.
++Never write a real slug you have not confirmed is available.
+ 
++A role may also carry a reasoning variant: `provider/model#variant`. Variants
++are the effort levels the model picker shows for that model (`low`, `medium`,
++`high`, `xhigh`, `max` where offered). Do not invent one. The aliases
++`inherit-parent` and `auto` are always valid and are not detected slugs.
++
+ ### 2. Load current state
+ 
+-The default role-to-model mapping is the rule shape shown in step 5 below. If `~/.config/opencode/instructions/pstack-models.md` already exists, read it and treat its `# budget` line and its role values as the current choices. Otherwise start from those defaults. A line whose role is not in step 5, such as `hardest tasks`, `architect runners`, `reflect tooling`, or `why investigators`, is from a retired role. Drop it.
++If `~/.config/opencode/instructions/pstack-models.md` exists, read it and treat
++its `# budget` line and role values as the current choices. Otherwise start from
++the defaults in step 5.
+ 
+-Older defaults put another Gemini model, then `gemini-4-neon-high`, in the panel seat. So in any rule, a `gemini-4-neon-high` entry, or a `gemini-4-*` entry other than `gemini-4-neon-*`, in a panel role (`arena runners`, `arena cross-judge pool`, `interrogate reviewers`) is an old default. Each one becomes `gemini-4-neon-xhigh`. A Gemini 4 Neon entry at any other level is the user's choice and stays. Tell the user which entries you replaced.
++If the Cursor rule `~/.cursor/rules/pstack-models.mdc` exists and the OpenCode
++file does not, import it once: keep its role values that are real detected
++slugs, map anything unavailable to its family's closest detected slug or to
++`inherit-parent`, and carry the budget over. Say what you migrated.
+ 
+-A rule without the `# defaults: 3` line comes from an older setup. That setup wrote a line for every role, so some of its values are old defaults, not choices. Before step 3, replace these values:
++A line whose role is not listed in step 5, such as `hardest tasks`, `architect runners`,
++`reflect tooling`, or `why investigators`, is from a retired role. Drop it.
+ 
+-- An `arena cross-judge pool` list of exactly one `claude-fable-*` entry, one `claude-opus-*` entry, and one `gemini-*` entry, in any order, takes the role's step 5 list. Fable and Opus are one vendor, so the Fable entry could judge only where the Opus entry also could.
+-- A `# budget: unlimited` line becomes `large`, because no role runs above `xhigh`.
+-- If the rule has no `# defaults: 2` line either, an old slug is one that matches `grok-*`. An old slug in `feature, refactoring`, `bug-fix`, `perf-issue`, `hillclimb`, or `swarm workers` takes the role's step 5 default. In a panel role (`arena runners`, `arena cross-judge pool`, `interrogate reviewers`), a list of exactly one `claude-opus-*` entry and one old slug, in either order, takes the role's step 5 list. In any other list, each old slug becomes `claude-opus-5-5-high-fast`.
+-
+-Every other value is the user's choice and stays, including an old slug in any other role and every `inherit-parent` or `auto` value. Tell the user which values you replaced.
+-
+ ### 3. Budget, map, and confirm
+ 
+-**(a) Ask for a budget.** Prefer AskQuestion over free text. Offer these three options with these exact labels, and name the current budget when the rule records one. With no rule, say that `large` matches the skill defaults.
++**(a) Ask for a budget.** Ask with the `question` tool when it is available,
++otherwise in plain chat. Offer these four labels and name the current budget
++when the file records one. With no file, say that `large` matches the pstack
++defaults.
+ 
+ - `large — xhigh reasoning`
+ - `medium — high reasoning`
+ - `small — medium reasoning`
+ 
+-**(b) Apply it.** Build the working table from the skill defaults, and on a re-run keep any role you changed by family, list, or alias (`inherit-parent`, `auto`). Families are the ones Phase A of the **arena** skill defines, so Fable is its own family. Each role has a target effort, which is its default's effort moved by the budget. `large` keeps it, `medium` lowers it one step, and `small` lowers it two steps, on the ladder `xhigh` > `high` > `medium` > `low`. No role runs above `xhigh`, and a target at the bottom of the ladder stays there. Most defaults are at `xhigh`, and each budget label names where those land. Set the effort token of every real slug in the role, panel entries included, to the role's target. The effort token is the last token, or the one before a trailing `fast`. If the result is not a detected slug, use the same family's detected slug with the highest effort at or below the target, else mark the role as needing a choice. `inherit-parent` and `auto` do not change. So `medium` turns `claude-opus-5-5-xhigh-fast` into `claude-opus-5-5-high-fast` and `claude-opus-5-5-high-fast` into `claude-opus-5-5-medium-fast`, and `small` turns them into `claude-opus-5-5-medium-fast` and `claude-opus-5-5-low-fast`. Opus 5.5 always runs its `-fast` slug, so every Opus 5.5 value ends in `-fast`. Fable 5.2 and Gemini have no fast slug, so never write one. Gemini 4 Neon slugs run from `low` to `xhigh` with no `max` or `fast` slug, so its seat runs at `gemini-4-neon-xhigh`, its top slug. A Gemini 4 Neon entry in a panel role takes its own target, `xhigh` moved by the budget, so `large` keeps `gemini-4-neon-xhigh`, `medium` writes `gemini-4-neon-high`, and `small` writes `gemini-4-neon-medium`.
++**(b) Apply it.** `unlimited`, `large`, `medium`, and `small` set the variant of
++every real slug to `max`, `xhigh`, `high`, or `medium`. On a re-run, keep any
++role the user changed by family, list, or alias. If a model does not offer the
++target variant, use the highest variant it does offer at or below the target.
++If the model offers no variants, leave the slug bare. `inherit-parent` and
++`auto` never change.
+ 
+-**(c) Show the roles and confirm.** Show every role with its model, marking any real slug not in the detected set as needing a choice. Also list each line step 2 dropped. Ask whether to accept as-is or change specific roles, offering the detected models at `xhigh` or below plus `inherit-parent` and `auto` (both mean: this role runs on the parent chat model, which is how Auto users stay on Auto) as the options. Prefer AskQuestion over free text. For panel roles (arena runners, interrogate reviewers) the value is a list, and one subagent runs per entry, alias entries included, so the list length sets the count. `arena cross-judge pool` is also a list, but Arena runs one judge. It tries only values from a vendor other than the parent's, in list order, so order it by preference. Fable and the other Claude models are one vendor. An `inherit-parent` or `auto` value never judges. `swarm workers` is the default model for every worker unless a race or comparison assigns another model per arm.
++**(c) Show the roles and confirm.** Show every role with its model, marking any
++real slug that is not in the detected set as needing a choice. Also list each
++line step 2 dropped. Offer the detected models plus `inherit-parent` and `auto`
++(both mean: run on the parent chat model) as replacements.
+ 
++For panel roles the value is a comma-separated list and one subagent runs per
++entry, alias entries included, so the list length sets the fan-out:
++`arena runners` and `interrogate reviewers`. `arena
++cross-judge pool` is a list too, but Arena runs one judge and only tries values
++from a family other than the parent's, in list order, so order it by preference;
++an `inherit-parent` value never judges. `swarm workers` is the default model for
++every worker unless a race assigns another model per arm.
++
+ ### 4. Validate
+ 
+-Every real slug written must be in the detected set and at `xhigh` or below. `inherit-parent` and `auto` always pass. If a chosen real slug is not available, stop and ask again.
++Every real slug written must be in the detected set, and every `#variant` must
++be offered by that model. `inherit-parent` and `auto` always pass. If a chosen
++slug or variant is unavailable, stop and ask again.
+ 
+-### 5. Write the rule
++### 5. Write the instruction file
+ 
+-Write `~/.config/opencode/instructions/pstack-models.md` with `alwaysApply: true`, the `# defaults: 3` line, a `# budget` line with the chosen label and the effort that label names, and one line per role, using the same labels poteto-mode uses. Overwrite the whole file so re-runs stay idempotent. Shape:
++Write `~/.config/opencode/instructions/pstack-models.md`. It is plain Markdown,
++not a Cursor rule, so it has no frontmatter. Overwrite the whole file so re-runs
++stay idempotent. Shape:
+ 
+ ```
+----
+-description: pstack per-role model choices (overrides skill defaults)
+-alwaysApply: true
+----
+ # pstack model configuration. One line per role. Delete a line to fall back to the skill default.
+-# `inherit-parent` or `auto` as a value: the role runs on the parent chat model (omit Task `model` and spawn `generalPurpose`). Alias entries in a panel list still count toward its fan-out.
+-# defaults: 3
++# `inherit-parent` or `auto`: the role runs on the parent chat model (omit subagent `model`). Alias entries in a panel list still count toward its fan-out.
+ # budget: large (xhigh)
+-feature, refactoring: claude-opus-5-5-xhigh-fast
+-bug-fix: claude-opus-5-5-xhigh-fast
+-perf-issue: claude-opus-5-5-xhigh-fast
+-hillclimb: claude-opus-5-5-xhigh-fast
+-judgment and prose: claude-opus-5-5-xhigh-fast
+-arena runners: claude-fable-5-2-high, claude-opus-5-5-high-fast, gemini-4-neon-xhigh
+-arena cross-judge pool: claude-opus-5-5-high-fast, gemini-4-neon-xhigh
+-swarm workers: claude-opus-5-5-high-fast
+-interrogate reviewers: claude-fable-5-2-high, claude-opus-5-5-high-fast, gemini-4-neon-xhigh
++feature, refactoring: inherit-parent
++bug-fix: inherit-parent
++perf-issue: inherit-parent
++hillclimb: inherit-parent
++judgment and prose: inherit-parent
++arena runners: inherit-parent, inherit-parent
++arena cross-judge pool: inherit-parent
++swarm workers: inherit-parent
++interrogate reviewers: inherit-parent, inherit-parent
+ ```
+ 
+-### 6. Confirm
++Every role defaults to `inherit-parent` because OpenCode exposes whatever
++providers the user has, and a guessed slug fails. When the user wants diverse
++judgment, replace entries with real slugs from step 1, keeping the family
++diversity Arena needs.
+ 
+-Tell the user the rule was written and that it applies to new sessions. Re-running this skill updates it.
++### 6. Wire it into the global config
+ 
+-### 7. Offer a verification skill (optional)
++`~/.config/opencode/opencode.jsonc` must list the file in its `instructions`
++array. Read the file, keep every existing entry and every unrelated setting,
++and append `"~/.config/opencode/instructions/pstack-models.md"` only when it is
++missing. OpenCode hot-reloads config, so no restart is needed.
+ 
+-Check whether the project has a way to drive the real app for proof (a `verify-*` skill, or an existing harness). If not, offer once: "want a project-local verification skill, so agents can drive the app the way a user does and prove changes work? I can generate one with /create-verification-skill." On yes, invoke `/create-verification-skill` (resolves wherever pstack is installed: workspace, user, or plugin). On no, move on without pushing.
++### 7. Confirm
+ 
+-### 8. Offer a formal verification skill (optional)
++Tell the user the file was written, that it applies immediately, and that
++re-running this skill updates it. Report the budget and any role still on
++`inherit-parent`.
+ 
+-Check whether the project already has a formal verification skill (a project skill that runs a model checker, a proof, or another verifier against the code). If not, offer once: "want a formal verification skill, so agents can prove a key property of your code holds in every case in scope, not only the cases tests reach? I can generate one with /create-formal-verification-skill." On yes, invoke `/create-formal-verification-skill` (resolves wherever pstack is installed: workspace, user, or plugin). On no, move on without pushing.
++### 8. Offer a verification skill (optional)
++
++Check whether the project has a way to drive the real app for proof (a
++`verify-*` skill or an existing harness). If not, offer once: "want a
++project-local verification skill, so agents can drive the app the way a user
++does and prove changes work? I can generate one with the `create-verification-skill`
++skill." On yes, load that skill with the skill tool. On no, move on.
++
++### 9. Offer a formal verification skill (optional)
++
++Check whether the project already has a formal verification skill (a project
++skill that runs a model checker, a proof, or another verifier). If not, offer
++once: "want a formal verification skill, so agents can prove a key property
++holds in every case in scope, not only the cases tests reach? I can generate one
++with the `create-formal-verification-skill` skill." On yes, load it. On no, stop.
+diff -ruN a/skills/show-me-your-work/SKILL.md b/skills/show-me-your-work/SKILL.md
+--- a/skills/show-me-your-work/SKILL.md	2026-11-20 16:39:01
++++ b/skills/show-me-your-work/SKILL.md	2026-11-20 16:48:12
+@@ -54,7 +54,7 @@
+ 
+ ## Audit the log against the transcript
+ 
+-At the end of the run, before handing back, check the log told the truth. Read this run's transcript under the active workspace's `agent-transcripts/` directory (the system prompt names the path). Don't glob across `~/.cursor/projects/*/`. That reads unrelated private chats. Walk this run's rows against what actually happened. Each stretch of them begins at one of this run's `start` rows, or at the first row if this run created the log, and ends at the next `start` row of another run:
++At the end of the run, before handing back, check the log told the truth. Export this run's session with `opencode session export <session-id>`; the session list names the ID. Never export another project's session; that reads unrelated private chats. Walk this run's rows against what actually happened. Each stretch of them begins at one of this run's `start` rows, or at the first row if this run created the log, and ends at the next `start` row of another run:
+ 
+ - Check that every row maps to a real decision or action.
+ - Check that each row's evidence resolves and shows what the row claims.
+diff -ruN a/skills/swarm/SKILL.md b/skills/swarm/SKILL.md
+--- a/skills/swarm/SKILL.md	2026-11-20 16:48:13
++++ b/skills/swarm/SKILL.md	2026-11-20 16:48:12
+@@ -19,14 +19,14 @@
+ 
+ 1. State the done predicate and the artifact or report the swarm must return.
+ 2. Choose the shape. Partition into slices, race N workers on identical briefs, or mix both. For a race or mixed shape, declare `first pass`, `rank all`, or `best-of` before spawning.
+-3. Pick the worker model from the `swarm workers` line in `~/.config/opencode/instructions/pstack-models.md`. If the rule or that line is missing, use `claude-opus-5-5-high-fast`. For `auto` or `inherit-parent`, omit `model` so the workers run on the parent model. If the Task tool rejects a slug, use the default and say so. If it rejects the default, use the closest valid slug of the same family from its error message. For a model race, name each arm's model up front. Pick each subagent's reasoning level for the job, per the Subagents section of the **poteto-mode** skill.
++3. Pick the worker model from the `swarm workers` line in `~/.config/opencode/instructions/pstack-models.md`. If the rule or that line is missing, use `claude-opus-5-5-high-fast`. For `auto` or `inherit-parent`, omit `model` so the workers run on the parent model. If the subagent tool rejects a slug, use the default and say so. If it rejects the default, use the closest valid slug of the same family from its error message. For a model race, name each arm's model up front. Pick each subagent's reasoning level for the job, per the Subagents section of the **poteto-mode** skill.
+ 4. Give each worker its own writable output when it writes. When workers verify or measure commits, each brief names the exact SHAs. A measurement brief also names the method (sample count, what one sample is, order). The worker records both in its result.
+ 
+ ## Phase B: Fan out
+ 
+-Spawn all N workers in one message with `subagent_type: generalPurpose`, `environment: "cloud"`, `run_in_background: true`, and the step 3 model, left unset for `auto` or `inherit-parent`. Use `environment: "local"` only when the worker needs access to something on the user's computer.
++Spawn all N workers in one message with `agent: "general"`, `background: true`, and the step 3 model, left unset for `auto` or `inherit-parent`. Workers run on this machine; OpenCode has no cloud environment.
+ 
+-When a worker must start from a non-default pushed branch, pass `cloud_base_branch`.
++When a worker must start from a non-default pushed branch, create a worktree for that branch first and point the worker at it.
+ 
+ Every brief stands alone. Include the goal, scope, exact slice or race arm, how to verify, and what to report. Reports use `PASS`, `ISSUES`, or `BLOCKED` with evidence. A worker that can prove a defect reports `ISSUES` and lists every issue it can prove, not only the first.
+ 
